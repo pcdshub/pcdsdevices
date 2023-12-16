@@ -11,10 +11,3 @@ class J120K(BaseInterface, Device):
     """
     flow_ok = Cpt(PytmcSignal, ':FSW:FLOW_OK', io='i',
                   kind='normal', doc='flow rate nominal')
-
-    @property
-    def get_flow_ok(self):
-        """
-        returns True if flow rate is nominal
-        """
-        return bool(self.flow_ok.get())
