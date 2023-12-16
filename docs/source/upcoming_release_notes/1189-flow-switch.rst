@@ -17,7 +17,7 @@ New Devices
 -----------
 - `PPMCoolSwitch` ppms with cooling switch not a meter.
 - `WavefrontSensorTargetCool` WaveFrontSensors with a cooling switch.
-- `J120k` a device class for a cooling switch.
+- `J120K` a device class for a cooling switch.
 
 Bugfixes
 --------
