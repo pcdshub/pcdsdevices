@@ -20,6 +20,7 @@ from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
                                      PCDSAreaDetectorTyphosTrigger)
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
+from .digital_signals import J120K
 from .epics_motor import IMS, BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutCptMixin
@@ -541,6 +542,8 @@ class XPIM(LCLS2ImagerBase):
     filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config',
                        doc='Optical filter wheel in front of the camera '
                            'to prevent saturation.')
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')
 
     set_metadata(zoom_lock, dict(variety='command-enum'))
     set_metadata(focus_lock, dict(variety='command-enum'))
@@ -557,6 +560,8 @@ class IM2K0(LCLS2ImagerBase):
     # XPIM illuminator
     led = Cpt(XPIMLED, ':CIL', kind='config',
               doc='LED for viewing the reticle.')
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')
     # Nothing else! No power meter, no zoom/focus, no filter wheel...
 
 
@@ -580,3 +585,11 @@ class PPMCOOL(PPM):
     """
     flow_meter = Cpt(FDQ, '', kind='normal',
                      doc='Device that measures PCW Flow Rate.')
+
+
+class PPMCoolSwitch(PPM):
+    """
+    L2SI's Power and Profile Monitor design with cooling switch.
+    """
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')
