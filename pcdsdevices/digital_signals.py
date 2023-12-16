@@ -17,4 +17,4 @@ class J120K(BaseInterface, Device):
         """
         returns True if flow rate is nominal
         """
-        return self.flow_ok.get()
+        return bool(self.flow_ok.get())
