@@ -74,7 +74,16 @@
           - normal
           - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`
     
+        * - flow_meter
+          - :class:`~pcdsdevices.analog_signals.FDQ`
+          - 
+          - Device that measures PCW Flow Rate.
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`
+    
 
+    
+    
     
     
     

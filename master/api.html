@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; PCDS Devices 8.1.1.dev47+g78834aee documentation</title>
+  <title>API &mdash; PCDS Devices 8.2.1.dev36+gba60ee04 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/_static/theme_overrides.css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=e49b8f72"></script>
+        <script src="_static/documentation_options.js?v=f9f085c8"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -39,7 +39,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                8.1.1.dev47+g78834aee
+                8.2.1.dev36+gba60ee04
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -101,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-atm">pcdsdevices.atm</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.atm.ATMTarget.html">pcdsdevices.atm.ATMTarget</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.atm.ArrivalTimeMonitor.html">pcdsdevices.atm.ArrivalTimeMonitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.atm.MFXATM.html">pcdsdevices.atm.MFXATM</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.atm.TM1K4.html">pcdsdevices.atm.TM1K4</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.atm.TM1K4Target.html">pcdsdevices.atm.TM1K4Target</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.atm.TM2K2.html">pcdsdevices.atm.TM2K2</a></li>
@@ -239,6 +240,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-epics-motor">pcdsdevices.epics_motor</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxis.html">pcdsdevices.epics_motor.BeckhoffAxis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisEPS.html">pcdsdevices.epics_motor.BeckhoffAxisEPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisEPSCustom.html">pcdsdevices.epics_motor.BeckhoffAxisEPSCustom</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisNoOffset.html">pcdsdevices.epics_motor.BeckhoffAxisNoOffset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisPLC.html">pcdsdevices.epics_motor.BeckhoffAxisPLC</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisPLCEPS.html">pcdsdevices.epics_motor.BeckhoffAxisPLCEPS</a></li>
@@ -595,6 +597,10 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.mrco_motion.MRCO.html">pcdsdevices.mrco_motion.MRCO</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-pc">pcdsdevices.pc</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pc.PhotonCollimator.html">pcdsdevices.pc.PhotonCollimator</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-piezo">pcdsdevices.piezo</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.piezo.SliceDhv.html">pcdsdevices.piezo.SliceDhv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.piezo.SliceDhvChannel.html">pcdsdevices.piezo.SliceDhvChannel</a></li>
@@ -914,6 +920,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorStates.html">pcdsdevices.wfs.WaveFrontSensorStates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorTarget.html">pcdsdevices.wfs.WaveFrontSensorTarget</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorTargetCool.html">pcdsdevices.wfs.WaveFrontSensorTargetCool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorTargetFDQ.html">pcdsdevices.wfs.WaveFrontSensorTargetFDQ</a></li>
 </ul>
 </li>
 </ul>
@@ -1101,22 +1108,25 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.ArrivalTimeMonitor.html#pcdsdevices.atm.ArrivalTimeMonitor" title="pcdsdevices.atm.ArrivalTimeMonitor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.ArrivalTimeMonitor</span></code></a>(*args, ...)</p></td>
 <td><p>Determines the arrival time of the x-ray relative to the optical laser.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM1K4.html#pcdsdevices.atm.TM1K4" title="pcdsdevices.atm.TM1K4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM1K4</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.MFXATM.html#pcdsdevices.atm.MFXATM" title="pcdsdevices.atm.MFXATM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.MFXATM</span></code></a>(*args, **kwargs)</p></td>
+<td><p>An ATM in MFX that has no cooling.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM1K4.html#pcdsdevices.atm.TM1K4" title="pcdsdevices.atm.TM1K4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM1K4</span></code></a>(*args, **kwargs)</p></td>
 <td><p>An ATM in TMO that has two extra target states.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM1K4Target.html#pcdsdevices.atm.TM1K4Target" title="pcdsdevices.atm.TM1K4Target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM1K4Target</span></code></a>(prefix, *, name, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM1K4Target.html#pcdsdevices.atm.TM1K4Target" title="pcdsdevices.atm.TM1K4Target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM1K4Target</span></code></a>(prefix, *, name, ...)</p></td>
 <td><p>Controls TM1K4's states, and ATM in TMO.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM2K2.html#pcdsdevices.atm.TM2K2" title="pcdsdevices.atm.TM2K2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM2K2</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM2K2.html#pcdsdevices.atm.TM2K2" title="pcdsdevices.atm.TM2K2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM2K2</span></code></a>(*args, **kwargs)</p></td>
 <td><p>An ATM in RIX that has one extra target state.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM2K2Target.html#pcdsdevices.atm.TM2K2Target" title="pcdsdevices.atm.TM2K2Target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM2K2Target</span></code></a>(prefix, *, name, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM2K2Target.html#pcdsdevices.atm.TM2K2Target" title="pcdsdevices.atm.TM2K2Target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM2K2Target</span></code></a>(prefix, *, name, ...)</p></td>
 <td><p>Controls TM2K2's states, an ATM in RIX.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM2K4.html#pcdsdevices.atm.TM2K4" title="pcdsdevices.atm.TM2K4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM2K4</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM2K4.html#pcdsdevices.atm.TM2K4" title="pcdsdevices.atm.TM2K4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM2K4</span></code></a>(*args, **kwargs)</p></td>
 <td><p>An ATM in TMO that has one fewer target state.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM2K4Target.html#pcdsdevices.atm.TM2K4Target" title="pcdsdevices.atm.TM2K4Target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM2K4Target</span></code></a>(prefix, *, name, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.atm.TM2K4Target.html#pcdsdevices.atm.TM2K4Target" title="pcdsdevices.atm.TM2K4Target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.atm.TM2K4Target</span></code></a>(prefix, *, name, ...)</p></td>
 <td><p>Controls TM2K4's states, an ATM in TMO.</p></td>
 </tr>
 </tbody>
@@ -1491,58 +1501,61 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisEPS.html#pcdsdevices.epics_motor.BeckhoffAxisEPS" title="pcdsdevices.epics_motor.BeckhoffAxisEPS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxisEPS</span></code></a>(...)</p></td>
 <td><p>A beckhoff axis where the EPS indicators are relevant.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisNoOffset.html#pcdsdevices.epics_motor.BeckhoffAxisNoOffset" title="pcdsdevices.epics_motor.BeckhoffAxisNoOffset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxisNoOffset</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisEPSCustom.html#pcdsdevices.epics_motor.BeckhoffAxisEPSCustom" title="pcdsdevices.epics_motor.BeckhoffAxisEPSCustom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxisEPSCustom</span></code></a>(...)</p></td>
+<td><p>A beckhoff axis where custom EPS Logic has been implemented in a PLC and needs a custom screen to display EPS information</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisNoOffset.html#pcdsdevices.epics_motor.BeckhoffAxisNoOffset" title="pcdsdevices.epics_motor.BeckhoffAxisNoOffset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxisNoOffset</span></code></a>(...)</p></td>
 <td><p>A BeckhoffAxis with various fields read-only.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisPLC.html#pcdsdevices.epics_motor.BeckhoffAxisPLC" title="pcdsdevices.epics_motor.BeckhoffAxisPLC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxisPLC</span></code></a>([...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisPLC.html#pcdsdevices.epics_motor.BeckhoffAxisPLC" title="pcdsdevices.epics_motor.BeckhoffAxisPLC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxisPLC</span></code></a>([...])</p></td>
 <td><p>Error handling, debug, and aux functions for the Beckhoff Axis PLC code.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisPLCEPS.html#pcdsdevices.epics_motor.BeckhoffAxisPLCEPS" title="pcdsdevices.epics_motor.BeckhoffAxisPLCEPS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxisPLCEPS</span></code></a>([...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisPLCEPS.html#pcdsdevices.epics_motor.BeckhoffAxisPLCEPS" title="pcdsdevices.epics_motor.BeckhoffAxisPLCEPS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxisPLCEPS</span></code></a>([...])</p></td>
 <td><p>Extended BeckhoffAxisPLC with relevant EPS fields.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.html#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140" title="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140</span></code></a>([...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.html#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140" title="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140</span></code></a>([...])</p></td>
 <td><p>Disable some newly introduced signals.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxis_Pre140.html#pcdsdevices.epics_motor.BeckhoffAxis_Pre140" title="pcdsdevices.epics_motor.BeckhoffAxis_Pre140"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxis_Pre140</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.BeckhoffAxis_Pre140.html#pcdsdevices.epics_motor.BeckhoffAxis_Pre140" title="pcdsdevices.epics_motor.BeckhoffAxis_Pre140"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.BeckhoffAxis_Pre140</span></code></a>(...)</p></td>
 <td><p>Beckhoff Axis compatible with PLCs running older software.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.EpicsMotorInterface.html#pcdsdevices.epics_motor.EpicsMotorInterface" title="pcdsdevices.epics_motor.EpicsMotorInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.EpicsMotorInterface</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.EpicsMotorInterface.html#pcdsdevices.epics_motor.EpicsMotorInterface" title="pcdsdevices.epics_motor.EpicsMotorInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.EpicsMotorInterface</span></code></a>(...)</p></td>
 <td><p>The standard EpicsMotor class, but with our interface attached.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.IMS</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.IMS</span></code></a>(*args, **kwargs)</p></td>
 <td><p>PCDS implementation of the Motor Record for IMS motors.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.MMC100.html#pcdsdevices.epics_motor.MMC100" title="pcdsdevices.epics_motor.MMC100"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.MMC100</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.MMC100.html#pcdsdevices.epics_motor.MMC100" title="pcdsdevices.epics_motor.MMC100"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.MMC100</span></code></a>(*args, **kwargs)</p></td>
 <td><p>PCDS implementation of the Motor Record for MMC100 controlled motors.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.Motor.html#pcdsdevices.epics_motor.Motor" title="pcdsdevices.epics_motor.Motor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.Motor</span></code></a>(prefix, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.Motor.html#pcdsdevices.epics_motor.Motor" title="pcdsdevices.epics_motor.Motor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.Motor</span></code></a>(prefix, **kwargs)</p></td>
 <td><p>Load a PCDSMotor with the correct class based on prefix.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.Newport.html#pcdsdevices.epics_motor.Newport" title="pcdsdevices.epics_motor.Newport"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.Newport</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.Newport.html#pcdsdevices.epics_motor.Newport" title="pcdsdevices.epics_motor.Newport"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.Newport</span></code></a>(*args, **kwargs)</p></td>
 <td><p>PCDS implementation of the Motor Record for Newport motors.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.OffsetIMSWithPreset.html#pcdsdevices.epics_motor.OffsetIMSWithPreset" title="pcdsdevices.epics_motor.OffsetIMSWithPreset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.OffsetIMSWithPreset</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.OffsetIMSWithPreset.html#pcdsdevices.epics_motor.OffsetIMSWithPreset" title="pcdsdevices.epics_motor.OffsetIMSWithPreset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.OffsetIMSWithPreset</span></code></a>(...)</p></td>
 <td><p>Offset IMS with an additiona Offset _SET PV.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.OffsetMotor.html#pcdsdevices.epics_motor.OffsetMotor" title="pcdsdevices.epics_motor.OffsetMotor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.OffsetMotor</span></code></a>(prefix, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.OffsetMotor.html#pcdsdevices.epics_motor.OffsetMotor" title="pcdsdevices.epics_motor.OffsetMotor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.OffsetMotor</span></code></a>(prefix, ...)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.PCDSMotorBase.html#pcdsdevices.epics_motor.PCDSMotorBase" title="pcdsdevices.epics_motor.PCDSMotorBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.PCDSMotorBase</span></code></a>(*args, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.PCDSMotorBase.html#pcdsdevices.epics_motor.PCDSMotorBase" title="pcdsdevices.epics_motor.PCDSMotorBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.PCDSMotorBase</span></code></a>(*args, ...)</p></td>
 <td><p>EpicsMotor for PCDS.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.PMC100.html#pcdsdevices.epics_motor.PMC100" title="pcdsdevices.epics_motor.PMC100"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.PMC100</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.PMC100.html#pcdsdevices.epics_motor.PMC100" title="pcdsdevices.epics_motor.PMC100"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.PMC100</span></code></a>(*args, **kwargs)</p></td>
 <td><p>PCDS implementation of the Motor Record PMC100 motors.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarAct.html#pcdsdevices.epics_motor.SmarAct" title="pcdsdevices.epics_motor.SmarAct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarAct</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarAct.html#pcdsdevices.epics_motor.SmarAct" title="pcdsdevices.epics_motor.SmarAct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarAct</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Class for encoded SmarAct motors controlled via the MCS2 controller.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActOpenLoop.html#pcdsdevices.epics_motor.SmarActOpenLoop" title="pcdsdevices.epics_motor.SmarActOpenLoop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActOpenLoop</span></code></a>([...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActOpenLoop.html#pcdsdevices.epics_motor.SmarActOpenLoop" title="pcdsdevices.epics_motor.SmarActOpenLoop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActOpenLoop</span></code></a>([...])</p></td>
 <td><p>Class containing the open loop PVs used to control an un-encoded SmarAct stage.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActOpenLoopPositioner.html#pcdsdevices.epics_motor.SmarActOpenLoopPositioner" title="pcdsdevices.epics_motor.SmarActOpenLoopPositioner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActOpenLoopPositioner</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActOpenLoopPositioner.html#pcdsdevices.epics_motor.SmarActOpenLoopPositioner" title="pcdsdevices.epics_motor.SmarActOpenLoopPositioner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActOpenLoopPositioner</span></code></a>(...)</p></td>
 <td><p>Positioner class for SmarAct open loop stages.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActTipTilt.html#pcdsdevices.epics_motor.SmarActTipTilt" title="pcdsdevices.epics_motor.SmarActTipTilt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActTipTilt</span></code></a>([prefix])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActTipTilt.html#pcdsdevices.epics_motor.SmarActTipTilt" title="pcdsdevices.epics_motor.SmarActTipTilt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActTipTilt</span></code></a>([prefix])</p></td>
 <td><p>Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirro positioning configuration into a single device.</p></td>
 </tr>
 </tbody>
@@ -2488,6 +2501,16 @@
 </tbody>
 </table>
 </section>
+<section id="pcdsdevices-pc">
+<h2>pcdsdevices.pc<a class="headerlink" href="#pcdsdevices-pc" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.pc.PhotonCollimator.html#pcdsdevices.pc.PhotonCollimator" title="pcdsdevices.pc.PhotonCollimator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pc.PhotonCollimator</span></code></a>([prefix, ...])</p></td>
+<td><p>Photon Collimator Stub for Cooling Readback</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="pcdsdevices-piezo">
 <h2>pcdsdevices.piezo<a class="headerlink" href="#pcdsdevices-piezo" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
@@ -3380,6 +3403,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorTargetCool.html#pcdsdevices.wfs.WaveFrontSensorTargetCool" title="pcdsdevices.wfs.WaveFrontSensorTargetCool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.wfs.WaveFrontSensorTargetCool</span></code></a>(...)</p></td>
 <td><p>An array of targets used to determine the beam's wavefront.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorTargetFDQ.html#pcdsdevices.wfs.WaveFrontSensorTargetFDQ" title="pcdsdevices.wfs.WaveFrontSensorTargetFDQ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.wfs.WaveFrontSensorTargetFDQ</span></code></a>(...)</p></td>
+<td><p>An array of targets used to determine the beam's wavefront.</p></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -3396,7 +3422,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2024, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

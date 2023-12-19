@@ -143,6 +143,7 @@
     .. autoattribute:: done
     .. autoattribute:: done_value
     .. autoattribute:: egu
+    .. autoattribute:: flow_meter
     .. autoattribute:: high_limit
     .. autoattribute:: hints
     .. autoattribute:: kind

@@ -53,7 +53,16 @@
           - normal
           - Inherited from :class:`~pcdsdevices.atm.ArrivalTimeMonitor`
     
+        * - flow_meter
+          - :class:`~pcdsdevices.analog_signals.FDQ`
+          - 
+          - Device that measures PCW Flow Rate.
+          - normal
+          - Inherited from :class:`~pcdsdevices.atm.ArrivalTimeMonitor`
+    
 
+    
+    
     
     
     

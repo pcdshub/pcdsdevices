@@ -98,6 +98,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: flow_meter
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: lightpath_cpts

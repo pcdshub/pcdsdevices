@@ -71,6 +71,7 @@ pcdsdevices.atm
 
     pcdsdevices.atm.ATMTarget
     pcdsdevices.atm.ArrivalTimeMonitor
+    pcdsdevices.atm.MFXATM
     pcdsdevices.atm.TM1K4
     pcdsdevices.atm.TM1K4Target
     pcdsdevices.atm.TM2K2
@@ -257,6 +258,7 @@ pcdsdevices.epics_motor
 
     pcdsdevices.epics_motor.BeckhoffAxis
     pcdsdevices.epics_motor.BeckhoffAxisEPS
+    pcdsdevices.epics_motor.BeckhoffAxisEPSCustom
     pcdsdevices.epics_motor.BeckhoffAxisNoOffset
     pcdsdevices.epics_motor.BeckhoffAxisPLC
     pcdsdevices.epics_motor.BeckhoffAxisPLCEPS
@@ -748,6 +750,14 @@ pcdsdevices.mrco_motion
 
     pcdsdevices.mrco_motion.MRCO
 
+pcdsdevices.pc
+--------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.pc.PhotonCollimator
+
 pcdsdevices.piezo
 -----------------
 
@@ -1204,3 +1214,4 @@ pcdsdevices.wfs
     pcdsdevices.wfs.WaveFrontSensorStates
     pcdsdevices.wfs.WaveFrontSensorTarget
     pcdsdevices.wfs.WaveFrontSensorTargetCool
+    pcdsdevices.wfs.WaveFrontSensorTargetFDQ

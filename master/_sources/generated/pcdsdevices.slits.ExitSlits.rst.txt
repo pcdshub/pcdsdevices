@@ -39,6 +39,27 @@
           - normal
           - 
     
+        * - gap_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:GAP``
+          - Direct control of the slits gap  motor.
+          - normal
+          - 
+    
+        * - upper_crystal_pitch_motor
+          - :class:`~ophyd.epics_motor.EpicsMotor`
+          - ``:MMZ:PITCH:TOP``
+          - Direct control of the upper slits assembly piezo pitch  motor.
+          - normal
+          - 
+    
+        * - lower_crystal_pitch_motor
+          - :class:`~ophyd.epics_motor.EpicsMotor`
+          - ``:MMZ:PITCH:BOTTOM``
+          - Direct control of the lower slits assembly piezo pitch  motor.
+          - normal
+          - 
+    
         * - pitch_motor
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
           - ``:MMS:PITCH``
@@ -57,13 +78,6 @@
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
           - ``:MMS:ROLL``
           - Direct control of the slits assembly roll motor.
-          - normal
-          - 
-    
-        * - gap_motor
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
-          - ``:MMS:GAP``
-          - Direct control of the slits gap  motor.
           - normal
           - 
     
@@ -131,6 +145,10 @@
           - 
     
 
+    
+    
+    
+    
     
     
     

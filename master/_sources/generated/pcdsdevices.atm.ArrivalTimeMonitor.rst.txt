@@ -53,7 +53,16 @@
           - normal
           - 
     
+        * - flow_meter
+          - :class:`~pcdsdevices.analog_signals.FDQ`
+          - 
+          - Device that measures PCW Flow Rate.
+          - normal
+          - 
+    
 
+    
+    
     
     
     

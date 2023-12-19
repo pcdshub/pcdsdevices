@@ -67,7 +67,34 @@
           - normal
           - 
     
+        * - cool_flow1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWM:1_RBV``
+          - Axilon Panel Flow Meter Loop 1
+          - normal
+          - 
+    
+        * - cool_flow2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWM:2_RBV``
+          - Axilon Panel Flow Meter Loop 2
+          - normal
+          - 
+    
+        * - cool_press
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PRSM:1_RBV``
+          - Axilon Panel Pressure Meter
+          - normal
+          - 
+    
 
+    
+    
+    
+    
+    
+    
     
     
     
