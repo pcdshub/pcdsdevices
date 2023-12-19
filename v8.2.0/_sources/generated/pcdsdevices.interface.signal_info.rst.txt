@@ -1,0 +1,6 @@
+﻿pcdsdevices.interface.signal\_info
+==================================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autofunction:: signal_info

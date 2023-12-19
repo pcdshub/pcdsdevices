@@ -1,0 +1,291 @@
+﻿pcdsdevices.qadc.Qadc134Common
+==============================
+
+.. currentmodule:: pcdsdevices.qadc
+
+.. autoclass:: Qadc134Common
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ch0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH0``
+          - Input 0 of the ADC
+          - normal
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - ch1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH1``
+          - Input 1 of the ADC
+          - normal
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - ch2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH2``
+          - Input 2 of the ADC
+          - normal
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - ch3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH3``
+          - Input 3 of the ADC
+          - normal
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CONFIG``
+          - Write the current config to the QADC
+          - config
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - start
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:START``
+          - Start/stop acquisition
+          - normal
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - trig_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_DELAY_RBV``
+          - Trigger delay in EVR/TPR ticks
+          - config
+          - 
+    
+        * - full_en
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FULL_EN_RBV``
+          - Enable full stream
+          - config
+          - 
+    
+        * - hi_thresh
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:HI_THRESH_RBV``
+          - High threshold, in Volts
+          - config
+          - 
+    
+        * - hi_thresh_raw
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:HI_THRESH_RAW_RBV``
+          - High threshold, raw
+          - config
+          - 
+    
+        * - ichan
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ICHAN_RBV``
+          - Channel to interleave on
+          - config
+          - 
+    
+        * - interleave
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:INTERLEAVE_RBV``
+          - Interleave enabled?
+          - config
+          - 
+    
+        * - length
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LENGTH_RBV``
+          - Waveform length
+          - config
+          - 
+    
+        * - lo_thresh
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LO_THRESH_RBV``
+          - Low threshold, in Volts
+          - config
+          - 
+    
+        * - lo_thresh_raw
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LO_THRESH_RAW_RBV``
+          - Low threshold, raw
+          - config
+          - 
+    
+        * - prescale
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PRESCALE_RBV``
+          - Trigger prescale divider
+          - config
+          - 
+    
+        * - rows_after
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ROWS_AFTER_RBV``
+          - 
+          - config
+          - 
+    
+        * - rows_before
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ROWS_BEFORE_RBV``
+          - 
+          - config
+          - 
+    
+        * - sparse_en
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SPARSE_EN_RBV``
+          - Enable sparsified mode
+          - config
+          - 
+    
+        * - clear_config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CLEAR_CONFIG``
+          - Clear the current configuration
+          - config
+          - 
+    
+        * - out0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OUT0``
+          - Full output zero
+          - normal
+          - 
+    
+        * - out1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OUT1``
+          - Full output one
+          - normal
+          - 
+    
+        * - rawdata0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RAWDATA0``
+          - Raw output zero
+          - normal
+          - 
+    
+        * - rawdata1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RAWDATA1``
+          - Raw output one
+          - normal
+          - 
+    
+        * - sparse0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SPARSE0``
+          - Sparsified output zero
+          - normal
+          - 
+    
+        * - sparse1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SPARSE1``
+          - Sparsified output one
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

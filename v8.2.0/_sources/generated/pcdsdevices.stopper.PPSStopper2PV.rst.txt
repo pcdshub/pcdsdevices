@@ -1,0 +1,88 @@
+﻿pcdsdevices.stopper.PPSStopper2PV
+=================================
+
+.. currentmodule:: pcdsdevices.stopper
+
+.. autoclass:: PPSStopper2PV
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
+    
+        * - in_signal (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{in_suffix}``
+          - Tells us if the stopper is IN or NOT_IN
+          - hinted
+          - 
+    
+        * - out_signal (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{out_suffix}``
+          - Tells us if the stopper is OUT or NOT_OUT
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: subscriptions
+    
+    
