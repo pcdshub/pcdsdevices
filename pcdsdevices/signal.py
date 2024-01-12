@@ -769,7 +769,8 @@ class MultiDerivedSignal(AggregateSignal):
                 f"{type(to_write).__name__}.  Please contact your POC to get "
                 f"this issue fixed."
             )
-        return utils.set_many(to_write, owner=self)
+        return utils.set_many(to_write, owner=self,
+                              timeout=timeout, settle_time=settle_time)
 
 
 class MultiDerivedSignalRO(SignalRO, MultiDerivedSignal):
