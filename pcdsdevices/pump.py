@@ -229,6 +229,7 @@ class Ebara_EV_A03_1(PROPLC):
     remote = Cpt(EpicsSignalWithRBV, ':REMOTE', kind='omitted')
     alarm = Cpt(EpicsSignalRO, ':ALARM_OK_RBV', kind='normal')
     run_di = Cpt(EpicsSignalRO, ':RUN_DI_RBV', kind='omitted')
+    reset_di = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='omitted')
 
 
 class AgilentSerial(Device):
