@@ -773,6 +773,41 @@ class CCMEnergyWithVernier(CCMEnergy):
         return self.PseudoPosition(energy=energy)
 
 
+class CCMEnergyWithACRStatus(CCMEnergyWithVernier):
+    """
+    CCM energy motor and ACR beam energy request with status.
+    Note that in this cae vernier indicates any ways that ACR will act on the
+    photon energy request. This includes the Vernier, but can also lead to
+    motion of the undulators or the K.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
+    hutch : str, optional
+        The hutch we're in. This informs us as to which vernier
+        PVs to write to. If omitted, we can guess this from the
+        prefix.
+    acr_status_sufix : str
+        Prefix to the SIOC PV that ACR uses to report the move status.
+        For HXR this usually is 'AO805'.
+    """
+    vernier = FCpt(BeamEnergyRequest, '{hutch}',
+                   acr_status_suffix='AO805',
+                   kind='normal',
+                   doc='Requests ACR to move the energy.')
+
+    def __init__(
+        self,
+        prefix: str,
+        hutch: typing.Optional[str] = None,
+        acr_status_suffix='AO805',
+        **kwargs
+    ):
+        self.acr_status_suffix = acr_status_suffix
+        super().__init__(prefix, **kwargs)
+
+
 class CCMX(SyncAxis):
     """
     Combined motion of the CCM X motors.
@@ -903,9 +938,18 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
     energy_with_vernier = Cpt(
         CCMEnergyWithVernier, '', kind='normal',
         doc=(
-            'PsuedoPositioner that moves the alio in '
+            'PseudoPositioner that moves the alio in '
             'terms of the calculated CCM energy while '
             'also requesting a vernier move.'
+        ),
+    )
+    energy_with_acr_status = Cpt(
+        CCMEnergyWithACRStatus, '', kind='normal',
+        doc=(
+            'PseudoPositioner that moves the alio in '
+            'terms of the calculated CCM energy while '
+            'also requesting an energy change to ACR. '
+            'This will wait on ACR to complete the move.'
         ),
     )
 
