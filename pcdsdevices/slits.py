@@ -29,12 +29,13 @@ from ophyd.status import wait as status_wait
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
+from .digital_signals import J120K
 from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset, PCDSMotorBase
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin, MvInterface)
 from .pmps import TwinCATStatePMPS
 from .sensors import RTD, TwinCATTempSensor
-from .signal import NotImplementedSignal, PytmcSignal
+from .signal import PytmcSignal
 from .sim import FastMotor
 from .utils import get_status_float, get_status_value, schedule_task
 from .variety import set_metadata
@@ -622,7 +623,8 @@ class PowerSlits(BeckhoffSlits):
     """
 
     rtds = DDCpt(_rtd_fields(RTD, 'rtd', range(1, 9)))
-    fsw = Cpt(NotImplementedSignal, ':FSW', kind='normal')
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')
 
 
 class ExitSlitTarget(TwinCATStatePMPS):

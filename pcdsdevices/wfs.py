@@ -2,6 +2,7 @@ from ophyd import Component as Cpt
 
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
+from .digital_signals import J120K
 from .epics_motor import BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathInOutCptMixin
 from .pmps import TwinCATStatePMPS
@@ -43,3 +44,13 @@ class WaveFrontSensorTarget(BaseInterface, GroupDevice,
                         doc='First thermocouple.')
     thermocouple2 = Cpt(TwinCATTempSensor, ':STC:02', kind='normal',
                         doc='Second thermocouple.')
+
+
+class WaveFrontSensorTargetCool(WaveFrontSensorTarget):
+    """
+    An array of targets used to determine the beam's wavefront.
+
+    This array has a cooling indication switch.
+    """
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')

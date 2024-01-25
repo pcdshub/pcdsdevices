@@ -1,6 +1,55 @@
 Release History
 ###############
 
+
+v8.2.0 (2023-12-19)
+===================
+
+API Breaks
+----------
+- Moved `K2700` and `IM3L0_K2700` to `keithley` submodule. This is not expected to impact any known user code.
+
+Features
+--------
+- Adds attenuator RTD temperatures to sp1k4 (`TMOSpectrometer`), for display in GUI.
+- pcdsdevices now has a `digital_signals` module for simple digital io.
+- Added `PVPositionerNoInterrupt`, a pv positioner base class whose moves
+  cannot be interrupted (and will loudly complain about any such attempts).
+
+Device Updates
+--------------
+- added `J120K` to `SxrTestAbsorber`, `XPIM`, `IM2K0`, `PowerSlits`
+- Restructured `Qadc134` with new `Qadc134Common` and `QadcLcls1Timing` parent
+  classes.
+
+New Devices
+-----------
+- `PPMCoolSwitch` ppms with cooling switch not a meter.
+- `WaveFrontSensorTargetCool` WaveFrontSensors with a cooling switch.
+- `J120K` a device class for a cooling switch.
+- Added `K6514`, `GMD` (previously unimplemented), `GMDPreAmp`, and `SXRGasAtt`, taken from
+  ``/cds/group/pcds/pyps/apps/hutch-python/tmo/tmo/tmo_beamline_control.py`` with some modifications
+- `Qadc134Lcls2`: A class for LCLS-II timing versions of the FMC134
+- New `TprTrigger` and `TprMotor` device classes in `tpr` submodule,
+  analogous to `Trigger` and `EvrMotor` from `evr` submodule
+
+Bugfixes
+--------
+- LCLSI attenuator classes (generated from the `Attenuator` factory function)
+  will now raise a much clearer error for when they cannot interrupt a
+  previous move, without trying (and failing) to interrupt the previous move.
+- Fix an issue where `BeckhoffAxis` typhos screens would overreport
+  known false alarm errors.
+
+Contributors
+------------
+- KaushikMalapati
+- nrwslac
+- slactjohnson
+- tongju12
+- zllentz
+
+
 v8.1.0 (2023-10-16)
 ===================
 

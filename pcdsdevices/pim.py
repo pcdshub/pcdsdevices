@@ -13,16 +13,18 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.ophydobj import OphydObject
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.signal import EpicsSignal
 
 from .analog_signals import FDQ
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
                                      PCDSAreaDetectorTyphosTrigger)
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
+from .digital_signals import J120K
 from .epics_motor import IMS, BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutCptMixin
+from .keithley import IM3L0_K2700
 from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
@@ -540,6 +542,8 @@ class XPIM(LCLS2ImagerBase):
     filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config',
                        doc='Optical filter wheel in front of the camera '
                            'to prevent saturation.')
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')
 
     set_metadata(zoom_lock, dict(variety='command-enum'))
     set_metadata(focus_lock, dict(variety='command-enum'))
@@ -556,41 +560,9 @@ class IM2K0(LCLS2ImagerBase):
     # XPIM illuminator
     led = Cpt(XPIMLED, ':CIL', kind='config',
               doc='LED for viewing the reticle.')
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')
     # Nothing else! No power meter, no zoom/focus, no filter wheel...
-
-
-class K2700(BaseInterface, Device):
-    """
-    Keithley 2700 digital multimeter.
-
-    Currently supports reading voltage and current, direct and
-    alternating, but can be extended to measure other quantities
-    (resistance, temperature), have configurable range and integration
-    time, and allow for remote control of a K2700.
-    """
-    idn = Cpt(EpicsSignalRO, ":Identity", kind="normal",
-              doc='Identity (name) of this device')
-    reading = Cpt(EpicsSignalRO, ":Reading", kind="normal",
-                  doc='Trigger and return a new measurement')
-    dcv_range = Cpt(EpicsSignalRO, ":GetDCV", kind="normal",
-                    doc='DC voltage range')
-    acv_range = Cpt(EpicsSignalRO, ":GetACV", kind="normal",
-                    doc='AC voltage range')
-    dci_range = Cpt(EpicsSignalRO, ":GetDCI", kind="normal",
-                    doc='DC current range')
-    aci_range = Cpt(EpicsSignalRO, ":GetACI", kind="normal",
-                    doc='AC current range')
-
-
-class IM3L0_K2700(K2700):
-    """
-    One-off subclass of K2700 to use a pydm screen specific to this device.
-
-    Identical to K2700 class, but uses a pydm screen for this particular device
-    in place of the default detailed screen. To be used in conjunction with
-    IM3L0 as this Keithley is added to that imager for detailed power readouts.
-    """
-    pass
 
 
 @reorder_components(
@@ -613,3 +585,11 @@ class PPMCOOL(PPM):
     """
     flow_meter = Cpt(FDQ, '', kind='normal',
                      doc='Device that measures PCW Flow Rate.')
+
+
+class PPMCoolSwitch(PPM):
+    """
+    L2SI's Power and Profile Monitor design with cooling switch.
+    """
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')

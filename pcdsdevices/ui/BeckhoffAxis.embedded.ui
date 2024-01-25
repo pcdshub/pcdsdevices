@@ -79,19 +79,22 @@
      <property name="show_expert_button" stdset="0">
       <bool>true</bool>
      </property>
+     <property name="alarmKindLevel" stdset="0">
+      <enum>TyphosPositionerWidget::HINTED</enum>
+     </property>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TyphosPositionerWidget</class>
-   <extends>QWidget</extends>
+   <class>TyphosPositionerRowWidget</class>
+   <extends>TyphosPositionerWidget</extends>
    <header>typhos.positioner</header>
   </customwidget>
   <customwidget>
-   <class>TyphosPositionerRowWidget</class>
-   <extends>TyphosPositionerWidget</extends>
+   <class>TyphosPositionerWidget</class>
+   <extends>QWidget</extends>
    <header>typhos.positioner</header>
   </customwidget>
  </customwidgets>
