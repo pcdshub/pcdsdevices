@@ -322,7 +322,7 @@
               <string/>
              </property>
              <property name="filename" stdset="0">
-              <string>/reg/g/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}.ui</string>
+              <string>/cds/group/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}.ui</string>
              </property>
             </widget>
            </item>
