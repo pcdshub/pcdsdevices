@@ -1305,7 +1305,7 @@ class BeckhoffAxisEPSCustom(BeckhoffAxis):
     a PLC and needs a custom screen to display EPS information
 
     EPS screens are found in
-    reg/g/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}
+    /cds/group/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}
 
     """
     pass
