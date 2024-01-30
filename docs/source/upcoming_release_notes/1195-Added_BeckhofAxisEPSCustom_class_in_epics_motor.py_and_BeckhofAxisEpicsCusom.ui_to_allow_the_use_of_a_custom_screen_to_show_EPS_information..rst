@@ -29,4 +29,4 @@ Maintenance
 
 Contributors
 ------------
-- Josue Zamudio Estrada
+- jozamudi
