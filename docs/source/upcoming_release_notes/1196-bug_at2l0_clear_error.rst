@@ -24,6 +24,7 @@ Bugfixes
 Maintenance
 -----------
 - Add missing regression tests for at2l0.
+- Update versions of pre-commit checks to latest and fix new flake8 errors.
 
 Contributors
 ------------
