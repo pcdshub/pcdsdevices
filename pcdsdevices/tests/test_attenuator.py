@@ -241,10 +241,14 @@ def test_at2l0_error_summary(at2l0):
 
 def test_at2l0_error_bitmask(at2l0):
     assert at2l0.error_summary_bitmask.get() == 0
+    # blade_01 intentionally ignored (mirror)
     at2l0.blade_01.motor.plc.err_code.sim_put(1)
-    assert at2l0.error_summary_bitmask.get() == 1
-    at2l0.blade_04.motor.plc.err_code.sim_put(1)
-    assert at2l0.error_summary_bitmask.get() == 0b1001
+    assert at2l0.error_summary_bitmask.get() == 0
+    at2l0.blade_19.motor.plc.err_code.sim_put(1)
+    # bitmask intentionally reversed (better for ui)
+    assert at2l0.error_summary_bitmask.get() == 0b1
+    at2l0.blade_17.motor.plc.err_code.sim_put(1)
+    assert at2l0.error_summary_bitmask.get() == 0b101
 
 
 def test_at2l0_clear_errors(at2l0):
