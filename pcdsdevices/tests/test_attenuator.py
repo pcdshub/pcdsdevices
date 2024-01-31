@@ -252,14 +252,13 @@ def test_at2l0_error_bitmask(at2l0):
 
 
 def test_at2l0_clear_errors(at2l0):
-    samples = (
-        at2l0.blade_01.motor.plc.cmd_err_reset,
-        at2l0.blade_05.state.reset_cmd,
-        at2l0.blade_09.motor.plc.cmd_err_reset,
-        at2l0.blade_19.state.reset_cmd,
-    )
-    for sig in samples:
+    signals = []
+    for blade_num in range(1, 20):
+        blade_obj = getattr(at2l0, f"blade_{blade_num:02}")
+        signals.append(blade_obj.motor.plc.cmd_err_reset)
+        signals.append(blade_obj.state.reset_cmd)
+    for sig in signals:
         assert not sig.get()
     at2l0.clear_errors()
-    for sig in samples:
+    for sig in signals:
         assert sig.get()
