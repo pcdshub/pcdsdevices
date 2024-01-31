@@ -125,7 +125,7 @@ def flatten_list(lofl):
     """
     new_list = []
     for item in lofl:
-        if type(item) == list:
+        if isinstance(item, list):
             rl = flatten_list(item)
             new_list.extend(rl)
         else:

@@ -55,11 +55,11 @@ def test_acromag_factory():
     ao_prefix = 'TST:PREFIX:ao1'
     ai_res = AcromagChannel(ai_prefix, channel='7')
     ao_res = AcromagChannel(ao_prefix, channel='7')
-    assert type(ai_res) == EpicsSignalRO
-    assert type(ao_res) == EpicsSignal
+    assert isinstance(ai_res, EpicsSignalRO)
+    assert isinstance(ao_res, EpicsSignal)
     signal_class_res = AcromagChannel(ao_prefix, channel='7',
                                       signal_class=EpicsSignalRO)
-    assert type(signal_class_res) == EpicsSignalRO
+    assert isinstance(signal_class_res, EpicsSignalRO)
 
 
 @pytest.fixture(scope='function')
