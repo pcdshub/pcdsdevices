@@ -1484,7 +1484,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
     def _reset_errors(
         self, mds: MultiDerivedSignal, value: OphydDataType
     ) -> SignalToValue:
-        return {sig: 1 for sig in self.parent.reset_errors.signals}
+        return {sig: 1 for sig in self.reset_errors.signals}
 
     reset_errors = Cpt(
         MultiDerivedSignal,
