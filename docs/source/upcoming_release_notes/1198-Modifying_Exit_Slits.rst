@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- Piezo pitch motors for the crystals were added
+- Piezo pitch motors for the `ExitSlits` crystals were added
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- ghalym
