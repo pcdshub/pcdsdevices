@@ -1,3 +1,6 @@
+"""
+Module for all device related to Photon Collimators.
+"""
 from ophyd import Component as Cpt
 from ophyd import Device
 

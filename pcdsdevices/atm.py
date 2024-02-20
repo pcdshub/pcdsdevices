@@ -101,3 +101,10 @@ class TM2K2(ArrivalTimeMonitor):
     """
     target = Cpt(TM2K2Target, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
+
+
+class MFXATM(ArrivalTimeMonitor):
+    """
+    An ATM in MFX that has no cooling.
+    """
+    flow_meter = None
