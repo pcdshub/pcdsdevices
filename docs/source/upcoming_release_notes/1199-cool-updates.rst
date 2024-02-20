@@ -22,6 +22,7 @@ New Devices
 -----------
 - add class `PhotonCollimator` to readout `flow_switch`
 - add class `WaveFrontSensorTargetPF2K2` to readout `flow_switch`
+- add class `MFXATM` in `atm.py`
 
 Bugfixes
 --------
