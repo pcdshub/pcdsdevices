@@ -13,9 +13,9 @@ Features
 
 Device Updates
 --------------
-- Added `flow_meter` to `ArrivalTimeMonitor` in `pcdsdevices.atm`
-- Added `flow_meter` to `AttenuatorSXR_Ladder` in `pcdsdevices.attenuator`
-- Added `flow_meter` to `AttenuatorSXR_LadderTwoBladeLBD` in `pcdsdevices.attenuator`
+- Added ``flow_meter`` to `ArrivalTimeMonitor` in `pcdsdevices.atm`
+- Added ``flow_meter`` to `AttenuatorSXR_Ladder` in `pcdsdevices.attenuator`
+- Added ``flow_meter`` to `AttenuatorSXR_LadderTwoBladeLBD` in `pcdsdevices.attenuator`
 - Added `WaveFrontSensorTargetCool` and `WaveFrontSensorTargetFDQ` to `pcdsdevices.device_types`
 - Added flow sensor components to `FFMirror` in `pcdsdevices.mirror`
 - Added piezo pitch motors to the `ExitSlits` in `pcdsdevices.slits`
@@ -24,7 +24,7 @@ New Devices
 -----------
 - Added `PhotonCollimator` to readout `flow_switch` in new module `pcdsdevices.pc`
 - Added `WaveFrontSensorTargetFDQ` to read out the `flow_meter` in `pcdsdevices.wfs`
-- Added `MFXATM` to `pcdsdevices.atm` for the unique MFX ATM.
+- Added `MFXATM` to `pcdsdevices.atm` for the unique atm unit in the MFX hutch.
 
 Bugfixes
 --------
