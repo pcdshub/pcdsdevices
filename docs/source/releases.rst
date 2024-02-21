@@ -2,6 +2,48 @@ Release History
 ###############
 
 
+v8.3.0 (2024-02-21)
+===================
+
+Features
+--------
+- Added BeckhofAxisEPSCustom class in epics_motor.py and
+  BeckhofAxisEpicsCusom.ui to allow the use of a custom screen to show EPS
+  information.
+
+Device Updates
+--------------
+- in `atm.py` add `flow_meter` to `ArrivalTimeMonitor`
+- in `attenuator.py` add `flow_meter` to `AttenuatorSXR_Ladder`
+- in `attenuator.py` add `flow_meter` to `AttenuatorSXR_LadderTwoBladeLBD`
+- in `device_types.py` add `WaveFrontSensorTargetCool` , `WaveFrontSensorTargetFDQ`
+- in `mirror.py` add flow sensor variable to `FFMirror`
+- Piezo pitch motors for the `ExitSlits` crystals were added
+
+New Devices
+-----------
+- add class `PhotonCollimator` to readout `flow_switch` in new module `pc.py`
+- add class `WaveFrontSensorTargetFDQ` to read out `flow_meter`
+- add class `MFXATM` in `atm.py`
+
+Bugfixes
+--------
+- Fix an issue where at2l0.clear_errors would not run properly.
+
+Maintenance
+-----------
+- Add missing regression tests for at2l0.
+- Update versions of pre-commit checks to latest and fix new flake8 errors.
+
+Contributors
+------------
+- ghalym
+- jozamudi
+- nrwslac
+- zllentz
+
+
+
 v8.2.0 (2023-12-19)
 ===================
 
