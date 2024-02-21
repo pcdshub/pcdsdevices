@@ -46,4 +46,4 @@ from .spectrometer import Gen1VonHamos4Crystal, Kmono, VonHamos4Crystal
 from .timetool import Timetool, TimetoolWithNav
 from .valve import GateValve, Stopper
 from .wfs import (WaveFrontSensorTarget, WaveFrontSensorTargetCool,
-                  WaveFrontSensorTargetPF2K2)
+                  WaveFrontSensorTargetFDQ)

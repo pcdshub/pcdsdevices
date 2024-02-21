@@ -29,7 +29,6 @@ class WaveFrontSensorTarget(BaseInterface, GroupDevice,
     on a downstream imager (PPM or XTES Imager) that can be used to determine
     information about the wavefront.
 
-    With a Kenyence FDQ flow meter installed.
     """
     tab_component_names = True
 
@@ -47,16 +46,16 @@ class WaveFrontSensorTarget(BaseInterface, GroupDevice,
                         doc='First thermocouple.')
     thermocouple2 = Cpt(TwinCATTempSensor, ':STC:02', kind='normal',
                         doc='Second thermocouple.')
-    flow_meter = Cpt(FDQ, '', kind='normal',
-                     doc='Device that measures PCW Flow Rate.')
 
 
-class WaveFrontSensorTargetPF2K2(WaveFrontSensorTarget):
+class WaveFrontSensorTargetFDQ(WaveFrontSensorTarget):
     """
     An array of targets used to determine the beam's wavefront.
-    Currently with no cooling.
+
+    With a Kenyence FDQ flow meter installed.
     """
-    flow_meter = None
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')
 
 
 class WaveFrontSensorTargetCool(WaveFrontSensorTarget):
@@ -65,6 +64,5 @@ class WaveFrontSensorTargetCool(WaveFrontSensorTarget):
 
     This array has a cooling indication switch.
     """
-    flow_meter = None
     flow_switch = Cpt(J120K, '', kind='normal',
                       doc='Device that indicates nominal PCW Flow Rate.')
