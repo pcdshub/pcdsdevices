@@ -1,5 +1,6 @@
 from ophyd import Component as Cpt
 
+from .analog_signals import FDQ
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .digital_signals import J120K
@@ -27,6 +28,7 @@ class WaveFrontSensorTarget(BaseInterface, GroupDevice,
     Each target is a waveplate that results in a characteristic pattern
     on a downstream imager (PPM or XTES Imager) that can be used to determine
     information about the wavefront.
+
     """
     tab_component_names = True
 
@@ -44,6 +46,16 @@ class WaveFrontSensorTarget(BaseInterface, GroupDevice,
                         doc='First thermocouple.')
     thermocouple2 = Cpt(TwinCATTempSensor, ':STC:02', kind='normal',
                         doc='Second thermocouple.')
+
+
+class WaveFrontSensorTargetFDQ(WaveFrontSensorTarget):
+    """
+    An array of targets used to determine the beam's wavefront.
+
+    With a Kenyence FDQ flow meter installed.
+    """
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')
 
 
 class WaveFrontSensorTargetCool(WaveFrontSensorTarget):
