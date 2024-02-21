@@ -7,7 +7,7 @@ API Breaks
 
 Features
 --------
--
+- N/A
 
 Device Updates
 --------------
@@ -16,7 +16,6 @@ Device Updates
 - in `attenuator.py` add `flow_meter` to `AttenuatorSXR_LadderTwoBladeLBD`
 - in `device_types.py` add `WaveFrontSensorTargetCool` , `WaveFrontSensorTargetFDQ`
 - in `mirror.py` add flow sensor variable to `FFMirror`
-- in `wfs.py` add `flow_meter` to `WaveFrontSensorTarget`
 
 New Devices
 -----------
