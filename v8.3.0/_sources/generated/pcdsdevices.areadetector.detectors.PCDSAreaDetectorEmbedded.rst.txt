@@ -1,0 +1,114 @@
+﻿pcdsdevices.areadetector.detectors.PCDSAreaDetectorEmbedded
+===========================================================
+
+.. currentmodule:: pcdsdevices.areadetector.detectors
+
+.. autoclass:: PCDSAreaDetectorEmbedded
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - configuration_names
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase`
+    
+        * - cam (ADComponent)
+          - :class:`~ophyd.areadetector.cam.CamBase`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase`
+    
+        * - image2
+          - :class:`~pcdsdevices.areadetector.plugins.ImagePlugin`
+          - ``IMAGE2:``
+          - Image plugin used for the camera viewer
+          - normal
+          - 
+    
+        * - stats2
+          - :class:`~pcdsdevices.areadetector.plugins.StatsPlugin`
+          - ``Stats2:``
+          - Stats plugin used for alignments
+          - normal
+          - 
+    
+        * - hdf51
+          - :class:`~pcdsdevices.areadetector.plugins.HDF5Plugin`
+          - ``HDF51:``
+          - HDF5 plugin used to create HDF5 files
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: collect_asset_docs
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: dispatch
+    .. automethod:: find_signal
+    .. automethod:: generate_datum
+    .. automethod:: get
+    .. automethod:: get_asyn_digraph
+    .. automethod:: get_asyn_port_dictionary
+    .. automethod:: get_full_area_detector
+    .. automethod:: get_plugin_by_asyn_port
+    .. automethod:: get_plugin_graph_edges
+    .. automethod:: make_data_key
+    .. automethod:: missing_plugins
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: validate_asyn_ports
+    .. automethod:: visualize_asyn_digraph
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: ad_root
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

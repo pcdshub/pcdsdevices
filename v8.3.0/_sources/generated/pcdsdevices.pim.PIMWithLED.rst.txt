@@ -1,0 +1,113 @@
+﻿pcdsdevices.pim.PIMWithLED
+==========================
+
+.. currentmodule:: pcdsdevices.pim
+
+.. autoclass:: PIMWithLED
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pim.PIM`
+    
+        * - state
+          - :class:`~pcdsdevices.pim.PIMY`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.PIM`
+    
+        * - zoom (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_zoom}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.PIM`
+    
+        * - detector (FCpt)
+          - :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorEmbedded`
+          - ``{self._prefix_det}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.PIM`
+    
+        * - led (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self._prefix_led}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: infer_prefix
+    .. automethod:: insert
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: prefix_start
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

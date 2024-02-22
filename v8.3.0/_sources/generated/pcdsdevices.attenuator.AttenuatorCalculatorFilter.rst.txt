@@ -1,0 +1,120 @@
+﻿pcdsdevices.attenuator.AttenuatorCalculatorFilter
+=================================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: AttenuatorCalculatorFilter
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - material
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Material``
+          - The material formula (e.g., Si, C)
+          - hinted
+          - 
+    
+        * - thickness
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Thickness``
+          - Thickness in micron
+          - hinted
+          - 
+    
+        * - active
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Active``
+          - Should the filter be used in calculations?
+          - normal
+          - 
+    
+        * - is_stuck
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``IsStuck``
+          - Is the filter stuck / unusable?
+          - hinted
+          - 
+    
+        * - closest_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ClosestEnergy_RBV``
+          - Closest tabulated energy available to the requested one
+          - config
+          - 
+    
+        * - transmission
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Transmission_RBV``
+          - Normalized transmission at the reported energy
+          - normal
+          - 
+    
+        * - transmission_3omega
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Transmission3Omega_RBV``
+          - Normalized transmission at 3 * the reported energy
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

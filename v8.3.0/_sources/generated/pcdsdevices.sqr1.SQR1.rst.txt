@@ -1,0 +1,130 @@
+﻿pcdsdevices.sqr1.SQR1
+=====================
+
+.. currentmodule:: pcdsdevices.sqr1
+
+.. autoclass:: SQR1
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~pcdsdevices.sqr1.SQR1Axis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - y
+          - :class:`~pcdsdevices.sqr1.SQR1Axis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - z
+          - :class:`~pcdsdevices.sqr1.SQR1Axis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - rx
+          - :class:`~pcdsdevices.sqr1.SQR1Axis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ry
+          - :class:`~pcdsdevices.sqr1.SQR1Axis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - rz
+          - :class:`~pcdsdevices.sqr1.SQR1Axis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - actuate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:MOV``
+          - 
+          - normal
+          - 
+    
+        * - stop_signal
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:KILL``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: multi_axis_move
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: sync_setpoints
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    
+    

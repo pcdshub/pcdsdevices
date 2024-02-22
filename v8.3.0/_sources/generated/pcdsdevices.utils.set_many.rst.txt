@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.set\_many
+===========================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: set_many

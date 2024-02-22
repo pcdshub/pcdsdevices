@@ -1,0 +1,282 @@
+﻿pcdsdevices.lasers.rfof.ItechRfofErrors
+=======================================
+
+.. currentmodule:: pcdsdevices.lasers.rfof
+
+.. autoclass:: ItechRfofErrors
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - eth_con_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ETH_CON_ERR``
+          - Tx/Rx Ethernet connection failure
+          - normal
+          - 
+    
+        * - pwr_supply_v_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PWR_SUPPLY_V_ERR``
+          - Power supply voltages are out of range
+          - normal
+          - 
+    
+        * - env_cond_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ENV_COND_ERR``
+          - Environmental conditions are out of range
+          - normal
+          - 
+    
+        * - int_mod_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:INT_MOD_ERR``
+          - Internal modules temperatures are out of range
+          - normal
+          - 
+    
+        * - rf_pwr_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RF_PWR_ERR``
+          - RF power is out of range
+          - normal
+          - 
+    
+        * - opt_pwr_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPT_PWR_ERR``
+          - Optical power is too low
+          - normal
+          - 
+    
+        * - las_pwr_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:LAS_PWR_ERR``
+          - Laser is switched off
+          - normal
+          - 
+    
+        * - phase_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PHASE_ERR``
+          - Phase loops are not locked
+          - normal
+          - 
+    
+        * - fan_spd_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FAN_SPD_ERR``
+          - Fan revolutions are too low
+          - normal
+          - 
+    
+        * - pwr_supply_i_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PWR_SUPPLY_I_ERR``
+          - Power supply currents are too high
+          - normal
+          - 
+    
+        * - tx_eth_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_ETH_SYNC_ERR``
+          - Tx: Ethernet sync between units lost for more than 10 min
+          - normal
+          - 
+    
+        * - rx_eth_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RX_ETH_SYNC_ERR``
+          - Rx: Ethernet sync between units lost for more than 10 min
+          - normal
+          - 
+    
+        * - tx_input_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_RF_INPUT_ERR``
+          - RF input is out of range for more than 60s
+          - normal
+          - 
+    
+        * - rx_output_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RX_RF_OUTPUT_ERR``
+          - RF output is out of range for more than 10 min
+          - normal
+          - 
+    
+        * - tx_temp_sens_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_TEMP_SENS_ERR``
+          - Tx: Temperature sensors are not working properly; TEC protection activated
+          - normal
+          - 
+    
+        * - rx_temp_sens_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RX_TEMP_SENS_ERR``
+          - Rx: Temperature sensors are not working properly; TEC protection activated
+          - normal
+          - 
+    
+        * - tx_rf_idn_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_RF_IDN_ERR``
+          - Tx: RF control identification failed
+          - normal
+          - 
+    
+        * - tx_rf_sens_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_RF_SENS_ERR``
+          - Tx: RF control sensor failure
+          - normal
+          - 
+    
+        * - tx_arm_idn_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_ARM_IDN_ERR``
+          - Tx: Arm control identification failed
+          - normal
+          - 
+    
+        * - tx_arm_sens_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_ARM_SENS_ERR``
+          - Tx: Arm control sensor failure
+          - normal
+          - 
+    
+        * - unlock_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:UNLOCK_ERR``
+          - System is unlocked for more than 15 min
+          - normal
+          - 
+    
+        * - rx_rf_idn_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RX_RF_IDN_ERR``
+          - Rx: RF control identification failed
+          - normal
+          - 
+    
+        * - rx_rf_sens_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RX_RF_SENS_ERR``
+          - Rx: RF control sensor failure
+          - normal
+          - 
+    
+        * - rx_arm_idn_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RX_ARM_IDN_ERR``
+          - Rx: Arm control identification failed
+          - normal
+          - 
+    
+        * - rx_arm_sens_err
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RX_ARM_SENS_ERR``
+          - Rx: Arm control sensor failure
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
