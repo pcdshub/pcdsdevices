@@ -2,6 +2,47 @@ Release History
 ###############
 
 
+v8.3.0 (2024-02-21)
+===================
+
+Features
+--------
+- Enabled the use of custom EPS screens for Beckhoff axes via the
+  `BeckhoffAxisEPSCustom` class in `pcdsdevices.epics_motor` and
+  the accompanying ui template file.
+
+Device Updates
+--------------
+- Added ``flow_meter`` to `ArrivalTimeMonitor` in `pcdsdevices.atm`
+- Added ``flow_meter`` to `AttenuatorSXR_Ladder` in `pcdsdevices.attenuator`
+- Added ``flow_meter`` to `AttenuatorSXR_LadderTwoBladeLBD` in `pcdsdevices.attenuator`
+- Added `WaveFrontSensorTargetCool` and `WaveFrontSensorTargetFDQ` to `pcdsdevices.device_types`
+- Added flow sensor components to `FFMirror` in `pcdsdevices.mirror`
+- Added piezo pitch motors to the `ExitSlits` in `pcdsdevices.slits`
+
+New Devices
+-----------
+- Added `PhotonCollimator` to readout `flow_switch` in new module `pcdsdevices.pc`
+- Added `WaveFrontSensorTargetFDQ` to read out the `flow_meter` in `pcdsdevices.wfs`
+- Added `MFXATM` to `pcdsdevices.atm` for the unique atm unit in the MFX hutch.
+
+Bugfixes
+--------
+- Fixed an issue where `AT2L0.clear_errors` would not run properly.
+
+Maintenance
+-----------
+- Added missing regression tests for `AT2L0`.
+- Updated versions of pre-commit checks to latest and fix new flake8 errors.
+
+Contributors
+------------
+- ghalym
+- jozamudi
+- nrwslac
+- zllentz
+
+
 v8.2.0 (2023-12-19)
 ===================
 
