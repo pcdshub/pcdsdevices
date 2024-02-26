@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>556</width>
-    <height>589</height>
+    <width>471</width>
+    <height>585</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -56,9 +56,6 @@
      <property name="error_message_attribute" stdset="0">
       <string>plc.status</string>
      </property>
-     <property name="alarmKindLevel" stdset="0">
-      <enum>TyphosPositionerWidget::HINTED</enum>
-     </property>
     </widget>
    </item>
    <item>
@@ -91,7 +88,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -138,7 +135,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>528</width>
+            <width>443</width>
             <height>215</height>
            </rect>
           </property>
@@ -236,7 +233,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>528</width>
+            <width>443</width>
             <height>215</height>
            </rect>
           </property>
@@ -299,24 +296,52 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="EPS_tab">
+      <attribute name="title">
+       <string>EPS</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QScrollArea" name="scrollArea">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>429</width>
+            <height>201</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="filename" stdset="0">
+              <string>/cds/group/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}.ui</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>PyDMEmbeddedDisplay</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.embedded_display</header>
+  </customwidget>
   <customwidget>
    <class>TyphosDisplayTitle</class>
    <extends>QFrame</extends>

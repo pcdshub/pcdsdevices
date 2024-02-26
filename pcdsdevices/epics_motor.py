@@ -1299,6 +1299,18 @@ class BeckhoffAxisEPS(BeckhoffAxis):
               doc='PLC error handling, aux functions, and EPS.')
 
 
+class BeckhoffAxisEPSCustom(BeckhoffAxis):
+    """
+    A beckhoff axis where custom EPS Logic has been implemented in
+    a PLC and needs a custom screen to display EPS information
+
+    EPS screens are found in
+    /cds/group/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}
+
+    """
+    pass
+
+
 class BeckhoffAxisPLC_Pre140(BeckhoffAxisPLC):
     """
     Disable some newly introduced signals.

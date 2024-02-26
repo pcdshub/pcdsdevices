@@ -1,4 +1,6 @@
-from typing import Optional
+from __future__ import annotations
+
+from typing import Callable, Optional
 
 import numpy as np
 from ophyd.device import Component as Cpt
@@ -160,3 +162,112 @@ class PVPositionerDone(FltMvInterface, PVPositioner):
     def _toggle_done(self):
         self.done.put(0, force=True)
         self.done.put(1, force=True)
+
+
+class PVPositionerNoInterrupt(PVPositioner):
+    """
+    A PV positioner whose moves cannot be interrupted.
+
+    If we try to start a new move before the previous move completes,
+    instead we will get a clear error advising us to wait.
+
+    Parameters
+    ----------
+    prefix : str, optional
+        The device prefix used for all sub-positioners. This is optional as it
+        may be desirable to specify full PV names for PVPositioners.
+    limits : 2-element sequence, optional
+        (low_limit, high_limit)
+    name : str
+        The device name
+    egu : str, optional
+        The engineering units (EGU) for the position
+    settle_time : float, optional
+        The amount of time to wait after moves to report status completion
+    timeout : float, optional
+        The default timeout to use for motion requests, in seconds.
+
+    Attributes
+    ----------
+    setpoint : Signal
+        The setpoint (request) signal
+    readback : Signal or None
+        The readback PV (e.g., encoder position PV)
+    actuate : Signal or None
+        The actuation PV to set when movement is requested
+    actuate_value : any, optional
+        The actuation value, sent to the actuate signal when motion is
+        requested
+    stop_signal : Signal or None
+        The stop PV to set when motion should be stopped
+    stop_value : any, optional
+        The value sent to stop_signal when a stop is requested
+    done : Signal
+        A readback value indicating whether motion is finished
+    done_value : any, optional
+        The value that the done pv should be when motion has completed
+    put_complete : bool, optional
+        If set, the specified PV should allow for asynchronous put completion
+        to indicate motion has finished.  If ``actuate`` is specified, it will be
+        used for put completion.  Otherwise, the ``setpoint`` will be used.  See
+        the `-c` option from ``caput`` for more information.
+    """
+    def __init__(self, *args, **kwargs):
+        if self.__class__ is PVPositionerNoInterrupt:
+            raise TypeError(
+                "PVPositionerNoInterrupt must be subclassed with the correct "
+                "signals set in the class definition."
+            )
+        super().__init__(*args, **kwargs)
+
+    def move(
+        self,
+        position: float,
+        wait: bool = True,
+        timeout: float | None = None,
+        moved_cb: Callable[[PVPositionerNoInterrupt], None] | None = None,
+    ):
+        """
+        Move to a specified position, optionally waiting for motion to
+        complete. Unlike the standard move, this will fail with a clear
+        error message when a move is already in progress.
+
+        Parameters
+        ----------
+        position : float
+            Position to move to
+        moved_cb : callable
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance.
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used.
+
+        Returns
+        -------
+        status : MoveStatus
+
+        Raises
+        ------
+        TimeoutError
+            When motion takes longer than ``timeout``
+        ValueError
+            On invalid positions
+        RuntimeError
+            If motion fails other than timing out, including when a move is
+            attempted while another move is already in progress.
+        """
+        if self.moving:
+            try:
+                progress = f"Position = {self.position}, goal = {self.setpoint.get()}."
+            except Exception:
+                progress = ""
+            raise RuntimeError(
+                f"The {self.name} device cannot start a new move because the "
+                "previous move has not completed. This is not an "
+                "interruptable positioner. Try waiting after the previous "
+                f"move or for the move's status to complete. {progress}"
+            )
+        else:
+            return super().move(position, wait=wait, timeout=timeout, moved_cb=moved_cb)
