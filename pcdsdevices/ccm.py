@@ -722,8 +722,8 @@ class CCMEnergyWithVernier(CCMEnergy):
         PVs to write to. If omitted, we can guess this from the
         prefix.
     """
-    vernier = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
-                   doc='Requests ACR to move the Vernier.')
+    acr_energy = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
+                      doc='Requests ACR to move the Vernier.')
 
     # These are duplicate warnings with main energy motor
     _enable_warn_constants: bool = False
@@ -759,7 +759,7 @@ class CCMEnergyWithVernier(CCMEnergy):
         energy = pseudo_pos.energy
         alio = self.energy_to_alio(energy)
         vernier = energy * 1000
-        return self.RealPosition(alio=alio, vernier=vernier)
+        return self.RealPosition(alio=alio, acr_energy=vernier)
 
     def inverse(self, real_pos: namedtuple) -> namedtuple:
         """
@@ -792,23 +792,24 @@ class CCMEnergyWithACRStatus(CCMEnergyWithVernier):
         Prefix to the SIOC PV that ACR uses to report the move status.
         For HXR this usually is 'AO805'.
     """
-    vernier = FCpt(BeamEnergyRequest, '{hutch}',
-                   bunch='{bunch}',
-                   acr_status_suffix='{acr_status_suffix}',
-                   add_prefix=('suffix', 'write_pv', 'bunch', 'acr_status_suffix'),
-                   kind='normal',
-                   doc='Requests ACR to move the energy.')
+    acr_energy = FCpt(BeamEnergyRequest, '{hutch}',
+                      pv_index='{pv_index}',
+                      acr_status_suffix='{acr_status_suffix}',
+                      add_prefix=('suffix', 'write_pv', 'pv_index',
+                                  'acr_status_suffix'),
+                      kind='normal',
+                      doc='Requests ACR to move the energy.')
 
     def __init__(
         self,
         prefix: str,
         hutch: typing.Optional[str] = None,
         acr_status_suffix='AO805',
-        bunch=2,
+        pv_index=2,
         **kwargs
     ):
         self.acr_status_suffix = acr_status_suffix
-        self.bunch = bunch
+        self.pv_index = pv_index
         super().__init__(prefix, **kwargs)
 
 
@@ -931,8 +932,8 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         The prefix for the north upstream ccm y translation motor (y2).
     y_up_south_prefix : str, required keyword
         The prefix for the south upstream ccm y translation motor (y3).
-    acr_status_bunch : int
-        The bunch index for the energy request PV in the case of the acr status
+    acr_status_pv_index : int
+        The index for the energy request PV in the case of the acr status
         wait. Default: 2.
     acr_status_suffix : str
         The suffix for the ACR status energy change move. Default to 'AO805'
@@ -1013,7 +1014,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         self._out_pos = out_pos
         prefix = prefix or self.unrelated_prefixes['alio_prefix']
         self.acr_status_suffix = kwargs.get('acr_status_suffix', 'AO805')
-        self.acr_status_bunch = kwargs.get('acr_status_suffix', 2)
+        self.acr_status_pv_index = kwargs.get('acr_status_suffix', 2)
         super().__init__(prefix, **kwargs)
 
         # Aliases: defined by the scientists
