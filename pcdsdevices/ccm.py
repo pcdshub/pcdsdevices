@@ -776,7 +776,7 @@ class CCMEnergyWithVernier(CCMEnergy):
 class CCMEnergyWithACRStatus(CCMEnergyWithVernier):
     """
     CCM energy motor and ACR beam energy request with status.
-    Note that in this cae vernier indicates any ways that ACR will act on the
+    Note that in this case vernier indicates any ways that ACR will act on the
     photon energy request. This includes the Vernier, but can also lead to
     motion of the undulators or the K.
 
