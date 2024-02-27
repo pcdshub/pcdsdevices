@@ -102,6 +102,7 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
         EpicsSignal,
         '{prefix}:USER:MCC:EPHOT{line_text}:SET{bunch}',
         kind='hinted',
+        add_prefix=('suffix', 'write_pv', 'line_text', 'bunch'),
         doc=(
             'The setpoint PV that acr listens on to update the '
             'vernier or undulator PVs as appropriate.'
@@ -111,6 +112,7 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
         EpicsSignal,
         '{prefix}:USER:MCC:EPHOT{line_text}:REF{bunch}',
         kind='normal',
+        add_prefix=('suffix', 'write_pv', 'line_text', 'bunch'),
         doc=(
             'A reference PV for the photon energy at the nominal '
             'position of the vernier or undulator.'
@@ -181,6 +183,7 @@ class BeamEnergyRequestACRWait(BeamEnergyRequest, PVPositioner):
         EpicsSignal,
         'SIOC:SYS0:ML07:{acr_status_suffix}',
         kind='normal',
+        add_prefix=('suffix', 'write_pv', 'acr_status_suffix'),
         doc=(
             'PV that is 0 while the motors are moving and 1 when ACR is '
             'ready for a new request. ACR can pick which of these PVs '
