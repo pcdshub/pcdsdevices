@@ -35,6 +35,19 @@ class BeamStats(BaseInterface, Device):
         super().__init__(prefix=prefix, name=name, **kwargs)
 
 
+def re_arg(kwarg_map):
+    def decorator(func):
+        def wrapped(*args, **kwargs):
+            new_kwargs = {}
+            for k, v in kwargs.items():
+                if k in kwarg_map:
+                    print(f"DEPRECATION WARNING: keyword argument '{k}' is no longer valid. Use '{kwarg_map[k]}' instead.")
+                new_kwargs[kwarg_map.get(k, k)] = v
+            return func(*args, **new_kwargs)
+        return wrapped
+    return decorator
+
+
 class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
     """
     Positioner to request beam color changes from ACR in eV.
@@ -100,10 +113,8 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
     """
     setpoint = FCpt(
         EpicsSignal,
-        # '{prefix}:USER:MCC:EPHOT{line_text}:SET{bunch}',
         '{prefix}:USER:MCC:EPHOT{line_text}:SET{pv_index}',
         kind='hinted',
-        # add_prefix=('suffix', 'write_pv', 'line_text', 'bunch'),
         add_prefix=('suffix', 'write_pv', 'line_text', 'pv_index'),
         doc=(
             'The setpoint PV that acr listens on to update the '
@@ -112,10 +123,8 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
     )
     ref = FCpt(
         EpicsSignal,
-        # '{prefix}:USER:MCC:EPHOT{line_text}:REF{bunch}',
         '{prefix}:USER:MCC:EPHOT{line_text}:REF{pv_index}',
         kind='normal',
-        # add_prefix=('suffix', 'write_pv', 'line_text', 'bunch'),
         add_prefix=('suffix', 'write_pv', 'line_text', 'pv_index'),
         doc=(
             'A reference PV for the photon energy at the nominal '
@@ -144,19 +153,18 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
             return super().__new__(BeamEnergyRequestNoWait)
         return super().__new__(BeamEnergyRequestACRWait)
 
+    @re_arg({"bunch": "pv_index"})
     def __init__(
         self,
         prefix: str,
         *,
         name: str,
         line: Optional[str] = None,
-        # bunch: int = 1,
         pv_index: int = 1,
         acr_status_suffix: Optional[str] = None,
         **kwargs
     ):
         self.line_text = self.line_text_dict.get(line or prefix, '')
-        # self.bunch = bunch
         self.pv_index = pv_index
         self.acr_status_suffix = acr_status_suffix
         super().__init__(prefix, name=name, **kwargs)
