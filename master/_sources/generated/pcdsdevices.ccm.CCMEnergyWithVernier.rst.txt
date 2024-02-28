@@ -81,7 +81,7 @@
           - normal
           - Inherited from :class:`~pcdsdevices.ccm.CCMEnergy`
     
-        * - vernier (FCpt)
+        * - acr_energy (FCpt)
           - :class:`~pcdsdevices.beam_stats.BeamEnergyRequest`
           - ``{hutch}``
           - Requests ACR to move the Vernier.

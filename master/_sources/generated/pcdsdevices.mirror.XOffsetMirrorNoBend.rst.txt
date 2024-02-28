@@ -137,7 +137,16 @@
           - normal
           - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
     
+        * - variable_cool
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:VCV``
+          - Activates variable cooling valve
+          - normal
+          - 
+    
 
+    
+    
     
     
     

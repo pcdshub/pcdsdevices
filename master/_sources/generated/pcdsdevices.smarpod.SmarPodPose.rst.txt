@@ -1,0 +1,135 @@
+﻿pcdsdevices.smarpod.SmarPodPose
+===============================
+
+.. currentmodule:: pcdsdevices.smarpod
+
+.. autoclass:: SmarPodPose
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pose_name
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:NAME_RBV``
+          - Pose name input
+          - normal
+          - 
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:X``
+          - Pose X Position Data
+          - normal
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Y``
+          - Pose Y Position Data
+          - normal
+          - 
+    
+        * - z
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Z``
+          - Pose Z Position Data
+          - normal
+          - 
+    
+        * - rx
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RX``
+          - Pose RX Position Data
+          - normal
+          - 
+    
+        * - ry
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RY``
+          - Pose RY Position Data
+          - normal
+          - 
+    
+        * - rz
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RZ``
+          - Pose RZ Position Data
+          - normal
+          - 
+    
+        * - record
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RECORD``
+          - Fanout for pose
+          - normal
+          - 
+    
+        * - execute
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:EXECUTE``
+          - Enacts Pose Positions
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

@@ -1,0 +1,711 @@
+﻿pcdsdevices.smarpod.SmarPod
+===========================
+
+.. currentmodule:: pcdsdevices.smarpod
+
+.. autoclass:: SmarPod
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - init
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:INIT``
+          - 
+          - normal
+          - 
+    
+        * - status
+          - :class:`~pcdsdevices.smarpod.SmarPodStatus`
+          - ``:STATUS``
+          - 
+          - normal
+          - 
+    
+        * - cmd_unit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:UNIT``
+          - 
+          - normal
+          - 
+    
+        * - unit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:UNIT``
+          - Selected SmarPod unit
+          - normal
+          - 
+    
+        * - ver_sn
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VER:SN``
+          - 
+          - omitted
+          - 
+    
+        * - ver_product
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VER:PRODUCT``
+          - 
+          - omitted
+          - 
+    
+        * - ver_firmware
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VER:FIRMWARE``
+          - 
+          - omitted
+          - 
+    
+        * - cmd_ref
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:REF``
+          - 
+          - normal
+          - 
+    
+        * - ref
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:REF``
+          - Readback referenced state
+          - normal
+          - 
+    
+        * - _ref
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:_REF``
+          - Async reference response
+          - normal
+          - 
+    
+        * - cmd_ref_method
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:REF_METHOD``
+          - Set reference method
+          - normal
+          - 
+    
+        * - ref_method
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:REF_METHOD``
+          - Readback reference method
+          - normal
+          - 
+    
+        * - cmd_ref_x_direct
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:REF_X_DIRECT``
+          - Set reference x-direction
+          - normal
+          - 
+    
+        * - ref_x_direct
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:REF_X_DIRECT``
+          - Readback reference x-direction
+          - normal
+          - 
+    
+        * - cmd_ref_y_direct
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:REF_Y_DIRECT``
+          - Set reference y-direction
+          - normal
+          - 
+    
+        * - ref_y_direct
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:REF_Y_DIRECT``
+          - Readback reference y-direction
+          - normal
+          - 
+    
+        * - cmd_ref_z_direct
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:REF_Z_DIRECT``
+          - Set reference z-direction
+          - normal
+          - 
+    
+        * - ref_z_direct
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:REF_Z_DIRECT``
+          - Readback reference z-direction
+          - normal
+          - 
+    
+        * - cmd_move
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:MOVE``
+          - 
+          - normal
+          - 
+    
+        * - cmd_x
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:X``
+          - 
+          - normal
+          - 
+    
+        * - cmd_y
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:Y``
+          - 
+          - normal
+          - 
+    
+        * - cmd_z
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:Z``
+          - 
+          - normal
+          - 
+    
+        * - cmd_rx
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:RX``
+          - 
+          - normal
+          - 
+    
+        * - cmd_ry
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:RY``
+          - 
+          - normal
+          - 
+    
+        * - cmd_rz
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:RZ``
+          - 
+          - normal
+          - 
+    
+        * - cmd_stop
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:STOP``
+          - Stops SmarPod Movements
+          - normal
+          - 
+    
+        * - cmd_reachable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:REACHABLE``
+          - 
+          - normal
+          - 
+    
+        * - reachable
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:REACHABLE``
+          - Test if the SP can reach a pose. Does not move the SP
+          - normal
+          - 
+    
+        * - cmd_pos_rbv
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:POS_RBV``
+          - Readback current pose position
+          - normal
+          - 
+    
+        * - x_m
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:X_M``
+          - 
+          - normal
+          - 
+    
+        * - y_m
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Y_M``
+          - 
+          - normal
+          - 
+    
+        * - z_m
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Z_M``
+          - 
+          - normal
+          - 
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:X``
+          - 
+          - normal
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Y``
+          - 
+          - normal
+          - 
+    
+        * - z
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Z``
+          - 
+          - normal
+          - 
+    
+        * - rx
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RX``
+          - 
+          - normal
+          - 
+    
+        * - ry
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RY``
+          - 
+          - normal
+          - 
+    
+        * - rz
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RZ``
+          - 
+          - normal
+          - 
+    
+        * - moving
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:MOVING``
+          - Movement status
+          - normal
+          - 
+    
+        * - cmd_sync
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:SYNC``
+          - 
+          - normal
+          - 
+    
+        * - error_code
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ERROR_CODE``
+          - 
+          - normal
+          - 
+    
+        * - error_desc
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ERROR_DESC``
+          - 
+          - normal
+          - 
+    
+        * - cmd_pivot_rbv
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:PIVOT_RBV``
+          - Readback pivot point
+          - normal
+          - 
+    
+        * - cmd_set_pivot
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:SET_PIVOT``
+          - 
+          - normal
+          - 
+    
+        * - cmd_sync_pivot
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:SYNC_PIVOT``
+          - 
+          - normal
+          - 
+    
+        * - cmd_pivot_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:PIVOT_MODE``
+          - 
+          - normal
+          - 
+    
+        * - pivot_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PIVOT_MODE``
+          - Pivot mode
+          - normal
+          - 
+    
+        * - px_m
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PX_M``
+          - 
+          - normal
+          - 
+    
+        * - py_m
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PY_M``
+          - 
+          - normal
+          - 
+    
+        * - pz_m
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PZ_M``
+          - 
+          - normal
+          - 
+    
+        * - px
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PX``
+          - 
+          - normal
+          - 
+    
+        * - py
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PY``
+          - 
+          - normal
+          - 
+    
+        * - pz
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PZ``
+          - 
+          - normal
+          - 
+    
+        * - cmd_px
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:PX``
+          - 
+          - normal
+          - 
+    
+        * - cmd_py
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:PY``
+          - 
+          - normal
+          - 
+    
+        * - cmd_pz
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:PZ``
+          - 
+          - normal
+          - 
+    
+        * - cmd_sensor_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:SENSOR_MODE``
+          - 
+          - normal
+          - 
+    
+        * - sensor_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SENSOR_MODE``
+          - Sensor mode
+          - normal
+          - 
+    
+        * - cmd_freq
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:FREQ``
+          - 
+          - normal
+          - 
+    
+        * - freq
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FREQ``
+          - 
+          - normal
+          - 
+    
+        * - cmd_vel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:VEL``
+          - sets movement velocity
+          - normal
+          - 
+    
+        * - vel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VEL``
+          - current speed-control and speed settings
+          - normal
+          - 
+    
+        * - cmd_accel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:ACCEL``
+          - sets movement acceleration
+          - normal
+          - 
+    
+        * - accel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ACCEL``
+          - current acceleration-control and acceleration settings
+          - normal
+          - 
+    
+        * - pose_1
+          - :class:`~pcdsdevices.smarpod.SmarPodPose`
+          - ``:POSE_1``
+          - 
+          - normal
+          - 
+    
+        * - pose_2
+          - :class:`~pcdsdevices.smarpod.SmarPodPose`
+          - ``:POSE_2``
+          - 
+          - normal
+          - 
+    
+        * - pose_3
+          - :class:`~pcdsdevices.smarpod.SmarPodPose`
+          - ``:POSE_3``
+          - 
+          - normal
+          - 
+    
+        * - pose_4
+          - :class:`~pcdsdevices.smarpod.SmarPodPose`
+          - ``:POSE_4``
+          - 
+          - normal
+          - 
+    
+        * - pose_5
+          - :class:`~pcdsdevices.smarpod.SmarPodPose`
+          - ``:POSE_5``
+          - 
+          - normal
+          - 
+    
+        * - cmd_read_status
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:READ_STATUS``
+          - 
+          - normal
+          - 
+    
+        * - cmd_calibrate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:CALIBRATE``
+          - 
+          - normal
+          - 
+    
+        * - cmd_read_ver
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:READ_VER``
+          - 
+          - normal
+          - 
+    
+        * - ver_sys
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VER:SYS``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
