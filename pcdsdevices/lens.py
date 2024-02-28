@@ -152,6 +152,14 @@ class LensStackBase(BaseInterface, PseudoPositioner):
 
     @property
     def energy(self):
+        """
+        Get the energy from various sources based on current situation:
+        - If self.energy = <energy> has been used, it will return the
+          the user-defined energy
+        - If self._mono_obj is defined and inserted, it will return the
+          current mono energy
+        - Return the LCLS energy otherwise
+        """
         if self._E is not None:
             self._which_E = "User"
             return self._E
@@ -171,6 +179,10 @@ class LensStackBase(BaseInterface, PseudoPositioner):
         self._E = energy
 
     def get_current_beam_info(self):
+        """
+        Calculates the beam size (FWHM) at the IP for the current lens
+        positin (distance to the interaction point).
+        """
         dist_m = self.z.position / 1000 * self.z_dir + self.z_offset
         beamsize = calcs.calc_beam_fwhm(self.energy, self.lens_set,
                                         distance=dist_m)
@@ -400,7 +412,8 @@ class LensStack(LensStackBase):
         1 or -1, represents beam direction wrt z direction.
     E: number, optional
         Beam energy
-    att_obj : attenuator object, optional
+    att_obj : attenuator object, optional. Can be the beamline attenuator or
+              the pulse-picker. Used to block the beam while lens stack is moving.
     lcls_obj
         Object that gets PVs from lcls (for energy)
     mono_obj
