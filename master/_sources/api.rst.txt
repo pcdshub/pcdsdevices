@@ -140,6 +140,7 @@ pcdsdevices.ccm
     pcdsdevices.ccm.CCMAlio
     pcdsdevices.ccm.CCMConstantsMixin
     pcdsdevices.ccm.CCMEnergy
+    pcdsdevices.ccm.CCMEnergyWithACRStatus
     pcdsdevices.ccm.CCMEnergyWithVernier
     pcdsdevices.ccm.CCMMotor
     pcdsdevices.ccm.CCMPico
@@ -274,6 +275,7 @@ pcdsdevices.epics_motor
     pcdsdevices.epics_motor.PCDSMotorBase
     pcdsdevices.epics_motor.PMC100
     pcdsdevices.epics_motor.SmarAct
+    pcdsdevices.epics_motor.SmarActEncodedTipTilt
     pcdsdevices.epics_motor.SmarActOpenLoop
     pcdsdevices.epics_motor.SmarActOpenLoopPositioner
     pcdsdevices.epics_motor.SmarActTipTilt
@@ -591,6 +593,14 @@ pcdsdevices.lic
     pcdsdevices.lic.LICMirror
     pcdsdevices.lic.LaserInCoupling
 
+pcdsdevices.lic_2d_tmo
+----------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension
+
 pcdsdevices.light_control
 -------------------------
 
@@ -641,6 +651,7 @@ pcdsdevices.lxe
     pcdsdevices.lxe.LaserEnergyPositioner
     pcdsdevices.lxe.LaserTiming
     pcdsdevices.lxe.LaserTimingCompensation
+    pcdsdevices.lxe.Lcls2LaserTiming
     pcdsdevices.lxe.LxtTtcExample
     pcdsdevices.lxe.TimeToolDelay
     pcdsdevices.lxe._ReversedTimeToolDelay
@@ -1030,6 +1041,16 @@ pcdsdevices.slits
     pcdsdevices.slits.Slits
     pcdsdevices.slits.SlitsBase
 
+pcdsdevices.smarpod
+-------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.smarpod.SmarPod
+    pcdsdevices.smarpod.SmarPodPose
+    pcdsdevices.smarpod.SmarPodStatus
+
 pcdsdevices.spectrometer
 ------------------------
 
@@ -1165,6 +1186,7 @@ pcdsdevices.utils
     pcdsdevices.utils.maybe_make_method
     pcdsdevices.utils.move_subdevices_to_start
     pcdsdevices.utils.post_ophyds_to_elog
+    pcdsdevices.utils.re_arg
     pcdsdevices.utils.reorder_components
     pcdsdevices.utils.schedule_task
     pcdsdevices.utils.set_many

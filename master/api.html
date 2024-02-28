@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; PCDS Devices 8.2.1.dev36+gba60ee04 documentation</title>
+  <title>API &mdash; PCDS Devices 8.3.1.dev95+g49fc5b1a documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/_static/theme_overrides.css" />
@@ -16,8 +16,8 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=f9f085c8"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/documentation_options.js?v=8b805890"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="_static/js/theme.js"></script>
@@ -39,7 +39,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                8.2.1.dev36+gba60ee04
+                8.3.1.dev95+g49fc5b1a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -158,6 +158,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.ccm.CCMAlio.html">pcdsdevices.ccm.CCMAlio</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.ccm.CCMConstantsMixin.html">pcdsdevices.ccm.CCMConstantsMixin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.ccm.CCMEnergy.html">pcdsdevices.ccm.CCMEnergy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.ccm.CCMEnergyWithACRStatus.html">pcdsdevices.ccm.CCMEnergyWithACRStatus</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.ccm.CCMEnergyWithVernier.html">pcdsdevices.ccm.CCMEnergyWithVernier</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.ccm.CCMMotor.html">pcdsdevices.ccm.CCMMotor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.ccm.CCMPico.html">pcdsdevices.ccm.CCMPico</a></li>
@@ -256,6 +257,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.PCDSMotorBase.html">pcdsdevices.epics_motor.PCDSMotorBase</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.PMC100.html">pcdsdevices.epics_motor.PMC100</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarAct.html">pcdsdevices.epics_motor.SmarAct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActEncodedTipTilt.html">pcdsdevices.epics_motor.SmarActEncodedTipTilt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActOpenLoop.html">pcdsdevices.epics_motor.SmarActOpenLoop</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActOpenLoopPositioner.html">pcdsdevices.epics_motor.SmarActOpenLoopPositioner</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActTipTilt.html">pcdsdevices.epics_motor.SmarActTipTilt</a></li>
@@ -478,6 +480,10 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.lic.LaserInCoupling.html">pcdsdevices.lic.LaserInCoupling</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-lic-2d-tmo">pcdsdevices.lic_2d_tmo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension.html">pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-light-control">pcdsdevices.light_control</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.light_control.LightControl.html">pcdsdevices.light_control.LightControl</a></li>
 </ul>
@@ -515,6 +521,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.lxe.LaserEnergyPositioner.html">pcdsdevices.lxe.LaserEnergyPositioner</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.lxe.LaserTiming.html">pcdsdevices.lxe.LaserTiming</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.lxe.LaserTimingCompensation.html">pcdsdevices.lxe.LaserTimingCompensation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.lxe.Lcls2LaserTiming.html">pcdsdevices.lxe.Lcls2LaserTiming</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.lxe.LxtTtcExample.html">pcdsdevices.lxe.LxtTtcExample</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.lxe.TimeToolDelay.html">pcdsdevices.lxe.TimeToolDelay</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.lxe._ReversedTimeToolDelay.html">pcdsdevices.lxe._ReversedTimeToolDelay</a></li>
@@ -793,6 +800,12 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.slits.SlitsBase.html">pcdsdevices.slits.SlitsBase</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-smarpod">pcdsdevices.smarpod</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.smarpod.SmarPod.html">pcdsdevices.smarpod.SmarPod</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.smarpod.SmarPodPose.html">pcdsdevices.smarpod.SmarPodPose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.smarpod.SmarPodStatus.html">pcdsdevices.smarpod.SmarPodStatus</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-spectrometer">pcdsdevices.spectrometer</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.spectrometer.FZPStates.html">pcdsdevices.spectrometer.FZPStates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.spectrometer.Gen1VonHamos4Crystal.html">pcdsdevices.spectrometer.Gen1VonHamos4Crystal</a></li>
@@ -883,6 +896,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.utils.maybe_make_method.html">pcdsdevices.utils.maybe_make_method</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.utils.move_subdevices_to_start.html">pcdsdevices.utils.move_subdevices_to_start</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.utils.post_ophyds_to_elog.html">pcdsdevices.utils.post_ophyds_to_elog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.utils.re_arg.html">pcdsdevices.utils.re_arg</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.utils.reorder_components.html">pcdsdevices.utils.reorder_components</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.utils.schedule_task.html">pcdsdevices.utils.schedule_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.utils.set_many.html">pcdsdevices.utils.set_many</a></li>
@@ -1273,37 +1287,40 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMEnergy.html#pcdsdevices.ccm.CCMEnergy" title="pcdsdevices.ccm.CCMEnergy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMEnergy</span></code></a>(*args, **kwargs)</p></td>
 <td><p>CCM energy motor.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMEnergyWithVernier.html#pcdsdevices.ccm.CCMEnergyWithVernier" title="pcdsdevices.ccm.CCMEnergyWithVernier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMEnergyWithVernier</span></code></a>(prefix)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMEnergyWithACRStatus.html#pcdsdevices.ccm.CCMEnergyWithACRStatus" title="pcdsdevices.ccm.CCMEnergyWithACRStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMEnergyWithACRStatus</span></code></a>(prefix)</p></td>
+<td><p>CCM energy motor and ACR beam energy request with status.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMEnergyWithVernier.html#pcdsdevices.ccm.CCMEnergyWithVernier" title="pcdsdevices.ccm.CCMEnergyWithVernier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMEnergyWithVernier</span></code></a>(prefix)</p></td>
 <td><p>CCM energy motor and the vernier.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMMotor.html#pcdsdevices.ccm.CCMMotor" title="pcdsdevices.ccm.CCMMotor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMMotor</span></code></a>(prefix, *, name[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMMotor.html#pcdsdevices.ccm.CCMMotor" title="pcdsdevices.ccm.CCMMotor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMMotor</span></code></a>(prefix, *, name[, ...])</p></td>
 <td><p>Goofy records used in the CCM.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMPico.html#pcdsdevices.ccm.CCMPico" title="pcdsdevices.ccm.CCMPico"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMPico</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMPico.html#pcdsdevices.ccm.CCMPico" title="pcdsdevices.ccm.CCMPico"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMPico</span></code></a>(*args, **kwargs)</p></td>
 <td><p>The Pico motors used here seem non-standard, as they are missing spg.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMX.html#pcdsdevices.ccm.CCMX" title="pcdsdevices.ccm.CCMX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMX</span></code></a>([prefix])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMX.html#pcdsdevices.ccm.CCMX" title="pcdsdevices.ccm.CCMX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMX</span></code></a>([prefix])</p></td>
 <td><p>Combined motion of the CCM X motors.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMY.html#pcdsdevices.ccm.CCMY" title="pcdsdevices.ccm.CCMY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMY</span></code></a>([prefix])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.CCMY.html#pcdsdevices.ccm.CCMY" title="pcdsdevices.ccm.CCMY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.CCMY</span></code></a>([prefix])</p></td>
 <td><p>Combined motion of the CCM Y motors.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.alio_to_theta.html#pcdsdevices.ccm.alio_to_theta" title="pcdsdevices.ccm.alio_to_theta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.alio_to_theta</span></code></a>(alio, theta0, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.alio_to_theta.html#pcdsdevices.ccm.alio_to_theta" title="pcdsdevices.ccm.alio_to_theta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.alio_to_theta</span></code></a>(alio, theta0, ...)</p></td>
 <td><p>Converts alio position (mm) to theta angle (rad).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.energy_to_wavelength.html#pcdsdevices.ccm.energy_to_wavelength" title="pcdsdevices.ccm.energy_to_wavelength"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.energy_to_wavelength</span></code></a>(energy)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.energy_to_wavelength.html#pcdsdevices.ccm.energy_to_wavelength" title="pcdsdevices.ccm.energy_to_wavelength"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.energy_to_wavelength</span></code></a>(energy)</p></td>
 <td><p>Converts photon energy (keV) to wavelength (A).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.theta_to_alio.html#pcdsdevices.ccm.theta_to_alio" title="pcdsdevices.ccm.theta_to_alio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.theta_to_alio</span></code></a>(theta, theta0, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.theta_to_alio.html#pcdsdevices.ccm.theta_to_alio" title="pcdsdevices.ccm.theta_to_alio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.theta_to_alio</span></code></a>(theta, theta0, ...)</p></td>
 <td><p>Converts theta angle (rad) to alio position (mm).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.theta_to_wavelength.html#pcdsdevices.ccm.theta_to_wavelength" title="pcdsdevices.ccm.theta_to_wavelength"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.theta_to_wavelength</span></code></a>(theta, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.theta_to_wavelength.html#pcdsdevices.ccm.theta_to_wavelength" title="pcdsdevices.ccm.theta_to_wavelength"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.theta_to_wavelength</span></code></a>(theta, ...)</p></td>
 <td><p>Converts theta angle (rad) to wavelength (A).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.wavelength_to_energy.html#pcdsdevices.ccm.wavelength_to_energy" title="pcdsdevices.ccm.wavelength_to_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.wavelength_to_energy</span></code></a>(wavelength)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.wavelength_to_energy.html#pcdsdevices.ccm.wavelength_to_energy" title="pcdsdevices.ccm.wavelength_to_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.wavelength_to_energy</span></code></a>(wavelength)</p></td>
 <td><p>Converts wavelength (A) to photon energy (keV).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.wavelength_to_theta.html#pcdsdevices.ccm.wavelength_to_theta" title="pcdsdevices.ccm.wavelength_to_theta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.wavelength_to_theta</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.ccm.wavelength_to_theta.html#pcdsdevices.ccm.wavelength_to_theta" title="pcdsdevices.ccm.wavelength_to_theta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.ccm.wavelength_to_theta</span></code></a>(...)</p></td>
 <td><p>Converts wavelength (A) to theta angle (rad).</p></td>
 </tr>
 </tbody>
@@ -1549,14 +1566,17 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarAct.html#pcdsdevices.epics_motor.SmarAct" title="pcdsdevices.epics_motor.SmarAct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarAct</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Class for encoded SmarAct motors controlled via the MCS2 controller.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActOpenLoop.html#pcdsdevices.epics_motor.SmarActOpenLoop" title="pcdsdevices.epics_motor.SmarActOpenLoop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActOpenLoop</span></code></a>([...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActEncodedTipTilt.html#pcdsdevices.epics_motor.SmarActEncodedTipTilt" title="pcdsdevices.epics_motor.SmarActEncodedTipTilt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActEncodedTipTilt</span></code></a>([...])</p></td>
+<td><p>Class for bundling two SmarAct encoded axes arranged in a tip-tilt mirror positioning configuration into a single device.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActOpenLoop.html#pcdsdevices.epics_motor.SmarActOpenLoop" title="pcdsdevices.epics_motor.SmarActOpenLoop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActOpenLoop</span></code></a>([...])</p></td>
 <td><p>Class containing the open loop PVs used to control an un-encoded SmarAct stage.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActOpenLoopPositioner.html#pcdsdevices.epics_motor.SmarActOpenLoopPositioner" title="pcdsdevices.epics_motor.SmarActOpenLoopPositioner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActOpenLoopPositioner</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActOpenLoopPositioner.html#pcdsdevices.epics_motor.SmarActOpenLoopPositioner" title="pcdsdevices.epics_motor.SmarActOpenLoopPositioner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActOpenLoopPositioner</span></code></a>(...)</p></td>
 <td><p>Positioner class for SmarAct open loop stages.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActTipTilt.html#pcdsdevices.epics_motor.SmarActTipTilt" title="pcdsdevices.epics_motor.SmarActTipTilt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActTipTilt</span></code></a>([prefix])</p></td>
-<td><p>Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirro positioning configuration into a single device.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.SmarActTipTilt.html#pcdsdevices.epics_motor.SmarActTipTilt" title="pcdsdevices.epics_motor.SmarActTipTilt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.epics_motor.SmarActTipTilt</span></code></a>([prefix])</p></td>
+<td><p>Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirror positioning configuration into a single device.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2164,6 +2184,16 @@
 </tbody>
 </table>
 </section>
+<section id="pcdsdevices-lic-2d-tmo">
+<h2>pcdsdevices.lic_2d_tmo<a class="headerlink" href="#pcdsdevices-lic-2d-tmo" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension.html#pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension" title="pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension</span></code></a>(...)</p></td>
+<td><p>TMO two dimension laser coupling LI2K4 class.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="pcdsdevices-light-control">
 <h2>pcdsdevices.light_control<a class="headerlink" href="#pcdsdevices-light-control" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
@@ -2272,19 +2302,22 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe.LaserTimingCompensation.html#pcdsdevices.lxe.LaserTimingCompensation" title="pcdsdevices.lxe.LaserTimingCompensation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe.LaserTimingCompensation</span></code></a>(...)</p></td>
 <td><p>LaserTimingCompensation (<code class="docutils literal notranslate"><span class="pre">lxt_ttc</span></code>) synchronously moves <code class="xref py py-class docutils literal notranslate"><span class="pre">LaserTiming</span></code> (<code class="docutils literal notranslate"><span class="pre">lxt</span></code>) with <code class="xref py py-class docutils literal notranslate"><span class="pre">TimeToolDelay</span></code> (<code class="docutils literal notranslate"><span class="pre">txt</span></code>) to compensate so that the true laser x-ray delay by using the <code class="docutils literal notranslate"><span class="pre">lxt</span></code>-value and the result of time tool data analysis, avoiding double-counting.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe.LxtTtcExample.html#pcdsdevices.lxe.LxtTtcExample" title="pcdsdevices.lxe.LxtTtcExample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe.LxtTtcExample</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe.Lcls2LaserTiming.html#pcdsdevices.lxe.Lcls2LaserTiming" title="pcdsdevices.lxe.Lcls2LaserTiming"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe.Lcls2LaserTiming</span></code></a>([prefix, egu])</p></td>
+<td><p>A &quot;lxt&quot; motor for the LCLS-II laser locker, AKA the OPCPA laser locker.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe.LxtTtcExample.html#pcdsdevices.lxe.LxtTtcExample" title="pcdsdevices.lxe.LxtTtcExample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe.LxtTtcExample</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Example of one way to set up the lxt_ttc construct using SyncAxis</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe.TimeToolDelay.html#pcdsdevices.lxe.TimeToolDelay" title="pcdsdevices.lxe.TimeToolDelay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe.TimeToolDelay</span></code></a>(*args[, egu, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe.TimeToolDelay.html#pcdsdevices.lxe.TimeToolDelay" title="pcdsdevices.lxe.TimeToolDelay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe.TimeToolDelay</span></code></a>(*args[, egu, ...])</p></td>
 <td><p>Laser delay stage to rescale the physical time tool delay stage to units of time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe._ReversedTimeToolDelay.html#pcdsdevices.lxe._ReversedTimeToolDelay" title="pcdsdevices.lxe._ReversedTimeToolDelay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe._ReversedTimeToolDelay</span></code></a>(*args)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe._ReversedTimeToolDelay.html#pcdsdevices.lxe._ReversedTimeToolDelay" title="pcdsdevices.lxe._ReversedTimeToolDelay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe._ReversedTimeToolDelay</span></code></a>(*args)</p></td>
 <td><p>An inverted version of <code class="xref py py-class docutils literal notranslate"><span class="pre">TimeToolDelay</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe._ScaledUnitConversionDerivedSignal.html#pcdsdevices.lxe._ScaledUnitConversionDerivedSignal" title="pcdsdevices.lxe._ScaledUnitConversionDerivedSignal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe._ScaledUnitConversionDerivedSignal</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe._ScaledUnitConversionDerivedSignal.html#pcdsdevices.lxe._ScaledUnitConversionDerivedSignal" title="pcdsdevices.lxe._ScaledUnitConversionDerivedSignal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe._ScaledUnitConversionDerivedSignal</span></code></a>(...)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe.load_calibration_file.html#pcdsdevices.lxe.load_calibration_file" title="pcdsdevices.lxe.load_calibration_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe.load_calibration_file</span></code></a>(filename)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.lxe.load_calibration_file.html#pcdsdevices.lxe.load_calibration_file" title="pcdsdevices.lxe.load_calibration_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.lxe.load_calibration_file</span></code></a>(filename)</p></td>
 <td><p>Load a calibration file.</p></td>
 </tr>
 </tbody>
@@ -3047,6 +3080,22 @@
 </tbody>
 </table>
 </section>
+<section id="pcdsdevices-smarpod">
+<h2>pcdsdevices.smarpod<a class="headerlink" href="#pcdsdevices-smarpod" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.smarpod.SmarPod.html#pcdsdevices.smarpod.SmarPod" title="pcdsdevices.smarpod.SmarPod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.smarpod.SmarPod</span></code></a>([prefix, kind, ...])</p></td>
+<td><p>SmarPod is a hexapod-like positioning system from SmarAct</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.smarpod.SmarPodPose.html#pcdsdevices.smarpod.SmarPodPose" title="pcdsdevices.smarpod.SmarPodPose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.smarpod.SmarPodPose</span></code></a>([prefix, ...])</p></td>
+<td><p>The translation and orientation of the SmarPod stage is called the pose.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.smarpod.SmarPodStatus.html#pcdsdevices.smarpod.SmarPodStatus" title="pcdsdevices.smarpod.SmarPodStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.smarpod.SmarPodStatus</span></code></a>([prefix, ...])</p></td>
+<td><p>This class holds basic status information about the SmarPod.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="pcdsdevices-spectrometer">
 <h2>pcdsdevices.spectrometer<a class="headerlink" href="#pcdsdevices-spectrometer" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
@@ -3298,22 +3347,25 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.post_ophyds_to_elog.html#pcdsdevices.utils.post_ophyds_to_elog" title="pcdsdevices.utils.post_ophyds_to_elog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.post_ophyds_to_elog</span></code></a>(objs)</p></td>
 <td><p>Take a list of ophyd objects and post their status representations to the elog.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.reorder_components.html#pcdsdevices.utils.reorder_components" title="pcdsdevices.utils.reorder_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.reorder_components</span></code></a>([cls, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.re_arg.html#pcdsdevices.utils.re_arg" title="pcdsdevices.utils.re_arg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.re_arg</span></code></a>(kwarg_map)</p></td>
+<td><p>Decorator to redefine a kwarg to a function, while still supporting the old kwarg, and warning the end user.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.reorder_components.html#pcdsdevices.utils.reorder_components" title="pcdsdevices.utils.reorder_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.reorder_components</span></code></a>([cls, ...])</p></td>
 <td><p>Rearrange the components in cls for typhos displays.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.schedule_task.html#pcdsdevices.utils.schedule_task" title="pcdsdevices.utils.schedule_task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.schedule_task</span></code></a>(func[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.schedule_task.html#pcdsdevices.utils.schedule_task" title="pcdsdevices.utils.schedule_task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.schedule_task</span></code></a>(func[, ...])</p></td>
 <td><p>Use ophyd's dispatcher to schedule a task for later.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.set_many.html#pcdsdevices.utils.set_many" title="pcdsdevices.utils.set_many"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.set_many</span></code></a>(to_set, *[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.set_many.html#pcdsdevices.utils.set_many" title="pcdsdevices.utils.set_many"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.set_many</span></code></a>(to_set, *[, ...])</p></td>
 <td><p>Call <code class="docutils literal notranslate"><span class="pre">set</span></code> on all given signal-to-value pairs with a single Status return value.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.set_standard_ordering.html#pcdsdevices.utils.set_standard_ordering" title="pcdsdevices.utils.set_standard_ordering"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.set_standard_ordering</span></code></a>(cls)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.set_standard_ordering.html#pcdsdevices.utils.set_standard_ordering" title="pcdsdevices.utils.set_standard_ordering"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.set_standard_ordering</span></code></a>(cls)</p></td>
 <td><p>Set a sensible &quot;standard&quot; ordering for use in typhos.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.sort_components_by_kind.html#pcdsdevices.utils.sort_components_by_kind" title="pcdsdevices.utils.sort_components_by_kind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.sort_components_by_kind</span></code></a>(cls)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.sort_components_by_kind.html#pcdsdevices.utils.sort_components_by_kind" title="pcdsdevices.utils.sort_components_by_kind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.sort_components_by_kind</span></code></a>(cls)</p></td>
 <td><p>Arrange the component order of a device class in kind order.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.sort_components_by_name.html#pcdsdevices.utils.sort_components_by_name" title="pcdsdevices.utils.sort_components_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.sort_components_by_name</span></code></a>([...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.utils.sort_components_by_name.html#pcdsdevices.utils.sort_components_by_name" title="pcdsdevices.utils.sort_components_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.utils.sort_components_by_name</span></code></a>([...])</p></td>
 <td><p>Arrange the component order of a device class in alphabetical order.</p></td>
 </tr>
 </tbody>

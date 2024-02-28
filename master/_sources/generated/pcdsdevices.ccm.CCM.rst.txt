@@ -63,7 +63,14 @@
         * - energy_with_vernier
           - :class:`~pcdsdevices.ccm.CCMEnergyWithVernier`
           - 
-          - PsuedoPositioner that moves the alio in terms of the calculated CCM energy while also requesting a vernier move.
+          - PseudoPositioner that moves the alio in terms of the calculated CCM energy while also requesting a vernier move.
+          - normal
+          - 
+    
+        * - energy_with_acr_status (FCpt)
+          - :class:`~pcdsdevices.ccm.CCMEnergyWithACRStatus`
+          - ``{prefix}``
+          - PseudoPositioner that moves the alio in terms of the calculated CCM energy while also requesting an energy change to ACR. This will wait on ACR to complete the move.
           - normal
           - 
     
@@ -110,6 +117,8 @@
           - 
     
 
+    
+    
     
     
     

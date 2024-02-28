@@ -39,6 +39,55 @@
           - normal
           - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
     
+        * - supply_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isSupplyGood``
+          - Supply voltages are within range
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - module_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isModuleGood``
+          - Module health status
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - fine_adjustment_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isFineAdjustment``
+          - Fine adjustment mode status
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - input_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isInputError``
+          - Input error in connection with a module access
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - live_insertion_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isLiveInsertion``
+          - Live insertion mode status
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - saftey_loop_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isSafetyLoopGood``
+          - Saftey loop status
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - kill
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:isKillEnable``
+          - Module-wide kill functionality
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
         * - faults
           - :class:`~ophyd.signal.EpicsSignal`
           - ``:isEventActive``
@@ -103,6 +152,20 @@
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

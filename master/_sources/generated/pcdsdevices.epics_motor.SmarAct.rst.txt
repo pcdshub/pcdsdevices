@@ -209,6 +209,55 @@
           - config
           - 
     
+        * - log_scale_offset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LSCO``
+          - Logical Scale Offset
+          - omitted
+          - 
+    
+        * - def_range_min
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DRMIN``
+          - Default Range Minimum
+          - omitted
+          - 
+    
+        * - def_range_max
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DRMAX``
+          - Default Range Maximum
+          - omitted
+          - 
+    
+        * - log_scale_inv
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LSCI_RBV``
+          - Default Range Minimum
+          - omitted
+          - 
+    
+        * - dist_code_inv
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DCIN_RBV``
+          - Distance Code Inversion
+          - omitted
+          - 
+    
+        * - channel_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CHANTEMP``
+          - Temperature at the channel's amplifier
+          - normal
+          - 
+    
+        * - module_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODTEMP``
+          - Temperature of the MCS2 Module in the rack
+          - normal
+          - 
+    
         * - open_loop
           - :class:`~pcdsdevices.epics_motor.SmarActOpenLoop`
           - 
@@ -217,6 +266,20 @@
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

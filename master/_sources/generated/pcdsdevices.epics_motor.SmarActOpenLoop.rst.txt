@@ -74,7 +74,25 @@
           - config
           - 
     
+        * - channel_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CHANTEMP``
+          - Temperature at the channel's amplifier
+          - normal
+          - 
+    
+        * - module_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODTEMP``
+          - Temperature of the MCS2 Module in the rack
+          - normal
+          - 
+    
 
+    
+    
+    
+    
     
     
     

@@ -29,21 +29,21 @@
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.ch}GROUP``
           - Channel group Bit
-          - omitted
+          - config
           - 
     
         * - seqcode (FCpt)
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.ch}SEQCODE``
           - Channel sequence code
-          - omitted
+          - config
           - 
     
         * - fixedrate (FCpt)
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.ch}FIXEDRATE``
           - Channel Fxed rate selector
-          - omitted
+          - config
           - 
     
         * - count (FCpt)
@@ -57,21 +57,21 @@
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.ch}DESTMASK``
           - Channel destination mask
-          - omitted
+          - config
           - 
     
         * - destmode (FCpt)
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.ch}DESTMODE``
           - Channel destination mode selector
-          - omitted
+          - config
           - 
     
         * - src (FCpt)
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.trg}SOURCE``
           - Trigger source
-          - omitted
+          - config
           - 
     
         * - eventcode (FCpt)
@@ -91,8 +91,8 @@
         * - label (FCpt)
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.ch}{self.sys}TCTL.DESC``
-          - Enable/disable
-          - omitted
+          - Channel description
+          - normal
           - 
     
         * - delay_ticks (FCpt)
@@ -162,17 +162,26 @@
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.ch}{self.sys}TCTL``
           - Channel enable/disable
-          - omitted
+          - config
           - 
     
         * - enable_trg_cmd (FCpt)
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.trg}{self.sys}TCTL``
           - Trigger enable/disable
-          - omitted
+          - config
+          - 
+    
+        * - operation (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.trg}TCMPL``
+          - Trigger complementary logic
+          - config
           - 
     
 
+    
+    
     
     
     

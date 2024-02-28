@@ -161,25 +161,34 @@
         * - cool_flow1
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:FWM:1_RBV``
-          - 
+          - Mirror cooling panel loop flow sensor
           - normal
           - 
     
         * - cool_flow2
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:FWM:2_RBV``
-          - 
+          - Mirror cooling panel loop flow sensor
           - normal
           - 
     
         * - cool_press
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:PRSM:1_RBV``
+          - Mirror cooling panel loop pressure sensor
+          - normal
           - 
+    
+        * - variable_cool
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:VCV``
+          - Activates variable cooling valve
           - normal
           - 
     
 
+    
+    
     
     
     

@@ -39,6 +39,55 @@
           - normal
           - 
     
+        * - supply_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isSupplyGood``
+          - Supply voltages are within range
+          - normal
+          - 
+    
+        * - module_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isModuleGood``
+          - Module health status
+          - normal
+          - 
+    
+        * - fine_adjustment_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isFineAdjustment``
+          - Fine adjustment mode status
+          - normal
+          - 
+    
+        * - input_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isInputError``
+          - Input error in connection with a module access
+          - normal
+          - 
+    
+        * - live_insertion_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isLiveInsertion``
+          - Live insertion mode status
+          - normal
+          - 
+    
+        * - saftey_loop_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isSafetyLoopGood``
+          - Saftey loop status
+          - normal
+          - 
+    
+        * - kill
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:isKillEnable``
+          - Module-wide kill functionality
+          - normal
+          - 
+    
         * - faults
           - :class:`~ophyd.signal.EpicsSignal`
           - ``:isEventActive``
@@ -47,6 +96,20 @@
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
