@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>343</width>
-    <height>258</height>
+    <width>600</width>
+    <height>238</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,26 +24,26 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>600</width>
-    <height>300</height>
+    <width>16777215</width>
+    <height>16777215</height>
    </size>
   </property>
   <property name="sizeIncrement">
    <size>
-    <width>1</width>
-    <height>1</height>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="baseSize">
    <size>
-    <width>400</width>
-    <height>200</height>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="main_layout" stretch="0,0,0,2">
+  <layout class="QVBoxLayout" name="main_layout" stretch="0">
    <property name="spacing">
     <number>3</number>
    </property>
@@ -63,14 +63,7 @@
     <number>5</number>
    </property>
    <item>
-    <widget class="TyphosDisplayTitle" name="TyphosDisplayTitle">
-     <property name="toolTip">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="TyphosPositionerWidget" name="TyphosPositionerWidget_2">
+    <widget class="TyphosPositionerRowWidget" name="TyphosPositionerWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -80,7 +73,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>230</height>
+       <height>16777215</height>
       </size>
      </property>
      <property name="toolTip">
@@ -116,46 +109,26 @@
      <property name="error_message_attribute" stdset="0">
       <string>real.plc.status</string>
      </property>
+     <property name="show_expert_button" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="alarmKindLevel" stdset="0">
+      <enum>TyphosPositionerWidget::HINTED</enum>
+     </property>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TyphosPositionerWidget</class>
-   <extends>QWidget</extends>
+   <class>TyphosPositionerRowWidget</class>
+   <extends>TyphosPositionerWidget</extends>
    <header>typhos.positioner</header>
   </customwidget>
   <customwidget>
-   <class>TyphosDisplayTitle</class>
-   <extends>QFrame</extends>
-   <header>typhos.display</header>
+   <class>TyphosPositionerWidget</class>
+   <extends>QWidget</extends>
+   <header>typhos.positioner</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -13,6 +13,7 @@ from ophyd.sim import NullStatus
 
 from pcdsdevices.interface import LightpathInOutMixin
 
+from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init, insert_remove
 from .state import (CombinedStateRecordPositioner, PVStatePositioner,
                     StatePositioner, StateRecordPositioner,
@@ -263,3 +264,4 @@ class TwinCATInOutPositioner(TwinCATStatePositioner, InOutPositioner):
     states_list = []
     # In should be everything except state 0 (Unknown) and state 1 (Out)
     _in_if_not_out = True
+    config = UpCpt(state_count=2)

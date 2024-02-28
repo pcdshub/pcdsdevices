@@ -737,6 +737,26 @@ class XOffsetMirrorRTDs(XOffsetMirror):
     rtd_3 = Cpt(PytmcSignal, ':RTD:3', io='i', kind='normal')
 
 
+class XOffsetMirrorNoBend(XOffsetMirror):
+    """
+    X-ray Offset Mirror with no bender.
+
+    2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+
+    Currently (10/11/2023) services: mr1l1
+
+    """
+    bender = None
+    bender_enc_rms = None
+
+
 class XOffsetMirrorBend(XOffsetMirror):
     """
     X-ray Offset Mirror with 2 bender acutators.
@@ -773,6 +793,11 @@ class XOffsetMirrorBend(XOffsetMirror):
     # Bender RTD Cpts:
     us_rtd = Cpt(EpicsSignalRO, ':RTD:US:1_RBV', kind='normal')
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:DS:1_RBV', kind='normal')
+
+    # Cooling
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
     # Tab config: show components
     tab_component_names = True
@@ -836,6 +861,14 @@ class XOffsetMirrorBend(XOffsetMirror):
 XOffsetMirror2 = XOffsetMirrorBend
 
 
+@reorder_components(
+    end_with=[
+        'x_up', 'pitch', 'x_dwn', 'y_left', 'y_right',
+        'gantry_x', 'gantry_y', 'couple_y', 'couple_x', 'decouple_y',
+        'decouple_x', 'couple_status_y', 'couple_status_x', 'y_enc_rms',
+        'x_enc_rms', 'pitch_enc_rms' , 'cool_flow1', 'cool_flow2', 'cool_press'
+    ]
+)
 class XOffsetMirrorSwitch(XOffsetMirror):
     """
     X-ray Offset Mirror with Yleft/Yright
@@ -866,6 +899,10 @@ class XOffsetMirrorSwitch(XOffsetMirror):
                  doc='Yleft master axis [um]')
     y_right = Cpt(BeckhoffAxisNoOffset, ':MMS:YRIGHT', kind='config',
                   doc='Yright slave axis [um]')
+    # Cooling
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
     # Tab config: show components
     tab_component_names = True
@@ -1060,10 +1097,9 @@ class KBOMirrorHE(KBOMirror):
     name : str
         Alias for the device.
     """
-    # Cooling water flow and pressure sensors
-    cool_flow1 = Cpt(EpicsSignalRO, ':FLOW:1_RBV', kind='normal')
-    cool_flow2 = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
+    # Cooling water flow and pressure meters
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
     # Tab config: show components
     tab_component_names = True
@@ -1095,6 +1131,10 @@ class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
     x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
     y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
+
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 1")
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 2")
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc="Axilon Panel Pressure Meter")
 
     # Lightpath config: implement inserted, removed, transmission, subscribe
     lightpath_cpts = ['x.user_readback', 'y.user_readback']
@@ -1202,6 +1242,18 @@ class FFMirrorZ(FFMirror):
     # RMS Cpts:
     z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
 
+    # Chin Guard RTDs
+    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L:TEMP', io='i',
+                        kind='normal')
+    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R:TEMP', io='i',
+                         kind='normal')
+    chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL:TEMP', io='i',
+                        kind='normal')
+    # Kill these until MR4 and MR5 K4 implement them.
+    cool_flow1 = None
+    cool_flow2 = None
+    cool_press = None
+
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
     """
@@ -1259,7 +1311,7 @@ class KBOMirrorStates(KBOMirror):
         'coating', 'x', 'y', 'pitch', 'bender_us', 'bender_ds',
         'x_enc_rms', 'y_enc_rms', 'pitch_enc_rms', 'bender_us_enc_rms',
         'bender_ds_enc_rms', 'us_rtd', 'ds_rtd', 'cool_flow1',
-        'cool_flow2', 'cool_press'
+        'cool_press'
     ]
 )
 class KBOMirrorHEStates(KBOMirrorHE):
@@ -1282,17 +1334,15 @@ class KBOMirrorHEStates(KBOMirrorHE):
     tab_component_names = True
 
 
-class CoatingState(Device):
-    """
-    Extra parent class to put "coating" as the first device in order.
-
-    This makes it appear at the top of the screen in typhos.
-    """
-    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
-                  doc='Control of the coating states via saved positions.')
-
-
-class XOffsetMirrorState(XOffsetMirror, CoatingState):
+@reorder_components(
+    end_with=[
+        'coating', 'y_up', 'x_up', 'pitch', 'bender', 'y_dwn',
+        'x_dwn', 'gantry_x', 'gantry_y', 'couple_y', 'couple_x', 'decouple_y',
+        'decouple_x', 'couple_status_y', 'couple_status_x', 'y_enc_rms',
+        'x_enc_rms', 'pitch_enc_rms', 'bender_enc_rms'
+    ]
+)
+class XOffsetMirrorState(XOffsetMirror):
     """
     X-ray Offset Mirror with Yleft/Yright
 
@@ -1308,6 +1358,9 @@ class XOffsetMirrorState(XOffsetMirror, CoatingState):
     name : str
         Alias for the device.
     """
+    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
+
     # UI representation
     _icon = 'fa.minus-square'
 
@@ -1345,6 +1398,30 @@ class XOffsetMirrorState(XOffsetMirror, CoatingState):
         pitch: float
     ) -> LightpathState:
         return self._calc_lightpath_state(x_up, coating_state, pitch)
+
+
+class XOffsetMirrorStateCool(XOffsetMirrorState):
+    """
+    X-ray Offset Mirror with Yleft/Yright
+
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    With Coating State selection implemented.
+
+    With cooling and pressure meters installed.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # Cooling
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
 
 class MirrorInsertState(TwinCATStatePMPS):
@@ -1448,3 +1525,27 @@ class OpticsPitchNotepad(BaseInterface, Device):
 
     mr2l3_pitch_sic = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating1')
     mr2l3_pitch_w = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating2')
+    mr2l3_pitch_ccm_sic = Cpt(EpicsSignal, 'MR2L3:PITCH:CCM:Coating1', doc="MR2L3 pitch coating 1 (Silicon) setpoint with CCM inserted")
+    mr2l3_pitch_ccm_w = Cpt(EpicsSignal, 'MR2L3:PITCH:CCM:Coating2', doc="MR2L3 pitch coating 2 (Tungsten) setpoint with CCM inserted")
+
+
+class KBOMirrorChin(KBOMirror):
+    """
+    Kirkpatrick-Baez Mirror with Bender Axes.
+
+    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
+
+    With 2 RTDs installed on the chin guard.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L', io='i',
+                        kind='normal')
+    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R', io='i',
+                         kind='normal')

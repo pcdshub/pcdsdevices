@@ -447,11 +447,11 @@ class CrystalTower2(BaseInterface, GroupDevice):
                   motor_prefix='{self._hutch_prefix}:MON:MMS:14',
                   add_prefix=('prefix', 'motor_prefix'), kind='normal',
                   doc='Chi 2 motor offset for Si [deg]')
-    h2nC = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:H2N:OFF_C',
+    h2nC = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_C',
                 name='h2n_c', motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
                 doc=' H2n motor offset for C [mm]')
-    h2nSi = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:H2N:OFF_Si',
+    h2nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_Si',
                  name='h2n_si', motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
                  doc='H2n motor offset for Si [mm]')
@@ -913,6 +913,14 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
 
+    def setE(self, energy):
+        self.set_current_position(energy)
+        return
+
+    def status_info(self):
+        """Overwrites interface status_info to make things faster."""
+        return None
+
     def format_status_info(self, status_info):
         """Override status info handler to render the energy si."""
         hutch = ''
@@ -945,7 +953,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
         except Exception:
             ref = 'Unknown'
 
-            return f"""\
+        return f"""\
 {hutch}LODCM Energy Si
 Current Configuration: {configuration} ({ref})
 Photon Energy: {energy} [keV]
@@ -1133,6 +1141,14 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
 
+    def setE(self, energy):
+        self.set_current_position(energy)
+        return
+
+    def status_info(self):
+        """Overwrites interface status_info to make things faster."""
+        return None
+
     def format_status_info(self, status_info):
         """Override status info handler to render the energy c."""
         hutch = ''
@@ -1165,7 +1181,218 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
         except Exception:
             ref = 'Unknown'
 
-            return f"""\
+        return f"""\
+{hutch}LODCM Energy C
+Current Configuration: {configuration} ({ref})
+Photon Energy: {energy} [keV]
+"""
+
+
+class LODCMEnergyC1(FltMvInterface, PseudoPositioner, GroupDevice):
+    """
+    Energy calculations for the C material.
+
+    Assume material is 'C' without checking if the crystal's materials are
+    aligned for both towers.
+
+    Parameters
+    ----------
+    prefix : str
+        Epics base PV prefix.
+    name : str
+        The name of this device.
+    """
+    tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
+    dr = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
+              kind='normal', doc='LOM Dia Theta')
+
+    th1C = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_C',
+                name='th1_c',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:07',
+                add_prefix=('prefix', 'motor_prefix'),
+                doc='Th1 motor offset for C [deg]')
+    z1C = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_C', name='z1_c',
+               motor_prefix='{self._hutch_prefix}:MON:MMS:04',
+               add_prefix=('prefix', 'motor_prefix'),
+               doc='Z1 motor offset for C [mm]')
+
+    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
+
+    stage_group = [dr, th1C, z1C]
+
+    def __init__(self, prefix, *args, **kwargs):
+        self._prefix = prefix
+        self._hutch_prefix = ''
+        if 'XPP' in self._prefix:
+            self._hutch_prefix = 'XPP'
+        elif 'XCS' in self._prefix:
+            self._hutch_prefix = 'HFX'
+
+        super().__init__(prefix=prefix, *args, **kwargs)
+
+    def get_reflection(self):
+        """
+        Get the crystal reflection.
+
+        Check both towers, and compare the if they match.
+        If they do not match an error will be raised.
+
+        Returns
+        -------
+        ref_1 : tuple
+            Reflection of the two Crystal Towers.
+
+        Raises
+        ------
+        ValueError
+            When the reflection of first tower does not match the one of
+            second tower.
+        """
+        ref_1 = self.tower1.get_reflection()
+        return ref_1
+
+    def get_energy(self, material='C', reflection=None):
+        """
+        Get photon energy from first tower in keV.
+
+        Energy is determined by the first crystal (Theta motor).
+
+        Parameters
+        ----------
+        material : str, optional
+            Chemical formula. Defaults to `C`
+        reflection : tuple, optional
+            Reflection of material. E.g.: `(1, 1, 1)`
+
+        Returns
+        -------
+        energy : number
+            Photon energy in keV.
+        """
+        reflection = reflection or self.get_reflection()
+        th = self.th1C.wm()
+        length = (2 * np.sin(np.deg2rad(th)) *
+                  diffraction.d_space(material, reflection))
+        return common.wavelength_to_energy(length) / 1000
+
+    def calc_geometry(self, energy, material='C', reflection=None):
+        """
+        Calculate the lom geometry.
+
+        Parameters
+        ----------
+        material : str, optional
+            Chemical formula. Defaults to `C`
+        reflection : tuple, optional
+            Reflection of material. E.g.: `(1, 1, 1)`
+
+        Returns
+        -------
+        th, z : tuple
+            Returns `theta` in degrees and `zm` TODO: what is this?
+        """
+        reflection = reflection or self.get_reflection()
+        th, z = diffraction.get_lom_geometry(energy*1e3, material, reflection)
+        return (th, z)
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        """
+        Calculate a RealPosition from a given PseudoPosition.
+
+        If the pseudo positioner is here at `pseudo_pos`, then this is where
+        my real motor should be.
+
+        Parameters
+        ----------
+        pseudo_pos : PseudoPosition
+            The pseudo position input, a namedtuple.
+
+        Returns
+        -------
+        real_pos : RealPosition
+            The real position output, a namedtuple.
+        """
+        pseudo_pos = self.PseudoPosition(*pseudo_pos)
+        th, z = self.calc_geometry(energy=pseudo_pos.energy)
+
+        return self.RealPosition(th1C=th,
+                                 z1C=-z,
+                                 dr=2*th)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        """
+        Calculate a PseudoPosition from a given RealPosition.
+
+        If the real motor is at this `real_pos`, then this is where my pseudo
+        position should be.
+
+        Parameters
+        ----------
+        real_pos : RealPosition
+            The real position input.
+
+        Returns
+        -------
+        pseudo_pos : PseudoPosition
+            The pseudo position output.
+        """
+        try:
+            reflection = self.get_reflection()
+        except Exception:
+            return self.PseudoPosition(energy=np.NaN)
+        real_pos = self.RealPosition(*real_pos)
+        length = (2 * np.sin(np.deg2rad(real_pos.th1C))
+                    * diffraction.d_space('C', reflection))
+        if length == 0:
+            # don't bother transforming this
+            # TODO maybe catch error in common.wave.. when send 0
+            return 0
+        energy = common.wavelength_to_energy(length) / 1000
+        return self.PseudoPosition(energy=energy)
+
+    def setE(self, energy):
+        self.set_current_position(energy)
+        return
+
+    def status_info(self):
+        """Overwrites interface status_info to make things faster."""
+        return None
+
+    def format_status_info(self, status_info):
+        """Override status info handler to render the energy c."""
+        hutch = ''
+        if 'XPP' in self.prefix:
+            hutch = 'XPP '
+        elif 'XCS' in self.prefix:
+            hutch = 'XCS '
+
+        try:
+            material = self.get_material()
+        except Exception:
+            material = 'Unknown'
+
+        if material == 'C':
+            configuration = 'Diamond'
+        elif material == 'Si':
+            configuration = 'Silicon'
+        else:
+            configuration = 'Unknown'
+
+        try:
+            energy = self.get_energy()
+            energy = f"{energy:.4f}"
+        except Exception:
+            energy = 'Unknown'
+
+        try:
+            ref = self.get_reflection()
+            ref = ''.join(map(str, ref))
+        except Exception:
+            ref = 'Unknown'
+
+        return f"""\
 {hutch}LODCM Energy C
 Current Configuration: {configuration} ({ref})
 Photon Energy: {energy} [keV]
@@ -1213,12 +1440,14 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
 
     energy_si = FCpt(LODCMEnergySi, '{self._prefix}', kind='normal')
     energy_c = FCpt(LODCMEnergyC, '{self._prefix}', kind='normal')
+    energy_c1 = FCpt(LODCMEnergyC1, '{self._prefix}', kind='normal')
     # QIcon for UX
     _icon = 'fa.share-alt-square'
 
     tab_whitelist = ['h1n_state', 'yag', 'dectris', 'diode', 'foil',
                      'remove_dia', 'tower1', 'tower2',
-                     'diag_tower', 'calc']
+                     'diag_tower', 'calc', 'E', 'EC', 'ESi', 'E1C', 'tweak_x',
+                     'tweakXC']
 
     lightpath_cpts = ['tower1.h1n_state.state']
 
@@ -1264,7 +1493,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self.h2n_state = self.tower2.h2n_state
         self.y2_state = self.tower2.y2_state
         self.chi2_state = self.tower2.chi2_state
-        # # offset positioners - tower 1
+        # offset positioners - tower 1
         self.th1Si = self.energy_si.th1Si
         self.z1Si = self.energy_si.z1Si
         self.th1C = self.energy_c.th1C
@@ -1280,7 +1509,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self.h1nSi = self.tower1.h1nSi
         self.h1pC = self.tower1.h1pC
         self.h1pSi = self.tower1.h1pSi
-        # # offset positioners - tower 2
+        # offset positioners - tower 2
         self.th2Si = self.energy_si.th2Si
         self.z2Si = self.energy_si.z2Si
         self.th2C = self.energy_c.th2C
@@ -1295,6 +1524,11 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self.h2nC = self.tower2.h2nC
         self.h2nSi = self.tower2.h2nSi
 
+        # energy aliases
+        self.EC = self.energy_c
+        self.ESi = self.energy_si
+        self.E1C = self.energy_c1
+
     @property
     def energy(self):
         material = self.get_material()
@@ -1306,6 +1540,10 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         # TODO consider "energy" proxy motor object that picks where to
         # forward the commands instead of this property
         return self.energy_c
+
+    @property
+    def E(self):
+        return self.energy
 
     def calc_lightpath_state(
         self,
@@ -1570,6 +1808,9 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
             logger.warning("z2 did not reach the desired position of %f! "
                            "Check the motors, now at %f, deadband %f" % (
                                start_z + z_value, end_z, self.z2.position))
+
+    def tweakXC(self, x, wait=False):
+        self.tweak_x(x, material='C', wait=wait)
 
     def tweak_parallel(self, p_value, material=None, wait=False):
         """

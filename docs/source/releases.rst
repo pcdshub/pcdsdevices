@@ -2,6 +2,420 @@ Release History
 ###############
 
 
+v8.3.0 (2024-02-21)
+===================
+
+Features
+--------
+- Enabled the use of custom EPS screens for Beckhoff axes via the
+  `BeckhoffAxisEPSCustom` class in `pcdsdevices.epics_motor` and
+  the accompanying ui template file.
+
+Device Updates
+--------------
+- Added ``flow_meter`` to `ArrivalTimeMonitor` in `pcdsdevices.atm`
+- Added ``flow_meter`` to `AttenuatorSXR_Ladder` in `pcdsdevices.attenuator`
+- Added ``flow_meter`` to `AttenuatorSXR_LadderTwoBladeLBD` in `pcdsdevices.attenuator`
+- Added `WaveFrontSensorTargetCool` and `WaveFrontSensorTargetFDQ` to `pcdsdevices.device_types`
+- Added flow sensor components to `FFMirror` in `pcdsdevices.mirror`
+- Added piezo pitch motors to the `ExitSlits` in `pcdsdevices.slits`
+
+New Devices
+-----------
+- Added `PhotonCollimator` to readout `flow_switch` in new module `pcdsdevices.pc`
+- Added `WaveFrontSensorTargetFDQ` to read out the `flow_meter` in `pcdsdevices.wfs`
+- Added `MFXATM` to `pcdsdevices.atm` for the unique atm unit in the MFX hutch.
+
+Bugfixes
+--------
+- Fixed an issue where `AT2L0.clear_errors` would not run properly.
+
+Maintenance
+-----------
+- Added missing regression tests for `AT2L0`.
+- Updated versions of pre-commit checks to latest and fix new flake8 errors.
+
+Contributors
+------------
+- ghalym
+- jozamudi
+- nrwslac
+- zllentz
+
+
+v8.2.0 (2023-12-19)
+===================
+
+API Breaks
+----------
+- Moved `K2700` and `IM3L0_K2700` to `keithley` submodule. This is not expected to impact any known user code.
+
+Features
+--------
+- Adds attenuator RTD temperatures to sp1k4 (`TMOSpectrometer`), for display in GUI.
+- pcdsdevices now has a `digital_signals` module for simple digital io.
+- Added `PVPositionerNoInterrupt`, a pv positioner base class whose moves
+  cannot be interrupted (and will loudly complain about any such attempts).
+
+Device Updates
+--------------
+- added `J120K` to `SxrTestAbsorber`, `XPIM`, `IM2K0`, `PowerSlits`
+- Restructured `Qadc134` with new `Qadc134Common` and `QadcLcls1Timing` parent
+  classes.
+
+New Devices
+-----------
+- `PPMCoolSwitch` ppms with cooling switch not a meter.
+- `WaveFrontSensorTargetCool` WaveFrontSensors with a cooling switch.
+- `J120K` a device class for a cooling switch.
+- Added `K6514`, `GMD` (previously unimplemented), `GMDPreAmp`, and `SXRGasAtt`, taken from
+  ``/cds/group/pcds/pyps/apps/hutch-python/tmo/tmo/tmo_beamline_control.py`` with some modifications
+- `Qadc134Lcls2`: A class for LCLS-II timing versions of the FMC134
+- New `TprTrigger` and `TprMotor` device classes in `tpr` submodule,
+  analogous to `Trigger` and `EvrMotor` from `evr` submodule
+
+Bugfixes
+--------
+- LCLSI attenuator classes (generated from the `Attenuator` factory function)
+  will now raise a much clearer error for when they cannot interrupt a
+  previous move, without trying (and failing) to interrupt the previous move.
+- Fix an issue where `BeckhoffAxis` typhos screens would overreport
+  known false alarm errors.
+
+Contributors
+------------
+- KaushikMalapati
+- nrwslac
+- slactjohnson
+- tongju12
+- zllentz
+
+
+v8.1.0 (2023-10-16)
+===================
+
+Device Updates
+--------------
+- Adds a `K2700` component to `IM3L0`.
+- Reorders the `IM3L0` components to make the `K2700` and power meter adjacent in the UI. The Keithley 2700 here is also measuring the power meter, but with a higher resolution.
+- Removes the `IM3L0` detailed screen in favor of an embedded `IM3L0_K2700` screen.
+
+New Devices
+-----------
+- Adds the new (Keithley) `K2700` class and one-off `IM3L0_K2700` instance for the `IM3L0` Keithley that uses a pydm screen instead of the default detailed screen.
+- Adds `XOffsetMirrorNoBend`: an `XOffsetMirror` that has no bender motors, like MR1L1.
+
+Bugfixes
+--------
+- The TMO Spectrometer (SP1K4) now correctly has 6 attenuator states
+  instead of 7, which was causing a myriad of issues due to other
+  internal bugs.
+
+Maintenance
+-----------
+- Fixes documentation building due to missing IPython dependency in
+  docs-extras.
+
+Contributors
+------------
+- kaushikmalapati
+- klauer
+- nrwslac
+- zllentz
+
+
+v8.0.0 (2023-09-27)
+===================
+
+API Breaks
+----------
+- Removes rarely-used TwinCAT state config PVs from `TwinCATStateConfigOne`
+  that are also being removed from the IOCs.
+  These are still available on the PLC itself.
+
+  - ``delta``
+  - ``accl``
+  - ``dccl``
+  - ``locked``
+  - ``valid``
+
+- Removes lens motors from `TMOSpectrometer` (``SP1K4``).
+
+Features
+--------
+- EPICS motors now support setattr on their ``limits`` attribute.
+  That is, you can do e.g. ``motor.limits = (0, 100)`` to set
+  the low limit to 0 and the high limit to 100.
+- Adds a blank subclass of `PPM`, `IM3L0`, to allow for screens specific to this device that don't interfere with other `PPM` devices.
+- Adds a ``IM3L0.detailed.ui`` template to add embedded Keithley readout screen to detailed screen for `IM3L0`.
+  `IM3L0` has a Keithley multimeter added to it for higher-resolution readouts of its power meter.
+- ND (N-dimensional) TwinCAT states are now supported.
+- Updates supported positioner typhos templates to use the new row widget,
+  ``TyphosPositionerRowWidget``.
+
+Device Updates
+--------------
+- Updates limits for `LaserTiming`, `LaserTimingCompensation`, and `LxtTtcExample` from +/-10us to +/-100us.
+- Adds missing ``pump_state`` (``:STATE_RBV``) signal to `PTMPLC`.
+- Adds chin guard RTDs to `FFMirrorZ` in `mirror.py`.
+- `LODCM`: Adds the ``E1C`` pseudo-interface for moving only the first tower energy.
+- `SmarAct`: Adds signals for performing axis calibration and checking calibration status.
+- Adds laser destination 1 (LD1), where a diagnostics box is installed, to
+  the Laser Beam Transport System (BTPS) state configuration.  Updates
+  overview and configuration screens to display LD1.
+- ``TwinCATInOutPositioner`` by default now uses 2 states as its name implies
+  (excluding the "unknown" transition sate), with one representing the "out"
+  state and one representing the "in" state.
+- `XOffsetMirrorSwitch`: adds ``cool_flow1``, ``cool_flow2``, and ``cool_press``.
+- `XOffsetMirrorSwitch` gets component reordering.
+- Adds TIXEL Manipulator motors to `LAMPMagneticBottle`.
+- Adds twincat states and the ST3K4 automation switch to the SXR test absorber.
+  This device is ``pcdsdevices.sxr_test_absorber.SxrTestAbsorber`` and is named ST1K4.
+- Includes the Fresnel Zone Plate (FZP) 3D states on the `TMOSpectrometer` device.
+- `TMOSpectrometer` (``SP1K4``): adds two new motors for solid attenuator and one for thorlabs lens x.
+- Add the following signals to `BeckhoffAxis`:
+  - ``enc_count``: the raw encoder count.
+  - ``pos_diff``: the distance between the readback and trajectory setpoint.
+  - ``hardware_enable``: an indicator for hardware enable signals, such as STO buttons.
+- Added new PVS to `OpticsPitchNotepad` for storing the ``MR2L3`` channel-cut monochromator (CCM) pitch position setpoints for its two coatings.
+
+New Devices
+-----------
+- `FDQ` flow meter implemented in ``analog_signals.py``.
+- `PPMCOOL` added to ``pim.py``.
+- `KBOMirrorChin` added to ``mirror.py``
+- `SQR1Axis`: A class representing a single axis of the tri-sphere motion system. It inherits
+  from PVPositionerIsClose and includes attributes for setpoint, readback, actuation, and
+  stopping the motion.
+- `SQR1`: A class representing the entire tri-sphere motion system. It is a Device that
+  aggregates multiple SQR1Axis instances for each axis. It also includes methods for
+  multi-axis movement and stopping the motion.
+- Includes example devices and components that correspond to
+  `lcls-plc-example-motion <https://github.com/pcdshub/lcls-plc-example-motion>`_.
+- Adds `BeckhoffAxisEPS`, which has the new-style EPS PVs on its directional and power enables.
+  These correspond to structured EPS logic on the PLC that can be inspected from higher level applications.
+
+Bugfixes
+--------
+- `KBOMirrorHE` in `mirror.py` only has 1 flow sensor per mirror, so remove one.
+- Fixes an issue where the generic `Motor` factory function would not recognize devices with
+  ``MCS2`` in the PV name. These are now recognized as `SmarAct` devices.
+
+Maintenance
+-----------
+- Updates `BtpsState` comments and logic to help guide future port additions.
+- TwinCAT state devices now properly report that their ``state_velo``
+  should be visualized with 3 decimal places instead of with 0.
+  This caused no issues in hutch-python and was patched as a bug in
+  typhos, and is done for completeness here.
+
+Contributors
+------------
+- baljamal
+- jozamudi
+- kaushikmalapati
+- klauer
+- nrwslac
+- slactjohnson
+- tongju12
+- vespos
+- zllentz
+
+
+v7.4.3 (2023-07-11)
+===================
+
+Bugfixes
+--------
+- Fix typo in zoom motor prefix for PIM devices.
+
+Maintenance
+-----------
+- Fix conda recipe test-requires.
+- Remove sqlalchemy and xraydb pins from requirements.txt.
+  These were pinned because the most recent versions of these packages
+  were previously incompatible with each other. This has since been resolved.
+
+Contributors
+------------
+- tangkong
+- vespos
+- zllentz
+
+
+v7.4.2 (2023-07-07)
+===================
+
+Device Updates
+--------------
+- ``.screen()`` and ``.post_elog_status()`` methods were added to the
+  BaseInterface whitelist for tab completion.
+
+Contributors
+------------
+- klauer
+
+
+v7.4.1 (2023-06-30)
+===================
+
+Device Updates
+--------------
+- QminiSpectrometer: Added some new PVs and modified others related to recent
+  IOC changes. Embedded UI was updated to reflect this.
+
+Maintenance
+-----------
+- unpin pyqt, with the hope of supporting py3.11
+
+Contributors
+------------
+- slactjohnson
+- tangkong
+
+
+v7.4.0 (2023-05-08)
+===================
+
+Device Updates
+--------------
+- `IMS` class:
+
+  - Added special parameter manager/questionnaire handling.
+    On load from the questionnaire, grab questionnaire stage identities
+    and apply them to the parameter manager for the given PV.
+  - Added functions that allow the user to see the given configuration
+    parameters or the current parameters of that base PV.
+
+    - See `IMS.get_configuration_values`
+    - See `IMS.get_current_values`
+
+  - Return the output of `IMS.diff_configuration` as a ``PrettyTable``
+    instead of as a dictionary, making it much easier to understand.
+
+- Updated `HXRSpectrometer` filter wheel with its state PV.
+  Previously, only the raw motor device was available.
+
+Contributors
+------------
+- spenc333
+- tangkong
+- zllentz
+
+
+v7.3.0 (2023-04-17)
+===================
+
+Device Updates
+--------------
+- LODCM: Add energy setpoint and tweakXC.
+- LODCM: fix energy functionality and add commonly used aliases.
+- LasBasler: Add a new signal that can be used to auto-configure a camera based on an internal dictionary.
+
+New Devices
+-----------
+- PCDSAreaDetectorTyphos class: Add in signals for camera binning and region size control.
+- LasBaslerNF: A Basler camera intended to be used as a near-field diagnostic.
+- LasBaslerFF: A Basler camera intended to be used as a far-field diagnostic.
+
+Contributors
+------------
+- slactjohnson
+- tangkong
+- vespos
+- zllentz
+
+
+v7.2.0 (2023-04-04)
+===================
+
+Features
+--------
+- Added a ``diff_configuration`` function to the `IMS` class in
+  ``epics_motor.py`` that compares the desired motor pv settings with the
+  current configuration assigned in the parameter manager.
+- Made `IMS` pmgr only search through ``USR`` objects.
+
+Device Updates
+--------------
+- Adds a preliminary attenuator class `AT1K2` and base classes for similar
+  two-blade ladder attenuators designed by JJ X-ray.
+- Adds some PVs for `RohdeSchwarzPowerSupply`.
+- Update `LusiSlits` to include individual blade controls.
+- Add cooling PVs for `XOffsetMirrorBend`: ``FWM:*_RBV`` and ``PRSM:*_RBV``.
+- For `KBOMirrorHE`, set PVs to ``FWM`` and ``PRSM`` to match the ccc list.
+- For `Mono`, set PVs to ``FWM`` and ``PRSM`` to match the ccc list.
+- For `EllBase`, change the base class to enable scanning via ``bluesky``.
+- `CCM` energy moves no longer print about the PID loop being killed.
+  This was a leftover debug print.
+
+New Devices
+-----------
+- Adds Leviton device classes and corresponding happi container for use in the
+  Facility Monitoring System (fms).
+- Adds `XOffsetMirrorStateCool` for offset mirrors with state and cooling.
+- Adds Device support for stoppers using ``FB_MotionPneumaticActuator`` on the PLC.
+  Users can now interface with these stoppers using the `BeckhoffPneumatic` class.
+- Adds `VCN_VAT590` class for controlling the ``VAT590`` variant of the variable
+  controlled needle valve.
+- Adds `RTDSX0ThreeStage` class, a 3DoF motion stage for Solid Drilling experiments
+  in the EBD's RTDS chambers.
+
+Bugfixes
+--------
+- Fixes lightpath logic for `XPPLODCM` to use the correct line and show full
+  transmission when splitting beam.
+- Fix an issue where `PseudoPositioner` devices defined in this module
+  but running from separate terminals would fight over control of the
+  ``ophyd_readback`` helper signal, a PV that can be used to monitor
+  progress of the calculated readback.
+- Certain PIMs, such as ``cxi_dg1_pim``, did not work properly because pcdsdevices
+  assumed that these devices had a "DIODE" state, which is not necessarily
+  true. This has been fixed by making all `PIM` objects autodiscover their states from
+  EPICS.
+
+Maintenance
+-----------
+- Fix an issue with the pre-commit config pointing to a missing mirror.
+- Add `AT1K2` and `AT2K2` to the attenuator smoke tests.
+- Adding symbolic links for `AT1K2` so that screens generate in a nice,
+  organized way (like other SXR Attenuators)
+- Pinning numpy to 1.23 to temporarily fix CI test suite.
+- ``pcdsdevices`` no longer uses Travis CI and has migrated to GitHub Actions for
+  continuous integration, testing, and documentation deployment.
+- ``pcdsdevices`` has been migrated to use setuptools-scm, replacing versioneer, as
+  its version-string management tool of choice.
+- ``pcdsdevices`` has been migrated to use the modern ``pyproject.toml``, replacing
+  ``setup.py`` and related files.
+- Older language features and syntax found in the repository have been updated
+  to Python 3.9+ standards by way of ``pyupgrade``.
+- Sphinx 6.0 is now supported for documentation building.
+- ``docs-versions-menu`` replaces ``doctr-versions-menu`` and ``doctr`` usage
+  for documentation deployment on GitHub Actions.  The deployment key is now
+  no longer required.
+- Removed ``CoatingState`` class, used `reorder_components` instead.
+- Specified compatible xraydb and sqlalchemy versions in requirements files.
+- Testing dependencies are now specified in the conda recipe for conda-based
+  installations. ``dev-requirements.txt`` continues to be used for pip-based
+  installations.
+
+Contributors
+------------
+- klauer
+- ljansen7
+- mcb64
+- mkestra
+- nrwslac
+- slactjohnson
+- spenc333
+- tangkong
+- tongju12
+- vespos
+- wwright-slac
+- zllentz
+
+
+
 v7.1.0 (2022-11-04)
 ===================
 

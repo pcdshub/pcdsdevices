@@ -18,11 +18,13 @@ from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
 from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
 from pcdsutils.ext_scripts import get_hutch_name
+from prettytable import PrettyTable
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
 from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
+from .eps import EPS
 from .interface import FltMvInterface
 from .pseudopos import OffsetMotorBase, delay_class_factory
 from .registry import device_registry
@@ -176,16 +178,42 @@ Limit Switch: {switch_limits}
 """
 
     @property
-    def limits(self):
+    def limits(self) -> tuple[float, float]:
         """Override the limits attribute"""
         return self._get_epics_limits()
 
-    def _get_epics_limits(self):
+    def _get_epics_limits(self) -> tuple[float, float]:
         limits = self.user_setpoint.limits
         if limits is None or limits == (None, None):
             # Not initialized
             return (0, 0)
         return limits
+
+    @limits.setter
+    def limits(self, lims: tuple[float, float]):
+        """
+        Write to the epics limits on setattr
+
+        Expects a tuple of two elements, the low and high limits to set.
+        """
+        # Wrong len is probably a bigger mistake
+        if len(lims) != 2:
+            raise ValueError("Limits should be a tuple of 2 values.")
+        # Adjust for moment of dsylexia
+        low = min(lims)
+        high = max(lims)
+        if low == high:
+            # User probably meant to disable limits
+            low = 0
+            high = 0
+        orig_high = self.high_limit_travel.get()
+        if low > orig_high:
+            # Set high first so we make room for low
+            self.high_limit_travel.put(high)
+            self.low_limit_travel.put(low)
+        else:
+            self.low_limit_travel.put(low)
+            self.high_limit_travel.put(high)
 
     def enable(self):
         """
@@ -612,6 +640,8 @@ class IMS(PCDSMotorBase):
         'clear_.*',
         'configure',
         'get_configuration',
+        'get_configuration_values',
+        'get_current_values',
         'find_configuration',
         'diff_configuration'
     ]
@@ -735,6 +765,34 @@ class IMS(PCDSMotorBase):
             status_wait(st, timeout=timeout)
         return st
 
+    @property
+    def md(self):
+        if self._md is None:
+            raise AttributeError('Device does not have an attached md, '
+                                 'and was likely not initialized from happi')
+        return self._md
+
+    @md.setter
+    def md(self, new_md):
+        """ initialize attributes when md is set """
+        self._md = new_md
+        self._extra = self._md.extraneous
+        self._id = self._extra.get('_id')
+        self._pvbase = self._extra.get('pvbase')
+        self._stageidentity = self._extra.get('stageidentity')
+        if self._stageidentity is None:
+            logger.warning(f"Stage Identity has not been set for this object: {self._id}. Configure manually.")
+            return
+        elif self._stageidentity == "NEW":
+            logger.warning(f"This is a new stage, parameter manager configuration does not exist yet. Please manually configure {self._id}")
+            return
+        else:
+            try:
+                IMS._setup_and_check_pmgr()
+                self._pm.set_config(self._pvbase, self._stageidentity)
+            except Exception:
+                return
+
     def configure(self, cfgname=None):
         """
         Use the parameter manager to configure the motor.
@@ -757,6 +815,47 @@ class IMS(PCDSMotorBase):
         """
         self._setup_and_check_pmgr()
         return self._pm.get_config(self.prefix)
+
+    def get_configuration_values(self, cfgname=None):
+        """
+        Return the current configuration parameters of the motor
+        in the parameter manager
+
+        Parameters
+        ----------
+        cfgname : str
+               The name of the configuration
+
+        Returns
+        -------
+        A dictionary mapping field names to the configured values
+        """
+        self._setup_and_check_pmgr()
+        if not cfgname:
+            cfgname = self.get_configuration()
+        return self._pm.get_config_values(cfgname)
+
+    def get_current_values(self, pv=None):
+        """
+        Returns the current parameters for a given pv.
+
+        Parameters
+        ----------
+        pv : str
+          Default is None
+
+        Returns
+        -------
+        cdict : dict
+            A dictionary mapping field names (str) to values.
+        """
+
+        pv = self.prefix
+        self._setup_and_check_pmgr()
+
+        self._pm.update_db()
+        o = self._pm._search(self._pm.pm.objs, 'rec_base', pv)
+        return self._pm.pm.getActualConfig(o['id'])
 
     @staticmethod
     def find_configuration(pattern, case_insensitive=True, display=30):
@@ -803,14 +902,23 @@ class IMS(PCDSMotorBase):
 
         Returns
         -------
-        diff : dict
-            A dictionary mapping field names to (actual, config) tuples of
-            differing values.
+        diff : PrettyTable
+            A table with headers "Parameter", "Actual", and "Configuration",
+            showing the differences between the live values and the configured
+            values.
 
         Raises an exception if the comparison fails for any reason.
         """
         IMS._setup_and_check_pmgr()
-        return self._pm.diff_config(self.prefix, cfgname)
+
+        d = self._pm.diff_config(self.prefix, cfgname)
+        table = PrettyTable()
+        table.field_names = ["Parameter", "Actual", "Configuration"]
+        for key, value in d.items():
+            actual = value[0]
+            configuration = value[1]
+            table.add_row([key, actual, configuration])
+        return table
 
     @staticmethod
     def setup_pmgr():
@@ -976,15 +1084,23 @@ class MMC100(PCDSMotorBase):
 
 
 class BeckhoffAxisPLC(Device):
-    """Error handling for the Beckhoff Axis PLC code."""
+    """
+    Error handling, debug, and aux functions for the Beckhoff Axis PLC code.
+    """
     status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
                  string=True, doc='PLC error or warning')
     err_bool = Cpt(PytmcSignal, 'bError', io='i', kind='normal',
                    doc='True if there is some sort of error.')
     err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal',
                    doc='Current NC error code')
-    cmd_err_reset = Cpt(EpicsSignal, 'bReset', kind='normal',
+    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='io', kind='normal',
                         doc='Command to reset an active error')
+    enc_count = Cpt(PytmcSignal, 'nEncoderCount', io='i', kind='normal',
+                    doc='Raw encoder count for this motor.')
+    posdiff = Cpt(PytmcSignal, 'fPosDiff', io='i', kind='normal',
+                  doc='Difference between trajectory setpoint and readback.')
+    hardware_enable = Cpt(PytmcSignal, 'bHardwareEnable', io='i', kind='normal',
+                          doc='TRUE if motor has its hardware enable.')
     cmd_home = Cpt(PytmcSignal, 'bHomeCmd', io='o', kind='normal',
                    doc='Start TwinCAT homing routine.')
     home_pos = Cpt(PytmcSignal, 'fHomePosition', io='io', kind='config',
@@ -997,6 +1113,19 @@ class BeckhoffAxisPLC(Device):
     set_metadata(cmd_home, dict(variety='command-proc',
                                 value=1,
                                 tags={"confirm"}))
+
+
+class BeckhoffAxisPLCEPS(BeckhoffAxisPLC):
+    """
+    Extended BeckhoffAxisPLC with relevant EPS fields.
+
+    This is to be used in BeckhoffAxisEPS for cases when the motor
+    has EPS considerations. Otherwise, these fields are not active
+    in PLC logic and are distracting or confusing.
+    """
+    eps_forward = Cpt(EPS, "stEPSF:", doc="EPS forward enables.")
+    eps_backward = Cpt(EPS, "stEPSB:", doc="EPS backward enables.")
+    eps_power = Cpt(EPS, "stEPSP:", doc="EPS power enables.")
 
 
 class BeckhoffAxis(EpicsMotorInterface):
@@ -1013,7 +1142,7 @@ class BeckhoffAxis(EpicsMotorInterface):
     tab_whitelist = ['clear_error']
 
     plc = Cpt(BeckhoffAxisPLC, ':PLC:', kind='normal',
-              doc='PLC error handling.')
+              doc='PLC error handling and aux functions.')
     motor_spmg = Cpt(EpicsSignal, '.SPMG', kind='config',
                      doc='Stop, Pause, Move, Go')
 
@@ -1158,10 +1287,35 @@ class BeckhoffAxis(EpicsMotorInterface):
             )
 
 
+class BeckhoffAxisEPS(BeckhoffAxis):
+    """
+    A beckhoff axis where the EPS indicators are relevant.
+
+    This is to be used for cases when the motor has EPS considerations.
+    Otherwise, these fields are not active in PLC logic and are distracting
+    or confusing.
+    """
+    plc = Cpt(BeckhoffAxisPLCEPS, ':PLC:', kind='normal',
+              doc='PLC error handling, aux functions, and EPS.')
+
+
+class BeckhoffAxisEPSCustom(BeckhoffAxis):
+    """
+    A beckhoff axis where custom EPS Logic has been implemented in
+    a PLC and needs a custom screen to display EPS information
+
+    EPS screens are found in
+    /cds/group/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}
+
+    """
+    pass
+
+
 class BeckhoffAxisPLC_Pre140(BeckhoffAxisPLC):
     """
     Disable some newly introduced signals.
     """
+    posdiff = None
     cmd_home = None
     home_pos = None
     user_enable = None
@@ -1176,7 +1330,7 @@ class BeckhoffAxis_Pre140(BeckhoffAxis):
     introduced.
     """
     plc = Cpt(BeckhoffAxisPLC_Pre140, ':PLC:', kind='normal',
-              doc='PLC error handling.')
+              doc='PLC error handling and aux functions.')
 
     def home(self, *args, **kwargs):
         """
@@ -1310,6 +1464,12 @@ class SmarAct(EpicsMotorInterface):
     # Positioner type - only useful for encoded stages
     pos_type = Cpt(EpicsSignal, ':PTYPE_RBV', write_pv=':PTYPE', kind='config')
 
+    # Calibration - only works for encoded stages
+    needs_calib = Cpt(EpicsSignalRO, ':NEED_CALIB', kind='config')
+
+    do_calib = Cpt(EpicsSignal, ':DO_CALIB.PROC', kind='config')
+    set_metadata(do_calib, dict(variety='command-proc', value=1))
+
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
     open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
@@ -1328,7 +1488,8 @@ def _GetMotorClass(basepv):
                    ('MMC', MMC100),
                    ('MMB', BeckhoffAxis),
                    ('PIC', PCDSMotorBase),
-                   ('MCS', SmarAct))
+                   ('MCS', SmarAct),
+                   ('MCS2', SmarAct))
     # Search for component type in prefix
     for cpt_abbrev, _type in motor_types:
         if f':{cpt_abbrev}:' in basepv:
@@ -1368,6 +1529,8 @@ def Motor(prefix, **kwargs):
     | PIC           | :class:`.PCDSMotorBase` |
     +---------------+-------------------------+
     | MCS           | :class:`.SmarAct`       |
+    +---------------+-------------------------+
+    | MCS2          | :class:`.SmarAct`       |
     +---------------+-------------------------+
 
     Parameters

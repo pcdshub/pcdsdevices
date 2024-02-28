@@ -29,12 +29,14 @@ from ophyd.status import wait as status_wait
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
-from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset, PCDSMotorBase
+from .digital_signals import J120K
+from .epics_motor import (BeckhoffAxis, BeckhoffAxisNoOffset, EpicsMotor,
+                          PCDSMotorBase)
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin, MvInterface)
 from .pmps import TwinCATStatePMPS
 from .sensors import RTD, TwinCATTempSensor
-from .signal import NotImplementedSignal, PytmcSignal
+from .signal import PytmcSignal
 from .sim import FastMotor
 from .utils import get_status_float, get_status_value, schedule_task
 from .variety import set_metadata
@@ -622,7 +624,8 @@ class PowerSlits(BeckhoffSlits):
     """
 
     rtds = DDCpt(_rtd_fields(RTD, 'rtd', range(1, 9)))
-    fsw = Cpt(NotImplementedSignal, ':FSW', kind='normal')
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')
 
 
 class ExitSlitTarget(TwinCATStatePMPS):
@@ -644,16 +647,18 @@ class ExitSlits(BaseInterface, GroupDevice, LightpathInOutCptMixin):
                  doc='Control of the YAG  stack via saved positions.')
     yag_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:YAG', kind='normal',
                     doc='Direct control of the Yag Stack motor.')
-    pitch_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:PITCH', kind='normal',
-                      doc='Direct control of the slits assembly pitch  motor.')
-    vert_motor = Cpt(
-        BeckhoffAxisNoOffset, ':MMS:VERT', kind='normal',
-        doc='Direct control of the slits assembly vertical motor.'
-    )
-    roll_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:ROLL', kind='normal',
-                     doc='Direct control of the slits assembly roll motor.')
     gap_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:GAP', kind='normal',
                     doc='Direct control of the slits gap  motor.')
+    upper_crystal_pitch_motor = Cpt(EpicsMotor, ':MMZ:PITCH:TOP', kind='normal',
+                                    doc='Direct control of the upper slits assembly piezo pitch  motor.')
+    lower_crystal_pitch_motor = Cpt(EpicsMotor, ':MMZ:PITCH:BOTTOM', kind='normal',
+                                    doc='Direct control of the lower slits assembly piezo pitch  motor.')
+    pitch_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:PITCH', kind='normal',
+                      doc='Direct control of the slits assembly pitch  motor.')
+    vert_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:VERT', kind='normal',
+                     doc='Direct control of the slits assembly vertical motor.')
+    roll_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:ROLL', kind='normal',
+                     doc='Direct control of the slits assembly roll motor.')
     detector = Cpt(PCDSAreaDetectorTyphosTrigger, ':CAM:', kind='normal',
                    doc='Area detector settings and readbacks.')
     cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',

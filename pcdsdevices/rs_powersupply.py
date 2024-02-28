@@ -17,7 +17,6 @@ class RSChannel(Device):
     name: str, keyword-only
         A name to refer to the relevant Rohde-Schwarz channel.
     """
-
     current = Cpt(EpicsSignal, 'CURR', kind='normal',
                   doc='Current Setpoint in Amps')
     current_step = Cpt(EpicsSignal, 'CURR_STEP', write_pv='CURR_STEP',
@@ -51,6 +50,14 @@ class RohdeSchwarzPowerSupply(Device):
     name: str, keyword-only
         A name to refer to the relevant RohdeSchwazPowersupply.
     """
+    re_connect = Cpt(EpicsSignal, ':RECONNECT', kind='normal',
+                     doc='Connect button')
+    id = Cpt(EpicsSignal, ':IDN', kind='hinted',
+             doc='Device ID')
+    remote_mode = Cpt(EpicsSignal, ':MODE', kind='normal',
+                      doc='Remote mode')
+    output = Cpt(EpicsSignal, ':OUTPUT', kind='normal',
+                 doc='Turn on/off all channel outputs')
 
     ch1 = Cpt(RSChannel, ':1:', kind='normal')
     ch2 = Cpt(RSChannel, ':2:', kind='normal')
