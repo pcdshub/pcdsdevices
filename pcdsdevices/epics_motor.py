@@ -1405,7 +1405,7 @@ class SmarActOpenLoop(Device):
 
 class SmarActTipTilt(Device):
     """
-    Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirro
+    Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirror
     positioning configuration into a single device.
 
     Parameters:
@@ -1469,6 +1469,18 @@ class SmarAct(EpicsMotorInterface):
 
     do_calib = Cpt(EpicsSignal, ':DO_CALIB.PROC', kind='config')
     set_metadata(do_calib, dict(variety='command-proc', value=1))
+
+    # Configuration for settings in NVRAM
+    log_scale_offset = Cpt(EpicsSignal, ':LSCO', write_pv=':SET_LSCO',
+                           kind='omitted', doc='Logical Scale Offset')
+    def_range_min = Cpt(EpicsSignal, ':DRMIN', write_pv=':SET_DRMIN',
+                        kind='omitted', doc='Default Range Minimum')
+    def_range_max = Cpt(EpicsSignal, ':DRMAX', write_pv=':SET_DRMAX',
+                        kind='omitted', doc='Default Range Maximum')
+    log_scale_inv = Cpt(EpicsSignal, ':LSCI_RBV', write_pv=':SET_LSCI',
+                        kind='omitted', doc='Default Range Minimum')
+    dist_code_inv = Cpt(EpicsSignal, ':DCIN_RBV', write_pv=':SET_DCIN',
+                        kind='omitted', doc='Distance Code Inversion')
 
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
