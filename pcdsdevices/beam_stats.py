@@ -177,7 +177,7 @@ class BeamEnergyRequestNoWait(BeamEnergyRequest, PVPositionerDone):
     It will report done immediately and ignore moves that are smaller than
     atol.
     """
-    atol = 5
+    atol = 0.5
 
     # All done-related functionality is inherited from PVPositionerDone
     # Just implement skip_small_moves's default
