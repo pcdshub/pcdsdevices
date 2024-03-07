@@ -995,8 +995,9 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
 
     lightpath_cpts = ['x.up.user_readback']
     tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_Vernier',
-                     'th2fine', 'alio2E', 'E2alio', 'alio', 'home',
-                     'kill', 'insert', 'remove', 'inserted', 'removed']
+                     'energy_with_acr_status', 'th2fine', 'alio2E', 'E2alio',
+                     'alio', 'home', 'kill', 'insert', 'remove', 'inserted',
+                     'removed']
 
     _in_pos: float
     _out_pos: float

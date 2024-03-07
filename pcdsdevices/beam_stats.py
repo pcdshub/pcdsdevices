@@ -12,6 +12,7 @@ from ophyd.sim import fake_device_cache, make_fake_device
 from .interface import BaseInterface, FltMvInterface
 from .pv_positioner import PVPositionerDone
 from .signal import AvgSignal
+from .utils import re_arg
 
 logger = logging.getLogger(__name__)
 
@@ -33,19 +34,6 @@ class BeamStats(BaseInterface, Device):
 
     def __init__(self, prefix='', name='beam_stats', **kwargs):
         super().__init__(prefix=prefix, name=name, **kwargs)
-
-
-def re_arg(kwarg_map):
-    def decorator(func):
-        def wrapped(*args, **kwargs):
-            new_kwargs = {}
-            for k, v in kwargs.items():
-                if k in kwarg_map:
-                    print(f"DEPRECATION WARNING: keyword argument '{k}' is no longer valid. Use '{kwarg_map[k]}' instead.")
-                new_kwargs[kwarg_map.get(k, k)] = v
-            return func(*args, **new_kwargs)
-        return wrapped
-    return decorator
 
 
 class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
