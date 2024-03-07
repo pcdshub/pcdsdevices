@@ -176,8 +176,8 @@ def test_vernier(fake_ccm):
     assert pseudopos.acr_energy.position == 9000
 
     # Small moves (less than 30eV) should be skipped on the energy request
-    pseudopos.move(9.001, wait=False)
-    assert np.isclose(pseudopos.energy.position, 9.001)
+    pseudopos.move(9.0001, wait=False)
+    assert np.isclose(pseudopos.energy.position, 9.0001)
     assert pseudopos.acr_energy.position == 9000
 
     # Unless we set the option for not skipping them
