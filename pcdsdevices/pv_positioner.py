@@ -5,6 +5,7 @@ from typing import Callable, Optional
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.pv_positioner import PVPositioner
+from ophyd.signal import EpicsSignal
 
 from .interface import FltMvInterface
 from .signal import InternalSignal
@@ -271,3 +272,7 @@ class PVPositionerNoInterrupt(PVPositioner):
             )
         else:
             return super().move(position, wait=wait, timeout=timeout, moved_cb=moved_cb)
+
+
+class OnePVMotor(PVPositionerDone):
+    setpoint = Cpt(EpicsSignal, "")
