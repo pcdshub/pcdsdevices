@@ -216,3 +216,49 @@ def test_new_attenuator_smoke(fake_new_attenuator):
             fake_new_attenuator.status_info()
         )
     )
+
+
+@pytest.fixture(scope="function")
+def at2l0(request):
+    at2l0 = make_fake_device(AT2L0)("AT2L0:", name=f"fake_at2l0_for_{request.function}")
+    for walk in at2l0.walk_signals():
+        try:
+            if "message" in walk.dotted_name:
+                walk.item.sim_put("")
+            else:
+                walk.item.sim_put(0)
+        except AttributeError:
+            ...
+        walk.item._metadata["severity"] = 0
+    return at2l0
+
+
+def test_at2l0_error_summary(at2l0):
+    assert at2l0.error_summary.get() == "No Errors"
+    at2l0.blade_05.state.error_message.sim_put("test error")
+    assert "test error" in at2l0.error_summary.get()
+
+
+def test_at2l0_error_bitmask(at2l0):
+    assert at2l0.error_summary_bitmask.get() == 0
+    # blade_01 intentionally ignored (mirror)
+    at2l0.blade_01.motor.plc.err_code.sim_put(1)
+    assert at2l0.error_summary_bitmask.get() == 0
+    at2l0.blade_19.motor.plc.err_code.sim_put(1)
+    # bitmask intentionally reversed (better for ui)
+    assert at2l0.error_summary_bitmask.get() == 0b1
+    at2l0.blade_17.motor.plc.err_code.sim_put(1)
+    assert at2l0.error_summary_bitmask.get() == 0b101
+
+
+def test_at2l0_clear_errors(at2l0):
+    signals = []
+    for blade_num in range(1, 20):
+        blade_obj = getattr(at2l0, f"blade_{blade_num:02}")
+        signals.append(blade_obj.motor.plc.cmd_err_reset)
+        signals.append(blade_obj.state.reset_cmd)
+    for sig in signals:
+        assert not sig.get()
+    at2l0.clear_errors()
+    for sig in signals:
+        assert sig.get()

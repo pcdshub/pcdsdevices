@@ -8,6 +8,7 @@ pcdsdevices.analog_signals
     :toctree: generated
 
     pcdsdevices.analog_signals.Acromag
+    pcdsdevices.analog_signals.FDQ
     pcdsdevices.analog_signals.Mesh
     pcdsdevices.analog_signals.acromag_ch_factory_func
 
@@ -70,6 +71,7 @@ pcdsdevices.atm
 
     pcdsdevices.atm.ATMTarget
     pcdsdevices.atm.ArrivalTimeMonitor
+    pcdsdevices.atm.MFXATM
     pcdsdevices.atm.TM1K4
     pcdsdevices.atm.TM1K4Target
     pcdsdevices.atm.TM2K2
@@ -107,6 +109,7 @@ pcdsdevices.attenuator
     pcdsdevices.attenuator.GasAttenuator
     pcdsdevices.attenuator.GattApertureX
     pcdsdevices.attenuator.GattApertureY
+    pcdsdevices.attenuator.SXRGasAtt
     pcdsdevices.attenuator.SXRLadderAttenuatorBlade
     pcdsdevices.attenuator.SXRLadderAttenuatorStates
     pcdsdevices.attenuator.get_blade_enum
@@ -199,6 +202,14 @@ pcdsdevices.device
     pcdsdevices.device.InterfaceDevice
     pcdsdevices.device.to_interface
 
+pcdsdevices.digital_signals
+---------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.digital_signals.J120K
+
 pcdsdevices.digitizers
 ----------------------
 
@@ -236,6 +247,7 @@ pcdsdevices.energy_monitor
 
     pcdsdevices.energy_monitor.GEM
     pcdsdevices.energy_monitor.GMD
+    pcdsdevices.energy_monitor.GMDPreAmp
     pcdsdevices.energy_monitor.XGMD
 
 pcdsdevices.epics_motor
@@ -245,8 +257,11 @@ pcdsdevices.epics_motor
     :toctree: generated
 
     pcdsdevices.epics_motor.BeckhoffAxis
+    pcdsdevices.epics_motor.BeckhoffAxisEPS
+    pcdsdevices.epics_motor.BeckhoffAxisEPSCustom
     pcdsdevices.epics_motor.BeckhoffAxisNoOffset
     pcdsdevices.epics_motor.BeckhoffAxisPLC
+    pcdsdevices.epics_motor.BeckhoffAxisPLCEPS
     pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140
     pcdsdevices.epics_motor.BeckhoffAxis_Pre140
     pcdsdevices.epics_motor.EpicsMotorInterface
@@ -263,6 +278,14 @@ pcdsdevices.epics_motor
     pcdsdevices.epics_motor.SmarActOpenLoopPositioner
     pcdsdevices.epics_motor.SmarActTipTilt
 
+pcdsdevices.eps
+---------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.eps.EPS
+
 pcdsdevices.evr
 ---------------
 
@@ -271,6 +294,19 @@ pcdsdevices.evr
 
     pcdsdevices.evr.EvrMotor
     pcdsdevices.evr.Trigger
+
+pcdsdevices.example
+-------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.example.Example3D
+    pcdsdevices.example.Example3DStates
+    pcdsdevices.example.ExampleL2L
+    pcdsdevices.example.ExampleL2LStates
+    pcdsdevices.example.PLCExampleMotion
+    pcdsdevices.example.PLCOnlyXPIM
 
 pcdsdevices.fms
 ---------------
@@ -410,6 +446,16 @@ pcdsdevices.jet
     pcdsdevices.jet.BeckhoffJetSlits
     pcdsdevices.jet.Injector
     pcdsdevices.jet.InjectorWithFine
+
+pcdsdevices.keithley
+--------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.keithley.IM3L0_K2700
+    pcdsdevices.keithley.K2700
+    pcdsdevices.keithley.K6514
 
 pcdsdevices.lamp_motion
 -----------------------
@@ -571,6 +617,7 @@ pcdsdevices.lodcm
     pcdsdevices.lodcm.H2N
     pcdsdevices.lodcm.LODCM
     pcdsdevices.lodcm.LODCMEnergyC
+    pcdsdevices.lodcm.LODCMEnergyC1
     pcdsdevices.lodcm.LODCMEnergySi
     pcdsdevices.lodcm.SimDiagnosticsTower
     pcdsdevices.lodcm.SimEnergyC
@@ -628,6 +675,7 @@ pcdsdevices.mirror
     pcdsdevices.mirror.FFMirrorZ
     pcdsdevices.mirror.Gantry
     pcdsdevices.mirror.KBOMirror
+    pcdsdevices.mirror.KBOMirrorChin
     pcdsdevices.mirror.KBOMirrorHE
     pcdsdevices.mirror.KBOMirrorHEStates
     pcdsdevices.mirror.KBOMirrorStates
@@ -640,6 +688,7 @@ pcdsdevices.mirror
     pcdsdevices.mirror.TwinCATMirrorStripe
     pcdsdevices.mirror.XOffsetMirror
     pcdsdevices.mirror.XOffsetMirrorBend
+    pcdsdevices.mirror.XOffsetMirrorNoBend
     pcdsdevices.mirror.XOffsetMirrorRTDs
     pcdsdevices.mirror.XOffsetMirrorState
     pcdsdevices.mirror.XOffsetMirrorStateCool
@@ -701,6 +750,14 @@ pcdsdevices.mrco_motion
 
     pcdsdevices.mrco_motion.MRCO
 
+pcdsdevices.pc
+--------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.pc.PhotonCollimator
+
 pcdsdevices.piezo
 -----------------
 
@@ -718,6 +775,7 @@ pcdsdevices.pim
     :toctree: generated
 
     pcdsdevices.pim.IM2K0
+    pcdsdevices.pim.IM3L0
     pcdsdevices.pim.LCLS2ImagerBase
     pcdsdevices.pim.LCLS2Target
     pcdsdevices.pim.PIM
@@ -726,6 +784,8 @@ pcdsdevices.pim
     pcdsdevices.pim.PIMWithLED
     pcdsdevices.pim.PIMY
     pcdsdevices.pim.PPM
+    pcdsdevices.pim.PPMCOOL
+    pcdsdevices.pim.PPMCoolSwitch
     pcdsdevices.pim.PPMPowerMeter
     pcdsdevices.pim.XPIM
     pcdsdevices.pim.XPIMFilterWheel
@@ -813,6 +873,21 @@ pcdsdevices.pv_positioner
     pcdsdevices.pv_positioner.PVPositionerComparator
     pcdsdevices.pv_positioner.PVPositionerDone
     pcdsdevices.pv_positioner.PVPositionerIsClose
+    pcdsdevices.pv_positioner.PVPositionerNoInterrupt
+
+pcdsdevices.qadc
+----------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.qadc.Qadc
+    pcdsdevices.qadc.Qadc134
+    pcdsdevices.qadc.Qadc134Common
+    pcdsdevices.qadc.Qadc134Lcls2
+    pcdsdevices.qadc.QadcCommon
+    pcdsdevices.qadc.QadcLcls1Timing
+    pcdsdevices.qadc.QadcLcls2Timing
 
 pcdsdevices.radiation
 ---------------------
@@ -961,16 +1036,27 @@ pcdsdevices.spectrometer
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.spectrometer.FZPStates
     pcdsdevices.spectrometer.Gen1VonHamos4Crystal
     pcdsdevices.spectrometer.Gen1VonHamosCrystal
     pcdsdevices.spectrometer.HXRSpectrometer
     pcdsdevices.spectrometer.Kmono
     pcdsdevices.spectrometer.Mono
     pcdsdevices.spectrometer.TMOSpectrometer
+    pcdsdevices.spectrometer.TMOSpectrometerSOLIDATTStates
     pcdsdevices.spectrometer.VonHamos4Crystal
     pcdsdevices.spectrometer.VonHamosCrystal
     pcdsdevices.spectrometer.VonHamosFE
     pcdsdevices.spectrometer.VonHamosFER
+
+pcdsdevices.sqr1
+----------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.sqr1.SQR1
+    pcdsdevices.sqr1.SQR1Axis
 
 pcdsdevices.state
 -----------------
@@ -988,6 +1074,7 @@ pcdsdevices.state
     pcdsdevices.state.TwinCATStateConfigOne
     pcdsdevices.state.TwinCATStatePositioner
     pcdsdevices.state.get_dynamic_state_attr
+    pcdsdevices.state.state_config_dotted_attribute
     pcdsdevices.state.state_config_dotted_names
     pcdsdevices.state.state_config_dotted_velos
 
@@ -1008,6 +1095,7 @@ pcdsdevices.sxr_test_absorber
     :toctree: generated
 
     pcdsdevices.sxr_test_absorber.SxrTestAbsorber
+    pcdsdevices.sxr_test_absorber.SxrTestAbsorberStates
 
 pcdsdevices.tags
 ----------------
@@ -1038,6 +1126,15 @@ pcdsdevices.timetool
 
     pcdsdevices.timetool.Timetool
     pcdsdevices.timetool.TimetoolWithNav
+
+pcdsdevices.tpr
+---------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.tpr.TprMotor
+    pcdsdevices.tpr.TprTrigger
 
 pcdsdevices.usb_encoder
 -----------------------
@@ -1116,3 +1213,5 @@ pcdsdevices.wfs
 
     pcdsdevices.wfs.WaveFrontSensorStates
     pcdsdevices.wfs.WaveFrontSensorTarget
+    pcdsdevices.wfs.WaveFrontSensorTargetCool
+    pcdsdevices.wfs.WaveFrontSensorTargetFDQ
