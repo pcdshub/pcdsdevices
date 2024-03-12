@@ -7,8 +7,7 @@ API Breaks
 
 Features
 --------
-Adding the 'embedded' file allows for typhos screens to open using the compact
-controls.
+- Adding the 'embedded' file allows for typhos screens to open using the compact controls.
 
 Device Updates
 --------------
@@ -28,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-jozamudi
+- jozamudi

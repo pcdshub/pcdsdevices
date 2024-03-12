@@ -87,28 +87,12 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>EPS:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="PyDMShellCommand" name="PyDMShellCommand">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>50</width>
-         <height>0</height>
-        </size>
-       </property>
+      <widget class="PyDMRelatedDisplayButton" name="PyDMRelatedDisplayButton">
        <property name="toolTip">
         <string/>
+       </property>
+       <property name="text">
+        <string>EPS</string>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
         <bool>false</bool>
@@ -125,34 +109,26 @@
        <property name="PyDMIcon" stdset="0">
         <string/>
        </property>
-       <property name="showConfirmDialog" stdset="0">
-        <bool>false</bool>
+       <property name="filenames" stdset="0">
+        <stringlist>
+         <string>/cds/group/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}.ui</string>
+        </stringlist>
        </property>
-       <property name="runCommandsInFullShell" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="confirmMessage" stdset="0">
-        <string>Are you sure you want to proceed?</string>
-       </property>
-       <property name="environmentVariables" stdset="0">
-        <string/>
+       <property name="titles" stdset="0">
+        <stringlist>
+         <string>EPS</string>
+        </stringlist>
        </property>
        <property name="showIcon" stdset="0">
         <bool>true</bool>
        </property>
-       <property name="redirectCommandOutput" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="allowMultipleExecutions" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="titles" stdset="0">
-        <stringlist/>
-       </property>
-       <property name="commands" stdset="0">
+       <property name="macros" stdset="0">
         <stringlist>
-         <string>pydm --hide-nav-bar --hide-menu-bar --hide-status-bar /cds/group/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}.ui</string>
+         <string>{}</string>
         </stringlist>
+       </property>
+       <property name="openInNewWindow" stdset="0">
+        <bool>false</bool>
        </property>
        <property name="passwordProtected" stdset="0">
         <bool>false</bool>
@@ -162,6 +138,9 @@
        </property>
        <property name="protectedPassword" stdset="0">
         <string/>
+       </property>
+       <property name="followSymlinks" stdset="0">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -184,9 +163,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>PyDMShellCommand</class>
+   <class>PyDMRelatedDisplayButton</class>
    <extends>QPushButton</extends>
-   <header>pydm.widgets.shell_command</header>
+   <header>pydm.widgets.related_display_button</header>
   </customwidget>
   <customwidget>
    <class>TyphosPositionerRowWidget</class>
