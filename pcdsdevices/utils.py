@@ -53,6 +53,27 @@ plus = '+'
 minus = '-'
 
 
+def re_arg(kwarg_map):
+    """
+    Decorator to redefine a kwarg to a function, while still supporting the old kwarg, and warning the end user.
+
+    Usage:
+    @re_arg({"new_kwarg": "old_kwarg"})
+    def myfunc(*args, new_kwarg=<a_value>, **kwargs):
+        ...
+    """
+    def decorator(func):
+        def wrapped(*args, **kwargs):
+            new_kwargs = {}
+            for k, v in kwargs.items():
+                if k in kwarg_map:
+                    print(f"DEPRECATION WARNING: keyword argument '{k}' is no longer valid. Use '{kwarg_map[k]}' instead.")
+                new_kwargs[kwarg_map.get(k, k)] = v
+            return func(*args, **new_kwargs)
+        return wrapped
+    return decorator
+
+
 def is_input():
     """
     Utility to check if there is input available.

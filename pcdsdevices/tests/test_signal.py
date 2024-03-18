@@ -2,13 +2,14 @@ import logging
 import threading
 import time
 from typing import Any
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock
 
 import pytest
 from ophyd import Component as Cpt
 from ophyd import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.sim import FakeEpicsSignal
+from ophyd.status import Status
 
 from .. import signal as signal_module
 from ..signal import (AggregateSignal, AvgSignal, MultiDerivedSignal,
@@ -425,6 +426,19 @@ def test_multi_derived_rw_basic(multi_derived_rw: Device):
 
     multi_derived_rw.cpt.set(24).wait(timeout=1)
     assert multi_derived_rw.get() == (24, 8., 8., 8.,)
+
+
+def test_multi_derived_rw_timeout_settle_time(multi_derived_rw: Device, monkeypatch):
+    multi_derived_rw.wait_for_connection()
+    assert multi_derived_rw.connected
+    # Set a monkey patch for monitoring how the signals are called
+    monkeypatch.setattr(multi_derived_rw.a, "set", MagicMock(return_value=Status(done=True, success=True)))
+    monkeypatch.setattr(multi_derived_rw.b, "set", MagicMock(return_value=Status(done=True, success=True)))
+    monkeypatch.setattr(multi_derived_rw.c, "set", MagicMock(return_value=Status(done=True, success=True)))
+    # Set the derived signal
+    multi_derived_rw.cpt.set(12, timeout=1.1, settle_time=0.1).wait(timeout=2.)
+    # Check that the settle_time filtered down to the sub signals
+    multi_derived_rw.a.set.assert_called_with(4., timeout=1.1, settle_time=0.1)
 
 
 def wait_until_value(

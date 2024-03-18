@@ -7,6 +7,7 @@ from typing import Callable
 
 from ophyd.device import Component as Cpt
 
+from .digital_signals import J120K
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import TwinCATInOutPositioner
 from .interface import BaseInterface, LightpathInOutCptMixin
@@ -59,5 +60,7 @@ class SxrTestAbsorber(BaseInterface, LightpathInOutCptMixin):
 
     state = Cpt(SxrTestAbsorberStates, ':MMS:STATE', kind='hinted')
     absorber_vert = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')
 
     lightpath_cpts = ['state']

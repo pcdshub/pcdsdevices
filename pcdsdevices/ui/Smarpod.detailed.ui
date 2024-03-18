@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>556</width>
-    <height>589</height>
+    <width>713</width>
+    <height>559</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,42 +22,21 @@
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <widget class="TyphosDisplayTitle" name="TyphosDisplayTitle">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="toolTip">
       <string/>
-     </property>
-     <property name="underline_midLineWidth" stdset="0">
-      <number>-4</number>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="TyphosPositionerWidget" name="TyphosPositionerWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>230</height>
-      </size>
-     </property>
+    <layout class="QGridLayout" name="gridLayout_3"/>
+   </item>
+   <item>
+    <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay">
      <property name="toolTip">
       <string/>
      </property>
-     <property name="error_message_attribute" stdset="0">
-      <string>plc.status</string>
-     </property>
-     <property name="alarmKindLevel" stdset="0">
-      <enum>TyphosPositionerWidget::HINTED</enum>
+     <property name="filename" stdset="0">
+      <string>SmarPod_position.ui</string>
      </property>
     </widget>
    </item>
@@ -91,7 +70,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideNone</enum>
@@ -138,7 +117,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>528</width>
+            <width>685</width>
             <height>215</height>
            </rect>
           </property>
@@ -236,7 +215,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>528</width>
+            <width>685</width>
             <height>215</height>
            </rect>
           </property>
@@ -281,6 +260,16 @@
             </widget>
            </item>
            <item>
+            <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_2">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="filename" stdset="0">
+              <string>SmarPod_position.ui</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="config_spacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -318,14 +307,14 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>PyDMEmbeddedDisplay</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.embedded_display</header>
+  </customwidget>
+  <customwidget>
    <class>TyphosDisplayTitle</class>
    <extends>QFrame</extends>
    <header>typhos.display</header>
-  </customwidget>
-  <customwidget>
-   <class>TyphosPositionerWidget</class>
-   <extends>QWidget</extends>
-   <header>typhos.positioner</header>
   </customwidget>
   <customwidget>
    <class>TyphosSignalPanel</class>
