@@ -2,9 +2,10 @@ import math
 from unittest.mock import Mock
 
 import pytest
-from ophyd.sim import make_fake_device
+from ophyd.sim import ReadOnlyError, make_fake_device
 
-from ..mirror import KBOMirror, OffsetMirror, PointingMirror
+from ..mirror import (KBOMirror, OffsetMirror, PointingMirror,
+                      XOffsetMirrorStateCool)
 
 
 @pytest.fixture(scope='function')
@@ -138,8 +139,43 @@ def fake_kbo_mirror():
                    input_branches=['X0'], output_branches=['X0', 'X1'])
 
 
+@pytest.fixture(scope='function')
+def fake_offset_cooled_mirror():
+    FakeCooledOffsetMirror = make_fake_device(XOffsetMirrorStateCool)
+    return FakeCooledOffsetMirror('TST:MR1', name="Test Mirror")
+
+
 def test_kbomirror_lighpath(fake_kbo_mirror):
     km = fake_kbo_mirror
     lp_state = km.get_lightpath_state()
     assert lp_state.inserted
     assert not lp_state.removed
+
+
+def test_mirror_cooling(fake_offset_cooled_mirror):
+    om = fake_offset_cooled_mirror
+
+    om.variable_cool.put(1)
+    cooling_state = om.variable_cool.get()
+    assert cooling_state
+
+    om.variable_cool.put(0)
+    cooling_state = om.variable_cool.get()
+    assert cooling_state != 1
+
+    om.variable_cool.put("ON")
+    cooling_state = om.variable_cool.get()
+    assert cooling_state == "ON"
+
+    om.variable_cool.put("OFF")
+    cooling_state = om.variable_cool.get()
+    assert cooling_state == "OFF"
+
+    with pytest.raises(ReadOnlyError):
+        om.cool_flow1.put(0.34)
+
+    with pytest.raises(ReadOnlyError):
+        om.cool_flow2.put(0.34)
+
+    with pytest.raises(ReadOnlyError):
+        om.cool_press.put(0.34)
