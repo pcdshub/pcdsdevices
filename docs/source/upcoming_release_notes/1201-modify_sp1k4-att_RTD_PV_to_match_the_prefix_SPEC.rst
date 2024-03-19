@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- Add SPEC into SP1K4 Attenuator RTD to match prefix for SP1K4 group device
+- Modify SP1K4 Attenuator RTD class to match prefix for SP1K4 group device
 
 Maintenance
 -----------
