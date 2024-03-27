@@ -45,4 +45,5 @@ from .slits import Slits
 from .spectrometer import Gen1VonHamos4Crystal, Kmono, VonHamos4Crystal
 from .timetool import Timetool, TimetoolWithNav
 from .valve import GateValve, Stopper
-from .wfs import WaveFrontSensorTarget
+from .wfs import (WaveFrontSensorTarget, WaveFrontSensorTargetCool,
+                  WaveFrontSensorTargetFDQ)

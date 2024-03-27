@@ -1,5 +1,6 @@
 from ophyd import Component as Cpt
 
+from .analog_signals import FDQ
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
@@ -41,6 +42,8 @@ class ArrivalTimeMonitor(BaseInterface, GroupDevice, LightpathInOutCptMixin):
 
     thermocouple1 = Cpt(TwinCATTempSensor, ':STC:01', kind='normal',
                         doc='First thermocouple.')
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')
 
 
 class TM1K4Target(ATMTarget):
@@ -79,6 +82,7 @@ class TM2K4(ArrivalTimeMonitor):
 
     target = Cpt(TM2K4Target, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
+    flow_meter = None
 
 
 class TM2K2Target(ATMTarget):
@@ -97,3 +101,10 @@ class TM2K2(ArrivalTimeMonitor):
     """
     target = Cpt(TM2K2Target, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
+
+
+class MFXATM(ArrivalTimeMonitor):
+    """
+    An ATM in MFX that has no cooling.
+    """
+    flow_meter = None

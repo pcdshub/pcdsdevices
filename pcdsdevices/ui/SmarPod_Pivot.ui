@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>693</width>
+    <height>369</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>20</y>
+     <width>531</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="value_layout" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0">
+    <property name="spacing">
+     <number>10</number>
+    </property>
+    <item>
+     <widget class="PyDMLineEdit" name="user_setpoint">
+      <property name="maximumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="PyDMPushButton" name="PyDMPushButton_8">
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string>Readback pivot point</string>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${BASE}:CMD:PIVOT_RBV</string>
+      </property>
+      <property name="confirmMessage" stdset="0">
+       <string>Are you sure you want to proceed? Only units that have been replaced require calibration.</string>
+      </property>
+      <property name="releaseValue" stdset="0">
+       <string>1</string>
+      </property>
+      <property name="writeWhenRelease" stdset="0">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_7" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_6" stretch="0,0,0,0">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_4">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Pivot Point X-Direction:</string>
+         </property>
+         <property name="indent">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMPushButton" name="PyDMPushButton_4">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>request pos</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:CMD:PX</string>
+         </property>
+         <property name="confirmMessage" stdset="0">
+          <string/>
+         </property>
+         <property name="releaseValue" stdset="0">
+          <string>1</string>
+         </property>
+         <property name="writeWhenRelease" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>ca://${BASE}:PX_M</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:PX</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:PX</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_8" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_8" stretch="0,0,0,0">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_5">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Pivot Point Y-Direction:</string>
+         </property>
+         <property name="indent">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMPushButton" name="PyDMPushButton_5">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>request pos</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:CMD:PY</string>
+         </property>
+         <property name="confirmMessage" stdset="0">
+          <string/>
+         </property>
+         <property name="releaseValue" stdset="0">
+          <string>1</string>
+         </property>
+         <property name="writeWhenRelease" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_7">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>ca://${BASE}:PY_M</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:PY</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:PY</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_9" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_10" stretch="0,0,0,0">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_9">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Pivot Point Z-Direction:</string>
+         </property>
+         <property name="indent">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMPushButton" name="PyDMPushButton_6">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>request pos</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:CMD:PZ</string>
+         </property>
+         <property name="confirmMessage" stdset="0">
+          <string/>
+         </property>
+         <property name="releaseValue" stdset="0">
+          <string>1</string>
+         </property>
+         <property name="writeWhenRelease" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_12">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>ca://${BASE}:PZ_M</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:PZ</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_10">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:PZ</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_11" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_9" stretch="0,0">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="PyDMPushButton" name="PyDMPushButton_7">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Pivot Point Mode</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:CMD:PIVOT_MODE</string>
+         </property>
+         <property name="confirmMessage" stdset="0">
+          <string/>
+         </property>
+         <property name="releaseValue" stdset="0">
+          <string>1</string>
+         </property>
+         <property name="writeWhenRelease" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_14">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>ca://${BASE}:PIVOT_MODE</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:PX</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_10" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_11" stretch="0,0,0">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_11">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Execute:</string>
+         </property>
+         <property name="indent">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMPushButton" name="PyDMPushButton_2">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Set</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:CMD:SET_PIVOT</string>
+         </property>
+         <property name="confirmMessage" stdset="0">
+          <string>Are you sure you want to proceed? Only units that have been replaced require calibration.</string>
+         </property>
+         <property name="releaseValue" stdset="0">
+          <string>1</string>
+         </property>
+         <property name="writeWhenRelease" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMPushButton" name="PyDMPushButton">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Sync</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:CMD:SYNC_PIVOT</string>
+         </property>
+         <property name="confirmMessage" stdset="0">
+          <string/>
+         </property>
+         <property name="releaseValue" stdset="0">
+          <string>1</string>
+         </property>
+         <property name="writeWhenRelease" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line_6">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_6" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_7">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMLabel</class>
+   <extends>QLabel</extends>
+   <header>pydm.widgets.label</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>pydm.widgets.line_edit</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMPushButton</class>
+   <extends>QPushButton</extends>
+   <header>pydm.widgets.pushbutton</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

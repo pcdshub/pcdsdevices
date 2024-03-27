@@ -743,6 +743,8 @@ class XOffsetMirrorNoBend(XOffsetMirror):
 
     2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
 
+    With variable cooling valve installed.
+
     Parameters
     ----------
     prefix : str
@@ -755,6 +757,8 @@ class XOffsetMirrorNoBend(XOffsetMirror):
     """
     bender = None
     bender_enc_rms = None
+
+    variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
 
 
 class XOffsetMirrorBend(XOffsetMirror):
@@ -1132,6 +1136,10 @@ class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
     y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
 
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 1")
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 2")
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc="Axilon Panel Pressure Meter")
+
     # Lightpath config: implement inserted, removed, transmission, subscribe
     lightpath_cpts = ['x.user_readback', 'y.user_readback']
 
@@ -1245,6 +1253,10 @@ class FFMirrorZ(FFMirror):
                          kind='normal')
     chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL:TEMP', io='i',
                         kind='normal')
+    # Kill these until MR4 and MR5 K4 implement them.
+    cool_flow1 = None
+    cool_flow2 = None
+    cool_press = None
 
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
@@ -1402,6 +1414,8 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
 
     With cooling and pressure meters installed.
 
+    With variable cooling valve installed.
+
     Parameters
     ----------
     prefix : str
@@ -1411,9 +1425,11 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
         Alias for the device.
     """
     # Cooling
-    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
-    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc='Mirror cooling panel loop flow sensor')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal', doc='Mirror cooling panel loop flow sensor')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc='Mirror cooling panel loop pressure sensor')
+
+    variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
 
 
 class MirrorInsertState(TwinCATStatePMPS):
