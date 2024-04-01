@@ -9,7 +9,7 @@ from .epics_motor import BeckhoffAxisEPS
 from .interface import BaseInterface, LightpathMixin
 
 
-class TMOLaserCouplingTwoDimension(BaseInterface, GroupDevice, LightpathMixin):
+class TMOLaserInCouplingTwoDimension(BaseInterface, GroupDevice, LightpathMixin):
     """
 
     TMO two dimension laser coupling LI2K4 class.
