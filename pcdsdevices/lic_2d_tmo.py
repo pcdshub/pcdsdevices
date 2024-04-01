@@ -1,5 +1,5 @@
 """
-Module for the two dimention laser coupling in TMO.
+Module for the two dimension laser coupling in TMO.
 """
 from lightpath import LightpathState
 from ophyd.device import Component as Cpt
@@ -9,10 +9,10 @@ from .epics_motor import BeckhoffAxisEPS
 from .interface import BaseInterface, LightpathMixin
 
 
-class TMOLaserCouplingTwoDimention(BaseInterface, GroupDevice, LightpathMixin):
+class TMOLaserCouplingTwoDimension(BaseInterface, GroupDevice, LightpathMixin):
     """
 
-    TMO two dimention laser coupling LI2K4 class.
+    TMO two dimension laser coupling LI2K4 class.
 
 
     Parameters:
