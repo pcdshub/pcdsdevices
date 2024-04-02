@@ -1,4 +1,4 @@
-1209 Update TprTrigger config attributes, add TCMPL PV
+1210 Update TprTrigger config attributes, add TCMPL PV
 #################
 
 API Breaks
