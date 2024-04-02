@@ -61,16 +61,16 @@ class TprMotor(PVPositionerIsClose):
 class TprTrigger(BaseInterface, Device):
     """Class for an individual TprTrigger."""
     ratemode = FCpt(EpicsSignal, '{self.prefix}{self.ch}RATEMODE', kind="config", doc="Channel rate mode selector")
-    group = FCpt(EpicsSignal, '{self.prefix}{self.ch}GROUP', kind="omitted", doc="Channel group Bit")
-    seqcode = FCpt(EpicsSignal, '{self.prefix}{self.ch}SEQCODE', kind="omitted", doc="Channel sequence code")
-    fixedrate = FCpt(EpicsSignal, '{self.prefix}{self.ch}FIXEDRATE', kind="omitted", doc="Channel Fxed rate selector")
+    group = FCpt(EpicsSignal, '{self.prefix}{self.ch}GROUP', kind="config", doc="Channel group Bit")
+    seqcode = FCpt(EpicsSignal, '{self.prefix}{self.ch}SEQCODE', kind="config", doc="Channel sequence code")
+    fixedrate = FCpt(EpicsSignal, '{self.prefix}{self.ch}FIXEDRATE', kind="config", doc="Channel Fxed rate selector")
     count = FCpt(EpicsSignal, '{self.prefix}{self.ch}CNT', kind="omitted", doc="Channel counter")
-    destmask = FCpt(EpicsSignal, '{self.prefix}{self.ch}DESTMASK', kind="omitted", doc="Channel destination mask")
-    destmode = FCpt(EpicsSignal, '{self.prefix}{self.ch}DESTMODE', kind="omitted", doc="Channel destination mode selector")
-    src = FCpt(EpicsSignal, '{self.prefix}{self.trg}SOURCE', kind="omitted", doc="Trigger source")
+    destmask = FCpt(EpicsSignal, '{self.prefix}{self.ch}DESTMASK', kind="config", doc="Channel destination mask")
+    destmode = FCpt(EpicsSignal, '{self.prefix}{self.ch}DESTMODE', kind="config", doc="Channel destination mode selector")
+    src = FCpt(EpicsSignal, '{self.prefix}{self.trg}SOURCE', kind="config", doc="Trigger source")
     eventcode = FCpt(EpicsSignal, '{self.prefix}{self.ch}EVCODE', kind="config", doc="Channel LCLS1 event code")
     eventrate = FCpt(EpicsSignalRO, '{self.prefix}{self.ch}RATE', kind="normal", doc="Channel event rates")
-    label = FCpt(EpicsSignal, '{self.prefix}{self.ch}{self.sys}TCTL.DESC', kind="omitted", doc="Enable/disable")
+    label = FCpt(EpicsSignal, '{self.prefix}{self.ch}{self.sys}TCTL.DESC', kind="normal", doc="Channel description")
     delay_ticks = FCpt(EpicsSignal, '{self.prefix}{self.trg}TDESTICKS', kind="omitted", doc="Trigger delay in clock ticks")
     delay_taps = FCpt(EpicsSignal, '{self.prefix}{self.trg}TDESTAPS', kind="omitted", doc="Trigger delay in delay taps")
     delay_setpoint = FCpt(EpicsSignal, '{self.prefix}{self.trg}{self.sys}TDES', kind="omitted", doc="Trigger delay setpoint in nsec")
@@ -92,10 +92,11 @@ class TprTrigger(BaseInterface, Device):
         calculate_on_put=_put_last,
         doc="Get/set trigger width in nsec",
     )
-    enable_ch_cmd = FCpt(EpicsSignal, '{self.prefix}{self.ch}{self.sys}TCTL', kind="omitted", doc="Channel enable/disable")
+    enable_ch_cmd = FCpt(EpicsSignal, '{self.prefix}{self.ch}{self.sys}TCTL', kind="config", doc="Channel enable/disable")
     set_metadata(enable_ch_cmd, dict(variety='command-proc', value=1))
-    enable_trg_cmd = FCpt(EpicsSignal, '{self.prefix}{self.trg}{self.sys}TCTL', kind="omitted", doc="Trigger enable/disable")
+    enable_trg_cmd = FCpt(EpicsSignal, '{self.prefix}{self.trg}{self.sys}TCTL', kind="config", doc="Trigger enable/disable")
     set_metadata(enable_trg_cmd, dict(variety='command-proc', value=1))
+    operation = FCpt(EpicsSignal, '{self.prefix}{self.trg}TCMPL', kind="config", doc="Trigger complementary logic")
 
     tab_whitelist = ['enable', 'disable']
     tab_component_names = True
