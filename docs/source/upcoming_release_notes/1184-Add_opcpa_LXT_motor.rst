@@ -1,4 +1,4 @@
-1201 modify sp1k4-att RTD PV to match the prefix SPEC
+1184 Add opcpa LXT motor
 #################
 
 API Breaks
@@ -15,11 +15,12 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- Lcls2LaserTiming: New class supporting control of laser timing for the OPCPA
+  laser locker system.
 
 Bugfixes
 --------
-- Modify SP1K4 Attenuator RTD class to match prefix for SP1K4 group device
+- N/A
 
 Maintenance
 -----------
@@ -27,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-- @tongju12
+- slactjohnson
