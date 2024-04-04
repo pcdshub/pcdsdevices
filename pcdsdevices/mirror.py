@@ -743,6 +743,8 @@ class XOffsetMirrorNoBend(XOffsetMirror):
 
     2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
 
+    With variable cooling valve installed.
+
     Parameters
     ----------
     prefix : str
@@ -755,6 +757,8 @@ class XOffsetMirrorNoBend(XOffsetMirror):
     """
     bender = None
     bender_enc_rms = None
+
+    variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
 
 
 class XOffsetMirrorBend(XOffsetMirror):
@@ -1410,6 +1414,8 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
 
     With cooling and pressure meters installed.
 
+    With variable cooling valve installed.
+
     Parameters
     ----------
     prefix : str
@@ -1419,9 +1425,11 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
         Alias for the device.
     """
     # Cooling
-    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
-    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc='Mirror cooling panel loop flow sensor')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal', doc='Mirror cooling panel loop flow sensor')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc='Mirror cooling panel loop pressure sensor')
+
+    variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
 
 
 class MirrorInsertState(TwinCATStatePMPS):
