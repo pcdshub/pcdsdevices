@@ -1,4 +1,4 @@
-1201 modify sp1k4-att RTD PV to match the prefix SPEC
+1208 add temporary li2k4 gui
 #################
 
 API Breaks
@@ -7,7 +7,7 @@ API Breaks
 
 Features
 --------
-- N/A
+- add only x and Y axes gui for li2k4 for SC commission only
 
 Device Updates
 --------------
@@ -15,11 +15,11 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- li2k4
 
 Bugfixes
 --------
-- Modify SP1K4 Attenuator RTD class to match prefix for SP1K4 group device
+- N/A
 
 Maintenance
 -----------

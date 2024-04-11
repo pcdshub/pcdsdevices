@@ -365,8 +365,8 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     yag_z = Cpt(BeckhoffAxis, ':MMS:08', doc="z-axis of spectrometer detector", kind='normal')
     yag_theta = Cpt(BeckhoffAxis, ':MMS:09', doc="theta axis to rotate spectrometer detector", kind='normal')
     # sp1k4-att-rtd
-    att_rtd_01 = Cpt(PytmcSignal, ':SPEC:RTD:01:TEMP', doc="solid attenuator 01 PT100", io='i', kind='normal')
-    att_rtd_02 = Cpt(PytmcSignal, ':SPEC:RTD:02:TEMP', doc="solid attenuator 02 PT100", io='i', kind='normal')
+    att_rtd_01 = Cpt(PytmcSignal, ':RTD:01:TEMP', doc="solid attenuator 01 PT100", io='i', kind='normal')
+    att_rtd_02 = Cpt(PytmcSignal, ':RTD:02:TEMP', doc="solid attenuator 02 PT100", io='i', kind='normal')
     # Lightpath constants
     inserted = True
     removed = False
