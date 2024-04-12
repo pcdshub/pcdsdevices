@@ -26,7 +26,7 @@ def test_disconnected_trigger():
 
 def put_equals_setpoint(mds, setpoint, ns_time):
     mds.put(ns_time)
-    return setpoint.value == ns_time
+    return setpoint.get() == ns_time
 
 
 def mds_get(mds, tick_signal, tap_signal, num_ticks, num_taps):
