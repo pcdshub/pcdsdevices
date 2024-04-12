@@ -22,6 +22,7 @@ Bugfixes
 - Previously, calculate_on_get/put functions used in MultiDerivedSignals in tpr classes were not accessing
   their attrs correctly and would throw KeyErrors when called
 - Specifically, the name of the attr was being used as the key for items dictionary instead of the actual signal object
+- Also added unit tests for these MultiDerivedSignals
 
 Maintenance
 -----------
