@@ -35,6 +35,7 @@ def mds_get(mds, tick_signal, tap_signal, num_ticks, num_taps):
     return mds.get() == (TPR_TICK_NS * num_ticks + TPR_TAP_NS * num_taps)
 
 
+@pytest.mark.timeout(5)
 def test_ns_delay(fake_trigger):
     assert put_equals_setpoint(fake_trigger.ns_delay, fake_trigger.delay_setpoint, 100)
     assert mds_get(fake_trigger.ns_delay, fake_trigger.delay_ticks, fake_trigger.delay_taps, 0, 7)
