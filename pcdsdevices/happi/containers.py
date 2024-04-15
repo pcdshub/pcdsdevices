@@ -668,6 +668,10 @@ class EnvironmentalMonitor(LCLSItem):
                        optional=True, enforce=str)
     ioc_base = EntryInfo('Base PV of the EK9000 IOC', optional=True,
                          enforce=str)
+    ioc_chan_num = EntryInfo('Channel number for the environmental monitor.',
+                             optional=True, enforce=str)
+    ioc_card_num = EntryInfo('Card number for the environmental monitor.',
+                             optional=True, enforce=str)
 
 
 class Leviton(LCLSItem):
