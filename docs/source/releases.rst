@@ -2,6 +2,75 @@ Release History
 ###############
 
 
+v8.4.0 (2024-04-16)
+===================
+
+API Breaks
+----------
+- If release < R1.0.20 then the EPICS signals will timeout on the new PVs.
+  Please make sure to update your children IOCs.
+
+Features
+--------
+- add only x and Y axes gui for li2k4 for SC commission only
+- Adds the following temperature monitoring PVs:
+  - channel_temp
+  - module_temp
+- Adds the following hidden config PVs to encoded devices:
+  - log_scale_offset
+  - log_scale_inv
+  - def_range_min
+  - def_range_max
+- Adds SmarActEncodedTipTilt device to epics_motor.py
+- ioc_chan_num and ion_card_num were added to EnvironmentalMonitor in containers.py
+- add missing epics signals to MPODApalisModule (supply_status, module_status,
+- Adding the 'embedded' file allows for typhos screens to open using the compact controls.
+
+Device Updates
+--------------
+- TprTrigger: Update numerous PVs to 'config', add TCMPL PV
+- SmarActOpenLoop gets temp monitoring PVs
+- SmarAct gets temp monitoring PVs
+- Add a CCMEnergyWithACRStatus class to ccm.py
+- Add a energy_with_acr_status instance to CCM
+- Update BeamEnergyRequest argument from bunch to pv_index to better reflect the broader use cases.
+  A backward compatible warning is now returned if the old bunch kwarg is used.
+- Update atol in BeamEnergyRequestNoWait to 0.5 (was 5). This is needed for self-seeding
+- MPODApalisModule
+- `XOffsetMirrorStateCool` and `XOffsetMirrorNoBend` gets `variable_cool` for controlling 24V solenoid valve.
+
+New Devices
+-----------
+- li2k4
+- Lcls2LaserTiming: New class supporting control of laser timing for the OPCPA
+  laser locker system.
+- SmarActEncodedTipTilt
+- Add a convenience decorator to re-arg a function in utils.py
+- Add `SmarPod` and related devices in new `pcdsdevices.smarpod` module.
+
+Bugfixes
+--------
+- Previously, calculate_on_get/put functions used in MultiDerivedSignals in tpr classes were not accessing
+  their attrs correctly and would throw KeyErrors when called
+- Specifically, the name of the attr was being used as the key for items dictionary instead of the actual signal object
+- Also added unit tests for these MultiDerivedSignals
+- Modify SP1K4 Attenuator RTD class to match prefix for SP1K4 group device
+
+Contributors
+------------
+- @tongju12
+- KaushikMalapati
+- aberges
+- baljamal
+- jozamudi
+- nrwslac
+- patoppermann
+- sainyamn, nagar123@slac.stanford.edu
+- slactjohnson
+- vespos
+
+
+
 v8.3.0 (2024-02-21)
 ===================
 
