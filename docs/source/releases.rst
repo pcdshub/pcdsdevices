@@ -13,12 +13,12 @@ Features
 --------
 - Adds `ioc_chan_num` and `ioc_card_num` to the `EnvironmentalMonitor` happi container.
 - Adds the "embedded" file for `BeckhoffAxisEPSCustom` that allows for typhos screens to open using the compact controls.
-- Adds a convenience `re_arg` decorator to redefine and deprecate a function's args in a backwards-compatible way in the `utils` submodule.
+- Adds a convenience `re_arg` decorator to redefine and deprecate a function's args in a backwards-compatible way in the `pcdsdevices.utils` submodule.
 
 Device Updates
 --------------
 - `TprTrigger`: Update numerous PVs to "config", add TCMPL PV as the `operation` signal.
-- Adds the following temperature monitoring signals to `Smaract` and `SmarActOpenLoop`:
+- Adds the following temperature monitoring signals to `SmarAct` and `SmarActOpenLoop`:
 
   - `channel_temp`
   - `module_temp`
@@ -39,7 +39,7 @@ Device Updates
   - `safety_loop_status`
   - `kill`
 
-- Adds a `energy_with_acr_status` instance to CCM
+- Adds an `energy_with_acr_status` instance to CCM
 - Updates `BeamEnergyRequest` argument from "bunch" to "pv_index" to better reflect the broader use cases.
   A backward compatible warning is now returned if the old bunch kwarg is used.
 - Updates "atol" in `BeamEnergyRequestNoWait` to 0.5 (was 5). This is needed for self-seeding.
@@ -47,18 +47,18 @@ Device Updates
 
 New Devices
 -----------
-- Adds li2k4, with the x and y motors supported (no states yet).
+- Adds `li2k4` as `TMOLaserInCouplingTwoDimension`, with the x and y motors supported (no states yet).
 - Adds `Lcls2LaserTiming`: New class supporting control of laser timing for the OPCPA laser locker system.
-- Adds `SmarActEncodedTipTilt` to the `epics_motor` submodule.
-- Adds `SmarPod` and related devices in new `smarpod` submodule.
-- Adds a `CCMEnergyWithACRStatus` class to the `ccm` submodule, a new variant of `CCMEnergy` that waits for ACR status before marking moves as complete.
+- Adds `SmarActEncodedTipTilt` to the `pcdsdevices.epics_motor` submodule.
+- Adds `SmarPod` and related devices in new `pcdsdevices.smarpod` submodule.
+- Adds a `CCMEnergyWithACRStatus` class to the `pcdsdevices.ccm` submodule, a new variant of `CCMEnergy` that waits for ACR status before marking moves as complete.
 
 Bugfixes
 --------
-- Previously, calculate_on_get/put functions used in `MultiDerivedSignals` in `tpr` classes were not accessing their attrs correctly and would throw KeyErrors when called.
+- Previously, calculate_on_get/put functions used in `MultiDerivedSignal`s in `pcdsdevices.tpr` classes were not accessing their attrs correctly and would throw KeyErrors when called.
   Specifically, the name of the attr was being used as the key for items dictionary instead of the actual signal object
-- Also added unit tests for these `MultiDerivedSignals` in the `tpr` module.
-- Modify `SP1K4` Attenuator RTD class to match prefix for SP1K4 group device.
+- Also added unit tests for these `MultiDerivedSignal`s in the `pcdsdevices.tpr` submodule.
+- Modify `sp1k4` Attenuator RTD class (`TMOSpectrometer`) to match prefix for `sp1k4` group device.
 
 Contributors
 ------------
