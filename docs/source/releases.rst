@@ -1,74 +1,77 @@
 Release History
 ###############
 
-
 v8.4.0 (2024-04-16)
 ===================
 
-API Breaks
-----------
-- If release < R1.0.20 then the EPICS signals will timeout on the new PVs.
+Compatibility Notes
+-------------------
+- If your SmarAct release is < R1.0.20, then the EPICS signals will timeout on the new PVs.
   Please make sure to update your children IOCs.
 
 Features
 --------
-- add only x and Y axes gui for li2k4 for SC commission only
-- Adds the following temperature monitoring PVs:
-  - channel_temp
-  - module_temp
-- Adds the following hidden config PVs to encoded devices:
-  - log_scale_offset
-  - log_scale_inv
-  - def_range_min
-  - def_range_max
-- Adds SmarActEncodedTipTilt device to epics_motor.py
-- ioc_chan_num and ion_card_num were added to EnvironmentalMonitor in containers.py
-- add missing epics signals to MPODApalisModule (supply_status, module_status,
-- Adding the 'embedded' file allows for typhos screens to open using the compact controls.
+- Adds `ioc_chan_num` and `ioc_card_num` to the `EnvironmentalMonitor` happi container.
+- Adds the "embedded" file for `BeckhoffAxisEPSCustom` that allows for typhos screens to open using the compact controls.
+- Adds a convenience `re_arg` decorator to redefine and deprecate a function's args in a backwards-compatible way in the `utils` submodule.
 
 Device Updates
 --------------
-- TprTrigger: Update numerous PVs to 'config', add TCMPL PV
-- SmarActOpenLoop gets temp monitoring PVs
-- SmarAct gets temp monitoring PVs
-- Add a CCMEnergyWithACRStatus class to ccm.py
-- Add a energy_with_acr_status instance to CCM
-- Update BeamEnergyRequest argument from bunch to pv_index to better reflect the broader use cases.
+- `TprTrigger`: Update numerous PVs to "config", add TCMPL PV as the `operation` signal.
+- Adds the following temperature monitoring signals to `Smaract` and `SmarActOpenLoop`:
+
+  - `channel_temp`
+  - `module_temp`
+- Adds the following hidden config PVs to the (encoded) `SmarAct` device class:
+
+  - `log_scale_offset`
+  - `log_scale_inv`
+  - `def_range_min`
+  - `def_range_max`
+  - `dist_code_inv`
+- Adds the following missing epics signals to `MPODApalisModule`:
+
+  - `supply_status`
+  - `module_status`
+  - `fine_adjustment_status`
+  - `input_status`
+  - `live_insertion_status`
+  - `safety_loop_status`
+  - `kill`
+
+- Adds a `energy_with_acr_status` instance to CCM
+- Updates `BeamEnergyRequest` argument from "bunch" to "pv_index" to better reflect the broader use cases.
   A backward compatible warning is now returned if the old bunch kwarg is used.
-- Update atol in BeamEnergyRequestNoWait to 0.5 (was 5). This is needed for self-seeding
-- MPODApalisModule
+- Updates "atol" in `BeamEnergyRequestNoWait` to 0.5 (was 5). This is needed for self-seeding.
 - `XOffsetMirrorStateCool` and `XOffsetMirrorNoBend` gets `variable_cool` for controlling 24V solenoid valve.
 
 New Devices
 -----------
-- li2k4
-- Lcls2LaserTiming: New class supporting control of laser timing for the OPCPA
-  laser locker system.
-- SmarActEncodedTipTilt
-- Add a convenience decorator to re-arg a function in utils.py
-- Add `SmarPod` and related devices in new `pcdsdevices.smarpod` module.
+- Adds li2k4, with the x and y motors supported (no states yet).
+- Adds `Lcls2LaserTiming`: New class supporting control of laser timing for the OPCPA laser locker system.
+- Adds `SmarActEncodedTipTilt` to the `epics_motor` submodule.
+- Adds `SmarPod` and related devices in new `smarpod` submodule.
+- Adds a `CCMEnergyWithACRStatus` class to the `ccm` submodule, a new variant of `CCMEnergy` that waits for ACR status before marking moves as complete.
 
 Bugfixes
 --------
-- Previously, calculate_on_get/put functions used in MultiDerivedSignals in tpr classes were not accessing
-  their attrs correctly and would throw KeyErrors when called
-- Specifically, the name of the attr was being used as the key for items dictionary instead of the actual signal object
-- Also added unit tests for these MultiDerivedSignals
-- Modify SP1K4 Attenuator RTD class to match prefix for SP1K4 group device
+- Previously, calculate_on_get/put functions used in `MultiDerivedSignals` in `tpr` classes were not accessing their attrs correctly and would throw KeyErrors when called.
+  Specifically, the name of the attr was being used as the key for items dictionary instead of the actual signal object
+- Also added unit tests for these `MultiDerivedSignals` in the `tpr` module.
+- Modify `SP1K4` Attenuator RTD class to match prefix for SP1K4 group device.
 
 Contributors
 ------------
-- @tongju12
-- KaushikMalapati
-- aberges
+- aberges-SLAC
 - baljamal
 - jozamudi
+- KaushikMalapati
 - nrwslac
 - patoppermann
-- sainyamn, nagar123@slac.stanford.edu
+- sainyamn
 - slactjohnson
+- tongju12
 - vespos
-
 
 
 v8.3.0 (2024-02-21)
