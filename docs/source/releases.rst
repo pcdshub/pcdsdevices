@@ -55,9 +55,9 @@ New Devices
 
 Bugfixes
 --------
-- Previously, calculate_on_get/put functions used in `MultiDerivedSignal`s in `pcdsdevices.tpr` classes were not accessing their attrs correctly and would throw KeyErrors when called.
+- Previously, calculate_on_get/put functions used in `MultiDerivedSignal` s in `pcdsdevices.tpr` classes were not accessing their attrs correctly and would throw KeyErrors when called.
   Specifically, the name of the attr was being used as the key for items dictionary instead of the actual signal object
-- Also added unit tests for these `MultiDerivedSignal`s in the `pcdsdevices.tpr` submodule.
+- Also added unit tests for these `MultiDerivedSignal` s in the `pcdsdevices.tpr` submodule.
 - Modify `sp1k4` Attenuator RTD class (`TMOSpectrometer`) to match prefix for `sp1k4` group device.
 
 Contributors
