@@ -539,6 +539,8 @@ class SmarActMotor(LCLSItem):
 class SmarActTipTiltMotor(LCLSItem):
     """
     Container for SmarAct tip-tilt motor pairs.
+    Use pcdsdevices.epics_motor.SmarActEncodedTipTilt device_class for
+    encoded tip-tilts.
     """
     device_class = copy(LCLSItem.device_class)
     device_class.default = 'pcdsdevices.epics_motor.SmarActTipTilt'

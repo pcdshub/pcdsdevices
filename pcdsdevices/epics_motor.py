@@ -1369,7 +1369,7 @@ class SmarActOpenLoop(Device):
     Class containing the open loop PVs used to control an un-encoded SmarAct
     stage.
 
-    Can be used for sub-classing, or creating a simple  device without the
+    Can be used for sub-classing, or creating a simple device without the
     motor record PVs.
     """
 
@@ -1401,11 +1401,16 @@ class SmarActOpenLoop(Device):
     scan_move = Cpt(EpicsSignal, ':SCAN_POS', write_pv=':SCAN_MOVE',
                     kind='config',
                     doc='Set current piezo voltage (in 16 bit ADC steps)')
+    # Diagnostic read only PVs
+    channel_temp = Cpt(EpicsSignalRO, ':CHANTEMP', kind='normal',
+                       doc="Temperature at the channel's amplifier")
+    module_temp = Cpt(EpicsSignalRO, ':MODTEMP', kind='normal',
+                      doc='Temperature of the MCS2 Module in the rack')
 
 
 class SmarActTipTilt(Device):
     """
-    Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirro
+    Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirror
     positioning configuration into a single device.
 
     Parameters:
@@ -1470,9 +1475,42 @@ class SmarAct(EpicsMotorInterface):
     do_calib = Cpt(EpicsSignal, ':DO_CALIB.PROC', kind='config')
     set_metadata(do_calib, dict(variety='command-proc', value=1))
 
+    # Configuration for settings in NVRAM
+    log_scale_offset = Cpt(EpicsSignal, ':LSCO', write_pv=':SET_LSCO',
+                           kind='omitted', doc='Logical Scale Offset')
+    def_range_min = Cpt(EpicsSignal, ':DRMIN', write_pv=':SET_DRMIN',
+                        kind='omitted', doc='Default Range Minimum')
+    def_range_max = Cpt(EpicsSignal, ':DRMAX', write_pv=':SET_DRMAX',
+                        kind='omitted', doc='Default Range Maximum')
+    log_scale_inv = Cpt(EpicsSignal, ':LSCI_RBV', write_pv=':SET_LSCI',
+                        kind='omitted', doc='Default Range Minimum')
+    dist_code_inv = Cpt(EpicsSignal, ':DCIN_RBV', write_pv=':SET_DCIN',
+                        kind='omitted', doc='Distance Code Inversion')
+
+    # Diagnostic read only PVs
+    channel_temp = Cpt(EpicsSignalRO, ':CHANTEMP', kind='normal',
+                       doc="Temperature at the channel's amplifier")
+    module_temp = Cpt(EpicsSignalRO, ':MODTEMP', kind='normal',
+                      doc='Temperature of the MCS2 Module in the rack')
+
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
     open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
+
+
+class SmarActEncodedTipTilt(Device):
+    """
+    Class for bundling two SmarAct encoded axes arranged in a tip-tilt mirror
+    positioning configuration into a single device.
+    Refer to SmarActTipTilt for more info.
+    """
+    tip = FCpt(SmarAct, '{prefix}{self._tip_pv}', kind='normal')
+    tilt = FCpt(SmarAct, '{prefix}{self._tip_pv}', kind='normal')
+
+    def __init__(self, prefix='', *, tip_pv, tilt_pv, **kwargs):
+        self._tip_pv = tip_pv
+        self._tilt_pv = tilt_pv
+        super().__init__(prefix, **kwargs)
 
 
 def _GetMotorClass(basepv):
