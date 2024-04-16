@@ -25,7 +25,8 @@ def test_disconnected_trigger():
 
 
 def put_equals_setpoint(mds, setpoint, ns_time):
-    mds.put(ns_time)
+    status = mds.put(ns_time)
+    status.wait()
     return setpoint.get() == ns_time
 
 
@@ -41,6 +42,7 @@ def test_ns_delay(fake_trigger):
     assert mds_get(fake_trigger.ns_delay, fake_trigger.delay_ticks, fake_trigger.delay_taps, 0, 7)
 
 
+@pytest.mark.timeout(5)
 def test_width(fake_trigger):
     assert put_equals_setpoint(fake_trigger.width, fake_trigger.width_setpoint, 100)
     assert fake_trigger.width.get() == fake_trigger.width_ticks.get() * TPR_TICK_NS
