@@ -1,0 +1,363 @@
+﻿pcdsdevices.digitizers.Wave8V2
+==============================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - run_start
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SeqStartRun.PROC``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.Wave8V2Simple`
+    
+        * - run_stop
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SeqStopRun.PROC``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.Wave8V2Simple`
+    
+        * - ch0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH0:ArrayData``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.Wave8V2Simple`
+    
+        * - ch1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH1:ArrayData``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.Wave8V2Simple`
+    
+        * - ch2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH2:ArrayData``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.Wave8V2Simple`
+    
+        * - ch3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH3:ArrayData``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.Wave8V2Simple`
+    
+        * - ch4
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH4:ArrayData``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.Wave8V2Simple`
+    
+        * - ch5
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH5:ArrayData``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.Wave8V2Simple`
+    
+        * - ch6
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH6:ArrayData``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.Wave8V2Simple`
+    
+        * - ch7
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH7:ArrayData``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.Wave8V2Simple`
+    
+        * - sys_regs
+          - :class:`~pcdsdevices.digitizers.Wave8V2SystemRegs`
+          - ``:SystemRegs``
+          - 
+          - normal
+          - 
+    
+        * - raw_buffers
+          - :class:`~pcdsdevices.digitizers.Wave8V2RawBuffers`
+          - ``:RawBuffers``
+          - 
+          - normal
+          - 
+    
+        * - sfp0
+          - :class:`~pcdsdevices.digitizers.Wave8V2Sfp`
+          - ``:Sfp0``
+          - 
+          - normal
+          - 
+    
+        * - sfp1
+          - :class:`~pcdsdevices.digitizers.Wave8V2Sfp`
+          - ``:Sfp1``
+          - 
+          - normal
+          - 
+    
+        * - sfp2
+          - :class:`~pcdsdevices.digitizers.Wave8V2Sfp`
+          - ``:Sfp2``
+          - 
+          - normal
+          - 
+    
+        * - sfp3
+          - :class:`~pcdsdevices.digitizers.Wave8V2Sfp`
+          - ``:Sfp3``
+          - 
+          - normal
+          - 
+    
+        * - adc_config0
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCRegs`
+          - ``:AdcConfig0``
+          - 
+          - normal
+          - 
+    
+        * - adc_config1
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCRegs`
+          - ``:AdcConfig1``
+          - 
+          - normal
+          - 
+    
+        * - adc_config2
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCRegs`
+          - ``:AdcConfig2``
+          - 
+          - normal
+          - 
+    
+        * - adc_config3
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCRegs`
+          - ``:AdcConfig3``
+          - 
+          - normal
+          - 
+    
+        * - adc_sample_readout0
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCSampleReadout`
+          - ``:AdcReadout0``
+          - 
+          - normal
+          - 
+    
+        * - adc_sample_readout1
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCSampleReadout`
+          - ``:AdcReadout1``
+          - 
+          - normal
+          - 
+    
+        * - adc_sample_readout2
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCSampleReadout`
+          - ``:AdcReadout2``
+          - 
+          - normal
+          - 
+    
+        * - adc_sample_readout3
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCSampleReadout`
+          - ``:AdcReadout3``
+          - 
+          - normal
+          - 
+    
+        * - axi_version
+          - :class:`~pcdsdevices.digitizers.Wave8V2AxiVersion`
+          - ``:AxiVersion``
+          - 
+          - normal
+          - 
+    
+        * - event_builder
+          - :class:`~pcdsdevices.digitizers.Wave8V2EventBuilder`
+          - ``:EventBuilder``
+          - 
+          - normal
+          - 
+    
+        * - evr_v2
+          - :class:`~pcdsdevices.digitizers.Wave8V2EvrV2`
+          - ``:EvrV2``
+          - 
+          - normal
+          - 
+    
+        * - integrators
+          - :class:`~pcdsdevices.digitizers.Wave8V2Integrators`
+          - ``:Integrators``
+          - 
+          - normal
+          - 
+    
+        * - pgp_mon0
+          - :class:`~pcdsdevices.digitizers.Wave8V2PgpMon`
+          - ``:PgpMon0``
+          - 
+          - normal
+          - 
+    
+        * - pgp_mon1
+          - :class:`~pcdsdevices.digitizers.Wave8V2PgpMon`
+          - ``:PgpMon1``
+          - 
+          - normal
+          - 
+    
+        * - timing
+          - :class:`~pcdsdevices.digitizers.Wave8V2Timing`
+          - ``:Timing``
+          - 
+          - normal
+          - 
+    
+        * - trigger_event_manager
+          - :class:`~pcdsdevices.digitizers.Wave8V2TriggerEventManager`
+          - ``:TrEvent``
+          - 
+          - normal
+          - 
+    
+        * - xpm_mini
+          - :class:`~pcdsdevices.digitizers.Wave8V2XpmMini`
+          - ``:XpmMini``
+          - 
+          - normal
+          - 
+    
+        * - xpm_msg
+          - :class:`~pcdsdevices.digitizers.Wave8V2XpmMsg`
+          - ``:TrEvent``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

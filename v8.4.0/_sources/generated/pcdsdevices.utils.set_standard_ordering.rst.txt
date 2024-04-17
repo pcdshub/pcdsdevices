@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.set\_standard\_ordering
+=========================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: set_standard_ordering

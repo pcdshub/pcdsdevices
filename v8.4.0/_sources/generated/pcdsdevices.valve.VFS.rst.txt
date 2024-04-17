@@ -1,0 +1,193 @@
+﻿pcdsdevices.valve.VFS
+=====================
+
+.. currentmodule:: pcdsdevices.valve
+
+.. autoclass:: VFS
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
+    
+        * - valve_position
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:POS_STATE_RBV``
+          - Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F
+          - hinted
+          - 
+    
+        * - vfs_state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE_RBV``
+          - Fast Shutter Current State
+          - hinted
+          - 
+    
+        * - request_close
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:CLS_SW``
+          - Request Fast Shutter to Close. When both closeand open are requested, VFS will close.
+          - normal
+          - 
+    
+        * - request_open
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:OPN_SW``
+          - Request Fast Shutter to Open. Requires a risingEPICS signal to open. When both close andopen are requested, VFS will close.
+          - normal
+          - 
+    
+        * - reset_vacuum_fault
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:ALM_RST``
+          - Reset Fast Shutter Vacuum Faults: fastsensor triggered, fast sensor turned off.To open VFS, this needs to be reset to TRUEafter a vacuum event.
+          - normal
+          - 
+    
+        * - override_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:OVRD_ON``
+          - Epics Command to set Override mode
+          - normal
+          - 
+    
+        * - override_force_open
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:FORCE_OPN``
+          - Epics Command to force openthe valve in override mode
+          - normal
+          - 
+    
+        * - gfs_name
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GFS_RBV``
+          - Gauge Fast Sensor Name
+          - normal
+          - 
+    
+        * - gfs_trigger
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TRIG_RBV``
+          - Gauge Fast Sensor Input Trigger
+          - normal
+          - 
+    
+        * - position_close
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CLS_DI_RBV``
+          - Fast Shutter Closed Valve Position
+          - normal
+          - 
+    
+        * - position_open
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPN_DI_RBV``
+          - Fast Shutter Open Valve Position
+          - normal
+          - 
+    
+        * - vac_fault_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VAC_FAULT_OK_RBV``
+          - Fast Shutter Vacuum Fault OK Readback
+          - normal
+          - 
+    
+        * - mps_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MPS_FAULT_OK_RBV``
+          - Fast Shutter Fast Fault Output OK
+          - normal
+          - 
+    
+        * - veto_device
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VETO_DEVICE_RBV``
+          - Name of device that can veto this VFS
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: subscriptions
+    
+    

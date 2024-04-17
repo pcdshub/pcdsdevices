@@ -1,0 +1,118 @@
+﻿pcdsdevices.wfs.WaveFrontSensorTarget
+=====================================
+
+.. currentmodule:: pcdsdevices.wfs
+
+.. autoclass:: WaveFrontSensorTarget
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathInOutCptMixin`
+    
+        * - target
+          - :class:`~pcdsdevices.wfs.WaveFrontSensorStates`
+          - ``:MMS:STATE``
+          - Control of the diagnostic stack via saved positions.
+          - hinted
+          - 
+    
+        * - y_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:Y``
+          - Direct control of the diagnostic stack motor.
+          - normal
+          - 
+    
+        * - z_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:Z``
+          - Z position of target stack for focus control.
+          - normal
+          - 
+    
+        * - thermocouple1
+          - :class:`~pcdsdevices.sensors.TwinCATTempSensor`
+          - ``:STC:01``
+          - First thermocouple.
+          - normal
+          - 
+    
+        * - thermocouple2
+          - :class:`~pcdsdevices.sensors.TwinCATTempSensor`
+          - ``:STC:02``
+          - Second thermocouple.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

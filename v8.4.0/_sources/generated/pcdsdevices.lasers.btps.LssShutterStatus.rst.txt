@@ -1,0 +1,93 @@
+﻿pcdsdevices.lasers.btps.LssShutterStatus
+========================================
+
+.. currentmodule:: pcdsdevices.lasers.btps
+
+.. autoclass:: LssShutterStatus
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - open_request
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``REQ``
+          - User request to open/close shutter
+          - normal
+          - 
+    
+        * - opened_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``OPN``
+          - Shutter open status
+          - normal
+          - 
+    
+        * - closed_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``CLS``
+          - Shutter closed status
+          - normal
+          - 
+    
+        * - permission
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``LSS``
+          - Shutter open permission status
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
