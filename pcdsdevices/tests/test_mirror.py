@@ -198,23 +198,21 @@ def test_xy_mirror_lightpath(fake_xy_offset_mirror, monkeypatch):
     xym = fake_xy_offset_mirror
     mock_schedule = Mock()
     monkeypatch.setattr(mirror, 'schedule_task', mock_schedule)
-    mock_retry = Mock()
-    monkeypatch.setattr(xym, 'reset_retry', mock_retry)
 
     assert xym._retry_lightpath is True
     xym.insertion._state_initialized = False
     # try getting lightpath state once, which should fail and schedule
     xym.get_lightpath_state(use_cache=False)
-    assert mock_schedule.call_count == 2
+    assert mock_schedule.call_count == 1
     assert xym._retry_lightpath is False
 
     # subsequent calls to get_lightpath_state should not schedule
     xym.get_lightpath_state(use_cache=False)
-    assert mock_schedule.call_count == 2
+    assert mock_schedule.call_count == 1
     assert xym._retry_lightpath is False
 
     xym._retry_lightpath = True
     # After reset has completed, can retry
     xym.get_lightpath_state(use_cache=False)
-    assert mock_schedule.call_count == 4
+    assert mock_schedule.call_count == 2
     assert xym._retry_lightpath is False

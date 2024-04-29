@@ -1463,7 +1463,6 @@ class XOffsetMirrorXYState(XOffsetMirrorState):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._retry_lightpath = True
 
     def _get_insertion_state(
         self,
@@ -1494,17 +1493,13 @@ class XOffsetMirrorXYState(XOffsetMirrorState):
             if self._retry_lightpath:
                 self._retry_lightpath = False
                 schedule_task(self._calc_cache_lightpath_state, delay=2.0)
-                schedule_task(self.reset_retry, delay=10.0)
             return True, True
 
+        self._retry_lightpath = True
         x_in = self.insertion.check_inserted(insertion_state)
         x_out = self.insertion.check_removed(insertion_state)
 
         return x_out, x_in
-
-    # Only queue up lightpath calcs once
-    def reset_retry(self):
-        self._retry_lightpath = True
 
     def calc_lightpath_state(
         self,
