@@ -1461,6 +1461,9 @@ class XOffsetMirrorXYState(XOffsetMirrorState):
     lightpath_cpts = ['insertion.state', 'coating.state',
                       'pitch.user_readback']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def _get_insertion_state(
         self,
         insertion_state: int
@@ -1487,10 +1490,12 @@ class XOffsetMirrorXYState(XOffsetMirrorState):
         if not self.insertion._state_initialized:
             self.log.debug('insertion state not initialized, '
                            'scheduling lightpath calcs for later')
+            if self._retry_lightpath:
+                self._retry_lightpath = False
+                schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            return True, True
 
-            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
-            raise MirrorLogicError('insertion state not initialized')
-
+        self._retry_lightpath = True
         x_in = self.insertion.check_inserted(insertion_state)
         x_out = self.insertion.check_removed(insertion_state)
 

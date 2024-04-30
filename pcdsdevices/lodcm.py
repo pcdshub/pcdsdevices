@@ -2110,12 +2110,17 @@ class XCSLODCM(LODCM):
         if not self.tower1.h1n_state._state_initialized:
             self.log.debug('tower1 state not initialized, scheduling '
                            'lightpath calc for later')
-            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            if self._retry_lightpath:
+                self._retry_lightpath = False
+                schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+
             return LightpathState(
                 inserted=True,
                 removed=True,
                 output={'L0': 0}
             )
+
+        self._retry_lightpath = True
         # avoid extra get calls in this method
         state_label = self.tower1.h1n_state.get_state(h1n_state).name
 
@@ -2177,13 +2182,16 @@ class XPPLODCM(LODCM):
         if not self.tower1.h1n_state._state_initialized:
             self.log.debug('tower1 state not initialized, scheduling '
                            'lightpath calc for later')
-            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            if self._retry_lightpath:
+                self._retry_lightpath = False
+                schedule_task(self._calc_cache_lightpath_state, delay=2.0)
             return LightpathState(
                 inserted=True,
                 removed=True,
                 output={'L0': 0}
             )
 
+        self._retry_lightpath = True
         inserted = self.tower1.h1n_state.check_inserted(h1n_state)
         removed = self.tower1.h1n_state.check_removed(h1n_state)
 
