@@ -188,6 +188,27 @@
           - normal
           - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
     
+        * - velocity_base
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VBAS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - velocity_max
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VMAX``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - msta_raw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.MSTA``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
         * - motor_spg
           - :class:`~ophyd.signal.EpicsSignal`
           - ``.SPG``
@@ -196,6 +217,12 @@
           - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
     
 
+    
+    
+    
+    
+    
+    
     
     
     
@@ -305,10 +332,12 @@
     .. autoattribute:: egu
     .. autoattribute:: high_limit
     .. autoattribute:: hints
+    .. autoattribute:: homed
     .. autoattribute:: kind
     .. autoattribute:: limits
     .. autoattribute:: low_limit
     .. autoattribute:: moving
+    .. autoattribute:: msta
     .. autoattribute:: position
     .. autoattribute:: precision
     .. autoattribute:: settle_time

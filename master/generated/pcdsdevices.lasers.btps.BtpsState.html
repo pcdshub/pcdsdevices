@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.lasers.btps.BtpsState &mdash; PCDS Devices 8.3.1.dev95+g49fc5b1a documentation</title>
+  <title>pcdsdevices.lasers.btps.BtpsState &mdash; PCDS Devices 8.4.1.dev192+gb33b7c4d documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -16,7 +16,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=8b805890"></script>
+        <script src="../_static/documentation_options.js?v=e444e11b"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -39,7 +39,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                8.3.1.dev95+g49fc5b1a
+                8.4.1.dev192+gb33b7c4d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -148,6 +148,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-tags">pcdsdevices.tags</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-targets">pcdsdevices.targets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-timetool">pcdsdevices.timetool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-tmo-ip1">pcdsdevices.tmo_ip1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-tpr">pcdsdevices.tpr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-usb-encoder">pcdsdevices.usb_encoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-utils">pcdsdevices.utils</a></li>
@@ -230,70 +231,91 @@
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>ls5</p></td>
+<tr class="row-even"><td><p>ls3</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.lasers.btps.BtpsSourceStatus.html#pcdsdevices.lasers.btps.BtpsSourceStatus" title="pcdsdevices.lasers.btps.BtpsSourceStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">BtpsSourceStatus</span></code></a></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LS5:</span></code></p></td>
-<td><p>Source status for LS5 (Bay 3)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LS3:</span></code></p></td>
+<td><p>Source status for LS3 (Bay 2 1um)</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>ls8</p></td>
+<tr class="row-odd"><td><p>ls4</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.lasers.btps.BtpsSourceStatus.html#pcdsdevices.lasers.btps.BtpsSourceStatus" title="pcdsdevices.lasers.btps.BtpsSourceStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">BtpsSourceStatus</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LS4:</span></code></p></td>
+<td><p>Source status for LS3 (Bay 2 800m)</p></td>
+<td><p>normal</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ls5</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.lasers.btps.BtpsSourceStatus.html#pcdsdevices.lasers.btps.BtpsSourceStatus" title="pcdsdevices.lasers.btps.BtpsSourceStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">BtpsSourceStatus</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LS5:</span></code></p></td>
+<td><p>Source status for LS5 (Bay 3 800nm)</p></td>
+<td><p>normal</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ls6</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.lasers.btps.BtpsSourceStatus.html#pcdsdevices.lasers.btps.BtpsSourceStatus" title="pcdsdevices.lasers.btps.BtpsSourceStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">BtpsSourceStatus</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LS6:</span></code></p></td>
+<td><p>Source status for LS3 (Bay 3 1um)</p></td>
+<td><p>normal</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ls8</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.lasers.btps.BtpsSourceStatus.html#pcdsdevices.lasers.btps.BtpsSourceStatus" title="pcdsdevices.lasers.btps.BtpsSourceStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">BtpsSourceStatus</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LS8:</span></code></p></td>
 <td><p>Source status for LS8 (Bay 4)</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>ld1</p></td>
+<tr class="row-odd"><td><p>ld1</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.lasers.btps.DestinationConfig.html#pcdsdevices.lasers.btps.DestinationConfig" title="pcdsdevices.lasers.btps.DestinationConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DestinationConfig</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LD1:</span></code></p></td>
 <td><p>Destination LD1</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>ld2</p></td>
+<tr class="row-even"><td><p>ld2</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.lasers.btps.DestinationConfig.html#pcdsdevices.lasers.btps.DestinationConfig" title="pcdsdevices.lasers.btps.DestinationConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DestinationConfig</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LD2:</span></code></p></td>
 <td><p>Destination LD2</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>ld4</p></td>
+<tr class="row-odd"><td><p>ld4</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.lasers.btps.DestinationConfig.html#pcdsdevices.lasers.btps.DestinationConfig" title="pcdsdevices.lasers.btps.DestinationConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DestinationConfig</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LD4:</span></code></p></td>
 <td><p>Destination LD4</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>ld6</p></td>
+<tr class="row-even"><td><p>ld6</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.lasers.btps.DestinationConfig.html#pcdsdevices.lasers.btps.DestinationConfig" title="pcdsdevices.lasers.btps.DestinationConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DestinationConfig</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LD6:</span></code></p></td>
 <td><p>Destination LD6</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>ld8</p></td>
+<tr class="row-odd"><td><p>ld8</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.lasers.btps.DestinationConfig.html#pcdsdevices.lasers.btps.DestinationConfig" title="pcdsdevices.lasers.btps.DestinationConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DestinationConfig</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LD8:</span></code></p></td>
 <td><p>Destination LD8</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>ld9</p></td>
+<tr class="row-even"><td><p>ld9</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.lasers.btps.DestinationConfig.html#pcdsdevices.lasers.btps.DestinationConfig" title="pcdsdevices.lasers.btps.DestinationConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DestinationConfig</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LD9:</span></code></p></td>
 <td><p>Destination LD9</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>ld10</p></td>
+<tr class="row-odd"><td><p>ld10</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.lasers.btps.DestinationConfig.html#pcdsdevices.lasers.btps.DestinationConfig" title="pcdsdevices.lasers.btps.DestinationConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DestinationConfig</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LD10:</span></code></p></td>
 <td><p>Destination LD10</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>ld14</p></td>
+<tr class="row-even"><td><p>ld14</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.lasers.btps.DestinationConfig.html#pcdsdevices.lasers.btps.DestinationConfig" title="pcdsdevices.lasers.btps.DestinationConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DestinationConfig</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">LTLHN:LD14:</span></code></p></td>
 <td><p>Destination LD14</p></td>
@@ -403,7 +425,7 @@ status object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.lasers.btps.BtpsState.set_source_to_destination_with_movestatus">
-<span class="sig-name descname"><span class="pre">set_source_to_destination_with_movestatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SourcePosition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DestinationPosition</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.MoveStatus.html#ophyd.status.MoveStatus" title="(in ophyd v1.9.1.dev31+g5c03c3ff)"><span class="pre">MoveStatus</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.MoveStatus.html#ophyd.status.MoveStatus" title="(in ophyd v1.9.1.dev31+g5c03c3ff)"><span class="pre">MoveStatus</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.MoveStatus.html#ophyd.status.MoveStatus" title="(in ophyd v1.9.1.dev31+g5c03c3ff)"><span class="pre">MoveStatus</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.lasers.btps.BtpsState.set_source_to_destination_with_movestatus" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_source_to_destination_with_movestatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SourcePosition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DestinationPosition</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.MoveStatus.html#ophyd.status.MoveStatus" title="(in ophyd v1.9.1.dev73+g050b98f3)"><span class="pre">MoveStatus</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.MoveStatus.html#ophyd.status.MoveStatus" title="(in ophyd v1.9.1.dev73+g050b98f3)"><span class="pre">MoveStatus</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.MoveStatus.html#ophyd.status.MoveStatus" title="(in ophyd v1.9.1.dev73+g050b98f3)"><span class="pre">MoveStatus</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.lasers.btps.BtpsState.set_source_to_destination_with_movestatus" title="Link to this definition"></a></dt>
 <dd><p>Move <code class="docutils literal notranslate"><span class="pre">source</span></code> to the target destination <code class="docutils literal notranslate"><span class="pre">dest</span></code> and return statuses
 for each motion.</p>
 </dd></dl>
@@ -438,7 +460,7 @@ for each motion.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.lasers.btps.BtpsState.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev31+g5c03c3ff)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.lasers.btps.BtpsState.trigger" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev73+g050b98f3)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.lasers.btps.BtpsState.trigger" title="Link to this definition"></a></dt>
 <dd><p>Trigger the device and return status object.</p>
 <p>This method is responsible for implementing ‘trigger’ or
 ‘acquire’ functionality of this device.</p>
@@ -446,14 +468,14 @@ for each motion.</p>
 and it being able to be read (via the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
 also responsible for arranging that the
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev31+g5c03c3ff)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev73+g050b98f3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
 is notified when the device is ready to be read.</p>
 <p>If there is no delay between triggering and being readable,
-then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev31+g5c03c3ff)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev73+g050b98f3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
 object which is already completed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev31+g5c03c3ff)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev73+g050b98f3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
 as complete when the device is ready to be read.</p>
 </dd>
 </dl>

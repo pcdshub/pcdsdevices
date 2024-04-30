@@ -46,6 +46,20 @@
           - hinted
           - Inherited from :class:`~pcdsdevices.mirror.FFMirror`
     
+        * - cool_flow1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWM:1_RBV``
+          - Axilon Panel Flow Meter Loop 1
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.FFMirror`
+    
+        * - cool_press
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PRSM:1_RBV``
+          - Axilon Panel Pressure Meter
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.FFMirror`
+    
         * - z
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
           - ``:MMS:Z``
@@ -128,6 +142,10 @@
     
     
     
+    
+    
+    
+    
 
     
     
@@ -161,9 +179,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
-    .. autoattribute:: cool_flow1
     .. autoattribute:: cool_flow2
-    .. autoattribute:: cool_press
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: lightpath_cpts
