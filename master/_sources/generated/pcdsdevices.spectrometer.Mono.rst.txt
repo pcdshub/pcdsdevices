@@ -102,84 +102,120 @@
           - config
           - 
     
-        * - flow_1
+        * - cool_flow1
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:FWM:1``
           - flow meter 1
           - normal
           - 
     
-        * - flow_2
+        * - cool_flow2
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:FWM:2``
           - flow meter 2
           - normal
           - 
     
-        * - pres_1
+        * - cool_press
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:PRSM:1``
           - pressure meter 1
           - normal
           - 
     
-        * - rtd_1
+        * - grating_temp_1
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:01:TEMP``
-          - RTD 1 [deg C]
+          - [deg C]
           - normal
           - 
     
-        * - rtd_2
+        * - grating_temp_2
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:02:TEMP``
-          - RTD 2 [deg C]
+          - [deg C]
           - normal
           - 
     
-        * - rtd_3
+        * - grating_temp_3
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:03:TEMP``
-          - RTD 3 [deg C]
+          - [deg C]
           - normal
           - 
     
-        * - rtd_4
+        * - grating_temp_4
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:04:TEMP``
-          - RTD 4 [deg C]
+          - [deg C]
           - normal
           - 
     
-        * - rtd_5
+        * - grating_mask_temp_1
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:05:TEMP``
-          - RTD 5 [deg C]
+          - [deg C]
           - normal
           - 
     
-        * - rtd_6
+        * - grating_mask_temp_2
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:06:TEMP``
-          - RTD 6 [deg C]
+          - [deg C]
           - normal
           - 
     
-        * - rtd_7
+        * - grating_mask_temp_3
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:07:TEMP``
-          - RTD 7 [deg C]
+          - [deg C]
           - normal
           - 
     
-        * - rtd_8
+        * - grating_mask_temp_4
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:08:TEMP``
-          - RTD 8 [deg C]
+          - [deg C]
+          - normal
+          - 
+    
+        * - mirror_mask_temp
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:09:TEMP``
+          - [deg C]
+          - normal
+          - 
+    
+        * - mirror_cooling_temp
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:11:TEMP``
+          - [deg C]
+          - normal
+          - 
+    
+        * - exit_mask_right_temp
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:10:TEMP``
+          - [deg C]
+          - normal
+          - 
+    
+        * - exit_mask_left_temp
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:12:TEMP``
+          - [deg C]
           - normal
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

@@ -25,6 +25,13 @@
           - omitted
           - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
     
+        * - laser_incoupling
+          - :class:`~pcdsdevices.lic_2d_tmo.LaserCouplingStates`
+          - ``LI2K4:IP1:STATE``
+          - 
+          - normal
+          - 
+    
         * - li2k4_x
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
           - ``:MMS:X``
@@ -40,6 +47,8 @@
           - 
     
 
+    
+    
     
     
     

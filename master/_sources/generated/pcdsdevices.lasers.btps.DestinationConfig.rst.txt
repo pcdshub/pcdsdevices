@@ -46,10 +46,31 @@
           - normal
           - 
     
+        * - ls3
+          - :class:`~pcdsdevices.lasers.btps.SourceToDestinationConfig`
+          - ``LS3:``
+          - Settings for source LS3 (bay 2 1um) to this destination
+          - normal
+          - 
+    
+        * - ls4
+          - :class:`~pcdsdevices.lasers.btps.SourceToDestinationConfig`
+          - ``LS4:``
+          - Settings for source LS4 (bay 2 800m) to this destination
+          - normal
+          - 
+    
         * - ls5
           - :class:`~pcdsdevices.lasers.btps.SourceToDestinationConfig`
           - ``LS5:``
-          - Settings for source LS5 (bay 3) to this destination
+          - Settings for source LS5 (bay 3 800nm) to this destination
+          - normal
+          - 
+    
+        * - ls6
+          - :class:`~pcdsdevices.lasers.btps.SourceToDestinationConfig`
+          - ``LS6:``
+          - Settings for source LS6 (bay 3 1um) to this destination
           - normal
           - 
     
@@ -68,6 +89,12 @@
           - 
     
 
+    
+    
+    
+    
+    
+    
     
     
     

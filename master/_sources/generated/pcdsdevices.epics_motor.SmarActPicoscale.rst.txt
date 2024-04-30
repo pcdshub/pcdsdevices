@@ -1,0 +1,543 @@
+﻿pcdsdevices.epics\_motor.SmarActPicoscale
+=========================================
+
+.. currentmodule:: pcdsdevices.epics_motor
+
+.. autoclass:: SmarActPicoscale
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - user_readback (UpdateComponent)
+          - :class:`~pcdsdevices.signal.EpicsSignalROEditMD`
+          - ``.RBV``
+          - Component attribute
+              ::
+
+                  Component(EpicsSignalRO, '.RBV', auto_monitor=True, kind='hinted')
+
+          - hinted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - user_setpoint (UpdateComponent)
+          - :class:`~pcdsdevices.signal.EpicsSignalEditMD`
+          - ``.VAL``
+          - Component attribute
+              ::
+
+                  Component(EpicsSignal, '.VAL', limits=True, auto_monitor=True, kind='normal')
+
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - user_offset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.OFF``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - user_offset_dir
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.DIR``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - offset_freeze_switch
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.FOFF``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - set_use_switch
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.SET``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - velocity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VELO``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - acceleration
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.ACCL``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - motor_egu
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.EGU``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - motor_is_moving
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.MOVN``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - motor_done_move
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.DMOV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - high_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.HLS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - low_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.LLS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - high_limit_travel (UpdateComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.HLM``
+          - Component attribute
+              ::
+
+                  Component(EpicsSignal, '.HLM', auto_monitor=True, kind='omitted')
+
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - low_limit_travel (UpdateComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.LLM``
+          - Component attribute
+              ::
+
+                  Component(EpicsSignal, '.LLM', auto_monitor=True, kind='omitted')
+
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - direction_of_travel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.TDIR``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - motor_stop
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.STOP``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - home_forward
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.HOMF``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - home_reverse
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.HOMR``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - disabled
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.DISP``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - description
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.DESC``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - dial_position
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.DRBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - velocity_base
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VBAS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - velocity_max
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VMAX``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - msta_raw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.MSTA``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - pos_type
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PTYPE_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - needs_calib
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NEED_CALIB``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - do_calib
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DO_CALIB.PROC``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - log_scale_offset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LSCO``
+          - Logical Scale Offset
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - def_range_min
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DRMIN``
+          - Default Range Minimum
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - def_range_max
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DRMAX``
+          - Default Range Maximum
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - log_scale_inv
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LSCI_RBV``
+          - Default Range Minimum
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - dist_code_inv
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DCIN_RBV``
+          - Distance Code Inversion
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - channel_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CHANTEMP``
+          - Temperature at the channel's amplifier
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - module_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODTEMP``
+          - Temperature of the MCS2 Module in the rack
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - open_loop
+          - :class:`~pcdsdevices.epics_motor.SmarActOpenLoop`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
+        * - pico_present
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PS_PRESENT``
+          - PicoScale is on and connected
+          - config
+          - 
+    
+        * - pico_exists
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HAVE_PS``
+          - Does this channel have a PicoScale assigned to it?
+          - config
+          - 
+    
+        * - pico_valid
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PS_DATA_VALID``
+          - Is the data valid and ready for accurate msmts?
+          - config
+          - 
+    
+        * - pico_sig_qual
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PS_SIG_QUALITY``
+          - Quality of interferometer signal. Higher = better
+          - config
+          - 
+    
+        * - pico_adj_state (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self._ioc_base}:PS:CUR_ADJ_STATE``
+          - Set to Manual or Auto adjustment mode
+          - config
+          - 
+    
+        * - pico_curr_adj_prog (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self._ioc_base}:PS:CUR_ADJ_PROGRESS``
+          - Estimate of current adjustment progress
+          - config
+          - 
+    
+        * - pico_adj_done (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self._ioc_base}:PS:ADJ_DONE``
+          - Is the auto adjustment done?
+          - config
+          - 
+    
+        * - pico_enable
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PS_ENABLE_RBV``
+          - Is the PicoScale enabled for this channel?
+          - normal
+          - 
+    
+        * - pico_stable (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self._ioc_base}:PS:STABLE``
+          - Is system stable and ready for accurate msmts?
+          - normal
+          - 
+    
+        * - pico_name (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self._ioc_base}:PS:LOCATOR``
+          - Name of the PicoScale
+          - config
+          - 
+    
+        * - pico_wmin (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self._ioc_base}:PS:WORKING_MIN``
+          - Working distance minimum
+          - config
+          - 
+    
+        * - pico_wmax (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self._ioc_base}:PS:WORKING_MAX``
+          - Working distance maximum
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_limit_switches
+    .. automethod:: clear_limits
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: disable
+    .. automethod:: enable
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_high_limit
+    .. automethod:: get_lim
+    .. automethod:: get_low_limit
+    .. automethod:: home
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_high_limit
+    .. automethod:: set_lim
+    .. automethod:: set_low_limit
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: homed
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: msta
+    .. autoattribute:: position
+    .. autoattribute:: precision
+    .. autoattribute:: settle_time
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: tolerated_alarm
+    
+    

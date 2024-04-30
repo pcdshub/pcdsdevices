@@ -32,10 +32,31 @@
           - normal
           - 
     
+        * - ls3
+          - :class:`~pcdsdevices.lasers.btps.BtpsSourceStatus`
+          - ``LTLHN:LS3:``
+          - Source status for LS3 (Bay 2 1um)
+          - normal
+          - 
+    
+        * - ls4
+          - :class:`~pcdsdevices.lasers.btps.BtpsSourceStatus`
+          - ``LTLHN:LS4:``
+          - Source status for LS3 (Bay 2 800m)
+          - normal
+          - 
+    
         * - ls5
           - :class:`~pcdsdevices.lasers.btps.BtpsSourceStatus`
           - ``LTLHN:LS5:``
-          - Source status for LS5 (Bay 3)
+          - Source status for LS5 (Bay 3 800nm)
+          - normal
+          - 
+    
+        * - ls6
+          - :class:`~pcdsdevices.lasers.btps.BtpsSourceStatus`
+          - ``LTLHN:LS6:``
+          - Source status for LS3 (Bay 3 1um)
           - normal
           - 
     
@@ -103,6 +124,12 @@
           - 
     
 
+    
+    
+    
+    
+    
+    
     
     
     
