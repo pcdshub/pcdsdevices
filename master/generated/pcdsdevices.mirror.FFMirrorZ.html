@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.mirror.FFMirrorZ &mdash; PCDS Devices 8.3.1.dev95+g49fc5b1a documentation</title>
+  <title>pcdsdevices.mirror.FFMirrorZ &mdash; PCDS Devices 8.4.1.dev129+gf929fa0b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -16,7 +16,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=8b805890"></script>
+        <script src="../_static/documentation_options.js?v=66672e89"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -39,7 +39,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                8.3.1.dev95+g49fc5b1a
+                8.4.1.dev129+gf929fa0b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -123,6 +123,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.mirror.XOffsetMirrorRTDs.html">pcdsdevices.mirror.XOffsetMirrorRTDs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.mirror.XOffsetMirrorState.html">pcdsdevices.mirror.XOffsetMirrorState</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.mirror.XOffsetMirrorStateCool.html">pcdsdevices.mirror.XOffsetMirrorStateCool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.mirror.XOffsetMirrorStateCoolNoBend.html">pcdsdevices.mirror.XOffsetMirrorStateCoolNoBend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.mirror.XOffsetMirrorSwitch.html">pcdsdevices.mirror.XOffsetMirrorSwitch</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.mirror.XOffsetMirrorXYState.html">pcdsdevices.mirror.XOffsetMirrorXYState</a></li>
 </ul>
@@ -265,6 +266,20 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">:MMS:PITCH</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.mirror.FFMirror.html#pcdsdevices.mirror.FFMirror" title="pcdsdevices.mirror.FFMirror"><code class="xref py py-class docutils literal notranslate"><span class="pre">FFMirror</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>cool_flow1</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:FWM:1_RBV</span></code></p></td>
+<td><p>Axilon Panel Flow Meter Loop 1</p></td>
+<td><p>normal</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.mirror.FFMirror.html#pcdsdevices.mirror.FFMirror" title="pcdsdevices.mirror.FFMirror"><code class="xref py py-class docutils literal notranslate"><span class="pre">FFMirror</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>cool_press</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:PRSM:1_RBV</span></code></p></td>
+<td><p>Axilon Panel Pressure Meter</p></td>
+<td><p>normal</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.mirror.FFMirror.html#pcdsdevices.mirror.FFMirror" title="pcdsdevices.mirror.FFMirror"><code class="xref py py-class docutils literal notranslate"><span class="pre">FFMirror</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>z</p></td>
@@ -501,18 +516,8 @@ as complete when the device is ready to be read.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pcdsdevices.mirror.FFMirrorZ.cool_flow1">
-<span class="sig-name descname"><span class="pre">cool_flow1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.mirror.FFMirrorZ.cool_flow1" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.mirror.FFMirrorZ.cool_flow2">
 <span class="sig-name descname"><span class="pre">cool_flow2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.mirror.FFMirrorZ.cool_flow2" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pcdsdevices.mirror.FFMirrorZ.cool_press">
-<span class="sig-name descname"><span class="pre">cool_press</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.mirror.FFMirrorZ.cool_press" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

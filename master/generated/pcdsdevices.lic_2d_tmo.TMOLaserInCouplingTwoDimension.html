@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension &mdash; PCDS Devices 8.3.1.dev95+g49fc5b1a documentation</title>
+  <title>pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension &mdash; PCDS Devices 8.4.1.dev129+gf929fa0b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -16,7 +16,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=8b805890"></script>
+        <script src="../_static/documentation_options.js?v=66672e89"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pcdsdevices.light_control.LightControl" href="pcdsdevices.light_control.LightControl.html" />
-    <link rel="prev" title="pcdsdevices.lic.LaserInCoupling" href="pcdsdevices.lic.LaserInCoupling.html" /> 
+    <link rel="prev" title="pcdsdevices.lic_2d_tmo.LaserCouplingStates" href="pcdsdevices.lic_2d_tmo.LaserCouplingStates.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,7 +39,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                8.3.1.dev95+g49fc5b1a
+                8.4.1.dev129+gf929fa0b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -94,6 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lens">pcdsdevices.lens</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lic">pcdsdevices.lic</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#pcdsdevices-lic-2d-tmo">pcdsdevices.lic_2d_tmo</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.lic_2d_tmo.LaserCouplingStates.html">pcdsdevices.lic_2d_tmo.LaserCouplingStates</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension"><code class="docutils literal notranslate"><span class="pre">TMOLaserInCouplingTwoDimension</span></code></a></li>
 </ul>
@@ -223,14 +224,21 @@
 <td><p>omitted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.interface.LightpathMixin.html#pcdsdevices.interface.LightpathMixin" title="pcdsdevices.interface.LightpathMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">LightpathMixin</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p>li2k4_x</p></td>
+<tr class="row-odd"><td><p>laser_incoupling</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.lic_2d_tmo.LaserCouplingStates.html#pcdsdevices.lic_2d_tmo.LaserCouplingStates" title="pcdsdevices.lic_2d_tmo.LaserCouplingStates"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaserCouplingStates</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LI2K4:IP1:STATE</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>li2k4_x</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxisEPS.html#pcdsdevices.epics_motor.BeckhoffAxisEPS" title="pcdsdevices.epics_motor.BeckhoffAxisEPS"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeckhoffAxisEPS</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:MMS:X</span></code></p></td>
 <td><p>X-axis of lasercoupling li2k4</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>li2k4_y</p></td>
+<tr class="row-odd"><td><p>li2k4_y</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxisEPS.html#pcdsdevices.epics_motor.BeckhoffAxisEPS" title="pcdsdevices.epics_motor.BeckhoffAxisEPS"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeckhoffAxisEPS</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:MMS:Y</span></code></p></td>
 <td><p>Y-axis of lasercoupling li2k4</p></td>
@@ -463,7 +471,7 @@ as complete when the device is ready to be read.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pcdsdevices.lic.LaserInCoupling.html" class="btn btn-neutral float-left" title="pcdsdevices.lic.LaserInCoupling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pcdsdevices.lic_2d_tmo.LaserCouplingStates.html" class="btn btn-neutral float-left" title="pcdsdevices.lic_2d_tmo.LaserCouplingStates" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pcdsdevices.light_control.LightControl.html" class="btn btn-neutral float-right" title="pcdsdevices.light_control.LightControl" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

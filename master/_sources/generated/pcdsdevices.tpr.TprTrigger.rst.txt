@@ -113,7 +113,7 @@
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.trg}{self.sys}TDES``
           - Trigger delay setpoint in nsec
-          - omitted
+          - config
           - 
     
         * - ns_delay
@@ -141,7 +141,7 @@
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self.prefix}{self.trg}{self.sys}TWID``
           - Trigger width in ns
-          - omitted
+          - config
           - 
     
         * - width_ticks (FCpt)

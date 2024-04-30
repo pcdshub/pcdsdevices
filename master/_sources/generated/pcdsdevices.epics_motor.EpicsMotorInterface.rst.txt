@@ -188,7 +188,25 @@
           - normal
           - 
     
+        * - velocity_base
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VBAS``
+          - 
+          - omitted
+          - 
+    
+        * - velocity_max
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VMAX``
+          - 
+          - config
+          - 
+    
 
+    
+    
+    
+    
     
     
     

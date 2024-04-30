@@ -278,6 +278,7 @@ pcdsdevices.epics_motor
     pcdsdevices.epics_motor.SmarActEncodedTipTilt
     pcdsdevices.epics_motor.SmarActOpenLoop
     pcdsdevices.epics_motor.SmarActOpenLoopPositioner
+    pcdsdevices.epics_motor.SmarActPicoscale
     pcdsdevices.epics_motor.SmarActTipTilt
 
 pcdsdevices.eps
@@ -599,6 +600,7 @@ pcdsdevices.lic_2d_tmo
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.lic_2d_tmo.LaserCouplingStates
     pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension
 
 pcdsdevices.light_control
@@ -703,6 +705,7 @@ pcdsdevices.mirror
     pcdsdevices.mirror.XOffsetMirrorRTDs
     pcdsdevices.mirror.XOffsetMirrorState
     pcdsdevices.mirror.XOffsetMirrorStateCool
+    pcdsdevices.mirror.XOffsetMirrorStateCoolNoBend
     pcdsdevices.mirror.XOffsetMirrorSwitch
     pcdsdevices.mirror.XOffsetMirrorXYState
 
@@ -881,6 +884,7 @@ pcdsdevices.pv_positioner
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.pv_positioner.OnePVMotor
     pcdsdevices.pv_positioner.PVPositionerComparator
     pcdsdevices.pv_positioner.PVPositionerDone
     pcdsdevices.pv_positioner.PVPositionerIsClose
@@ -1066,7 +1070,9 @@ pcdsdevices.spectrometer
     pcdsdevices.spectrometer.TMOSpectrometer
     pcdsdevices.spectrometer.TMOSpectrometerSOLIDATTStates
     pcdsdevices.spectrometer.VonHamos4Crystal
+    pcdsdevices.spectrometer.VonHamos6Crystal
     pcdsdevices.spectrometer.VonHamosCrystal
+    pcdsdevices.spectrometer.VonHamosCrystal_2
     pcdsdevices.spectrometer.VonHamosFE
     pcdsdevices.spectrometer.VonHamosFER
 

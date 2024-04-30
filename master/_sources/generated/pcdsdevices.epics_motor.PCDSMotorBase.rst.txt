@@ -188,6 +188,20 @@
           - normal
           - Inherited from :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`
     
+        * - velocity_base
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VBAS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`
+    
+        * - velocity_max
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VMAX``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`
+    
         * - motor_spg
           - :class:`~ophyd.signal.EpicsSignal`
           - ``.SPG``
@@ -196,6 +210,10 @@
           - 
     
 
+    
+    
+    
+    
     
     
     

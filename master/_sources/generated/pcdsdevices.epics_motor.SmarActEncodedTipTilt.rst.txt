@@ -27,7 +27,7 @@
     
         * - tilt (FCpt)
           - :class:`~pcdsdevices.epics_motor.SmarAct`
-          - ``{prefix}{self._tip_pv}``
+          - ``{prefix}{self._tilt_pv}``
           - 
           - normal
           - 

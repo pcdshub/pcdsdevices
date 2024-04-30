@@ -81,7 +81,16 @@
           - omitted
           - 
     
+        * - reset_di
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:RST_SW``
+          - 
+          - omitted
+          - 
+    
 
+    
+    
     
     
     
