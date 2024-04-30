@@ -19,8 +19,10 @@ New Devices
 
 Bugfixes
 --------
-- Prevent ``XOffsetMirrorXYState`` from creating threads at high frequency when
-  trying to get the lightpath state.
+- Prevent some devices from creating threads at high frequency when
+  trying to get the lightpath state.  These devices classes include
+  `XOffsetMirrorXYState`, `AttenuatorSXR_Ladder`,
+  `AttenuatorSXR_LadderTwoBladeLBD``, `AT2L0`, `XCSLODCM`, and `XPPLODCM`
 
 Maintenance
 -----------
