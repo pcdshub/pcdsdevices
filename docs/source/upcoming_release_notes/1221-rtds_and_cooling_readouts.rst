@@ -12,7 +12,7 @@ Features
 Device Updates
 --------------
 - `XOffsetMirrorNoBend` in mirror.py gets 3 new cooling readout components.
-- `Mono` in spectrometer.py gets 4 new RTD components and re-named RTDs 1-8.
+- `Mono` in spectrometer.py gets 4 new RTD components and re-named RTDs 1-8. Also, Made cooling component names consistent with mirror cooling component names.
 
 New Devices
 -----------
