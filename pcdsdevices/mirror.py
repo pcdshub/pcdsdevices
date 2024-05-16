@@ -752,7 +752,7 @@ class XOffsetMirrorNoBend(XOffsetMirror):
 
     name : str
 
-    Currently (10/11/2023) services: mr1l1, mr1k3, mr2k3
+    Currently (5/15/2024) services: mr1l1, mr1k3, mr2k3
 
     """
     bender = None
