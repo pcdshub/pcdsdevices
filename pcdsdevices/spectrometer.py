@@ -267,30 +267,38 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
                       doc='LED power supply controls.')
 
     # Flow meters
-    flow_1 = Cpt(PytmcSignal, ':FWM:1', io='i', kind='normal',
-                 doc='flow meter 1')
-    flow_2 = Cpt(PytmcSignal, ':FWM:2', io='i', kind='normal',
-                 doc='flow meter 2')
-    pres_1 = Cpt(PytmcSignal, ':PRSM:1', io='i', kind='normal',
-                 doc='pressure meter 1')
+    cool_flow1 = Cpt(PytmcSignal, ':FWM:1', io='i', kind='normal',
+                     doc='flow meter 1')
+    cool_flow2 = Cpt(PytmcSignal, ':FWM:2', io='i', kind='normal',
+                     doc='flow meter 2')
+    cool_press = Cpt(PytmcSignal, ':PRSM:1', io='i', kind='normal',
+                     doc='pressure meter 1')
 
     # RTDs
-    rtd_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='normal',
-                doc='RTD 1 [deg C]')
-    rtd_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='normal',
-                doc='RTD 2 [deg C]')
-    rtd_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='normal',
-                doc='RTD 3 [deg C]')
-    rtd_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='normal',
-                doc='RTD 4 [deg C]')
-    rtd_5 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='normal',
-                doc='RTD 5 [deg C]')
-    rtd_6 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='normal',
-                doc='RTD 6 [deg C]')
-    rtd_7 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='normal',
-                doc='RTD 7 [deg C]')
-    rtd_8 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='normal',
-                doc='RTD 8 [deg C]')
+    grating_temp_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_mask_temp_1 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_2 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_3 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_4 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    mirror_mask_temp = Cpt(PytmcSignal, ':RTD:09:TEMP', io='i', kind='normal',
+                           doc='[deg C]')
+    mirror_cooling_temp = Cpt(PytmcSignal, ':RTD:11:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    exit_mask_right_temp = Cpt(PytmcSignal, ':RTD:10:TEMP', io='i', kind='normal',
+                               doc='[deg C]')
+    exit_mask_left_temp = Cpt(PytmcSignal, ':RTD:12:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
 
     # Lightpath constants
     inserted = True
