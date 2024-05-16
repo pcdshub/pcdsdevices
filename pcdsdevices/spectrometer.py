@@ -275,30 +275,30 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
                      doc='pressure meter 1')
 
     # RTDs
-    rtd_grating_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='normal',
-                        doc='[deg C]')
-    rtd_grating_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='normal',
-                        doc='[deg C]')
-    rtd_grating_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='normal',
-                        doc='[deg C]')
-    rtd_grating_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='normal',
-                        doc='[deg C]')
-    rtd_grating_mask_1 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='normal',
-                             doc='[deg C]')
-    rtd_grating_mask_2 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='normal',
-                             doc='[deg C]')
-    rtd_grating_mask_3 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='normal',
-                             doc='[deg C]')
-    rtd_grating_mask_4 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='normal',
-                             doc='[deg C]')
-    rtd_mirror_mask = Cpt(PytmcSignal, ':RTD:09:TEMP', io='i', kind='normal',
-                          doc='[deg C]')
-    rtd_mirror_cooling = Cpt(PytmcSignal, ':RTD:11:TEMP', io='i', kind='normal',
-                             doc='[deg C]')
-    rtd_exit_mask_r = Cpt(PytmcSignal, ':RTD:10:TEMP', io='i', kind='normal',
-                          doc='mask right [deg C]')
-    rtd_exit_mask_l = Cpt(PytmcSignal, ':RTD:12:TEMP', io='i', kind='normal',
-                          doc='mask left [deg C]')
+    grating_temp_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_mask_temp_1 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_2 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_3 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_4 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    mirror_mask_temp = Cpt(PytmcSignal, ':RTD:09:TEMP', io='i', kind='normal',
+                           doc='[deg C]')
+    mirror_cooling_temp = Cpt(PytmcSignal, ':RTD:11:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    exit_mask_right_temp = Cpt(PytmcSignal, ':RTD:10:TEMP', io='i', kind='normal',
+                               doc='[deg C]')
+    exit_mask_left_temp = Cpt(PytmcSignal, ':RTD:12:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
 
     # Lightpath constants
     inserted = True
