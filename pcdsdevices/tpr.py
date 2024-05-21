@@ -81,7 +81,9 @@ class TprTrigger(BaseInterface, Device):
         calculate_on_put=_put_last,
         doc="Get/set trigger delay in ns",
     )
-    ns_delay_scan = FCpt(TprMotor, '{self.prefix}{self.trg}', sys='{self.sys}', kind="omitted", doc="Motor-like tpr interface")
+    ns_delay_scan = FCpt(TprMotor, '{self.prefix}{self.trg}', sys='{sys}',
+                         add_prefix=('suffix', 'write_pv', 'sys'),
+                         kind="omitted", doc="Motor-like tpr interface")
     polarity = FCpt(EpicsSignal, '{self.prefix}{self.trg}TPOL', kind="config", doc="Trigger description")
     width_setpoint = FCpt(EpicsSignal, '{self.prefix}{self.trg}{self.sys}TWID', kind="omitted", doc="Trigger width in ns")
     width_ticks = FCpt(EpicsSignalRO, '{self.prefix}{self.trg}TWIDTICKS', kind="omitted", doc="Trigger width in clock ticks")
