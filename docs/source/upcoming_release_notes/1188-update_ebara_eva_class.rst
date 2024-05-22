@@ -7,7 +7,7 @@ API Breaks
 
 Features
 --------
-- Added RST_SW pv
+- Added RST_SW pv to Ebara EVA pumps. This PV is used to reset alarm errors.
 
 Device Updates
 --------------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- ghalym
