@@ -83,7 +83,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     tab_whitelist = ["set_current_position", "home", "velocity",
                      "check_limit_switches", "get_low_limit",
-                     "set_low_limit", "get_high_limit", "set_high_limit"]
+                     "set_low_limit", "get_high_limit", "set_high_limit",
+                     "velocity_base", "velocity_max"]
 
     set_metadata(EpicsMotor.home_forward, dict(variety='command-proc',
                                                tags={"confirm"},
@@ -501,6 +502,10 @@ class PCDSMotorBase(EpicsMotorInterface):
     # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
     motor_spg = Cpt(EpicsSignal, '.SPG', kind='omitted')
 
+    velocity = Cpt(EpicsSignal, '.VELO', kind='config')
+    velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
+    velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.stage_sigs[self.motor_spg] = 2
@@ -639,8 +644,6 @@ class IMS(PCDSMotorBase):
 
     # IMS velocity has limits
     velocity = Cpt(EpicsSignal, '.VELO', limits=True, kind='config')
-    velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
-    velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
 
     tab_whitelist = [
         'reinitialize',
@@ -1470,7 +1473,7 @@ class SmarActOpenLoopPositioner(PVPositionerComparator):
         return setpoint-self.atol < readback < setpoint+self.atol
 
 
-class SmarAct(EpicsMotorInterface):
+class SmarAct(PCDSMotorBase):
     """
     Class for encoded SmarAct motors controlled via the MCS2 controller.
     """
