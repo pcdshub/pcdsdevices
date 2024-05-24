@@ -5,8 +5,10 @@ import functools
 import logging
 import shutil
 import subprocess
+import time
 from typing import Callable, ClassVar, Optional
 
+import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
@@ -16,7 +18,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import DeviceStatus, MoveStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
-from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
+from ophyd.utils.epics_pvs import raise_if_disconnected
 from pcdsutils.ext_scripts import get_hutch_name
 from prettytable import PrettyTable
 
@@ -601,7 +603,13 @@ class PCDSMotorBase(EpicsMotorInterface):
         """
         self.set_use_switch.put(1, wait=True)
         try:
-            set_and_wait(self.user_setpoint, pos, timeout=1)
+            # Force to ignore limits
+            self.user_setpoint.put(pos, force=True)
+            # Instead of waiting on the put (broken), manually check
+            for _ in range(3):
+                if np.isclose(self.user_setpoint.get(), pos):
+                    break
+                time.sleep(0.1)
         finally:
             self.set_use_switch.put(0, wait=True)
 
