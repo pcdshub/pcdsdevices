@@ -7,7 +7,7 @@ API Breaks
 
 Features
 --------
-- Add state mover
+- Add state mover to LI2K4
 
 Device Updates
 --------------
