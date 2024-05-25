@@ -554,9 +554,12 @@ def set_many(
         try:
             try:
                 st = signal.set(value, timeout=timeout, settle_time=settle_time)
-            except TypeError:
-                # It's probably a Positioner, which doesn't accept *settle_time*
-                st = signal.set(value, timeout=timeout)
+            except TypeError as exc:
+                if "settle_time" in str(exc):
+                    # It's probably a Positioner, which doesn't accept *settle_time*
+                    st = signal.set(value, timeout=timeout)
+                else:
+                    raise
         except Exception:
             log.exception("Failed to set %s to %s", signal.name, value)
             if raise_on_set_failure:
