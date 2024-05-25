@@ -551,13 +551,12 @@ def set_many(
     log = owner.log if owner is not None else logger
     for signal, value in to_set.items():
         # Set the actual signal value
-        if isinstance(signal, PositionerBase):
-            # Positioners don't have a *settle_time* parameter
-            kw = dict(timeout=timeout)
-        else:
-            kw = dict(timeout=timeout, settle_time=settle_time)
         try:
-            st = signal.set(value, **kw)
+            try:
+                st = signal.set(value, timeout=timeout, settle_time=settle_time)
+            except TypeError:
+                # It's probably a Positioner, which doesn't accept *settle_time*
+                st = signal.set(value, timeout=timeout)
         except Exception:
             log.exception("Failed to set %s to %s", signal.name, value)
             if raise_on_set_failure:
