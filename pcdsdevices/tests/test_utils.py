@@ -5,13 +5,13 @@ import time
 
 import pytest
 from ophyd import Component as Cpt
-from ophyd import Device, Signal, PVPositionerDone
+from ophyd import Device, PVPositionerDone, Signal
 
 from .. import utils
 from ..device import GroupDevice
 from ..utils import (move_subdevices_to_start, post_ophyds_to_elog,
-                     reorder_components, set_standard_ordering,
-                     sort_components_by_kind, sort_components_by_name, set_many)
+                     reorder_components, set_many, set_standard_ordering,
+                     sort_components_by_kind, sort_components_by_name)
 
 try:
     import pty

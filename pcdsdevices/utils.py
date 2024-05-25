@@ -20,6 +20,7 @@ import prettytable
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.ophydobj import Kind
+from ophyd.positioner import PositionerBase
 
 from ._html import collapse_list_head, collapse_list_tail
 from .type_hints import Number, OphydDataType
@@ -548,14 +549,15 @@ def set_many(
     """
     statuses = []
     log = owner.log if owner is not None else logger
-    set_kw = dict(timeout=timeout, settle_time=settle_time)
     for signal, value in to_set.items():
-        # Decide which keywords are suitable for this signal
-        params = inspect.signature(signal.set).parameters
-        _kw = {key: val for key, val in set_kw.items() if key in params.keys()}
         # Set the actual signal value
+        if isinstance(signal, PositionerBase):
+            # Positioners don't have a *settle_time* parameter
+            kw = dict(timeout=timeout)
+        else:
+            kw = dict(timeout=timeout, settle_time=settle_time)
         try:
-            st = signal.set(value, **_kw)
+            st = signal.set(value, **kw)
         except Exception:
             log.exception("Failed to set %s to %s", signal.name, value)
             if raise_on_set_failure:
