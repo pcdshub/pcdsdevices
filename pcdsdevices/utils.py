@@ -20,7 +20,6 @@ import prettytable
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.ophydobj import Kind
-from ophyd.positioner import PositionerBase
 
 from ._html import collapse_list_head, collapse_list_tail
 from .type_hints import Number, OphydDataType
