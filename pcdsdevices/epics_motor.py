@@ -1513,7 +1513,7 @@ class SmarActEncodedTipTilt(Device):
     Refer to SmarActTipTilt for more info.
     """
     tip = FCpt(SmarAct, '{prefix}{self._tip_pv}', kind='normal')
-    tilt = FCpt(SmarAct, '{prefix}{self._tip_pv}', kind='normal')
+    tilt = FCpt(SmarAct, '{prefix}{self._tilt_pv}', kind='normal')
 
     def __init__(self, prefix='', *, tip_pv, tilt_pv, **kwargs):
         self._tip_pv = tip_pv
