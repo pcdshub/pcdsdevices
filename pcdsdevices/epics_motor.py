@@ -108,6 +108,9 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
 
+    velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
+    velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
+
     _alarm_filter_installed: ClassVar[bool] = False
     _moved_in_session: bool
     _egu: str
@@ -503,8 +506,6 @@ class PCDSMotorBase(EpicsMotorInterface):
     motor_spg = Cpt(EpicsSignal, '.SPG', kind='omitted')
 
     velocity = Cpt(EpicsSignal, '.VELO', kind='config')
-    velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
-    velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1473,7 +1474,7 @@ class SmarActOpenLoopPositioner(PVPositionerComparator):
         return setpoint-self.atol < readback < setpoint+self.atol
 
 
-class SmarAct(PCDSMotorBase):
+class SmarAct(EpicsMotorInterface):
     """
     Class for encoded SmarAct motors controlled via the MCS2 controller.
     """
