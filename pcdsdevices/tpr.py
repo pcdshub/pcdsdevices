@@ -73,7 +73,7 @@ class TprTrigger(BaseInterface, Device):
     label = FCpt(EpicsSignal, '{self.prefix}{self.ch}{self.sys}TCTL.DESC', kind="normal", doc="Channel description")
     delay_ticks = FCpt(EpicsSignal, '{self.prefix}{self.trg}TDESTICKS', kind="omitted", doc="Trigger delay in clock ticks")
     delay_taps = FCpt(EpicsSignal, '{self.prefix}{self.trg}TDESTAPS', kind="omitted", doc="Trigger delay in delay taps")
-    delay_setpoint = FCpt(EpicsSignal, '{self.prefix}{self.trg}{self.sys}TDES', kind="omitted", doc="Trigger delay setpoint in nsec")
+    delay_setpoint = FCpt(EpicsSignal, '{self.prefix}{self.trg}{self.sys}TDES', kind="config", doc="Trigger delay setpoint in nsec")
     ns_delay = Cpt(
         MultiDerivedSignal,
         attrs=['delay_ticks', 'delay_taps', 'delay_setpoint'],
@@ -85,7 +85,7 @@ class TprTrigger(BaseInterface, Device):
                          add_prefix=('suffix', 'write_pv', 'sys'),
                          kind="omitted", doc="Motor-like tpr interface")
     polarity = FCpt(EpicsSignal, '{self.prefix}{self.trg}TPOL', kind="config", doc="Trigger description")
-    width_setpoint = FCpt(EpicsSignal, '{self.prefix}{self.trg}{self.sys}TWID', kind="omitted", doc="Trigger width in ns")
+    width_setpoint = FCpt(EpicsSignal, '{self.prefix}{self.trg}{self.sys}TWID', kind="config", doc="Trigger width in ns")
     width_ticks = FCpt(EpicsSignalRO, '{self.prefix}{self.trg}TWIDTICKS', kind="omitted", doc="Trigger width in clock ticks")
     width = Cpt(
         MultiDerivedSignal,
