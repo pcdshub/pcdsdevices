@@ -505,8 +505,6 @@ class PCDSMotorBase(EpicsMotorInterface):
     # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
     motor_spg = Cpt(EpicsSignal, '.SPG', kind='omitted')
 
-    velocity = Cpt(EpicsSignal, '.VELO', kind='config')
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.stage_sigs[self.motor_spg] = 2
