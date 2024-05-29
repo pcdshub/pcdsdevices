@@ -83,7 +83,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     tab_whitelist = ["set_current_position", "home", "velocity",
                      "check_limit_switches", "get_low_limit",
-                     "set_low_limit", "get_high_limit", "set_high_limit"]
+                     "set_low_limit", "get_high_limit", "set_high_limit",
+                     "velocity_base", "velocity_max"]
 
     set_metadata(EpicsMotor.home_forward, dict(variety='command-proc',
                                                tags={"confirm"},
@@ -106,6 +107,9 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.high_limit_travel.kind = Kind.config
     EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
+
+    velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
+    velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
 
     _alarm_filter_installed: ClassVar[bool] = False
     _moved_in_session: bool
@@ -639,8 +643,6 @@ class IMS(PCDSMotorBase):
 
     # IMS velocity has limits
     velocity = Cpt(EpicsSignal, '.VELO', limits=True, kind='config')
-    velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
-    velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
 
     tab_whitelist = [
         'reinitialize',
