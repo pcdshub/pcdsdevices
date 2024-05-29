@@ -11,8 +11,7 @@ Features
 
 Device Updates
 --------------
-- SmarAct: Change base class to PCDSMotorBase
-- IMS: Move VBAS and VMAX signals into PCDSMotorBase parent class
+- IMS: Move VBAS and VMAX signals into EpicsMotorInterface parent class
 - EpicsMotorInterface: Update tab_whitelist for VBAS and VMAX signals
 
 New Devices
