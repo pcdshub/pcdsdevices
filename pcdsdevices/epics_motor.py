@@ -1523,6 +1523,35 @@ class SmarActEncodedTipTilt(Device):
         super().__init__(prefix, **kwargs)
 
 
+class SmarActPicoscale(SmarAct):
+    """
+    Class for encoded SmarAct motors controller via the MCS2 controller
+    which use the Picoscale sensor heads for encoded positions.
+    Child of SmarAct device.
+    """
+    # configuration settings and readbacks
+    pico_present = Cpt(EpicsSignalRO, ':PS_PRESENT', kind='config')
+    pico_exists = Cpt(EpicsSignalRO, ':HAVE_PS', kind='config')
+    pico_valid = Cpt(EpicsSignalRO, ':PS_DATA_VALID', kind='config')
+    pico_sig_qual = Cpt(EpicsSignalRO, ':PS_SIG_QUALITY', kind='config')
+
+    # Validation that Picoscale is working properly
+    pico_enable = Cpt(EpicsSignalRO, ':PS_ENABLE_RBV', kind='normal')
+    pico_stable = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:STABLE', kind='normal')
+
+    # Diagnostic information from PS controller
+    pico_name = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:LOCATOR',
+                     kind='config')
+    pico_wmin = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:WORKING_MIN',
+                     kind='config')
+    pico_wmax = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:WORKING_MAX',
+                     kind='config')
+
+    def __init__(self, prefix='', *, ioc_base, **kwargs):
+        self._ioc_base = ioc_base
+        super().__init__(prefix, **kwargs)
+
+
 def _GetMotorClass(basepv):
     """
     Function to determine the appropriate motor class based on the PV.
