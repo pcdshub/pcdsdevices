@@ -7,10 +7,8 @@ API Breaks
 
 Features
 --------
-- Includes new PV RBVs for Picoscale at motor level:
-- pico_present, pico_exists, pico_sig_qual, pico_enable
-- Includes new PV RBVs for Picoscale at controller level:
-- pico_stable, pico_name, pico_wmin (working distance min), pico_wmax (working distance max)
+- Includes new PV RBVs for Picoscale at motor level: pico_present, pico_exists, pico_sig_qual, pico_enable
+- Includes new PV RBVs for Picoscale at controller level: pico_stable, pico_name, pico_wmin (working distance min), pico_wmax (working distance max)
 
 Device Updates
 --------------
