@@ -229,6 +229,7 @@ class VonHamosCrystal_2(BaseInterface, GroupDevice):
 
 class VonHamos6Crystal(BaseInterface, GroupDevice):
     """ MFX 6-crystal VonHamos """
+    tab_component_names = True
 
     c1 = Cpt(VonHamosCrystal_2, ':C1', kind='normal')
     c2 = Cpt(VonHamosCrystal_2, ':C2', kind='normal')
