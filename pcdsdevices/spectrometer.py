@@ -105,7 +105,10 @@ class Kmono(BaseInterface, GroupDevice, LightpathMixin):
 
 
 class VonHamosCrystal(BaseInterface, GroupDevice):
-    """Pitch, yaw, and translation motors for control of a single crystal."""
+    """
+    Pitch, yaw, and translation motors for control of a single crystal of
+    the 4-crystals VonHamos spectrometer.
+    """
     tab_component_names = True
 
     pitch = Cpt(BeckhoffAxisNoOffset, ':Pitch', kind='normal')
@@ -219,7 +222,10 @@ class VonHamos4Crystal(VonHamosFE):
 
 
 class VonHamosCrystal_2(BaseInterface, GroupDevice):
-    """Translation, rotation and tilt motors for control of a single crystal."""
+    """
+    Translation, rotation and tilt motors for control of a single crystal of
+    the MFX 6-crystals spectrometer.
+    """
     tab_component_names = True
 
     x = Cpt(BeckhoffAxis, ':X', kind='normal')
@@ -228,7 +234,7 @@ class VonHamosCrystal_2(BaseInterface, GroupDevice):
 
 
 class VonHamos6Crystal(BaseInterface, GroupDevice):
-    """ MFX 6-crystal VonHamos """
+    """ MFX 6-crystal VonHamos spectrometer """
     tab_component_names = True
 
     c1 = Cpt(VonHamosCrystal_2, ':C1', kind='normal')
