@@ -245,9 +245,9 @@ class VonHamos6Crystal(BaseInterface, GroupDevice):
     c6 = Cpt(VonHamosCrystal_2, ':C6', kind='normal')
 
     rot = Cpt(BeckhoffAxis, ':ROT', kind='normal')
-    t1 = Cpt(BeckhoffAxis, ':T1', kind='normal')
-    t2 = Cpt(BeckhoffAxis, ':T2', kind='normal')
-    t3 = Cpt(BeckhoffAxis, ':T3', kind='normal')
+    y = Cpt(BeckhoffAxis, ':T1', kind='normal')
+    x_bottom = Cpt(BeckhoffAxis, ':T2', kind='normal')
+    x_top = Cpt(BeckhoffAxis, ':T3', kind='normal')
 
 
 class Mono(BaseInterface, GroupDevice, LightpathMixin):
