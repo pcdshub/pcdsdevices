@@ -59,7 +59,19 @@ class TprMotor(PVPositionerIsClose):
 
 
 class TprTrigger(BaseInterface, Device):
-    """Class for an individual TprTrigger."""
+    """
+    Class for an individual TprTrigger.
+
+    Parameters
+    ----------
+    timing_mode: int, str, or Enum
+        The timing mode the TPR is configured for. Can be an enum
+        (tpr.TimingMode.LCLS1 tpr.TimingMode.LCLS1) a str ("LCLS1" or "LCLS2")
+        or an int (1 or 2).
+
+    channel: int
+        The integer channel to be used (0 through 11).
+    """
     ratemode = FCpt(EpicsSignal, '{self.prefix}{self.ch}RATEMODE', kind="config", doc="Channel rate mode selector")
     group = FCpt(EpicsSignal, '{self.prefix}{self.ch}GROUP', kind="config", doc="Channel group Bit")
     seqcode = FCpt(EpicsSignal, '{self.prefix}{self.ch}SEQCODE', kind="config", doc="Channel sequence code")
