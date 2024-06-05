@@ -103,7 +103,8 @@ class TprTrigger(BaseInterface, Device):
     tab_whitelist = ['enable', 'disable']
     tab_component_names = True
 
-    def __init__(self, prefix, *, channel, timing_mode, name, **kwargs):
+    def __init__(self, prefix, *, channel, name, timing_mode=TimingMode.LCLS2,
+                 **kwargs):
         if timing_mode == TimingMode.LCLS1:
             self.sys = 'SYS0_'
         elif timing_mode == TimingMode.LCLS2:
