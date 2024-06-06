@@ -86,7 +86,7 @@ def make_fake_ccm():
     fake_ccm.alio.set(SAMPLE_ALIO)
     fake_ccm.energy.alio.set(SAMPLE_ALIO)
     fake_ccm.energy_with_vernier.alio.set(SAMPLE_ALIO)
-    fake_ccm.energy_with_vernier.vernier.setpoint.sim_put(0)
+    fake_ccm.energy_with_vernier.acr_energy.setpoint.sim_put(0)
 
     return fake_ccm
 
@@ -165,26 +165,26 @@ def test_vernier(fake_ccm):
     # Moving with vernier should move the energy request motor too
     pseudopos.move(7, wait=False)
     assert np.isclose(pseudopos.energy.position, 7)
-    assert pseudopos.vernier.position == 7000
+    assert pseudopos.acr_energy.position == 7000
 
     pseudopos.move(8, wait=False)
     assert np.isclose(pseudopos.energy.position, 8)
-    assert pseudopos.vernier.position == 8000
+    assert pseudopos.acr_energy.position == 8000
 
     pseudopos.move(9, wait=False)
     assert np.isclose(pseudopos.energy.position, 9)
-    assert pseudopos.vernier.position == 9000
+    assert pseudopos.acr_energy.position == 9000
 
     # Small moves (less than 30eV) should be skipped on the energy request
-    pseudopos.move(9.001, wait=False)
-    assert np.isclose(pseudopos.energy.position, 9.001)
-    assert pseudopos.vernier.position == 9000
+    pseudopos.move(9.0001, wait=False)
+    assert np.isclose(pseudopos.energy.position, 9.0001)
+    assert pseudopos.acr_energy.position == 9000
 
     # Unless we set the option for not skipping them
-    pseudopos.vernier.skip_small_moves = False
+    pseudopos.acr_energy.skip_small_moves = False
     pseudopos.move(9.002, wait=False)
     assert np.isclose(pseudopos.energy.position, 9.002)
-    assert pseudopos.vernier.position == 9002
+    assert pseudopos.acr_energy.position == 9002
 
 
 @pytest.mark.timeout(5)

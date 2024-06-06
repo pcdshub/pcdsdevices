@@ -6,9 +6,11 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .epics_motor import (IMS, BeckhoffAxis, BeckhoffAxisNoOffset,
                           EpicsMotorInterface)
 from .interface import BaseInterface, LightpathMixin
+from .pmps import TwinCATStatePMPS
 from .signal import InternalSignal, PytmcSignal
 from .state import StateRecordPositioner
 
@@ -297,30 +299,38 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
                       doc='LED power supply controls.')
 
     # Flow meters
-    flow_1 = Cpt(PytmcSignal, ':FWM:1', io='i', kind='normal',
-                 doc='flow meter 1')
-    flow_2 = Cpt(PytmcSignal, ':FWM:2', io='i', kind='normal',
-                 doc='flow meter 2')
-    pres_1 = Cpt(PytmcSignal, ':PRSM:1', io='i', kind='normal',
-                 doc='pressure meter 1')
+    cool_flow1 = Cpt(PytmcSignal, ':FWM:1', io='i', kind='normal',
+                     doc='flow meter 1')
+    cool_flow2 = Cpt(PytmcSignal, ':FWM:2', io='i', kind='normal',
+                     doc='flow meter 2')
+    cool_press = Cpt(PytmcSignal, ':PRSM:1', io='i', kind='normal',
+                     doc='pressure meter 1')
 
     # RTDs
-    rtd_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='normal',
-                doc='RTD 1 [deg C]')
-    rtd_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='normal',
-                doc='RTD 2 [deg C]')
-    rtd_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='normal',
-                doc='RTD 3 [deg C]')
-    rtd_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='normal',
-                doc='RTD 4 [deg C]')
-    rtd_5 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='normal',
-                doc='RTD 5 [deg C]')
-    rtd_6 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='normal',
-                doc='RTD 6 [deg C]')
-    rtd_7 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='normal',
-                doc='RTD 7 [deg C]')
-    rtd_8 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='normal',
-                doc='RTD 8 [deg C]')
+    grating_temp_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_mask_temp_1 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_2 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_3 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_4 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    mirror_mask_temp = Cpt(PytmcSignal, ':RTD:09:TEMP', io='i', kind='normal',
+                           doc='[deg C]')
+    mirror_cooling_temp = Cpt(PytmcSignal, ':RTD:11:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    exit_mask_right_temp = Cpt(PytmcSignal, ':RTD:10:TEMP', io='i', kind='normal',
+                               doc='[deg C]')
+    exit_mask_left_temp = Cpt(PytmcSignal, ':RTD:12:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
 
     # Lightpath constants
     inserted = True
@@ -337,6 +347,27 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
             removed=False,
             output={self.output_branches[0]: 1}
         )
+
+
+class FZPStates(TwinCATStatePMPS):
+    """
+    Fresnel Zone Plate (FZP) 3D States Setup
+
+    Here, we specify 15 states, which is the max we can support in an EPICS
+    enum (after adding an Unknown state), and 3 motors, for the X, Y, and Z
+    axes.
+    """
+    config = UpCpt(state_count=15, motor_count=3)
+
+
+class TMOSpectrometerSOLIDATTStates(TwinCATStatePMPS):
+    """
+    Spectrometer Solid Attenuator(FOIL X and Y) 2D States Setup
+
+    Here, we specify 6 states,(after adding an Unknown state), and 2 motors, for the X and Y
+    axes.
+    """
+    config = UpCpt(state_count=6, motor_count=2)
 
 
 class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
@@ -358,18 +389,24 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     tab_component_names = True
 
     # Motor components: can read/write positions
-    lens_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
-    lens_pitch_up_down = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
-    lens_yaw_left_right = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
-    foil_x = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
-    zone_plate_x = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
-    zone_plate_y = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
-    zone_plate_z = Cpt(BeckhoffAxis, ':MMS:05', kind='normal')
-    yag_x = Cpt(BeckhoffAxis, ':MMS:06', kind='normal')
-    yag_y = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
-    yag_z = Cpt(BeckhoffAxis, ':MMS:08', kind='normal')
-    yag_theta = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
-
+    zone_plate = Cpt(FZPStates, 'SP1K4:FZP:STATE', add_prefix=(), kind='normal')
+    zone_plate_x = Cpt(BeckhoffAxis, ':MMS:03', doc="x-axis of FZP to define 15 targets position", kind='normal')
+    zone_plate_y = Cpt(BeckhoffAxis, ':MMS:04', doc="y-axis of FZP to define 15 targets position", kind='normal')
+    zone_plate_z = Cpt(BeckhoffAxis, ':MMS:05', doc="z-axis of FZP to define 15 targets position", kind='normal')
+    solid_att = Cpt(TMOSpectrometerSOLIDATTStates, 'SP1K4:ATT:STATE', add_prefix=(), kind='normal')
+    # Solid_att x and Y are FOIL x and y
+    solid_att_x = Cpt(BeckhoffAxis, ':MMS:02', doc="X-axis of solid attenuator(FOIL) which protects FZP", kind='normal')
+    solid_att_y = Cpt(BeckhoffAxis, ':MMS:13', doc="Y-axis of solid attenuator(FOIL) which protects FZP", kind='normal')
+    thorlab_lens_x = Cpt(BeckhoffAxis, ':MMS:12', doc="axis to move spectrometer intensifier", kind='normal')
+    # lens_pitch_up_down = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
+    # lens_yaw_left_right = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
+    yag_x = Cpt(BeckhoffAxis, ':MMS:06', doc="x-axis of spectrometer detector", kind='normal')
+    yag_y = Cpt(BeckhoffAxis, ':MMS:07', doc="y-axis of spectrometer detector", kind='normal')
+    yag_z = Cpt(BeckhoffAxis, ':MMS:08', doc="z-axis of spectrometer detector", kind='normal')
+    yag_theta = Cpt(BeckhoffAxis, ':MMS:09', doc="theta axis to rotate spectrometer detector", kind='normal')
+    # sp1k4-att-rtd
+    att_rtd_01 = Cpt(PytmcSignal, ':RTD:01:TEMP', doc="solid attenuator 01 PT100", io='i', kind='normal')
+    att_rtd_02 = Cpt(PytmcSignal, ':RTD:02:TEMP', doc="solid attenuator 02 PT100", io='i', kind='normal')
     # Lightpath constants
     inserted = True
     removed = False

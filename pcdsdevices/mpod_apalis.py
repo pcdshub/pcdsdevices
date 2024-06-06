@@ -112,6 +112,29 @@ class MPODApalisModule(BaseInterface, GroupDevice):
     temperature = Cpt(EpicsSignalRO, ':Temperature', kind='normal',
                       doc='MPOD Temperature [C]')
 
+    supply_status = Cpt(EpicsSignalRO, ':isSupplyGood', kind='normal',
+                        doc='Supply voltages are within range')
+
+    module_status = Cpt(EpicsSignalRO, ':isModuleGood', kind='normal',
+                        doc='Module health status')
+
+    fine_adjustment_status = Cpt(EpicsSignalRO, ':isFineAdjustment',
+                                 kind='normal', doc='Fine adjustment mode status')
+
+    input_status = Cpt(EpicsSignalRO, ':isInputError', kind='normal',
+                       doc='Input error in connection with a module access')
+
+    live_insertion_status = Cpt(EpicsSignalRO, ':isLiveInsertion',
+                                kind='normal', doc='Live insertion mode status')
+
+    saftey_loop_status = Cpt(EpicsSignalRO, ':isSafetyLoopGood',
+                             kind='normal', doc='Saftey loop status')
+
+    kill = Cpt(EpicsSignal, ':isKillEnable',
+               write_pv=':Control:setKillEnable',
+               kind='normal', string=True,
+               doc='Module-wide kill functionality')
+
     faults = Cpt(EpicsSignal, ':isEventActive',
                  write_pv=':Control:doClear',
                  kind='normal', string=True,

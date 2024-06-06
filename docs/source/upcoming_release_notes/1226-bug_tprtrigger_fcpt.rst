@@ -1,8 +1,8 @@
-1140 bld_test_requires
-######################
+1226 bug_tprtrigger_fcpt
+########################
 
-API Changes
------------
+API Breaks
+----------
 - N/A
 
 Features
@@ -19,11 +19,11 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Properly fill the `sys` keyword argument in ``TprTrigger.ns_delay_scan``
 
 Maintenance
 -----------
-- fix conda recipe test-requires
+- N/A
 
 Contributors
 ------------

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>392</width>
-    <height>591</height>
+    <width>556</width>
+    <height>589</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,15 +22,24 @@
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <widget class="TyphosDisplayTitle" name="TyphosDisplayTitle">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="toolTip">
       <string/>
+     </property>
+     <property name="underline_midLineWidth" stdset="0">
+      <number>-4</number>
      </property>
     </widget>
    </item>
    <item>
     <widget class="TyphosPositionerWidget" name="TyphosPositionerWidget">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -38,7 +47,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>16777215</height>
+       <height>230</height>
       </size>
      </property>
      <property name="toolTip">
@@ -129,7 +138,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>364</width>
+            <width>528</width>
             <height>215</height>
            </rect>
           </property>
@@ -227,8 +236,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>98</width>
-            <height>28</height>
+            <width>528</width>
+            <height>215</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">

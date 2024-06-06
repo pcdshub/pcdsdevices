@@ -13,5 +13,3 @@ pytmc>=2.7.0
 pyyaml
 schema
 scipy
-sqlalchemy<2.0.0
-xraydb<4.5.0

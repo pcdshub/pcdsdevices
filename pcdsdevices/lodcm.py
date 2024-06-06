@@ -1188,6 +1188,217 @@ Photon Energy: {energy} [keV]
 """
 
 
+class LODCMEnergyC1(FltMvInterface, PseudoPositioner, GroupDevice):
+    """
+    Energy calculations for the C material.
+
+    Assume material is 'C' without checking if the crystal's materials are
+    aligned for both towers.
+
+    Parameters
+    ----------
+    prefix : str
+        Epics base PV prefix.
+    name : str
+        The name of this device.
+    """
+    tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
+    dr = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
+              kind='normal', doc='LOM Dia Theta')
+
+    th1C = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_C',
+                name='th1_c',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:07',
+                add_prefix=('prefix', 'motor_prefix'),
+                doc='Th1 motor offset for C [deg]')
+    z1C = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_C', name='z1_c',
+               motor_prefix='{self._hutch_prefix}:MON:MMS:04',
+               add_prefix=('prefix', 'motor_prefix'),
+               doc='Z1 motor offset for C [mm]')
+
+    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
+
+    stage_group = [dr, th1C, z1C]
+
+    def __init__(self, prefix, *args, **kwargs):
+        self._prefix = prefix
+        self._hutch_prefix = ''
+        if 'XPP' in self._prefix:
+            self._hutch_prefix = 'XPP'
+        elif 'XCS' in self._prefix:
+            self._hutch_prefix = 'HFX'
+
+        super().__init__(prefix=prefix, *args, **kwargs)
+
+    def get_reflection(self):
+        """
+        Get the crystal reflection.
+
+        Check both towers, and compare the if they match.
+        If they do not match an error will be raised.
+
+        Returns
+        -------
+        ref_1 : tuple
+            Reflection of the two Crystal Towers.
+
+        Raises
+        ------
+        ValueError
+            When the reflection of first tower does not match the one of
+            second tower.
+        """
+        ref_1 = self.tower1.get_reflection()
+        return ref_1
+
+    def get_energy(self, material='C', reflection=None):
+        """
+        Get photon energy from first tower in keV.
+
+        Energy is determined by the first crystal (Theta motor).
+
+        Parameters
+        ----------
+        material : str, optional
+            Chemical formula. Defaults to `C`
+        reflection : tuple, optional
+            Reflection of material. E.g.: `(1, 1, 1)`
+
+        Returns
+        -------
+        energy : number
+            Photon energy in keV.
+        """
+        reflection = reflection or self.get_reflection()
+        th = self.th1C.wm()
+        length = (2 * np.sin(np.deg2rad(th)) *
+                  diffraction.d_space(material, reflection))
+        return common.wavelength_to_energy(length) / 1000
+
+    def calc_geometry(self, energy, material='C', reflection=None):
+        """
+        Calculate the lom geometry.
+
+        Parameters
+        ----------
+        material : str, optional
+            Chemical formula. Defaults to `C`
+        reflection : tuple, optional
+            Reflection of material. E.g.: `(1, 1, 1)`
+
+        Returns
+        -------
+        th, z : tuple
+            Returns `theta` in degrees and `zm` TODO: what is this?
+        """
+        reflection = reflection or self.get_reflection()
+        th, z = diffraction.get_lom_geometry(energy*1e3, material, reflection)
+        return (th, z)
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        """
+        Calculate a RealPosition from a given PseudoPosition.
+
+        If the pseudo positioner is here at `pseudo_pos`, then this is where
+        my real motor should be.
+
+        Parameters
+        ----------
+        pseudo_pos : PseudoPosition
+            The pseudo position input, a namedtuple.
+
+        Returns
+        -------
+        real_pos : RealPosition
+            The real position output, a namedtuple.
+        """
+        pseudo_pos = self.PseudoPosition(*pseudo_pos)
+        th, z = self.calc_geometry(energy=pseudo_pos.energy)
+
+        return self.RealPosition(th1C=th,
+                                 z1C=-z,
+                                 dr=2*th)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        """
+        Calculate a PseudoPosition from a given RealPosition.
+
+        If the real motor is at this `real_pos`, then this is where my pseudo
+        position should be.
+
+        Parameters
+        ----------
+        real_pos : RealPosition
+            The real position input.
+
+        Returns
+        -------
+        pseudo_pos : PseudoPosition
+            The pseudo position output.
+        """
+        try:
+            reflection = self.get_reflection()
+        except Exception:
+            return self.PseudoPosition(energy=np.NaN)
+        real_pos = self.RealPosition(*real_pos)
+        length = (2 * np.sin(np.deg2rad(real_pos.th1C))
+                    * diffraction.d_space('C', reflection))
+        if length == 0:
+            # don't bother transforming this
+            # TODO maybe catch error in common.wave.. when send 0
+            return 0
+        energy = common.wavelength_to_energy(length) / 1000
+        return self.PseudoPosition(energy=energy)
+
+    def setE(self, energy):
+        self.set_current_position(energy)
+        return
+
+    def status_info(self):
+        """Overwrites interface status_info to make things faster."""
+        return None
+
+    def format_status_info(self, status_info):
+        """Override status info handler to render the energy c."""
+        hutch = ''
+        if 'XPP' in self.prefix:
+            hutch = 'XPP '
+        elif 'XCS' in self.prefix:
+            hutch = 'XCS '
+
+        try:
+            material = self.get_material()
+        except Exception:
+            material = 'Unknown'
+
+        if material == 'C':
+            configuration = 'Diamond'
+        elif material == 'Si':
+            configuration = 'Silicon'
+        else:
+            configuration = 'Unknown'
+
+        try:
+            energy = self.get_energy()
+            energy = f"{energy:.4f}"
+        except Exception:
+            energy = 'Unknown'
+
+        try:
+            ref = self.get_reflection()
+            ref = ''.join(map(str, ref))
+        except Exception:
+            ref = 'Unknown'
+
+        return f"""\
+{hutch}LODCM Energy C
+Current Configuration: {configuration} ({ref})
+Photon Energy: {energy} [keV]
+"""
+
+
 class LODCM(BaseInterface, GroupDevice, LightpathMixin):
     """
     Large Offset Dual Crystal Monochromator.
@@ -1229,12 +1440,13 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
 
     energy_si = FCpt(LODCMEnergySi, '{self._prefix}', kind='normal')
     energy_c = FCpt(LODCMEnergyC, '{self._prefix}', kind='normal')
+    energy_c1 = FCpt(LODCMEnergyC1, '{self._prefix}', kind='normal')
     # QIcon for UX
     _icon = 'fa.share-alt-square'
 
     tab_whitelist = ['h1n_state', 'yag', 'dectris', 'diode', 'foil',
                      'remove_dia', 'tower1', 'tower2',
-                     'diag_tower', 'calc', 'E', 'EC', 'ESi', 'tweak_x',
+                     'diag_tower', 'calc', 'E', 'EC', 'ESi', 'E1C', 'tweak_x',
                      'tweakXC']
 
     lightpath_cpts = ['tower1.h1n_state.state']
@@ -1315,6 +1527,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         # energy aliases
         self.EC = self.energy_c
         self.ESi = self.energy_si
+        self.E1C = self.energy_c1
 
     @property
     def energy(self):
@@ -1897,12 +2110,17 @@ class XCSLODCM(LODCM):
         if not self.tower1.h1n_state._state_initialized:
             self.log.debug('tower1 state not initialized, scheduling '
                            'lightpath calc for later')
-            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            if self._retry_lightpath:
+                self._retry_lightpath = False
+                schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+
             return LightpathState(
                 inserted=True,
                 removed=True,
                 output={'L0': 0}
             )
+
+        self._retry_lightpath = True
         # avoid extra get calls in this method
         state_label = self.tower1.h1n_state.get_state(h1n_state).name
 
@@ -1964,13 +2182,16 @@ class XPPLODCM(LODCM):
         if not self.tower1.h1n_state._state_initialized:
             self.log.debug('tower1 state not initialized, scheduling '
                            'lightpath calc for later')
-            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            if self._retry_lightpath:
+                self._retry_lightpath = False
+                schedule_task(self._calc_cache_lightpath_state, delay=2.0)
             return LightpathState(
                 inserted=True,
                 removed=True,
                 output={'L0': 0}
             )
 
+        self._retry_lightpath = True
         inserted = self.tower1.h1n_state.check_inserted(h1n_state)
         removed = self.tower1.h1n_state.check_removed(h1n_state)
 

@@ -14,10 +14,12 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import DynamicDeviceComponent as DDC
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pv_positioner import PVPositioner, PVPositionerPC
+from ophyd.pv_positioner import PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from . import utils
+from .analog_signals import FDQ
+from .device import GroupDevice
 from .device import UnrelatedComponent as UCpt
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
@@ -25,9 +27,11 @@ from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin)
 from .pmps import TwinCATStatePMPS
+from .pv_positioner import PVPositionerNoInterrupt
 from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO
 from .type_hints import OphydDataType, SignalToValue
 from .utils import get_status_float, get_status_value
+from .valve import VCN, VVC
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -132,9 +136,9 @@ class FeeFilter(InOutPositioner):
             self.status.put(BladeStateEnum.Unknown, force=True)
 
 
-class AttBase(FltMvInterface, PVPositioner):
+class AttBase(FltMvInterface, PVPositionerNoInterrupt):
     """
-    Base class for attenuators with fundamental frequency.
+    Base class for pre-L2SI beam power attenuators.
 
     This is a device that puts an array of filters in or out to achieve a
     desired transmission ratio.
@@ -1014,6 +1018,9 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
     blade_03 = Cpt(SXRLadderAttenuatorBlade, ':MMS:03')
     blade_04 = Cpt(SXRLadderAttenuatorBlade, ':MMS:04')
 
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')
+
     def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         limits = limits or (0.0, 1.0)
@@ -1071,14 +1078,18 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=2.0)
+                if self._retry_lightpath:
+                    self._retry_lightpath = False
+                    utils.schedule_task(self._calc_cache_lightpath_state,
+                                        delay=2.0)
 
                 return LightpathState(
                     inserted=True,
                     removed=True,
                     output={self.output_branches[0]: 1}
                 )
+
+            self._retry_lightpath = True
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))
@@ -1178,6 +1189,9 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
     # LBD Stage
     blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
 
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')
+
     def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         limits = limits or (0.0, 1.0)
@@ -1235,14 +1249,18 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=2.0)
+                if self._retry_lightpath:
+                    self._retry_lightpath = False
+                    utils.schedule_task(self._calc_cache_lightpath_state,
+                                        delay=2.0)
 
                 return LightpathState(
                     inserted=True,
                     removed=True,
                     output={self.output_branches[0]: 1}
                 )
+
+            self._retry_lightpath = True
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))
@@ -1322,6 +1340,7 @@ class AT1K4(AttenuatorSXR_Ladder):
     calculator_prefix : str
         The prefix for the calculator PVs.
     """
+    flow_meter = None
 
 
 class AT1K2(AttenuatorSXR_LadderTwoBladeLBD):
@@ -1481,7 +1500,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
     def _reset_errors(
         self, mds: MultiDerivedSignal, value: OphydDataType
     ) -> SignalToValue:
-        return {sig: 1 for sig in self.parent.reset_errors.signals}
+        return {sig: 1 for sig in self.reset_errors.signals}
 
     reset_errors = Cpt(
         MultiDerivedSignal,
@@ -1582,14 +1601,18 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=2.0)
+                if self._retry_lightpath:
+                    self._retry_lightpath = False
+                    utils.schedule_task(self._calc_cache_lightpath_state,
+                                        delay=2.0)
 
                 return LightpathState(
                     inserted=True,
                     removed=True,
                     output={self.output_branches[0]: 1}
                 )
+
+            self._retry_lightpath = True
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))
@@ -1714,6 +1737,88 @@ class LadderBladeState(enum.IntEnum):
     def is_moving(self) -> bool:
         """Is the blade moving?"""
         return self == LadderBladeState.Moving
+
+
+class SXRGasAtt(BaseInterface, GroupDevice):
+    tab_component_names = True
+    tab_whitelist = ['setup_mode']
+
+    transmission = Cpt(EpicsSignal, ':TRANS_RBV', write_pv=':TRANS_SP', kind='hinted',
+                       doc='Transmission')
+    arb_req = Cpt(EpicsSignalRO, ':TRANS_REQ_RBV', kind='hinted',
+                  doc='Requested transmission')
+    pressure = Cpt(EpicsSignal, ':GCM:82:PRESS_RBV', write_pv=':CNTRL:SP', kind='hinted',
+                   doc='Pressure')
+    pressure_setpoint_rbv = Cpt(EpicsSignalRO, ':CNTRL:SP_RBV', kind='omitted',
+                                doc='Pressure setpoint')
+    mode = Cpt(EpicsSignal, ':MODE_RBV', write_pv=':MODE', string=True, kind='hinted',
+               doc='PMPS mode')
+    control_enable = Cpt(EpicsSignal, ':CNTRL:ON_RBV', write_pv=':CNTRL:ON', kind='hinted',
+                         doc='')
+    pressure_control_enable = Cpt(EpicsSignal, ':MODE:PressureControl_RBV', write_pv=':MODE:PressureControl', kind='hinted',
+                                  doc='Pressure control mode')
+    gas_type = Cpt(EpicsSignalRO, ':GAS_TYPE_RBV', string=True, kind='hinted',
+                   doc='Selected gas')
+    at_target = Cpt(EpicsSignalRO, ':AtTarget_RBV', string=True, kind='hinted',
+                    doc='At target')
+    moving = Cpt(EpicsSignalRO, ':Moving_RBV', string=True, kind='hinted',
+                 doc='Moving')
+    gas_att_ok = Cpt(EpicsSignalRO, ':OK_RBV', string=True, kind='hinted',
+                     doc='Ok')
+    transmission_setpoint_rbv = Cpt(EpicsSignalRO, ':TRANS_SP_RBV', kind='omitted',
+                                    doc='Transmission setpoint')
+    pressure_control_valve = Cpt(EpicsSignalRO, ':VCN:70:POS_REQ_RBV', kind='omitted',
+                                 doc='Requested position')
+    valve_n2 = Cpt(VVC, ':VVC:72', kind='hinted', doc='Valve n2')
+    valve_ar = Cpt(VVC, ':VVC:71', kind='hinted', doc='Valve ar')
+    valve_pressure_control = Cpt(VCN, ':VCN:70', kind='omitted', doc='Pressure control valve')
+
+    def setup_mode(self, mode, control_type='transmission', gas_type=None):
+        """
+        Setup gas attenuator to work in "PMPS" or "Local" mode, with either "transmission control" or "pressure control"
+
+        Parameters
+        ----------
+        mode : str, either "PMPS" or "Local"
+        Mode for attenuator.
+        control_type : str, optional
+            Set control type in "Local" mode, either "transmission" or "pressure" control. The default is 'transmission'.
+        gas_type : str, optional
+            Change gas type to "N2" or "Ar". The default is None.If None is passed the attenuator uses the current gas.
+
+        """
+        if mode is not ('PMPS' or 'Local'):
+            print('unrecognizied mode, options are "PMPS" or "Local"')
+            return
+        elif mode == "Local":
+            if control_type is not ('transmission' or 'pressure'):
+                print('unrecognizied control type, options are "transmission" or "pressure"')
+                return
+        if gas_type is not ('N2' or 'Ar' or None):
+            print('unrecognizied gas type, options are "N2", "Ar", or None')
+            return
+
+        if mode == 'PMPS':
+            self.mode.put('PMPS')
+        elif mode == 'Local':
+            self.mode.put('Local')
+
+        if gas_type is not None:
+            self.valve_ar.open_command.put(0)
+            self.valve_n2.open_command.put(0)
+            if gas_type == 'N2':
+                self.valve_n2.open_command.put(1)
+            elif gas_type == 'Ar':
+                self.valve_ar.open_command.put(1)
+
+        elif mode == 'Local':
+            if control_type == 'transmission':
+                self.transmission.put(1)
+                self.control_enable.put(1)
+            elif control_type == 'pressure':
+                self.pressure_control_enable.put(1)
+                self.control_enable.put(1)
+                self.pressure.put(0)
 
 
 def get_blade_enum(value):

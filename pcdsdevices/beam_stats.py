@@ -12,6 +12,7 @@ from ophyd.sim import fake_device_cache, make_fake_device
 from .interface import BaseInterface, FltMvInterface
 from .pv_positioner import PVPositionerDone
 from .signal import AvgSignal
+from .utils import re_arg
 
 logger = logging.getLogger(__name__)
 
@@ -89,9 +90,9 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
         in them, the L line PVs just have "EPHOT". This will default to the
         line associated with the prefix hutch name, or to L line failing that.
 
-    bunch : int, optional
-        Whether to move the first bunch (1) or the second bunch (2). This is
-        only relevant for 2-color mode. Defaults to bunch 1.
+    pv_index : int, optional
+        Whether to move the first PV (1) or the second PV (2). This is relevant
+        2-color mode or when scanning combined K and Vernier. Defaults to 1.
 
     acr_status_suffix : str, optional
         If provided, we'll wait on the ACR PV specified by
@@ -100,8 +101,9 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
     """
     setpoint = FCpt(
         EpicsSignal,
-        '{prefix}:USER:MCC:EPHOT{line_text}:SET{bunch}',
+        '{prefix}:USER:MCC:EPHOT{line_text}:SET{pv_index}',
         kind='hinted',
+        add_prefix=('suffix', 'write_pv', 'line_text', 'pv_index'),
         doc=(
             'The setpoint PV that acr listens on to update the '
             'vernier or undulator PVs as appropriate.'
@@ -109,8 +111,9 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
     )
     ref = FCpt(
         EpicsSignal,
-        '{prefix}:USER:MCC:EPHOT{line_text}:REF{bunch}',
+        '{prefix}:USER:MCC:EPHOT{line_text}:REF{pv_index}',
         kind='normal',
+        add_prefix=('suffix', 'write_pv', 'line_text', 'pv_index'),
         doc=(
             'A reference PV for the photon energy at the nominal '
             'position of the vernier or undulator.'
@@ -138,18 +141,19 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
             return super().__new__(BeamEnergyRequestNoWait)
         return super().__new__(BeamEnergyRequestACRWait)
 
+    @re_arg({"bunch": "pv_index"})
     def __init__(
         self,
         prefix: str,
         *,
         name: str,
         line: Optional[str] = None,
-        bunch: int = 1,
+        pv_index: int = 1,
         acr_status_suffix: Optional[str] = None,
         **kwargs
     ):
         self.line_text = self.line_text_dict.get(line or prefix, '')
-        self.bunch = bunch
+        self.pv_index = pv_index
         self.acr_status_suffix = acr_status_suffix
         super().__init__(prefix, name=name, **kwargs)
 
@@ -161,7 +165,7 @@ class BeamEnergyRequestNoWait(BeamEnergyRequest, PVPositionerDone):
     It will report done immediately and ignore moves that are smaller than
     atol.
     """
-    atol = 5
+    atol = 0.5
 
     # All done-related functionality is inherited from PVPositionerDone
     # Just implement skip_small_moves's default
@@ -181,6 +185,7 @@ class BeamEnergyRequestACRWait(BeamEnergyRequest, PVPositioner):
         EpicsSignal,
         'SIOC:SYS0:ML07:{acr_status_suffix}',
         kind='normal',
+        add_prefix=('suffix', 'write_pv', 'acr_status_suffix'),
         doc=(
             'PV that is 0 while the motors are moving and 1 when ACR is '
             'ready for a new request. ACR can pick which of these PVs '

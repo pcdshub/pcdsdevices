@@ -199,6 +199,7 @@ class PTMPLC(Device):
     switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='normal')
     reset_fault = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='normal')
     run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal')
+    pump_state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='hinted')
     pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='normal')
     pump_accelerating = Cpt(EpicsSignalRO, ':ACCEL_RBV', kind='normal')
     pump_speed = Cpt(EpicsSignalRO, ':SPEED_RBV', kind='normal')
@@ -228,6 +229,7 @@ class Ebara_EV_A03_1(PROPLC):
     remote = Cpt(EpicsSignalWithRBV, ':REMOTE', kind='omitted')
     alarm = Cpt(EpicsSignalRO, ':ALARM_OK_RBV', kind='normal')
     run_di = Cpt(EpicsSignalRO, ':RUN_DI_RBV', kind='omitted')
+    reset_di = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='omitted')
 
 
 class AgilentSerial(Device):
