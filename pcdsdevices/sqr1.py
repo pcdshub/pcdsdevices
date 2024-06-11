@@ -141,11 +141,42 @@ class SQR1Axis(PVPositionerIsClose):
             self._sync_setpoints()
         return super().move(position, wait, timeout, moved_cb)
 
-    def set(self,
-            new_position: typing.Any,
-            *,
-            timeout: float = None,
-            moved_cb: typing.Callable = None) -> StatusBase:
+    def set(
+        self,
+        new_position: typing.Any,
+        *,
+        timeout: float = None,
+        moved_cb: typing.Callable = None,
+        wait: bool = False,
+    ) -> StatusBase:
+        """
+        Set SQR1 single axis new position.
+
+        Parameters
+        ----------
+        new_position : typing.Any
+            The target position to move to.
+        timeout : float, optional
+            The maximum time to wait for the move to complete.If None,
+            no timeout is applied.
+        moved_cb : typing.Callable, optional
+            A callback function that is called when the move is complete.
+        wait : bool, optional
+            always will be false. kept for consistent method signature
+            across future implementations.
+
+        Returns
+        -------
+        StatusBase
+            Status object to indicate when the motion is done.
+
+        Notes
+        -----
+        This method calls the `move` method with the provided parameters,
+        while keeping `wait=False` and `sync_enable=False` to allow multi-axis
+        scans without one axis blocking other axes.
+
+        """
         return self.move(new_position,
                          wait=False,
                          moved_cb=moved_cb,
