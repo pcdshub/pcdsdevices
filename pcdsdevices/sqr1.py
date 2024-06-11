@@ -19,6 +19,7 @@ from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositionerIsClose
 from ophyd.signal import EpicsSignal
+from ophyd.status import MoveStatus as StatusBase
 from ophyd.status import wait as status_wait
 
 logger = logging.getLogger(__name__)
@@ -139,6 +140,17 @@ class SQR1Axis(PVPositionerIsClose):
         if sync_enable and self._sync_setpoints:
             self._sync_setpoints()
         return super().move(position, wait, timeout, moved_cb)
+
+    def set(self,
+            new_position: typing.Any,
+            *,
+            timeout: float = None,
+            moved_cb: typing.Callable = None) -> StatusBase:
+        return self.move(new_position,
+                         wait=False,
+                         moved_cb=moved_cb,
+                         timeout=timeout,
+                         sync_enable=False)
 
 
 class SQR1(Device):
