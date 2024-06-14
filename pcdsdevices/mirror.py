@@ -1436,6 +1436,25 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
     variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
 
 
+class XOffsetMirrorStateCoolNoBend(XOffsetMirrorStateCool):
+    """
+    X-ray offset Mirror with all the features of
+
+    XOffsetMirrorStateCool with no bender.
+
+    Currently (06/14/2024) services: mr1k4.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    bender = None
+
+
 class MirrorInsertState(TwinCATStatePMPS):
     """
     A state positioner with two states (3 including Unknown) representing
