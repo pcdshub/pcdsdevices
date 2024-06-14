@@ -1257,10 +1257,10 @@ class FFMirrorZ(FFMirror):
                          kind='normal')
     chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL:TEMP', io='i',
                         kind='normal')
-    # Kill these until MR4 and MR5 K4 implement them.
-    cool_flow1 = None
+
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 1")
     cool_flow2 = None
-    cool_press = None
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc="Axilon Panel Pressure Meter")
 
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
@@ -1434,6 +1434,25 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
     cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc='Mirror cooling panel loop pressure sensor')
 
     variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
+
+
+class XOffsetMirrorStateCoolNoBend(XOffsetMirrorStateCool):
+    """
+    X-ray offset Mirror with all the features of
+
+    XOffsetMirrorStateCool with no bender.
+
+    Currently (06/14/2024) services: mr1k4.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    bender = None
 
 
 class MirrorInsertState(TwinCATStatePMPS):
