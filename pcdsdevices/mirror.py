@@ -1257,10 +1257,10 @@ class FFMirrorZ(FFMirror):
                          kind='normal')
     chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL:TEMP', io='i',
                         kind='normal')
-    # Kill these until MR4 and MR5 K4 implement them.
-    cool_flow1 = None
+
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 1")
     cool_flow2 = None
-    cool_press = None
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc="Axilon Panel Pressure Meter")
 
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
