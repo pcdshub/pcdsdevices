@@ -34,10 +34,13 @@ class SxrTestAbsorberStates(TwinCATInOutPositioner):
         moved_cb: Callable | None = None,
         timeout: float | None = None,
     ):
+
+        """
         if self.st3k4_auto.get():
-            raise ST3K4AutoError(
-                "ST1K4 must follow ST3K4. Move rejected."
-            )
+           raise ST3K4AutoError(
+               "ST1K4 must follow ST3K4. Move rejected."
+           )
+        """
         return super().set(position, moved_cb=moved_cb, timeout=timeout)
 
 
