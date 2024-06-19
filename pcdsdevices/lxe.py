@@ -482,6 +482,14 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
                            position, exc_info=ex)
         super()._setup_move(position)
 
+        # Something is wrong with done signal, sleep and see if we missed the transition
+        # Done scans at 1s, wait 2s to be sure
+        time.sleep(2)
+        # If we missed the transition, mark done now
+        if self.done.get() == self.done_value:
+            self._move_changed(value=1-self.done_value)
+            self._move_changed(value=self.done_value)
+
     @done.sub_value
     def _update_position(self, old_value=None, value=None, **kwargs):
         """The move was completed. Update the notepad readback."""
