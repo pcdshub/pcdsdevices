@@ -279,7 +279,7 @@ def test_set_many():
         setpoint = Cpt(Signal)
         another_signal = Cpt(Signal)
 
-    device = MyPositioner()
+    device = MyPositioner("", name="device")
     assert device.done.get() == 0
     # Set the positioner and the extra signal together
     st = set_many({device: 5, device.another_signal: 7}, raise_on_set_failure=True)
