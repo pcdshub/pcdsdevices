@@ -7,11 +7,11 @@ API Breaks
 
 Features
 --------
-- Decoupling ST1K4 with ST3K4 when ST3K4 OUT
+- N/A
 
 Device Updates
 --------------
-- N/A
+- ST1K4 can move freely without automode
 
 New Devices
 -----------
