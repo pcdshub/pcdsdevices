@@ -420,6 +420,66 @@ class PPMPowerMeter(BaseInterface, Device):
                                    'EPICS updates.')
 
 
+class PPM_R_PowerMeter(BaseInterface, Device):
+    """
+    Analog measurement tool for beam energy as part of the PPM assembly.
+
+    When inserted into the beam, the `raw_voltage` signal value should
+    increase proportional to the beam energy. A responsivity value
+    calibrated for each power meter in units of volts per watt
+    is used to calculate the actual energy in the following way:
+
+    `calibrated_mj` = 1000 * (Signal - Background) / (Responsivity * Beam_Rate)
+
+    Analogous to PPMPowerMeter, with different ways to calculate background voltage and calibrated energy
+    """
+
+    tab_component_names = True
+
+    responsivity = Cpt(PytmcSignal, ':RES', io='io', kind='normal', doc='Responsivity in  V/W, unique for every power meter.')
+
+    background_voltage = Cpt(PytmcSignal, ':BACK:VOLT', io='io', kind='normal', doc='Background voltage value used to calculate pulse energy.')
+
+    auto_background_reset = Cpt(PytmcSignal, ':BACK:RESET', io='io', kind='normal', doc='Set to reset auto background voltage collection.')
+    set_metadata(auto_background_reset, dict(variety='command-proc', value=1))
+
+    background_mode = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal', doc='Can be manual or passive. In manual mode, you can collect for a specified number of seconds. In passive mode, a buffer of automatically collected background voltages will be used to calculate the background voltage.')
+    set_metadata(background_mode, dict(variety='command-enum'))
+
+    background_collect = Cpt(PytmcSignal, ':BACK:COLL', io='io', kind='normal', doc='Start collecting background voltages for specified time.')
+    set_metadata(background_collect, dict(variety='command-proc', value=1))
+
+    background_collect_time = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal', doc='Time to collect background voltages for.')
+
+    raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal',
+                      doc='Raw readback from the power meter.')
+
+    calibrated_mj = Cpt(PytmcSignal, ':MJ', io='i', kind='normal',
+                        doc='Calibrated absolute measurement of beam '
+                            'power in physics units.')
+
+    wattage = Cpt(PytmcSignal, ':WATT', io='i', kind='omitted', doc='Wattage measured by power meter, equals MJ times Beamrate.')
+
+    thermocouple = Cpt(TwinCATThermocouple, '', kind='normal',
+                       doc='Thermocouple on the power meter holder.')
+
+    raw_voltage_buffer = Cpt(PytmcSignal, ':VOLT_BUFFER', io='i',
+                             kind='omitted',
+                             doc='Array of the last 1000 raw measurements. '
+                                 'Polls faster than the EPICS updates.')
+
+    calibrated_mj_buffer = Cpt(PytmcSignal, ':MJ_BUFFER', io='i',
+                               kind='omitted',
+                               doc='Array of the last 1000 fully calibrated '
+                                   'measurements. Polls faster than the '
+                                   'EPICS updates.')
+
+    wattage_buffer = Cpt(PytmcSignal, ':WATT_BUFFER', io='i',
+                         kind='omitted',
+                         doc='Array of the last 1000 wattages. Polls faster than the '
+                         'EPICS updates.')
+
+
 class PPM(LCLS2ImagerBase):
     """
     L2SI's Power and Profile Monitor design.
@@ -448,6 +508,15 @@ class PPM(LCLS2ImagerBase):
                            range={'value': (0, 100),
                                   'source': 'value'}
                            ))
+
+
+class PPM_R(PPM):
+    """
+    Uses PPM_R_PowerMeter instead of PPMPowerMeter
+    """
+
+    power_meter = Cpt(PPM_R_PowerMeter, ':SPM', kind='normal',
+                      doc='Device that measures power of incident beam.')
 
 
 class XPIMFilterWheel(StatePositioner):
