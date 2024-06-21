@@ -368,70 +368,11 @@ class PPMPowerMeter(BaseInterface, Device):
     Analog measurement tool for beam energy as part of the PPM assembly.
 
     When inserted into the beam, the `raw_voltage` signal value should
-    increase proportional to the beam energy. The equivalent calibrated
-    readings are `dimensionless`, which is a unitless number that
-    represents the relative calibration of every power meter, and
-    `calibrated_mj`, which is the real engineering unit of the beam
-    power. These are calibrated using the other signals in the following way:
-
-    `dimensionless` = (`raw_voltage` + `calib_offset`) * `calib_ratio`
-    `calibrated_mj` = `dimensionless` * `calib_mj_ratio`
-    """
-
-    tab_component_names = True
-
-    raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal',
-                      doc='Raw readback from the power meter.')
-    dimensionless = Cpt(PytmcSignal, ':CALIB', io='i', kind='normal',
-                        doc='Calibrated dimensionless readback '
-                            'for cross-meter comparisons.')
-    calibrated_mj = Cpt(PytmcSignal, ':MJ', io='i', kind='normal',
-                        doc='Calibrated absolute measurement of beam '
-                            'power in physics units.')
-    thermocouple = Cpt(TwinCATThermocouple, '', kind='normal',
-                       doc='Thermocouple on the power meter holder.')
-
-    calib_offset = Cpt(PytmcSignal, ':CALIB:OFFSET', io='io', kind='config',
-                       doc='Calibration parameter to offset raw voltage to '
-                           'zero for the calibrated quantities. Unique per '
-                           'power meter.')
-    calib_ratio = Cpt(PytmcSignal, ':CALIB:RATIO', io='io', kind='config',
-                      doc='Calibration multiplier to convert to the '
-                          'dimensionless constant. Unique per power meter.')
-    calib_mj_ratio = Cpt(PytmcSignal, ':CALIB:MJ_RATIO', io='io',
-                         kind='config',
-                         doc='Calibration multiplier to convert from the '
-                             'dimensionless constant to calibrated scientific '
-                             'quantity. Same for every power meter.')
-
-    raw_voltage_buffer = Cpt(PytmcSignal, ':VOLT_BUFFER', io='i',
-                             kind='omitted',
-                             doc='Array of the last 1000 raw measurements. '
-                                 'Polls faster than the EPICS updates.')
-    dimensionless_buffer = Cpt(PytmcSignal, ':CALIB_BUFFER', io='i',
-                               kind='omitted',
-                               doc='Array of the last 1000 dimensionless '
-                                   'measurements. Polls faster than the '
-                                   'EPICS updates.')
-    calibrated_mj_buffer = Cpt(PytmcSignal, ':MJ_BUFFER', io='i',
-                               kind='omitted',
-                               doc='Array of the last 1000 fully calibrated '
-                                   'measurements. Polls faster than the '
-                                   'EPICS updates.')
-
-
-class PPM_R_PowerMeter(BaseInterface, Device):
-    """
-    Analog measurement tool for beam energy as part of the PPM assembly.
-
-    When inserted into the beam, the `raw_voltage` signal value should
     increase proportional to the beam energy. A responsivity value
     calibrated for each power meter in units of volts per watt
     is used to calculate the actual energy in the following way:
 
     `calibrated_mj` = 1000 * (Signal - Background) / (Responsivity * Beam_Rate)
-
-    Analogous to PPMPowerMeter, with different ways to calculate background voltage and calibrated energy
     """
 
     tab_component_names = True
@@ -444,7 +385,6 @@ class PPM_R_PowerMeter(BaseInterface, Device):
     set_metadata(auto_background_reset, dict(variety='command-proc', value=1))
 
     background_mode = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal', doc='Can be manual or passive. In manual mode, you can collect for a specified number of seconds. In passive mode, a buffer of automatically collected background voltages will be used to calculate the background voltage.')
-    set_metadata(background_mode, dict(variety='command-enum'))
 
     background_collect = Cpt(PytmcSignal, ':BACK:COLL', io='io', kind='normal', doc='Start collecting background voltages for specified time.')
     set_metadata(background_collect, dict(variety='command-proc', value=1))
@@ -508,15 +448,6 @@ class PPM(LCLS2ImagerBase):
                            range={'value': (0, 100),
                                   'source': 'value'}
                            ))
-
-
-class PPM_R(PPM):
-    """
-    Uses PPM_R_PowerMeter instead of PPMPowerMeter
-    """
-
-    power_meter = Cpt(PPM_R_PowerMeter, ':SPM', kind='normal',
-                      doc='Device that measures power of incident beam.')
 
 
 class XPIMFilterWheel(StatePositioner):
