@@ -19,7 +19,8 @@ New Devices
 
 Bugfixes
 --------
-- Over-write default velocity signals for Newport class
+- Overwrite ``velocity_max`` and ``velocity_base`` signals for ``Newport``
+  class to fix a bug that prevented these motors from moving.
 
 Maintenance
 -----------
