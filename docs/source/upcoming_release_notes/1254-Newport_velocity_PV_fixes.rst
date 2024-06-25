@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- Over-write default velocity signals
+- Over-write default velocity signals for Newport class
 
 Maintenance
 -----------
