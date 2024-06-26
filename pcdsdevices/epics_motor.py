@@ -998,6 +998,9 @@ class Newport(PCDSMotorBase):
     motor_prec = Cpt(EpicsSignalRO, '.PREC', kind='omitted',
                      auto_monitor=True)
 
+    velocity_max = Cpt(EpicsSignalRO, '.SVEL', kind='config')
+    velocity_base = Cpt(Signal, kind='omitted')
+
     def home(self, *args, **kwargs):
         # This function should eventually be used. There is a way to home
         # Newport motors to a reference mark
