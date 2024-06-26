@@ -28,4 +28,5 @@ Maintenance
 
 Contributors
 ------------
-- vespos, rcjwoods
+- vespos
+- rcjwoods
