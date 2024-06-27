@@ -275,4 +275,17 @@ class PVPositionerNoInterrupt(PVPositioner):
 
 
 class OnePVMotor(PVPositionerDone):
+    """
+    The simplest possible pv_positioner: a single PV.
+
+    You can use this when you want to control an EpicsSignal as if it was
+    a positioner.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV to control
+    name : str, keyword-only
+        A name to refer to this positioner.
+    """
     setpoint = Cpt(EpicsSignal, "")
