@@ -107,7 +107,10 @@ class Kmono(BaseInterface, GroupDevice, LightpathMixin):
 
 
 class VonHamosCrystal(BaseInterface, GroupDevice):
-    """Pitch, yaw, and translation motors for control of a single crystal."""
+    """
+    Pitch, yaw, and translation motors for control of a single crystal of
+    the 4-crystals VonHamos spectrometer.
+    """
     tab_component_names = True
 
     pitch = Cpt(BeckhoffAxisNoOffset, ':Pitch', kind='normal')
@@ -218,6 +221,35 @@ class VonHamos4Crystal(VonHamosFE):
     def __init__(self, prefix, *, name, prefix_focus, prefix_energy, **kwargs):
         super().__init__(prefix, name=name, prefix_focus=prefix_focus,
                          prefix_energy=prefix_energy, **kwargs)
+
+
+class VonHamosCrystal_2(BaseInterface, GroupDevice):
+    """
+    Translation, rotation and tilt motors for control of a single crystal of
+    the MFX 6-crystals spectrometer.
+    """
+    tab_component_names = True
+
+    x = Cpt(BeckhoffAxis, ':X', kind='normal')
+    rot = Cpt(BeckhoffAxis, ':ROT', kind='normal')
+    tilt = Cpt(BeckhoffAxis, ':TILT', kind='normal')
+
+
+class VonHamos6Crystal(BaseInterface, GroupDevice):
+    """ MFX 6-crystal VonHamos spectrometer """
+    tab_component_names = True
+
+    c1 = Cpt(VonHamosCrystal_2, ':C1', kind='normal')
+    c2 = Cpt(VonHamosCrystal_2, ':C2', kind='normal')
+    c3 = Cpt(VonHamosCrystal_2, ':C3', kind='normal')
+    c4 = Cpt(VonHamosCrystal_2, ':C4', kind='normal')
+    c5 = Cpt(VonHamosCrystal_2, ':C5', kind='normal')
+    c6 = Cpt(VonHamosCrystal_2, ':C6', kind='normal')
+
+    rot = Cpt(BeckhoffAxis, ':ROT', kind='normal')
+    y = Cpt(BeckhoffAxis, ':T1', kind='normal')
+    x_bottom = Cpt(BeckhoffAxis, ':T2', kind='normal')
+    x_top = Cpt(BeckhoffAxis, ':T3', kind='normal')
 
 
 class Mono(BaseInterface, GroupDevice, LightpathMixin):
@@ -332,10 +364,10 @@ class TMOSpectrometerSOLIDATTStates(TwinCATStatePMPS):
     """
     Spectrometer Solid Attenuator(FOIL X and Y) 2D States Setup
 
-    Here, we specify 6 states,(after adding an Unknown state), and 2 motors, for the X and Y
+    Here, we specify 4 states,(after adding an Unknown state), and 2 motors, for the X and Y
     axes.
     """
-    config = UpCpt(state_count=6, motor_count=2)
+    config = UpCpt(state_count=4, motor_count=2)
 
 
 class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):

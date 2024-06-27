@@ -17,6 +17,7 @@ from typing import Callable, Iterator, Union
 
 import ophyd
 import prettytable
+import sympy.physics.units as units
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.ophydobj import Kind
@@ -134,7 +135,7 @@ def get_input():
 ureg = None
 
 
-def convert_unit(value, unit, new_unit):
+def convert_unit(value: float, unit: str, new_unit: str):
     """
     One-line unit conversion.
 
@@ -154,15 +155,15 @@ def convert_unit(value, unit, new_unit):
     new_value : float
         The starting value, but converted to the new unit.
     """
+    unit = getattr(units, unit)
+    new_unit = getattr(units, new_unit)
 
-    global ureg
-    if ureg is None:
-        import pint
+    if unit == new_unit:
+        return value
 
-        ureg = pint.UnitRegistry()
+    new_value = value * units.convert_to(unit, new_unit)
 
-    expr = ureg.parse_expression(unit)
-    return (value * expr).to(new_unit).magnitude
+    return float(new_value.as_coeff_Mul()[0])
 
 
 def ipm_screen(dettype, prefix, prefix_ioc):

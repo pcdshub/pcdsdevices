@@ -999,6 +999,9 @@ class Newport(PCDSMotorBase):
     motor_prec = Cpt(EpicsSignalRO, '.PREC', kind='omitted',
                      auto_monitor=True)
 
+    velocity_max = Cpt(EpicsSignalRO, '.SVEL', kind='config')
+    velocity_base = Cpt(Signal, kind='omitted')
+
     def home(self, *args, **kwargs):
         # This function should eventually be used. There is a way to home
         # Newport motors to a reference mark
@@ -1521,6 +1524,58 @@ class SmarActEncodedTipTilt(Device):
     def __init__(self, prefix='', *, tip_pv, tilt_pv, **kwargs):
         self._tip_pv = tip_pv
         self._tilt_pv = tilt_pv
+        super().__init__(prefix, **kwargs)
+
+
+class SmarActPicoscale(SmarAct):
+    """
+    Class for encoded SmarAct motors controller via the MCS2 controller
+    which use the PicoScale sensor heads for encoded positions.
+    Instantiating a device requires inclusion of the ioc_base in order to
+    properly access PicoScale properties.
+
+    Example
+    -------
+    SmarActPicoscale('prefix': 'LAS:MCS2:02:m1', 'name': 'Delay 1',
+                     'ioc_base': 'LAS:MCS2:02').
+    """
+    # configuration settings and readbacks
+    pico_present = Cpt(EpicsSignalRO, ':PS_PRESENT', kind='config',
+                       doc='PicoScale is on and connected')
+    pico_exists = Cpt(EpicsSignalRO, ':HAVE_PS', kind='config',
+                      doc='Does this channel have a PicoScale assigned to it?')
+    pico_valid = Cpt(EpicsSignalRO, ':PS_DATA_VALID', kind='config',
+                     doc='Is the data valid and ready for accurate msmts?')
+    pico_sig_qual = Cpt(EpicsSignalRO, ':PS_SIG_QUALITY', kind='config',
+                        doc='Quality of interferometer signal. Higher = better')
+
+    # auto and manual adjustment related PVs
+    pico_adj_state = FCpt(EpicsSignal, '{self._ioc_base}:PS:CUR_ADJ_STATE',
+                          write_pv='{self._ioc_base}:PS:REQ_ADJ_STATE',
+                          kind='config', doc='Set to Manual or Auto adjustment '
+                          'mode')
+    pico_curr_adj_prog = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:CUR_ADJ_PROGRESS',
+                              kind='config', doc='Estimate of current adjustment '
+                              'progress')
+    pico_adj_done = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:ADJ_DONE',
+                         kind='config', doc='Is the auto adjustment done?')
+
+    # Validation that Picoscale is working properly
+    pico_enable = Cpt(EpicsSignalRO, ':PS_ENABLE_RBV', kind='normal',
+                      doc='Is the PicoScale enabled for this channel?')
+    pico_stable = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:STABLE', kind='normal',
+                       doc='Is system stable and ready for accurate msmts?')
+
+    # Diagnostic information from PS controller
+    pico_name = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:LOCATOR',
+                     kind='config', doc='Name of the PicoScale')
+    pico_wmin = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:WORKING_MIN',
+                     kind='config', doc='Working distance minimum')
+    pico_wmax = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:WORKING_MAX',
+                     kind='config', doc='Working distance maximum')
+
+    def __init__(self, prefix, *, ioc_base, **kwargs):
+        self._ioc_base = ioc_base
         super().__init__(prefix, **kwargs)
 
 
