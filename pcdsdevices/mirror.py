@@ -743,6 +743,8 @@ class XOffsetMirrorNoBend(XOffsetMirror):
 
     2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
 
+    With variable cooling valve installed.
+
     Parameters
     ----------
     prefix : str
@@ -750,11 +752,17 @@ class XOffsetMirrorNoBend(XOffsetMirror):
 
     name : str
 
-    Currently (10/11/2023) services: mr1l1
+    Currently (5/15/2024) services: mr1l1, mr1k3, mr2k3
 
     """
     bender = None
     bender_enc_rms = None
+
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc='Mirror cooling panel loop flow sensor')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal', doc='Mirror cooling panel loop flow sensor')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc='Mirror cooling panel loop pressure sensor')
+
+    variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
 
 
 class XOffsetMirrorBend(XOffsetMirror):
@@ -1132,6 +1140,10 @@ class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
     y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
 
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 1")
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 2")
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc="Axilon Panel Pressure Meter")
+
     # Lightpath config: implement inserted, removed, transmission, subscribe
     lightpath_cpts = ['x.user_readback', 'y.user_readback']
 
@@ -1245,6 +1257,10 @@ class FFMirrorZ(FFMirror):
                          kind='normal')
     chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL:TEMP', io='i',
                         kind='normal')
+
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 1")
+    cool_flow2 = None
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc="Axilon Panel Pressure Meter")
 
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
@@ -1402,6 +1418,8 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
 
     With cooling and pressure meters installed.
 
+    With variable cooling valve installed.
+
     Parameters
     ----------
     prefix : str
@@ -1411,9 +1429,30 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
         Alias for the device.
     """
     # Cooling
-    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
-    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc='Mirror cooling panel loop flow sensor')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal', doc='Mirror cooling panel loop flow sensor')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc='Mirror cooling panel loop pressure sensor')
+
+    variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
+
+
+class XOffsetMirrorStateCoolNoBend(XOffsetMirrorStateCool):
+    """
+    X-ray offset Mirror with all the features of
+
+    XOffsetMirrorStateCool with no bender.
+
+    Currently (06/14/2024) services: mr1k4.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    bender = None
 
 
 class MirrorInsertState(TwinCATStatePMPS):
@@ -1445,6 +1484,9 @@ class XOffsetMirrorXYState(XOffsetMirrorState):
     lightpath_cpts = ['insertion.state', 'coating.state',
                       'pitch.user_readback']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def _get_insertion_state(
         self,
         insertion_state: int
@@ -1471,10 +1513,12 @@ class XOffsetMirrorXYState(XOffsetMirrorState):
         if not self.insertion._state_initialized:
             self.log.debug('insertion state not initialized, '
                            'scheduling lightpath calcs for later')
+            if self._retry_lightpath:
+                self._retry_lightpath = False
+                schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            return True, True
 
-            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
-            raise MirrorLogicError('insertion state not initialized')
-
+        self._retry_lightpath = True
         x_in = self.insertion.check_inserted(insertion_state)
         x_out = self.insertion.check_removed(insertion_state)
 

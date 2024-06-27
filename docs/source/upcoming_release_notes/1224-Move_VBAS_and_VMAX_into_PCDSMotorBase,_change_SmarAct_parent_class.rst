@@ -1,4 +1,4 @@
-1155 Add LCLS-II timing support for Qadc134
+1224 Move VBAS and VMAX into PCDSMotorBase, change SmarAct parent class
 #################
 
 API Breaks
@@ -11,12 +11,12 @@ Features
 
 Device Updates
 --------------
-- Restructured Qadc134 with new Qadc134Common and QadcLcls1Timing parent
-  classes.
+- IMS: Move VBAS and VMAX signals into EpicsMotorInterface parent class
+- EpicsMotorInterface: Update tab_whitelist for VBAS and VMAX signals
 
 New Devices
 -----------
-- Qadc134Lcls2: A class for LCLS-II timing versions of the FMC134
+- N/A
 
 Bugfixes
 --------

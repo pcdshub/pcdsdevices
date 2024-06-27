@@ -1,5 +1,5 @@
-1181 adding sp1k4-att-rtd
-#################
+1226 bug_tprtrigger_fcpt
+########################
 
 API Breaks
 ----------
@@ -7,7 +7,7 @@ API Breaks
 
 Features
 --------
-- Adds attenuator RTD temperatures to sp1k4, for display in GUI.
+- N/A
 
 Device Updates
 --------------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Properly fill the `sys` keyword argument in ``TprTrigger.ns_delay_scan``
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tongju12
+- tangkong

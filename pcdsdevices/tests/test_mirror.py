@@ -2,9 +2,12 @@ import math
 from unittest.mock import Mock
 
 import pytest
-from ophyd.sim import make_fake_device
+from ophyd.sim import ReadOnlyError, make_fake_device
 
-from ..mirror import KBOMirror, OffsetMirror, PointingMirror
+from pcdsdevices import mirror
+
+from ..mirror import (KBOMirror, OffsetMirror, PointingMirror,
+                      XOffsetMirrorStateCool, XOffsetMirrorXYState)
 
 
 @pytest.fixture(scope='function')
@@ -138,8 +141,78 @@ def fake_kbo_mirror():
                    input_branches=['X0'], output_branches=['X0', 'X1'])
 
 
+@pytest.fixture(scope='function')
+def fake_offset_cooled_mirror():
+    FakeCooledOffsetMirror = make_fake_device(XOffsetMirrorStateCool)
+    return FakeCooledOffsetMirror('TST:MR1', name="Test Mirror")
+
+
+@pytest.fixture(scope='function')
+def fake_xy_offset_mirror():
+    FakeCooledOffsetMirror = make_fake_device(XOffsetMirrorXYState)
+    fake_mirror = FakeCooledOffsetMirror('TST:MR1', name="Test Mirror")
+    # do lightpath setup
+    fake_mirror._init_summary_signal()
+    fake_mirror.output_branches = ['L0', 'L1']
+    fake_mirror.input_branches = ['L0']
+    return fake_mirror
+
+
 def test_kbomirror_lighpath(fake_kbo_mirror):
     km = fake_kbo_mirror
     lp_state = km.get_lightpath_state()
     assert lp_state.inserted
     assert not lp_state.removed
+
+
+def test_mirror_cooling(fake_offset_cooled_mirror):
+    om = fake_offset_cooled_mirror
+
+    om.variable_cool.put(1)
+    cooling_state = om.variable_cool.get()
+    assert cooling_state
+
+    om.variable_cool.put(0)
+    cooling_state = om.variable_cool.get()
+    assert cooling_state != 1
+
+    om.variable_cool.put("ON")
+    cooling_state = om.variable_cool.get()
+    assert cooling_state == "ON"
+
+    om.variable_cool.put("OFF")
+    cooling_state = om.variable_cool.get()
+    assert cooling_state == "OFF"
+
+    with pytest.raises(ReadOnlyError):
+        om.cool_flow1.put(0.34)
+
+    with pytest.raises(ReadOnlyError):
+        om.cool_flow2.put(0.34)
+
+    with pytest.raises(ReadOnlyError):
+        om.cool_press.put(0.34)
+
+
+def test_xy_mirror_lightpath(fake_xy_offset_mirror, monkeypatch):
+    xym = fake_xy_offset_mirror
+    mock_schedule = Mock()
+    monkeypatch.setattr(mirror, 'schedule_task', mock_schedule)
+
+    assert xym._retry_lightpath is True
+    xym.insertion._state_initialized = False
+    # try getting lightpath state once, which should fail and schedule
+    xym.get_lightpath_state(use_cache=False)
+    assert mock_schedule.call_count == 1
+    assert xym._retry_lightpath is False
+
+    # subsequent calls to get_lightpath_state should not schedule
+    xym.get_lightpath_state(use_cache=False)
+    assert mock_schedule.call_count == 1
+    assert xym._retry_lightpath is False
+
+    xym._retry_lightpath = True
+    # After reset has completed, can retry
+    xym.get_lightpath_state(use_cache=False)
+    assert mock_schedule.call_count == 2
+    assert xym._retry_lightpath is False

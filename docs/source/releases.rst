@@ -1,6 +1,168 @@
 Release History
 ###############
 
+v8.4.0 (2024-04-16)
+===================
+
+Compatibility Notes
+-------------------
+- If your SmarAct release is < R1.0.20, then the EPICS signals will timeout on the new PVs.
+  Please make sure to update your children IOCs.
+
+Features
+--------
+- Adds `ioc_chan_num` and `ioc_card_num` to the `EnvironmentalMonitor` happi container.
+- Adds the "embedded" file for `BeckhoffAxisEPSCustom` that allows for typhos screens to open using the compact controls.
+- Adds a convenience `re_arg` decorator to redefine and deprecate a function's args in a backwards-compatible way in the `pcdsdevices.utils` submodule.
+
+Device Updates
+--------------
+- `TprTrigger`: Update numerous PVs to "config", add TCMPL PV as the `operation` signal.
+- Adds the following temperature monitoring signals to `SmarAct` and `SmarActOpenLoop`:
+
+  - `channel_temp`
+  - `module_temp`
+- Adds the following hidden config PVs to the (encoded) `SmarAct` device class:
+
+  - `log_scale_offset`
+  - `log_scale_inv`
+  - `def_range_min`
+  - `def_range_max`
+  - `dist_code_inv`
+- Adds the following missing epics signals to `MPODApalisModule`:
+
+  - `supply_status`
+  - `module_status`
+  - `fine_adjustment_status`
+  - `input_status`
+  - `live_insertion_status`
+  - `safety_loop_status`
+  - `kill`
+
+- Adds an `energy_with_acr_status` instance to CCM
+- Updates `BeamEnergyRequest` argument from "bunch" to "pv_index" to better reflect the broader use cases.
+  A backward compatible warning is now returned if the old bunch kwarg is used.
+- Updates "atol" in `BeamEnergyRequestNoWait` to 0.5 (was 5). This is needed for self-seeding.
+- `XOffsetMirrorStateCool` and `XOffsetMirrorNoBend` gets `variable_cool` for controlling 24V solenoid valve.
+
+New Devices
+-----------
+- Adds `li2k4` as `TMOLaserInCouplingTwoDimension`, with the x and y motors supported (no states yet).
+- Adds `Lcls2LaserTiming`: New class supporting control of laser timing for the OPCPA laser locker system.
+- Adds `SmarActEncodedTipTilt` to the `pcdsdevices.epics_motor` submodule.
+- Adds `SmarPod` and related devices in new `pcdsdevices.smarpod` submodule.
+- Adds a `CCMEnergyWithACRStatus` class to the `pcdsdevices.ccm` submodule, a new variant of `CCMEnergy` that waits for ACR status before marking moves as complete.
+
+Bugfixes
+--------
+- Previously, calculate_on_get/put functions used in `MultiDerivedSignal` s in `pcdsdevices.tpr` classes were not accessing their attrs correctly and would throw KeyErrors when called.
+  Specifically, the name of the attr was being used as the key for items dictionary instead of the actual signal object
+- Also added unit tests for these `MultiDerivedSignal` s in the `pcdsdevices.tpr` submodule.
+- Modify `sp1k4` Attenuator RTD class (`TMOSpectrometer`) to match prefix for `sp1k4` group device.
+
+Contributors
+------------
+- aberges-SLAC
+- baljamal
+- jozamudi
+- KaushikMalapati
+- nrwslac
+- patoppermann
+- sainyamn
+- slactjohnson
+- tongju12
+- vespos
+
+
+v8.3.0 (2024-02-21)
+===================
+
+Features
+--------
+- Enabled the use of custom EPS screens for Beckhoff axes via the
+  `BeckhoffAxisEPSCustom` class in `pcdsdevices.epics_motor` and
+  the accompanying ui template file.
+
+Device Updates
+--------------
+- Added ``flow_meter`` to `ArrivalTimeMonitor` in `pcdsdevices.atm`
+- Added ``flow_meter`` to `AttenuatorSXR_Ladder` in `pcdsdevices.attenuator`
+- Added ``flow_meter`` to `AttenuatorSXR_LadderTwoBladeLBD` in `pcdsdevices.attenuator`
+- Added `WaveFrontSensorTargetCool` and `WaveFrontSensorTargetFDQ` to `pcdsdevices.device_types`
+- Added flow sensor components to `FFMirror` in `pcdsdevices.mirror`
+- Added piezo pitch motors to the `ExitSlits` in `pcdsdevices.slits`
+
+New Devices
+-----------
+- Added `PhotonCollimator` to readout `flow_switch` in new module `pcdsdevices.pc`
+- Added `WaveFrontSensorTargetFDQ` to read out the `flow_meter` in `pcdsdevices.wfs`
+- Added `MFXATM` to `pcdsdevices.atm` for the unique atm unit in the MFX hutch.
+
+Bugfixes
+--------
+- Fixed an issue where `AT2L0.clear_errors` would not run properly.
+
+Maintenance
+-----------
+- Added missing regression tests for `AT2L0`.
+- Updated versions of pre-commit checks to latest and fix new flake8 errors.
+
+Contributors
+------------
+- ghalym
+- jozamudi
+- nrwslac
+- zllentz
+
+
+v8.2.0 (2023-12-19)
+===================
+
+API Breaks
+----------
+- Moved `K2700` and `IM3L0_K2700` to `keithley` submodule. This is not expected to impact any known user code.
+
+Features
+--------
+- Adds attenuator RTD temperatures to sp1k4 (`TMOSpectrometer`), for display in GUI.
+- pcdsdevices now has a `digital_signals` module for simple digital io.
+- Added `PVPositionerNoInterrupt`, a pv positioner base class whose moves
+  cannot be interrupted (and will loudly complain about any such attempts).
+
+Device Updates
+--------------
+- added `J120K` to `SxrTestAbsorber`, `XPIM`, `IM2K0`, `PowerSlits`
+- Restructured `Qadc134` with new `Qadc134Common` and `QadcLcls1Timing` parent
+  classes.
+
+New Devices
+-----------
+- `PPMCoolSwitch` ppms with cooling switch not a meter.
+- `WaveFrontSensorTargetCool` WaveFrontSensors with a cooling switch.
+- `J120K` a device class for a cooling switch.
+- Added `K6514`, `GMD` (previously unimplemented), `GMDPreAmp`, and `SXRGasAtt`, taken from
+  ``/cds/group/pcds/pyps/apps/hutch-python/tmo/tmo/tmo_beamline_control.py`` with some modifications
+- `Qadc134Lcls2`: A class for LCLS-II timing versions of the FMC134
+- New `TprTrigger` and `TprMotor` device classes in `tpr` submodule,
+  analogous to `Trigger` and `EvrMotor` from `evr` submodule
+
+Bugfixes
+--------
+- LCLSI attenuator classes (generated from the `Attenuator` factory function)
+  will now raise a much clearer error for when they cannot interrupt a
+  previous move, without trying (and failing) to interrupt the previous move.
+- Fix an issue where `BeckhoffAxis` typhos screens would overreport
+  known false alarm errors.
+
+Contributors
+------------
+- KaushikMalapati
+- nrwslac
+- slactjohnson
+- tongju12
+- zllentz
+
+
 v8.1.0 (2023-10-16)
 ===================
 

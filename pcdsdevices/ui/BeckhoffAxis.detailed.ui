@@ -56,6 +56,9 @@
      <property name="error_message_attribute" stdset="0">
       <string>plc.status</string>
      </property>
+     <property name="alarmKindLevel" stdset="0">
+      <enum>TyphosPositionerWidget::HINTED</enum>
+     </property>
     </widget>
    </item>
    <item>

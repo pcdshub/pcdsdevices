@@ -5,8 +5,10 @@ import functools
 import logging
 import shutil
 import subprocess
+import time
 from typing import Callable, ClassVar, Optional
 
+import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
@@ -16,7 +18,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import DeviceStatus, MoveStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
-from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
+from ophyd.utils.epics_pvs import raise_if_disconnected
 from pcdsutils.ext_scripts import get_hutch_name
 from prettytable import PrettyTable
 
@@ -81,7 +83,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     tab_whitelist = ["set_current_position", "home", "velocity",
                      "check_limit_switches", "get_low_limit",
-                     "set_low_limit", "get_high_limit", "set_high_limit"]
+                     "set_low_limit", "get_high_limit", "set_high_limit",
+                     "velocity_base", "velocity_max"]
 
     set_metadata(EpicsMotor.home_forward, dict(variety='command-proc',
                                                tags={"confirm"},
@@ -104,6 +107,9 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.high_limit_travel.kind = Kind.config
     EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
+
+    velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
+    velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
 
     _alarm_filter_installed: ClassVar[bool] = False
     _moved_in_session: bool
@@ -601,7 +607,13 @@ class PCDSMotorBase(EpicsMotorInterface):
         """
         self.set_use_switch.put(1, wait=True)
         try:
-            set_and_wait(self.user_setpoint, pos, timeout=1)
+            # Force to ignore limits
+            self.user_setpoint.put(pos, force=True)
+            # Instead of waiting on the put (broken), manually check
+            for _ in range(3):
+                if np.isclose(self.user_setpoint.get(), pos):
+                    break
+                time.sleep(0.1)
         finally:
             self.set_use_switch.put(0, wait=True)
 
@@ -631,8 +643,6 @@ class IMS(PCDSMotorBase):
 
     # IMS velocity has limits
     velocity = Cpt(EpicsSignal, '.VELO', limits=True, kind='config')
-    velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
-    velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
 
     tab_whitelist = [
         'reinitialize',
@@ -988,6 +998,9 @@ class Newport(PCDSMotorBase):
     motor_prec = Cpt(EpicsSignalRO, '.PREC', kind='omitted',
                      auto_monitor=True)
 
+    velocity_max = Cpt(EpicsSignalRO, '.SVEL', kind='config')
+    velocity_base = Cpt(Signal, kind='omitted')
+
     def home(self, *args, **kwargs):
         # This function should eventually be used. There is a way to home
         # Newport motors to a reference mark
@@ -1299,6 +1312,18 @@ class BeckhoffAxisEPS(BeckhoffAxis):
               doc='PLC error handling, aux functions, and EPS.')
 
 
+class BeckhoffAxisEPSCustom(BeckhoffAxis):
+    """
+    A beckhoff axis where custom EPS Logic has been implemented in
+    a PLC and needs a custom screen to display EPS information
+
+    EPS screens are found in
+    /cds/group/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}
+
+    """
+    pass
+
+
 class BeckhoffAxisPLC_Pre140(BeckhoffAxisPLC):
     """
     Disable some newly introduced signals.
@@ -1357,7 +1382,7 @@ class SmarActOpenLoop(Device):
     Class containing the open loop PVs used to control an un-encoded SmarAct
     stage.
 
-    Can be used for sub-classing, or creating a simple  device without the
+    Can be used for sub-classing, or creating a simple device without the
     motor record PVs.
     """
 
@@ -1389,11 +1414,16 @@ class SmarActOpenLoop(Device):
     scan_move = Cpt(EpicsSignal, ':SCAN_POS', write_pv=':SCAN_MOVE',
                     kind='config',
                     doc='Set current piezo voltage (in 16 bit ADC steps)')
+    # Diagnostic read only PVs
+    channel_temp = Cpt(EpicsSignalRO, ':CHANTEMP', kind='normal',
+                       doc="Temperature at the channel's amplifier")
+    module_temp = Cpt(EpicsSignalRO, ':MODTEMP', kind='normal',
+                      doc='Temperature of the MCS2 Module in the rack')
 
 
 class SmarActTipTilt(Device):
     """
-    Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirro
+    Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirror
     positioning configuration into a single device.
 
     Parameters:
@@ -1458,9 +1488,94 @@ class SmarAct(EpicsMotorInterface):
     do_calib = Cpt(EpicsSignal, ':DO_CALIB.PROC', kind='config')
     set_metadata(do_calib, dict(variety='command-proc', value=1))
 
+    # Configuration for settings in NVRAM
+    log_scale_offset = Cpt(EpicsSignal, ':LSCO', write_pv=':SET_LSCO',
+                           kind='omitted', doc='Logical Scale Offset')
+    def_range_min = Cpt(EpicsSignal, ':DRMIN', write_pv=':SET_DRMIN',
+                        kind='omitted', doc='Default Range Minimum')
+    def_range_max = Cpt(EpicsSignal, ':DRMAX', write_pv=':SET_DRMAX',
+                        kind='omitted', doc='Default Range Maximum')
+    log_scale_inv = Cpt(EpicsSignal, ':LSCI_RBV', write_pv=':SET_LSCI',
+                        kind='omitted', doc='Default Range Minimum')
+    dist_code_inv = Cpt(EpicsSignal, ':DCIN_RBV', write_pv=':SET_DCIN',
+                        kind='omitted', doc='Distance Code Inversion')
+
+    # Diagnostic read only PVs
+    channel_temp = Cpt(EpicsSignalRO, ':CHANTEMP', kind='normal',
+                       doc="Temperature at the channel's amplifier")
+    module_temp = Cpt(EpicsSignalRO, ':MODTEMP', kind='normal',
+                      doc='Temperature of the MCS2 Module in the rack')
+
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
     open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
+
+
+class SmarActEncodedTipTilt(Device):
+    """
+    Class for bundling two SmarAct encoded axes arranged in a tip-tilt mirror
+    positioning configuration into a single device.
+    Refer to SmarActTipTilt for more info.
+    """
+    tip = FCpt(SmarAct, '{prefix}{self._tip_pv}', kind='normal')
+    tilt = FCpt(SmarAct, '{prefix}{self._tilt_pv}', kind='normal')
+
+    def __init__(self, prefix='', *, tip_pv, tilt_pv, **kwargs):
+        self._tip_pv = tip_pv
+        self._tilt_pv = tilt_pv
+        super().__init__(prefix, **kwargs)
+
+
+class SmarActPicoscale(SmarAct):
+    """
+    Class for encoded SmarAct motors controller via the MCS2 controller
+    which use the PicoScale sensor heads for encoded positions.
+    Instantiating a device requires inclusion of the ioc_base in order to
+    properly access PicoScale properties.
+
+    Example
+    -------
+    SmarActPicoscale('prefix': 'LAS:MCS2:02:m1', 'name': 'Delay 1',
+                     'ioc_base': 'LAS:MCS2:02').
+    """
+    # configuration settings and readbacks
+    pico_present = Cpt(EpicsSignalRO, ':PS_PRESENT', kind='config',
+                       doc='PicoScale is on and connected')
+    pico_exists = Cpt(EpicsSignalRO, ':HAVE_PS', kind='config',
+                      doc='Does this channel have a PicoScale assigned to it?')
+    pico_valid = Cpt(EpicsSignalRO, ':PS_DATA_VALID', kind='config',
+                     doc='Is the data valid and ready for accurate msmts?')
+    pico_sig_qual = Cpt(EpicsSignalRO, ':PS_SIG_QUALITY', kind='config',
+                        doc='Quality of interferometer signal. Higher = better')
+
+    # auto and manual adjustment related PVs
+    pico_adj_state = FCpt(EpicsSignal, '{self._ioc_base}:PS:CUR_ADJ_STATE',
+                          write_pv='{self._ioc_base}:PS:REQ_ADJ_STATE',
+                          kind='config', doc='Set to Manual or Auto adjustment '
+                          'mode')
+    pico_curr_adj_prog = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:CUR_ADJ_PROGRESS',
+                              kind='config', doc='Estimate of current adjustment '
+                              'progress')
+    pico_adj_done = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:ADJ_DONE',
+                         kind='config', doc='Is the auto adjustment done?')
+
+    # Validation that Picoscale is working properly
+    pico_enable = Cpt(EpicsSignalRO, ':PS_ENABLE_RBV', kind='normal',
+                      doc='Is the PicoScale enabled for this channel?')
+    pico_stable = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:STABLE', kind='normal',
+                       doc='Is system stable and ready for accurate msmts?')
+
+    # Diagnostic information from PS controller
+    pico_name = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:LOCATOR',
+                     kind='config', doc='Name of the PicoScale')
+    pico_wmin = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:WORKING_MIN',
+                     kind='config', doc='Working distance minimum')
+    pico_wmax = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:WORKING_MAX',
+                     kind='config', doc='Working distance maximum')
+
+    def __init__(self, prefix, *, ioc_base, **kwargs):
+        self._ioc_base = ioc_base
+        super().__init__(prefix, **kwargs)
 
 
 def _GetMotorClass(basepv):

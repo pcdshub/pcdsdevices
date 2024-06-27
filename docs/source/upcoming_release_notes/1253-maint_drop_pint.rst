@@ -1,4 +1,4 @@
-1178 new-tpr-class
+1253 maint_drop_pint
 #################
 
 API Breaks
@@ -15,8 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- New TprTrigger and TprMotor device classes in tpr.py
-- Analogous to Trigger and EvrMotor from evr.py
+- N/A
 
 Bugfixes
 --------
@@ -24,8 +23,10 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Use sympy instead of pint for unit conversions for simpler
+  maintainability.
+- Various CI tweaks due to numpy 2.0's chaos.
 
 Contributors
 ------------
-- KaushikMalapati
+- zllentz

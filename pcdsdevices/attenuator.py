@@ -18,6 +18,7 @@ from ophyd.pv_positioner import PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from . import utils
+from .analog_signals import FDQ
 from .device import GroupDevice
 from .device import UnrelatedComponent as UCpt
 from .device import UpdateComponent as UpCpt
@@ -1017,6 +1018,9 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
     blade_03 = Cpt(SXRLadderAttenuatorBlade, ':MMS:03')
     blade_04 = Cpt(SXRLadderAttenuatorBlade, ':MMS:04')
 
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')
+
     def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         limits = limits or (0.0, 1.0)
@@ -1074,14 +1078,18 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=2.0)
+                if self._retry_lightpath:
+                    self._retry_lightpath = False
+                    utils.schedule_task(self._calc_cache_lightpath_state,
+                                        delay=2.0)
 
                 return LightpathState(
                     inserted=True,
                     removed=True,
                     output={self.output_branches[0]: 1}
                 )
+
+            self._retry_lightpath = True
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))
@@ -1181,6 +1189,9 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
     # LBD Stage
     blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
 
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')
+
     def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         limits = limits or (0.0, 1.0)
@@ -1238,14 +1249,18 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=2.0)
+                if self._retry_lightpath:
+                    self._retry_lightpath = False
+                    utils.schedule_task(self._calc_cache_lightpath_state,
+                                        delay=2.0)
 
                 return LightpathState(
                     inserted=True,
                     removed=True,
                     output={self.output_branches[0]: 1}
                 )
+
+            self._retry_lightpath = True
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))
@@ -1325,6 +1340,7 @@ class AT1K4(AttenuatorSXR_Ladder):
     calculator_prefix : str
         The prefix for the calculator PVs.
     """
+    flow_meter = None
 
 
 class AT1K2(AttenuatorSXR_LadderTwoBladeLBD):
@@ -1484,7 +1500,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
     def _reset_errors(
         self, mds: MultiDerivedSignal, value: OphydDataType
     ) -> SignalToValue:
-        return {sig: 1 for sig in self.parent.reset_errors.signals}
+        return {sig: 1 for sig in self.reset_errors.signals}
 
     reset_errors = Cpt(
         MultiDerivedSignal,
@@ -1585,14 +1601,18 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=2.0)
+                if self._retry_lightpath:
+                    self._retry_lightpath = False
+                    utils.schedule_task(self._calc_cache_lightpath_state,
+                                        delay=2.0)
 
                 return LightpathState(
                     inserted=True,
                     removed=True,
                     output={self.output_branches[0]: 1}
                 )
+
+            self._retry_lightpath = True
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))

@@ -107,14 +107,14 @@ def test_beam_energy_request_args():
         'TST',
         name='tst_k1_request',
         line='k',
-        bunch=1,
+        pv_index=1,
     )
     assert tst_k1_request.setpoint.pvname == 'TST:USER:MCC:EPHOTK:SET1'
     tst_l2_request = BeamEnergyRequest(
         'TST',
         name='tst_l2_request',
         line='L',
-        bunch=2,
+        pv_index=2,
     )
     assert tst_l2_request.setpoint.pvname == 'TST:USER:MCC:EPHOT:SET2'
     # let's test the class splitting here too

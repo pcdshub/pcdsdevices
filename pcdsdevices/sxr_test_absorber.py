@@ -3,10 +3,9 @@ Module for the SXR Test Absorbers.
 """
 from __future__ import annotations
 
-from typing import Callable
-
 from ophyd.device import Component as Cpt
 
+from .digital_signals import J120K
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import TwinCATInOutPositioner
 from .interface import BaseInterface, LightpathInOutCptMixin
@@ -26,18 +25,6 @@ class SxrTestAbsorberStates(TwinCATInOutPositioner):
     """
 
     st3k4_auto = Cpt(PytmcSignal, ':ST3K4_AUTO', io='io', kind='config')
-
-    def set(
-        self,
-        position: str | int,
-        moved_cb: Callable | None = None,
-        timeout: float | None = None,
-    ):
-        if self.st3k4_auto.get():
-            raise ST3K4AutoError(
-                "ST1K4 must follow ST3K4. Move rejected."
-            )
-        return super().set(position, moved_cb=moved_cb, timeout=timeout)
 
 
 class SxrTestAbsorber(BaseInterface, LightpathInOutCptMixin):
@@ -59,5 +46,7 @@ class SxrTestAbsorber(BaseInterface, LightpathInOutCptMixin):
 
     state = Cpt(SxrTestAbsorberStates, ':MMS:STATE', kind='hinted')
     absorber_vert = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
+    flow_switch = Cpt(J120K, '', kind='normal',
+                      doc='Device that indicates nominal PCW Flow Rate.')
 
     lightpath_cpts = ['state']

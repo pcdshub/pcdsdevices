@@ -722,8 +722,8 @@ class CCMEnergyWithVernier(CCMEnergy):
         PVs to write to. If omitted, we can guess this from the
         prefix.
     """
-    vernier = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
-                   doc='Requests ACR to move the Vernier.')
+    acr_energy = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
+                      doc='Requests ACR to move the Vernier.')
 
     # These are duplicate warnings with main energy motor
     _enable_warn_constants: bool = False
@@ -759,7 +759,7 @@ class CCMEnergyWithVernier(CCMEnergy):
         energy = pseudo_pos.energy
         alio = self.energy_to_alio(energy)
         vernier = energy * 1000
-        return self.RealPosition(alio=alio, vernier=vernier)
+        return self.RealPosition(alio=alio, acr_energy=vernier)
 
     def inverse(self, real_pos: namedtuple) -> namedtuple:
         """
@@ -771,6 +771,46 @@ class CCMEnergyWithVernier(CCMEnergy):
         alio = real_pos.alio
         energy = self.alio_to_energy(alio)
         return self.PseudoPosition(energy=energy)
+
+
+class CCMEnergyWithACRStatus(CCMEnergyWithVernier):
+    """
+    CCM energy motor and ACR beam energy request with status.
+    Note that in this case vernier indicates any ways that ACR will act on the
+    photon energy request. This includes the Vernier, but can also lead to
+    motion of the undulators or the K.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
+    hutch : str, optional
+        The hutch we're in. This informs us as to which vernier
+        PVs to write to. If omitted, we can guess this from the
+        prefix.
+    acr_status_sufix : str
+        Prefix to the SIOC PV that ACR uses to report the move status.
+        For HXR this usually is 'AO805'.
+    """
+    acr_energy = FCpt(BeamEnergyRequest, '{hutch}',
+                      pv_index='{pv_index}',
+                      acr_status_suffix='{acr_status_suffix}',
+                      add_prefix=('suffix', 'write_pv', 'pv_index',
+                                  'acr_status_suffix'),
+                      kind='normal',
+                      doc='Requests ACR to move the energy.')
+
+    def __init__(
+        self,
+        prefix: str,
+        hutch: typing.Optional[str] = None,
+        acr_status_suffix='AO805',
+        pv_index=2,
+        **kwargs
+    ):
+        self.acr_status_suffix = acr_status_suffix
+        self.pv_index = pv_index
+        super().__init__(prefix, **kwargs)
 
 
 class CCMX(SyncAxis):
@@ -892,6 +932,11 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         The prefix for the north upstream ccm y translation motor (y2).
     y_up_south_prefix : str, required keyword
         The prefix for the south upstream ccm y translation motor (y3).
+    acr_status_pv_index : int
+        The index for the energy request PV in the case of the acr status
+        wait. Default: 2.
+    acr_status_suffix : str
+        The suffix for the ACR status energy change move. Default to 'AO805'
     """
     energy = Cpt(
         CCMEnergy, '', kind='hinted',
@@ -903,9 +948,20 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
     energy_with_vernier = Cpt(
         CCMEnergyWithVernier, '', kind='normal',
         doc=(
-            'PsuedoPositioner that moves the alio in '
+            'PseudoPositioner that moves the alio in '
             'terms of the calculated CCM energy while '
             'also requesting a vernier move.'
+        ),
+    )
+    energy_with_acr_status = FCpt(
+        CCMEnergyWithACRStatus, '{prefix}', kind='normal',
+        acr_status_suffix='{acr_status_suffix}',
+        add_prefix=('suffix', 'write_pv', 'acr_status_suffix'),
+        doc=(
+            'PseudoPositioner that moves the alio in '
+            'terms of the calculated CCM energy while '
+            'also requesting an energy change to ACR. '
+            'This will wait on ACR to complete the move.'
         ),
     )
 
@@ -939,8 +995,9 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
 
     lightpath_cpts = ['x.up.user_readback']
     tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_Vernier',
-                     'th2fine', 'alio2E', 'E2alio', 'alio', 'home',
-                     'kill', 'insert', 'remove', 'inserted', 'removed']
+                     'energy_with_acr_status', 'th2fine', 'alio2E', 'E2alio',
+                     'alio', 'home', 'kill', 'insert', 'remove', 'inserted',
+                     'removed']
 
     _in_pos: float
     _out_pos: float
@@ -957,6 +1014,8 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         self._in_pos = in_pos
         self._out_pos = out_pos
         prefix = prefix or self.unrelated_prefixes['alio_prefix']
+        self.acr_status_suffix = kwargs.get('acr_status_suffix', 'AO805')
+        self.acr_status_pv_index = kwargs.get('acr_status_suffix', 2)
         super().__init__(prefix, **kwargs)
 
         # Aliases: defined by the scientists

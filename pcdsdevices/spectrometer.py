@@ -107,7 +107,10 @@ class Kmono(BaseInterface, GroupDevice, LightpathMixin):
 
 
 class VonHamosCrystal(BaseInterface, GroupDevice):
-    """Pitch, yaw, and translation motors for control of a single crystal."""
+    """
+    Pitch, yaw, and translation motors for control of a single crystal of
+    the 4-crystals VonHamos spectrometer.
+    """
     tab_component_names = True
 
     pitch = Cpt(BeckhoffAxisNoOffset, ':Pitch', kind='normal')
@@ -220,6 +223,35 @@ class VonHamos4Crystal(VonHamosFE):
                          prefix_energy=prefix_energy, **kwargs)
 
 
+class VonHamosCrystal_2(BaseInterface, GroupDevice):
+    """
+    Translation, rotation and tilt motors for control of a single crystal of
+    the MFX 6-crystals spectrometer.
+    """
+    tab_component_names = True
+
+    x = Cpt(BeckhoffAxis, ':X', kind='normal')
+    rot = Cpt(BeckhoffAxis, ':ROT', kind='normal')
+    tilt = Cpt(BeckhoffAxis, ':TILT', kind='normal')
+
+
+class VonHamos6Crystal(BaseInterface, GroupDevice):
+    """ MFX 6-crystal VonHamos spectrometer """
+    tab_component_names = True
+
+    c1 = Cpt(VonHamosCrystal_2, ':C1', kind='normal')
+    c2 = Cpt(VonHamosCrystal_2, ':C2', kind='normal')
+    c3 = Cpt(VonHamosCrystal_2, ':C3', kind='normal')
+    c4 = Cpt(VonHamosCrystal_2, ':C4', kind='normal')
+    c5 = Cpt(VonHamosCrystal_2, ':C5', kind='normal')
+    c6 = Cpt(VonHamosCrystal_2, ':C6', kind='normal')
+
+    rot = Cpt(BeckhoffAxis, ':ROT', kind='normal')
+    y = Cpt(BeckhoffAxis, ':T1', kind='normal')
+    x_bottom = Cpt(BeckhoffAxis, ':T2', kind='normal')
+    x_top = Cpt(BeckhoffAxis, ':T3', kind='normal')
+
+
 class Mono(BaseInterface, GroupDevice, LightpathMixin):
     """
     L2S-I NEH 2.X Monochromator
@@ -267,30 +299,38 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
                       doc='LED power supply controls.')
 
     # Flow meters
-    flow_1 = Cpt(PytmcSignal, ':FWM:1', io='i', kind='normal',
-                 doc='flow meter 1')
-    flow_2 = Cpt(PytmcSignal, ':FWM:2', io='i', kind='normal',
-                 doc='flow meter 2')
-    pres_1 = Cpt(PytmcSignal, ':PRSM:1', io='i', kind='normal',
-                 doc='pressure meter 1')
+    cool_flow1 = Cpt(PytmcSignal, ':FWM:1', io='i', kind='normal',
+                     doc='flow meter 1')
+    cool_flow2 = Cpt(PytmcSignal, ':FWM:2', io='i', kind='normal',
+                     doc='flow meter 2')
+    cool_press = Cpt(PytmcSignal, ':PRSM:1', io='i', kind='normal',
+                     doc='pressure meter 1')
 
     # RTDs
-    rtd_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='normal',
-                doc='RTD 1 [deg C]')
-    rtd_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='normal',
-                doc='RTD 2 [deg C]')
-    rtd_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='normal',
-                doc='RTD 3 [deg C]')
-    rtd_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='normal',
-                doc='RTD 4 [deg C]')
-    rtd_5 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='normal',
-                doc='RTD 5 [deg C]')
-    rtd_6 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='normal',
-                doc='RTD 6 [deg C]')
-    rtd_7 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='normal',
-                doc='RTD 7 [deg C]')
-    rtd_8 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='normal',
-                doc='RTD 8 [deg C]')
+    grating_temp_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_temp_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='normal',
+                         doc='[deg C]')
+    grating_mask_temp_1 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_2 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_3 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    grating_mask_temp_4 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    mirror_mask_temp = Cpt(PytmcSignal, ':RTD:09:TEMP', io='i', kind='normal',
+                           doc='[deg C]')
+    mirror_cooling_temp = Cpt(PytmcSignal, ':RTD:11:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
+    exit_mask_right_temp = Cpt(PytmcSignal, ':RTD:10:TEMP', io='i', kind='normal',
+                               doc='[deg C]')
+    exit_mask_left_temp = Cpt(PytmcSignal, ':RTD:12:TEMP', io='i', kind='normal',
+                              doc='[deg C]')
 
     # Lightpath constants
     inserted = True
@@ -324,10 +364,10 @@ class TMOSpectrometerSOLIDATTStates(TwinCATStatePMPS):
     """
     Spectrometer Solid Attenuator(FOIL X and Y) 2D States Setup
 
-    Here, we specify 6 states,(after adding an Unknown state), and 2 motors, for the X and Y
+    Here, we specify 4 states,(after adding an Unknown state), and 2 motors, for the X and Y
     axes.
     """
-    config = UpCpt(state_count=6, motor_count=2)
+    config = UpCpt(state_count=4, motor_count=2)
 
 
 class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):

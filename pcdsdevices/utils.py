@@ -17,6 +17,7 @@ from typing import Callable, Iterator, Union
 
 import ophyd
 import prettytable
+import sympy.physics.units as units
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.ophydobj import Kind
@@ -33,24 +34,50 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-arrow_up = '\x1b[A'
-arrow_down = '\x1b[B'
-arrow_right = '\x1b[C'
-arrow_left = '\x1b[D'
-shift_arrow_up = '\x1b[1;2A'
-shift_arrow_down = '\x1b[1;2B'
-shift_arrow_right = '\x1b[1;2C'
-shift_arrow_left = '\x1b[1;2D'
-alt_arrow_up = '\x1b[1;3A'
-alt_arrow_down = '\x1b[1;3B'
-alt_arrow_right = '\x1b[1;3C'
-alt_arrow_left = '\x1b[1;3D'
-ctrl_arrow_up = '\x1b[1;5A'
-ctrl_arrow_down = '\x1b[1;5B'
-ctrl_arrow_right = '\x1b[1;5C'
-ctrl_arrow_left = '\x1b[1;5D'
-plus = '+'
-minus = '-'
+arrow_up = "\x1b[A"
+arrow_down = "\x1b[B"
+arrow_right = "\x1b[C"
+arrow_left = "\x1b[D"
+shift_arrow_up = "\x1b[1;2A"
+shift_arrow_down = "\x1b[1;2B"
+shift_arrow_right = "\x1b[1;2C"
+shift_arrow_left = "\x1b[1;2D"
+alt_arrow_up = "\x1b[1;3A"
+alt_arrow_down = "\x1b[1;3B"
+alt_arrow_right = "\x1b[1;3C"
+alt_arrow_left = "\x1b[1;3D"
+ctrl_arrow_up = "\x1b[1;5A"
+ctrl_arrow_down = "\x1b[1;5B"
+ctrl_arrow_right = "\x1b[1;5C"
+ctrl_arrow_left = "\x1b[1;5D"
+plus = "+"
+minus = "-"
+
+
+def re_arg(kwarg_map):
+    """
+    Decorator to redefine a kwarg to a function, while still supporting the old kwarg, and warning the end user.
+
+    Usage:
+    @re_arg({"new_kwarg": "old_kwarg"})
+    def myfunc(*args, new_kwarg=<a_value>, **kwargs):
+        ...
+    """
+
+    def decorator(func):
+        def wrapped(*args, **kwargs):
+            new_kwargs = {}
+            for k, v in kwargs.items():
+                if k in kwarg_map:
+                    print(
+                        f"DEPRECATION WARNING: keyword argument '{k}' is no longer valid. Use '{kwarg_map[k]}' instead."
+                    )
+                new_kwargs[kwarg_map.get(k, k)] = v
+            return func(*args, **new_kwargs)
+
+        return wrapped
+
+    return decorator
 
 
 def is_input():
@@ -78,7 +105,7 @@ def get_input():
     input : str
     """
     if termios is None:
-        raise RuntimeError('Not supported on this platform')
+        raise RuntimeError("Not supported on this platform")
 
     # Save old terminal settings
     old_settings = termios.tcgetattr(sys.stdin)
@@ -88,16 +115,16 @@ def get_input():
         # Swap to cbreak mode to get raw inputs
         tty.setcbreak(sys.stdin.fileno())
         # Poll for input. This is interruptable with ctrl+c
-        while (not is_input()):
+        while not is_input():
             time.sleep(0.01)
         # Read the first character
         inp = sys.stdin.read(1)
         # Read more if we have a control sequence
-        if inp == '\x1b':
+        if inp == "\x1b":
             extra_inp = sys.stdin.read(2)
             inp += extra_inp
             # Read even more if we had a shift/alt/ctrl modifier
-            if extra_inp == '[1':
+            if extra_inp == "[1":
                 inp += sys.stdin.read(3)
     finally:
         # Restore the terminal to normal input mode
@@ -108,7 +135,7 @@ def get_input():
 ureg = None
 
 
-def convert_unit(value, unit, new_unit):
+def convert_unit(value: float, unit: str, new_unit: str):
     """
     One-line unit conversion.
 
@@ -128,14 +155,15 @@ def convert_unit(value, unit, new_unit):
     new_value : float
         The starting value, but converted to the new unit.
     """
+    unit = getattr(units, unit)
+    new_unit = getattr(units, new_unit)
 
-    global ureg
-    if ureg is None:
-        import pint
-        ureg = pint.UnitRegistry()
+    if unit == new_unit:
+        return value
 
-    expr = ureg.parse_expression(unit)
-    return (value * expr).to(new_unit).magnitude
+    new_value = value * units.convert_to(unit, new_unit)
+
+    return float(new_value.as_coeff_Mul()[0])
 
 
 def ipm_screen(dettype, prefix, prefix_ioc):
@@ -154,18 +182,25 @@ def ipm_screen(dettype, prefix, prefix_ioc):
         The PV prefix associated with the IOC running the device.
     """
 
-    if (dettype == 'IPIMB'):
-        executable = '/reg/g/pcds/controls/pycaqt/ipimb/ipimb'
-    elif (dettype == 'Wave8'):
-        executable = '/reg/g/pcds/pyps/apps/wave8/latest/wave8'
+    if dettype == "IPIMB":
+        executable = "/reg/g/pcds/controls/pycaqt/ipimb/ipimb"
+    elif dettype == "Wave8":
+        executable = "/reg/g/pcds/pyps/apps/wave8/latest/wave8"
     else:
-        raise ValueError('Unknown detector type')
+        raise ValueError("Unknown detector type")
     if shutil.which(executable) is None:
         raise OSError(f"{executable} is not on path, we cannot start the screen")
 
-    logger.info(f'Opening {dettype} screen for {prefix}...')
-    arglist = [executable, '--base', prefix, '--ioc', prefix_ioc,
-               '--evr', prefix+':TRIG']
+    logger.info(f"Opening {dettype} screen for {prefix}...")
+    arglist = [
+        executable,
+        "--base",
+        prefix,
+        "--ioc",
+        prefix_ioc,
+        "--evr",
+        prefix + ":TRIG",
+    ]
     _ = subprocess.Popen(arglist)
 
 
@@ -231,7 +266,7 @@ def schedule_task(func, args=None, kwargs=None, delay=None):
         timer.start()
 
 
-def get_status_value(status_info, *keys, default_value='N/A'):
+def get_status_value(status_info, *keys, default_value="N/A"):
     """
     Get the value of a dictionary key.
 
@@ -256,8 +291,15 @@ def get_status_value(status_info, *keys, default_value='N/A'):
         return default_value
 
 
-def get_status_float(status_info, *keys, default_value='N/A', precision=4,
-                     format='f', scale=1.0, include_plus_sign=False):
+def get_status_float(
+    status_info,
+    *keys,
+    default_value="N/A",
+    precision=4,
+    format="f",
+    scale=1.0,
+    include_plus_sign=False,
+):
     """
     Get the value of a dictionary key.
 
@@ -291,17 +333,16 @@ def get_status_float(status_info, *keys, default_value='N/A', precision=4,
         if isinstance(value, (int, float)):
             value = float(value) * scale
             if include_plus_sign:
-                fmt = '{:+.%d%s}' % (precision, format)
+                fmt = "{:+.%d%s}" % (precision, format)
             else:
-                fmt = '{:.%d%s}' % (precision, format)
+                fmt = "{:.%d%s}" % (precision, format)
             return fmt.format(value)
         return value
     except KeyError:
         return default_value
 
 
-def format_status_table(status_info, row_to_key, column_to_key,
-                        row_identifier='Index'):
+def format_status_table(status_info, row_to_key, column_to_key, row_identifier="Index"):
     """
     Create a PrettyTable based on status information.
 
@@ -324,7 +365,7 @@ def format_status_table(status_info, row_to_key, column_to_key,
     table.field_names = [row_identifier] + list(column_to_key)
     for row_name, row_key in row_to_key.items():
         row = [
-            get_status_value(status_info, row_key, key, 'value')
+            get_status_value(status_info, row_key, key, "value")
             for key in column_to_key.values()
         ]
         table.add_row([str(row_name)] + row)
@@ -332,7 +373,7 @@ def format_status_table(status_info, row_to_key, column_to_key,
     return table
 
 
-def combine_status_info(obj, status_info, attrs, separator='\n= {attr} ='):
+def combine_status_info(obj, status_info, attrs, separator="\n= {attr} ="):
     """
     Combine status information from the given attributes.
 
@@ -357,7 +398,7 @@ def combine_status_info(obj, status_info, attrs, separator='\n= {attr} ='):
         lines.append(separator.format(attr=attr, parent=obj, child=child))
         lines.append(child.format_status_info(status_info[attr]))
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def doc_format_decorator(**doc_fmts):
@@ -369,9 +410,11 @@ def doc_format_decorator(**doc_fmts):
     update automatically when we decide to change the
     constant.
     """
+
     def inner_decorator(func):
         func.__doc__ = func.__doc__.format(**doc_fmts)
         return func
+
     return inner_decorator
 
 
@@ -475,7 +518,7 @@ def set_many(
     owner: ophyd.ophydobj.OphydObject | None = None,
     timeout: Number | None = None,
     settle_time: Number | None = None,
-    raise_on_set_failure: bool = False
+    raise_on_set_failure: bool = False,
 ) -> ophyd.status.StatusBase:
     """
     Call ``set`` on all given signal-to-value pairs with a single Status
@@ -507,14 +550,18 @@ def set_many(
     statuses = []
     log = owner.log if owner is not None else logger
     for signal, value in to_set.items():
+        # Set the actual signal value
         try:
-            st = signal.set(
-                value, timeout=timeout, settle_time=settle_time
-            )
+            try:
+                st = signal.set(value, timeout=timeout, settle_time=settle_time)
+            except TypeError as exc:
+                if "settle_time" in str(exc):
+                    # It's probably a Positioner, which doesn't accept *settle_time*
+                    st = signal.set(value, timeout=timeout)
+                else:
+                    raise
         except Exception:
-            log.exception(
-                "Failed to set %s to %s", signal.name, value
-            )
+            log.exception("Failed to set %s to %s", signal.name, value)
             if raise_on_set_failure:
                 raise
         else:
@@ -531,9 +578,7 @@ def set_many(
     return status
 
 
-def maybe_make_method(
-    func: Callable | None, owner: object
-) -> Callable | None:
+def maybe_make_method(func: Callable | None, owner: object) -> Callable | None:
     """
     Bind ``func`` as a method of ``owner`` if ``self`` is the first parameter.
 
@@ -602,34 +647,37 @@ def format_ophyds_to_html(obj, allow_child=False):
             return content
 
         # HelpfulNamespaces tend to lack names, maybe they won't some day
-        parent_default = ('Ophyd status: ' +
-                          ', '.join('[...]' if isinstance(o, Iterable)
-                                    else o.name for o in obj))
-        parent_name = getattr(obj, '__name__', parent_default[:60] + ' ...')
+        parent_default = "Ophyd status: " + ", ".join(
+            "[...]" if isinstance(o, Iterable) else o.name for o in obj
+        )
+        parent_name = getattr(obj, "__name__", parent_default[:60] + " ...")
 
         # Wrap in a parent div
         out = (
-            "<button class='collapsible'>" +
-            f"{parent_name}" +  # should be a namespace name
-            "</button><div class='parent'>" +
-            content +
-            "</div>"
+            "<button class='collapsible'>"
+            + f"{parent_name}"  # should be a namespace name
+            + "</button><div class='parent'>"
+            + content
+            + "</div>"
         )
         return out
 
     # check if parent level ophyd object
-    elif (callable(getattr(obj, 'status', None)) and
-            ((getattr(obj, 'parent', None) is None and
-              getattr(obj, 'biological_parent', None) is None) or
-             allow_child)):
+    elif callable(getattr(obj, "status", None)) and (
+        (
+            getattr(obj, "parent", None) is None
+            and getattr(obj, "biological_parent", None) is None
+        )
+        or allow_child
+    ):
         content = ""
         try:
             content = (
-                f"<button class='collapsible'>{obj.name}</button>" +
-                f"<div class='child content'><pre>{obj.status()}</pre></div>"
+                f"<button class='collapsible'>{obj.name}</button>"
+                + f"<div class='child content'><pre>{obj.status()}</pre></div>"
             )
         except Exception as ex:
-            logger.info(f'skipped {str(obj)}, due to Exception: {ex}')
+            logger.info(f"skipped {str(obj)}, due to Exception: {ex}")
 
         return content
 
@@ -674,12 +722,13 @@ def post_ophyds_to_elog(objs, allow_child=False, hutch_elog=None):
     if hutch_elog is None:
         try:
             from elog.utils import get_primary_elog
+
             hutch_elog = get_primary_elog()
         except ValueError:
-            logger.info('elog module exists, but no elog registered')
+            logger.info("elog module exists, but no elog registered")
             return
     else:
-        logger.info('Posting to provided elog')
+        logger.info("Posting to provided elog")
 
     post = format_ophyds_to_html(objs, allow_child=allow_child)
 
@@ -690,8 +739,7 @@ def post_ophyds_to_elog(objs, allow_child=False, hutch_elog=None):
     # wrap post in head and tail
     final_post = collapse_list_head + post + collapse_list_tail
 
-    hutch_elog.post(final_post, tags=['ophyd_status'],
-                    title='ophyd status report')
+    hutch_elog.post(final_post, tags=["ophyd_status"], title="ophyd status report")
 
 
 def reorder_components(
@@ -722,6 +770,7 @@ def reorder_components(
         When used as a decorator with the reverse argument, this will
         return a function as required by the decorator interface.
     """
+
     # Special decorator handling
     def inner(cls: type[Device]) -> type[Device]:
         start_norm = _normalize_reorder_list(cls, start_with)
@@ -756,16 +805,14 @@ def _normalize_reorder_list(
                 output.append(reverse_map[obj])
             except KeyError as exc:
                 raise ValueError(
-                    f'Received component {obj}, which is not from the device '
-                    f'class {cls}. We have components with the following '
+                    f"Received component {obj}, which is not from the device "
+                    f"class {cls}. We have components with the following "
                     f'names: {", ".join(cls._sig_attrs)}'
                 ) from exc
         elif isinstance(obj, str):
             output.append(obj)
         else:
-            raise TypeError(
-                f'Received object {obj}, which is not a str or Component.'
-            )
+            raise TypeError(f"Received object {obj}, which is not a str or Component.")
     return output
 
 
@@ -797,6 +844,7 @@ def move_subdevices_to_start(
         When used as a decorator with the subdevice_cls argument, this will
         return a function as required by the decorator interface.
     """
+
     # Special decorator handling
     def inner(cls: type[Device]) -> type[Device]:
         device_names = []
@@ -838,6 +886,7 @@ def sort_components_by_name(
         When used as a decorator with the reverse argument, this will
         return a function as required by the decorator interface.
     """
+
     # Special decorator handling
     def inner(cls: type[Device]) -> type[Device]:
         alphabetical = list(sorted(cls._sig_attrs, reverse=reverse))

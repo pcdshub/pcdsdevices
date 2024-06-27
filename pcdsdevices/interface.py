@@ -1700,7 +1700,7 @@ class LightpathMixin(Device):
     def __init__(self, *args,
                  input_branches=[], output_branches=[], **kwargs):
         self._lightpath_ready = False
-        self._retry_lightpath = False
+        self._retry_lightpath = True
         self._summary_initialized = False
         self._cached_state = None
         self._md = None
@@ -1817,8 +1817,10 @@ class LightpathInOutMixin(LightpathMixin):
             # and queue up the calculation for later
             self.log.debug('state not initialized, scheduling '
                            'lightpath calculations for later')
-            utils.schedule_task(self._calc_cache_lightpath_state,
-                                delay=self.retry_delay)
+            if self._retry_lightpath:
+                self._retry_lightpath = False
+                utils.schedule_task(self._calc_cache_lightpath_state,
+                                    delay=self.retry_delay)
 
             return LightpathState(
                 inserted=True,
@@ -1826,6 +1828,7 @@ class LightpathInOutMixin(LightpathMixin):
                 output={self.output_branches[0]: 1}
             )
 
+        self._retry_lightpath = True
         self._inserted = self.check_inserted(state)
         self._removed = self.check_removed(state)
         self._transmission = self.check_transmission(state)
@@ -1886,14 +1889,18 @@ class LightpathInOutCptMixin(LightpathMixin):
                 # and queue up the calculation for later
                 self.log.debug('state not initialized, scheduling '
                                'lightpath calculations for later')
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=self.retry_delay)
+                if self._retry_lightpath:
+                    self._retry_lightpath = False
+                    utils.schedule_task(self._calc_cache_lightpath_state,
+                                        delay=self.retry_delay)
 
                 return LightpathState(
                     inserted=True,
                     removed=True,
                     output={self.output_branches[0]: 1}
                 )
+
+            self._retry_lightpath = True
 
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))

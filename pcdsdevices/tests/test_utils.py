@@ -9,8 +9,9 @@ from ophyd import Device, Signal
 
 from .. import utils
 from ..device import GroupDevice
+from ..pv_positioner import PVPositionerDone
 from ..utils import (move_subdevices_to_start, post_ophyds_to_elog,
-                     reorder_components, set_standard_ordering,
+                     reorder_components, set_many, set_standard_ordering,
                      sort_components_by_kind, sort_components_by_name)
 
 try:
@@ -262,3 +263,28 @@ def test_reorder_decorators():
         get_order(ChessPieces)
         == ['queen', 'rook', 'king', 'bishop', 'knight', 'pawn']
     )
+
+
+def test_set_many():
+    """Checks that set_many sets multiple ophyd objects, and that it works
+    with signals as well as positioners.
+
+    Positioners and signals need different keyword arguments to their
+    ``set()`` methods, so this implicitly tests that those are done
+    properly.
+
+    """
+    # Create a dummy positioner with an extra signal
+    class MyPositioner(PVPositionerDone):
+        setpoint = Cpt(Signal)
+        another_signal = Cpt(Signal)
+
+    device = MyPositioner("", name="device")
+    assert device.done.get() == 0
+    # Set the positioner and the extra signal together
+    st = set_many({device: 5, device.another_signal: 7}, raise_on_set_failure=True)
+    st.wait(timeout=3)
+    # Check that all the signals were set properly
+    assert device.done.get() == 1
+    assert device.setpoint.get() == 5
+    assert device.another_signal.get() == 7
