@@ -75,7 +75,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
-    set_metadata(disabled, dict(variety='command-enum'))
+    set_metadata(disabled, dict(variety='bitmask',
+                                bits=1))
     # Description is valuable
     description = Cpt(EpicsSignal, '.DESC', kind='normal')
     # Current Dial position
