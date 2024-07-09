@@ -348,13 +348,13 @@ class DestinationConfig(BaseInterface, Device):
         SourceToDestinationConfig,
         "LS3:",
         source_pos=SourcePosition.ls3,
-        doc="Settings for source LS3 (bay 2 800nm) to this destination",
+        doc="Settings for source LS3 (bay 2 1um) to this destination",
     )
     ls4 = Cpt(
         SourceToDestinationConfig,
         "LS4:",
         source_pos=SourcePosition.ls4,
-        doc="Settings for source LS4 (bay 2 1um) to this destination",
+        doc="Settings for source LS4 (bay 2 800m) to this destination",
     )
     ls5 = Cpt(
         SourceToDestinationConfig,
@@ -674,7 +674,7 @@ class BtpsState(BaseInterface, Device):
         linear_prefix="LAS:BTS:MCS2:01:m10",
         rotary_prefix="LAS:BTS:MCS2:01:m12",
         goniometer_prefix="LAS:BTS:MCS2:01:m11",
-        doc="Source status for LS3 (Bay 2 800nm)"
+        doc="Source status for LS3 (Bay 2 1um)"
     )
     ls4 = Cpt(
         BtpsSourceStatus,
@@ -683,7 +683,7 @@ class BtpsState(BaseInterface, Device):
         linear_prefix="LAS:BTS:MCS2:01:m15",
         rotary_prefix="LAS:BTS:MCS2:01:m14",
         goniometer_prefix="LAS:BTS:MCS2:01:m13",
-        doc="Source status for LS3 (Bay 2 1um)"
+        doc="Source status for LS3 (Bay 2 800m)"
     )
     ls5 = Cpt(
         BtpsSourceStatus,

@@ -23,13 +23,20 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <property name="currentTabAlarmChannel" stdset="0">
       <cstring></cstring>
      </property>
      <property name="alarmChannels">
-      <stringlist/>
+      <stringlist>
+       <string></string>
+       <string></string>
+       <string></string>
+       <string></string>
+       <string></string>
+       <string></string>
+      </stringlist>
      </property>
      <widget class="QWidget" name="source_ls1">
       <attribute name="title">
@@ -62,7 +69,7 @@
      </widget>
      <widget class="QWidget" name="source_ls3">
       <attribute name="title">
-       <string>LS3 (Bay 2 800nm)</string>
+       <string>LS3 (Bay 2 1um)</string>
       </attribute>
       <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_4">
        <property name="geometry">
@@ -98,7 +105,7 @@
      </widget>
      <widget class="QWidget" name="source_ls4">
       <attribute name="title">
-       <string>LS4 (Bay 2 1um)</string>
+       <string>LS4 (Bay 2 800nm)</string>
       </attribute>
       <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_5">
        <property name="geometry">
