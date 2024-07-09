@@ -264,7 +264,7 @@ class DestinationPosition(str, enum.Enum):
         # NOTE: Add new descriptions here.
         return {
             DestinationPosition.ld1: "Diagnostics",
-            DestinationPosition.ld2: "TMO IP3",
+            DestinationPosition.ld2: "RIX IP3",
             DestinationPosition.ld4: "RIX ChemRIXS",
             DestinationPosition.ld6: "RIX QRIXS",
             DestinationPosition.ld8: "TMO IP1",
@@ -347,7 +347,7 @@ valid_sources: tuple[SourcePosition, ...] = (
 # PV destination index (bay) to installed LD port
 valid_destinations: tuple[DestinationPosition, ...] = (
     DestinationPosition.ld1,   # Diagnostics box
-    DestinationPosition.ld2,   # TMO IP3
+    DestinationPosition.ld2,   # RIX IP3
     DestinationPosition.ld4,   # RIX ChemRIXS
     DestinationPosition.ld6,   # RIX QRIXS
     DestinationPosition.ld8,   # TMO IP1
