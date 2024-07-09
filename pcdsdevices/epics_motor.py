@@ -1578,6 +1578,20 @@ class SmarActPicoscale(SmarAct):
         self._ioc_base = ioc_base
         super().__init__(prefix, **kwargs)
 
+class PI_M824(PVPositionerComparator):
+    """
+    Axis subclass for PI_M824_Hexapod class.
+    """
+    setpoint = Cpt(EpicsSignal, '')
+    readback = Cpt(EpicsSignal, ':rbv')
+    # one micron seems close enough
+    atol = 0.001
+
+    def done_comparator(self, readback, setpoint):
+        if setpoint - self.atol < readback and readback < setpoint + self.atol:
+            return True
+        else:
+            return False
 
 def _GetMotorClass(basepv):
     """
@@ -1593,7 +1607,9 @@ def _GetMotorClass(basepv):
                    ('MMB', BeckhoffAxis),
                    ('PIC', PCDSMotorBase),
                    ('MCS', SmarAct),
-                   ('MCS2', SmarAct))
+                   ('MCS2', SmarAct),
+                   ('HEX', PI_M824))
+
     # Search for component type in prefix
     for cpt_abbrev, _type in motor_types:
         if f':{cpt_abbrev}:' in basepv:
@@ -1635,6 +1651,8 @@ def Motor(prefix, **kwargs):
     | MCS           | :class:`.SmarAct`       |
     +---------------+-------------------------+
     | MCS2          | :class:`.SmarAct`       |
+    +---------------+-------------------------+
+    | HEX           | :class:`.PI_M824`       |
     +---------------+-------------------------+
 
     Parameters
