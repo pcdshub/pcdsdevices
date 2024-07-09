@@ -166,7 +166,10 @@ class SourcePosition(str, enum.Enum):
         """
         return {
             SourcePosition.ls1: "Bay 1",
-            SourcePosition.ls5: "Bay 3",
+            SourcePosition.ls3: "Bay 2 800nm",
+            SourcePosition.ls4: "Bay 2 1um",
+            SourcePosition.ls5: "Bay 3 800nm",
+            SourcePosition.ls6: "Bay 3 1um",
             SourcePosition.ls8: "Bay 4",
         }.get(self, "Unknown")
 
@@ -190,7 +193,10 @@ class SourcePosition(str, enum.Enum):
         """The near field camera prefix associated with this source position."""
         return {
             SourcePosition.ls1: 1,
+            SourcePosition.ls3: 2,
+            SourcePosition.ls4: 2,
             SourcePosition.ls5: 3,
+            SourcePosition.ls6: 3,
             SourcePosition.ls8: 4,
         }.get(self, None)
 
@@ -332,7 +338,10 @@ PORT_SPACING_MM = 215.9  # 8.5 in
 # PV source index (bay) to installed LS port
 valid_sources: tuple[SourcePosition, ...] = (
     SourcePosition.ls1,  # Bay 1
-    SourcePosition.ls5,  # Bay 3
+    SourcePosition.ls3,  # Bay 2 800nm
+    SourcePosition.ls4,  # Bay 2 1um
+    SourcePosition.ls5,  # Bay 3 800nm
+    SourcePosition.ls6,  # Bay 3 1um
     SourcePosition.ls8,  # Bay 4
 )
 # PV destination index (bay) to installed LD port
