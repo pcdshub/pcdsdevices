@@ -1578,6 +1578,7 @@ class SmarActPicoscale(SmarAct):
         self._ioc_base = ioc_base
         super().__init__(prefix, **kwargs)
 
+
 class PI_M824(PVPositionerComparator):
     """
     Axis subclass for PI_M824_Hexapod class.
@@ -1592,6 +1593,7 @@ class PI_M824(PVPositionerComparator):
             return True
         else:
             return False
+
 
 def _GetMotorClass(basepv):
     """
