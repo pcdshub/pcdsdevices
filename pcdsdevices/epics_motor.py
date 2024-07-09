@@ -22,7 +22,8 @@ from ophyd.utils.epics_pvs import raise_if_disconnected
 from pcdsutils.ext_scripts import get_hutch_name
 from prettytable import PrettyTable
 
-from pcdsdevices.pv_positioner import PVPositionerComparator
+from pcdsdevices.pv_positioner import (PVPositionerComparator,
+                                       PVPositionerIsClose)
 
 from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
@@ -1579,20 +1580,14 @@ class SmarActPicoscale(SmarAct):
         super().__init__(prefix, **kwargs)
 
 
-class PI_M824(PVPositionerComparator):
+class PI_M824(PVPositionerIsClose):
     """
-    Axis subclass for PI_M824_Hexapod class.
+    class for hexapod PI axis
     """
     setpoint = Cpt(EpicsSignal, '')
     readback = Cpt(EpicsSignal, ':rbv')
     # one micron seems close enough
     atol = 0.001
-
-    def done_comparator(self, readback, setpoint):
-        if setpoint - self.atol < readback and readback < setpoint + self.atol:
-            return True
-        else:
-            return False
 
 
 def _GetMotorClass(basepv):
