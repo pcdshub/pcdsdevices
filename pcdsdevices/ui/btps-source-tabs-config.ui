@@ -23,17 +23,13 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="currentTabAlarmChannel" stdset="0">
-      <cstring>ca://${DEST}LS1:BTPS:ChecksOK_RBV</cstring>
+      <cstring></cstring>
      </property>
      <property name="alarmChannels">
-      <stringlist>
-       <string>ca://${DEST}LS1:BTPS:ChecksOK_RBV</string>
-       <string>ca://${DEST}LS5:BTPS:ChecksOK_RBV</string>
-       <string>ca://${DEST}LS8:BTPS:ChecksOK_RBV</string>
-      </stringlist>
+      <stringlist/>
      </property>
      <widget class="QWidget" name="source_ls1">
       <attribute name="title">
@@ -64,9 +60,81 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="source_ls3">
+      <attribute name="title">
+       <string>LS3 (Bay 2 800nm)</string>
+      </attribute>
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_5">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>741</width>
+         <height>514</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{&quot;SOURCE&quot;: &quot;${DEST}LS3:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:LS3:BTPS:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-config.ui&quot;}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-source-dest.ui</string>
+       </property>
+       <property name="loadWhenShown" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="disconnectWhenHidden" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="followSymlinks" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="source_ls4">
+      <attribute name="title">
+       <string>LS4 (Bay 2 1um)</string>
+      </attribute>
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_6">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>741</width>
+         <height>514</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{&quot;SOURCE&quot;: &quot;${DEST}LS4:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:LS4:BTPS:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-config.ui&quot;}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-source-dest.ui</string>
+       </property>
+       <property name="loadWhenShown" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="disconnectWhenHidden" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="followSymlinks" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </widget>
      <widget class="QWidget" name="source_ls5">
       <attribute name="title">
-       <string>LS5 (Bay 3)</string>
+       <string>LS5 (Bay 3 800nm)</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
@@ -92,6 +160,42 @@
         </widget>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="source_ls6">
+      <attribute name="title">
+       <string>LS6 (Bay 3 1um)</string>
+      </attribute>
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_4">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>741</width>
+         <height>514</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{&quot;SOURCE&quot;: &quot;${DEST}LS6:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:LS6:BTPS:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-config.ui&quot;}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-source-dest.ui</string>
+       </property>
+       <property name="loadWhenShown" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="disconnectWhenHidden" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="followSymlinks" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="source_ls8">
       <attribute name="title">
@@ -131,11 +235,13 @@
    <class>PyDMTabWidget</class>
    <extends>QTabWidget</extends>
    <header>pydm.widgets.tab_bar</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>PyDMEmbeddedDisplay</class>
    <extends>QFrame</extends>
    <header>pydm.widgets.embedded_display</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

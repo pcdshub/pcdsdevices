@@ -256,6 +256,76 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="2">
+        <widget class="PyDMLabel" name="PyDMLabel_10">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="precision" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="showUnits" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="precisionFromPV" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS2:FF:FrameTime_RBV</string>
+         </property>
+         <property name="enableRichText" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_8">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS2:FF:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="bigEndian" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="numBits" stdset="0">
+          <number>1</number>
+         </property>
+         <property name="shift" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="labels" stdset="0">
+          <stringlist>
+           <string>Bit 0</string>
+          </stringlist>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item row="3" column="0">
@@ -469,6 +539,76 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="PyDMLabel" name="PyDMLabel_2">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="precision" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="showUnits" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="precisionFromPV" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS2:NF:FrameTime_RBV</string>
+         </property>
+         <property name="enableRichText" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_7">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS2:NF:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="bigEndian" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="numBits" stdset="0">
+          <number>1</number>
+         </property>
+         <property name="shift" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="labels" stdset="0">
+          <stringlist>
+           <string>Bit 0</string>
+          </stringlist>
          </property>
         </widget>
        </item>
