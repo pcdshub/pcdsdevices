@@ -6,6 +6,7 @@ import logging
 import shutil
 import subprocess
 import time
+from enum import Enum
 from typing import Callable, ClassVar, Optional
 
 import numpy as np
@@ -36,6 +37,30 @@ from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
+
+
+class MstaEnum(Enum):
+    """
+    Enum for the EPICS motor record .MSTA field bits.
+    """
+    # Note: the motor record docs start bit numbering at 1, but the MSTA bits
+    # start at 0.
+    direction = 0       # last raw move direction (0: negative, 1: positive)
+    done = 1            # motion is complete
+    plus_ls = 2         # plus limit switch is hit
+    home_ls = 3         # state of the home limit switch
+    # Bit 4 is un-used
+    # closed-loop positioning enabled, called "position" in the docs
+    closed_loop = 5
+    slip_stall = 6      # slip stall is detected
+    home = 7            # at the home position
+    enc_present = 8     # encoder is present. Called "present" in the docs.
+    problem = 9         # driver stopped polling, or there's a hardware problem
+    moving = 10         # the motor has a non-zero velocity (it's moving)
+    gain_support = 11   # the motor supports closed loop control
+    comm_error = 12     # controller communication error
+    minus_ls = 13       # minus limit switch is hit
+    homed = 14          # the motor has been homed
 
 
 class EpicsMotorInterface(FltMvInterface, EpicsMotor):
@@ -112,6 +137,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
     velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
+
+    msta_raw = Cpt(EpicsSignalRO, '.MSTA', kind='omitted')
 
     _alarm_filter_installed: ClassVar[bool] = False
     _moved_in_session: bool
@@ -196,6 +223,26 @@ Limit Switch: {switch_limits}
             # Not initialized
             return (0, 0)
         return limits
+
+    @property
+    def msta(self):
+        """
+        Returns the msta fields as a dictionary.
+        """
+        # the MSTA field is a float for some reason...
+        val = int(self.msta_raw.get())
+        d = dict()
+        for bit in MstaEnum:
+            d[bit.name] = (val >> bit.value) & 0x1
+        return d
+
+    @property
+    def homed(self):
+        """
+        Get the home status of the motor as reported by the MSTA field.
+        """
+        msta = self.msta
+        return bool(msta[MstaEnum.homed.name])
 
     @limits.setter
     def limits(self, lims: tuple[float, float]):
