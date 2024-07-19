@@ -23,19 +23,20 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>5</number>
      </property>
      <property name="currentTabAlarmChannel" stdset="0">
-      <cstring></cstring>
+      <cstring>ca://${DEST}LS8:BTPS:ChecksOK_RBV</cstring>
      </property>
      <property name="alarmChannels">
       <stringlist>
-       <string></string>
-       <string></string>
-       <string></string>
-       <string></string>
-       <string></string>
-       <string></string>
+       <string>ca://${DEST}LS1:BTPS:ChecksOK_RBV</string>
+       <string>ca://${DEST}LS3:BTPS:ChecksOK_RBV
+</string>
+       <string>ca://${DEST}LS4:BTPS:ChecksOK_RBV</string>
+       <string>ca://${DEST}LS5:BTPS:ChecksOK_RBV</string>
+       <string>ca://${DEST}LS6:BTPS:ChecksOK_RBV</string>
+       <string>ca://${DEST}LS8:BTPS:ChecksOK_RBV</string>
       </stringlist>
      </property>
      <widget class="QWidget" name="source_ls1">
