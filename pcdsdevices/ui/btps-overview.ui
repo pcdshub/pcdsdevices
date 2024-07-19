@@ -1447,13 +1447,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD8:LS3:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1486,13 +1493,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD10:LS3:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1525,13 +1539,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD2:LS3:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1564,13 +1585,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD6:LS3:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1603,13 +1631,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD4:LS3:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1642,13 +1677,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD14:LS3:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1681,13 +1723,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD9:LS3:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1720,13 +1769,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD1:LS3:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1759,13 +1815,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD1:LS4:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1798,13 +1861,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD9:LS4:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1837,13 +1907,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD14:LS4:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1876,13 +1953,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD4:LS4:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1915,13 +1999,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD6:LS4:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1954,13 +2045,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD2:LS4:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -1993,13 +2091,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD10:LS4:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -2032,13 +2137,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD8:LS4:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -2305,13 +2417,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD8:LS6:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -2344,13 +2463,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD10:LS6:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -2383,13 +2509,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD2:LS6:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -2422,13 +2555,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD6:LS6:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -2461,13 +2601,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD4:LS6:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -2500,13 +2647,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD14:LS6:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -2539,13 +2693,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD9:LS6:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -2578,13 +2739,20 @@
         <bool>false</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
        <property name="channel" stdset="0">
         <string>ca://LTLHN:LD1:LS6:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
