@@ -22,7 +22,8 @@ from ophyd.utils.epics_pvs import raise_if_disconnected
 from pcdsutils.ext_scripts import get_hutch_name
 from prettytable import PrettyTable
 
-from pcdsdevices.pv_positioner import PVPositionerComparator
+from pcdsdevices.pv_positioner import (PVPositionerComparator,
+                                       PVPositionerIsClose)
 
 from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
@@ -1579,6 +1580,16 @@ class SmarActPicoscale(SmarAct):
         super().__init__(prefix, **kwargs)
 
 
+class PI_M824(PVPositionerIsClose):
+    """
+    class for hexapod PI axis
+    """
+    setpoint = Cpt(EpicsSignal, '')
+    readback = Cpt(EpicsSignal, ':rbv')
+    # one micron seems close enough
+    atol = 0.001
+
+
 def _GetMotorClass(basepv):
     """
     Function to determine the appropriate motor class based on the PV.
@@ -1593,7 +1604,9 @@ def _GetMotorClass(basepv):
                    ('MMB', BeckhoffAxis),
                    ('PIC', PCDSMotorBase),
                    ('MCS', SmarAct),
-                   ('MCS2', SmarAct))
+                   ('MCS2', SmarAct),
+                   ('HEX', PI_M824))
+
     # Search for component type in prefix
     for cpt_abbrev, _type in motor_types:
         if f':{cpt_abbrev}:' in basepv:
@@ -1635,6 +1648,8 @@ def Motor(prefix, **kwargs):
     | MCS           | :class:`.SmarAct`       |
     +---------------+-------------------------+
     | MCS2          | :class:`.SmarAct`       |
+    +---------------+-------------------------+
+    | HEX           | :class:`.PI_M824`       |
     +---------------+-------------------------+
 
     Parameters
