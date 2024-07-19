@@ -23,10 +23,10 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <property name="currentTabAlarmChannel" stdset="0">
-      <cstring>ca://${DEST}LS8:BTPS:ChecksOK_RBV</cstring>
+      <cstring>ca://${DEST}LS1:BTPS:ChecksOK_RBV</cstring>
      </property>
      <property name="alarmChannels">
       <stringlist>
