@@ -200,9 +200,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="ld2_tmo_ip3_tab">
+     <widget class="QWidget" name="ld2_rix_ip3_tab">
       <attribute name="title">
-       <string>TMO IP3</string>
+       <string>RIX IP3</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_11">
        <property name="leftMargin">
@@ -218,7 +218,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="ld2_tmo_ip3_embed">
+        <widget class="PyDMEmbeddedDisplay" name="ld2_rix_ip3_embed">
          <property name="toolTip">
           <string/>
          </property>
