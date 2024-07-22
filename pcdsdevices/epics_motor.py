@@ -63,6 +63,67 @@ class MstaEnum(Enum):
     homed = 14          # the motor has been homed
 
 
+class NewportMstaEnum(Enum):
+    """
+    Enum for the LCLS Newport XPS8 EPICS motor record .MSTA field bits.
+    """
+    # Note: the motor record docs start bit numbering at 1, but the MSTA bits
+    # start at 0.
+    direction = 0       # last raw move direction (0: negative, 1: positive)
+    done = 1            # motion is complete
+    plus_ls = 2         # plus limit switch is hit
+    home_ls = 3         # state of the home limit switch
+    slip = 4            # continue of slip stall
+    # closed-loop positioning enabled, called "position" in the docs
+    closed_loop = 5
+    slip_stall = 6      # slip stall is detected
+    home = 7            # at the home position
+    enc_present = 8     # encoder is present. Called "present" in the docs.
+    problem = 9         # driver stopped polling, or there's a hardware problem
+    moving = 10         # the motor has a non-zero velocity (it's moving)
+    gain_support = 11   # the motor supports closed loop control
+    comm_error = 12     # controller communication error
+    minus_ls = 13       # minus limit switch is hit
+    homed = 14          # the motor has been homed
+    powerup = 15        # the motor has been homed
+    mchb = 16           # MCode heart-beat
+    stall = 17          # stall detected
+    # 6 un-used bits for byte alignment
+    errno = 24          # error number
+
+
+class ImsMstaEnum(Enum):
+    """
+    Enum for the LCLS IMS EPICS motor record .MSTA field bits.
+    """
+    # Note: the motor record docs start bit numbering at 1, but the MSTA bits
+    # start at 0.
+    direction = 0       # last raw move direction (0: negative, 1: positive)
+    done = 1            # motion is complete
+    plus_ls = 2         # plus limit switch is hit
+    home_ls = 3         # state of the home limit switch
+    slip = 4            # continue of slip stall detect
+    # closed-loop positioning enabled, called "position" in the docs
+    closed_loop = 5
+    slip_stall = 6      # slip stall is detected
+    home = 7            # at the home position
+    enc_enable = 8      # encoder is enabled ("EE")
+    problem = 9         # driver stopped polling, or there's a hardware problem
+    moving = 10         # the motor has a non-zero velocity (it's moving)
+    gain_support = 11   # the motor supports closed loop control
+    comm_error = 12     # controller communication error
+    minus_ls = 13       # minus limit switch is hit
+    homed = 14          # the motor has been homed
+    errno = 15          # error number (7 bits)
+    stall = 22          # stall detected
+    trip_enabled = 23   # trip enabled
+    powerup = 24        # power cycled
+    ne = 25             # numeric enable
+    by0 = 26            # MCode not running (BY = 0)
+    # 4 un-used bits for byte alignment
+    not_init = 31          # initializaton not finished
+
+
 class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     """
     The standard EpicsMotor class, but with our interface attached.
