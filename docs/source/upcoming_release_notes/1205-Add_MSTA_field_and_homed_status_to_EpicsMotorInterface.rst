@@ -8,13 +8,20 @@ API Breaks
 Features
 --------
 - MstaEnum: Enum describing the motor record MSTA bits
+- NewportMstaEnum: Enum describing the special Newport motor record MSTA bits
+- IMSMstaEnum: Enum describing the special IMS motor record MSTA bits
 
 Device Updates
 --------------
 - EpicsMotorInterface: Add a "raw" MSTA value, as well as the interpreted
                        values as a dictionary. Adds a "homed" property based
-                       based on this.
-
+                       on this. Uses a "generic" MstaEnum class.
+- Newport: Add a "raw" MSTA value, as well as the interpreted values as a
+           dictionary. Adds a "homed" property based on this. Uses the
+           "NewportMstaEnum" class.
+- IMS: Add a "raw" MSTA value, as well as the interpreted values as a
+       dictionary. Adds a "homed" property based on this. Uses the
+       "IMSMstaEnum" class.
 New Devices
 -----------
 - N/A
