@@ -840,6 +840,21 @@ class IMS(PCDSMotorBase):
             status_wait(st)
         return st
 
+    @property
+    def msta(self):
+        """
+        Returns the msta fields as a dictionary.
+        """
+        # the MSTA field is a float for some reason...
+        val = int(self.msta_raw.get())
+        d = dict()
+        for bit in ImsMstaEnum:
+            if bit.name == 'errno':
+                d[bit.name] = (val >> bit.value) & 0x7F  # 7 bit error number
+            else:
+                d[bit.name] = (val >> bit.value) & 0x1
+        return d
+
     def clear_all_flags(self):
         """Clear all the flags from the IMS motor."""
         # Clear all flags
@@ -1116,6 +1131,21 @@ class Newport(PCDSMotorBase):
         # Newport motors to a reference mark
         raise NotImplementedError("Homing is not yet implemented for Newport "
                                   "motors")
+
+    @property
+    def msta(self):
+        """
+        Returns the msta fields as a dictionary.
+        """
+        # the MSTA field is a float for some reason...
+        val = int(self.msta_raw.get())
+        d = dict()
+        for bit in NewportMstaEnum:
+            if bit.name == 'errno':
+                d[bit.name] = (val >> bit.value) & 0xFF  # 8 bit error number
+            else:
+                d[bit.name] = (val >> bit.value) & 0x1
+        return d
 
     @motor_egu.sub_value
     def _update_units(self, value, **kwargs):
