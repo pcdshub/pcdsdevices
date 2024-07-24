@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>781</width>
+    <width>983</width>
     <height>580</height>
    </rect>
   </property>
@@ -31,7 +31,11 @@
      <property name="alarmChannels">
       <stringlist>
        <string>ca://${DEST}LS1:BTPS:ChecksOK_RBV</string>
+       <string>ca://${DEST}LS3:BTPS:ChecksOK_RBV
+</string>
+       <string>ca://${DEST}LS4:BTPS:ChecksOK_RBV</string>
        <string>ca://${DEST}LS5:BTPS:ChecksOK_RBV</string>
+       <string>ca://${DEST}LS6:BTPS:ChecksOK_RBV</string>
        <string>ca://${DEST}LS8:BTPS:ChecksOK_RBV</string>
       </stringlist>
      </property>
@@ -39,7 +43,7 @@
       <attribute name="title">
        <string>LS1 (Bay 1)</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay">
          <property name="toolTip">
@@ -64,9 +68,82 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="source_ls3">
+      <attribute name="title">
+       <string>LS3 (Bay 2 1um)</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_4">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}LS3:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:LS3:BTPS:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m10&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m12&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m11&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;2&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-dest.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="followSymlinks" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="source_ls4">
+      <attribute name="title">
+       <string>LS4 (Bay 2 800nm)</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_5">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}LS4:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:LS4:BTPS:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m15&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m14&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m13&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;2&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-dest.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="followSymlinks" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="source_ls5">
       <attribute name="title">
-       <string>LS5 (Bay 3)</string>
+       <string>LS5 (Bay 3 800nm)</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
@@ -88,6 +165,38 @@
          </property>
          <property name="disconnectWhenHidden" stdset="0">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="source_ls6">
+      <attribute name="title">
+       <string>LS6 (Bay 3 1um)</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_6">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}LS6:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:LS6:BTPS:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m16&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m17&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m18&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;3&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-dest.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="followSymlinks" stdset="0">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -131,11 +240,13 @@
    <class>PyDMTabWidget</class>
    <extends>QTabWidget</extends>
    <header>pydm.widgets.tab_bar</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>PyDMEmbeddedDisplay</class>
    <extends>QFrame</extends>
    <header>pydm.widgets.embedded_display</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
