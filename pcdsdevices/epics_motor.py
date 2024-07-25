@@ -6,6 +6,7 @@ import logging
 import shutil
 import subprocess
 import time
+from enum import Enum
 from typing import Callable, ClassVar, Optional
 
 import numpy as np
@@ -36,6 +37,91 @@ from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
+
+
+class MstaEnum(Enum):
+    """
+    Enum for the EPICS motor record .MSTA field bits.
+    """
+    # Note: the motor record docs start bit numbering at 1, but the MSTA bits
+    # start at 0.
+    direction = 0       # last raw move direction (0: negative, 1: positive)
+    done = 1            # motion is complete
+    plus_ls = 2         # plus limit switch is hit
+    home_ls = 3         # state of the home limit switch
+    # Bit 4 is un-used
+    # closed-loop positioning enabled, called "position" in the docs
+    closed_loop = 5
+    slip_stall = 6      # slip stall is detected
+    home = 7            # at the home position
+    enc_present = 8     # encoder is present. Called "present" in the docs.
+    problem = 9         # driver stopped polling, or there's a hardware problem
+    moving = 10         # the motor has a non-zero velocity (it's moving)
+    gain_support = 11   # the motor supports closed loop control
+    comm_error = 12     # controller communication error
+    minus_ls = 13       # minus limit switch is hit
+    homed = 14          # the motor has been homed
+
+
+class NewportMstaEnum(Enum):
+    """
+    Enum for the LCLS Newport XPS8 EPICS motor record .MSTA field bits.
+    """
+    # Note: the motor record docs start bit numbering at 1, but the MSTA bits
+    # start at 0.
+    direction = 0       # last raw move direction (0: negative, 1: positive)
+    done = 1            # motion is complete
+    plus_ls = 2         # plus limit switch is hit
+    home_ls = 3         # state of the home limit switch
+    slip = 4            # continue of slip stall
+    # closed-loop positioning enabled, called "position" in the docs
+    closed_loop = 5
+    slip_stall = 6      # slip stall is detected
+    home = 7            # at the home position
+    enc_present = 8     # encoder is present. Called "present" in the docs.
+    problem = 9         # driver stopped polling, or there's a hardware problem
+    moving = 10         # the motor has a non-zero velocity (it's moving)
+    gain_support = 11   # the motor supports closed loop control
+    comm_error = 12     # controller communication error
+    minus_ls = 13       # minus limit switch is hit
+    homed = 14          # the motor has been homed
+    powerup = 15        # the motor has been homed
+    mchb = 16           # MCode heart-beat
+    stall = 17          # stall detected
+    # 6 un-used bits for byte alignment
+    errno = 24          # error number
+
+
+class ImsMstaEnum(Enum):
+    """
+    Enum for the LCLS IMS EPICS motor record .MSTA field bits.
+    """
+    # Note: the motor record docs start bit numbering at 1, but the MSTA bits
+    # start at 0.
+    direction = 0       # last raw move direction (0: negative, 1: positive)
+    done = 1            # motion is complete
+    plus_ls = 2         # plus limit switch is hit
+    home_ls = 3         # state of the home limit switch
+    slip = 4            # continue of slip stall detect
+    # closed-loop positioning enabled, called "position" in the docs
+    closed_loop = 5
+    slip_stall = 6      # slip stall is detected
+    home = 7            # at the home position
+    enc_enable = 8      # encoder is enabled ("EE")
+    problem = 9         # driver stopped polling, or there's a hardware problem
+    moving = 10         # the motor has a non-zero velocity (it's moving)
+    gain_support = 11   # the motor supports closed loop control
+    comm_error = 12     # controller communication error
+    minus_ls = 13       # minus limit switch is hit
+    homed = 14          # the motor has been homed
+    errno = 15          # error number (7 bits)
+    stall = 22          # stall detected
+    trip_enabled = 23   # trip enabled
+    powerup = 24        # power cycled
+    ne = 25             # numeric enable
+    by0 = 26            # MCode not running (BY = 0)
+    # 4 un-used bits for byte alignment
+    not_init = 31          # initializaton not finished
 
 
 class EpicsMotorInterface(FltMvInterface, EpicsMotor):
@@ -112,6 +198,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
     velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
+
+    msta_raw = Cpt(EpicsSignalRO, '.MSTA', kind='omitted')
 
     _alarm_filter_installed: ClassVar[bool] = False
     _moved_in_session: bool
@@ -196,6 +284,26 @@ Limit Switch: {switch_limits}
             # Not initialized
             return (0, 0)
         return limits
+
+    @property
+    def msta(self):
+        """
+        Returns the msta fields as a dictionary.
+        """
+        # the MSTA field is a float for some reason...
+        val = int(self.msta_raw.get())
+        d = dict()
+        for bit in MstaEnum:
+            d[bit.name] = (val >> bit.value) & 0x1
+        return d
+
+    @property
+    def homed(self):
+        """
+        Get the home status of the motor as reported by the MSTA field.
+        """
+        msta = self.msta
+        return bool(msta[MstaEnum.homed.name])
 
     @limits.setter
     def limits(self, lims: tuple[float, float]):
@@ -732,6 +840,21 @@ class IMS(PCDSMotorBase):
             status_wait(st)
         return st
 
+    @property
+    def msta(self):
+        """
+        Returns the msta fields as a dictionary.
+        """
+        # the MSTA field is a float for some reason...
+        val = int(self.msta_raw.get())
+        d = dict()
+        for bit in ImsMstaEnum:
+            if bit.name == 'errno':
+                d[bit.name] = (val >> bit.value) & 0x7F  # 7 bit error number
+            else:
+                d[bit.name] = (val >> bit.value) & 0x1
+        return d
+
     def clear_all_flags(self):
         """Clear all the flags from the IMS motor."""
         # Clear all flags
@@ -1008,6 +1131,21 @@ class Newport(PCDSMotorBase):
         # Newport motors to a reference mark
         raise NotImplementedError("Homing is not yet implemented for Newport "
                                   "motors")
+
+    @property
+    def msta(self):
+        """
+        Returns the msta fields as a dictionary.
+        """
+        # the MSTA field is a float for some reason...
+        val = int(self.msta_raw.get())
+        d = dict()
+        for bit in NewportMstaEnum:
+            if bit.name == 'errno':
+                d[bit.name] = (val >> bit.value) & 0xFF  # 8 bit error number
+            else:
+                d[bit.name] = (val >> bit.value) & 0x1
+        return d
 
     @motor_egu.sub_value
     def _update_units(self, value, **kwargs):
