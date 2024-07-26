@@ -671,18 +671,18 @@ class BtpsState(BaseInterface, Device):
         BtpsSourceStatus,
         "LTLHN:LS3:",
         source_pos=SourcePosition.ls3,
-        linear_prefix="LAS:BTS:MCS2:01:m10",
-        rotary_prefix="LAS:BTS:MCS2:01:m12",
-        goniometer_prefix="LAS:BTS:MCS2:01:m11",
+        linear_prefix="LAS:BTS:MCS2:01:m15",
+        rotary_prefix="LAS:BTS:MCS2:01:m14",
+        goniometer_prefix="LAS:BTS:MCS2:01:m13",
         doc="Source status for LS3 (Bay 2 1um)"
     )
     ls4 = Cpt(
         BtpsSourceStatus,
         "LTLHN:LS4:",
         source_pos=SourcePosition.ls4,
-        linear_prefix="LAS:BTS:MCS2:01:m15",
-        rotary_prefix="LAS:BTS:MCS2:01:m14",
-        goniometer_prefix="LAS:BTS:MCS2:01:m13",
+        linear_prefix="LAS:BTS:MCS2:01:m10",
+        rotary_prefix="LAS:BTS:MCS2:01:m12",
+        goniometer_prefix="LAS:BTS:MCS2:01:m11",
         doc="Source status for LS3 (Bay 2 800m)"
     )
     ls5 = Cpt(
