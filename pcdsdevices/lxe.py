@@ -483,7 +483,7 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
         super()._setup_move(position)
 
         # Something is wrong with done signal, sleep and see if we missed the transition
-        # Done scans at 1s, wait 2s to be sure
+        # Done scans at 0.1s, wait 0.2s to be sure
         time.sleep(0.2)
         # If we missed the transition, mark done now
         if self.done.get() == self.done_value:
