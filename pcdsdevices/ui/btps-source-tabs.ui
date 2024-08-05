@@ -91,7 +91,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;SOURCE&quot;: &quot;${DEST}LS3:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:LS3:BTPS:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m10&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m12&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m11&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;2&quot;}</string>
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}LS3:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:LS3:BTPS:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m15&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m14&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m13&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_amphos_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_amphos_ff&quot;, &quot;BAY&quot;: &quot;2&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-dest.ui</string>
@@ -123,7 +123,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;SOURCE&quot;: &quot;${DEST}LS4:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:LS4:BTPS:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m15&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m14&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m13&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;2&quot;}</string>
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}LS4:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:LS4:BTPS:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m10&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m12&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m11&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_amphos_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_amphos_ff&quot;, &quot;BAY&quot;: &quot;2&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-dest.ui</string>
