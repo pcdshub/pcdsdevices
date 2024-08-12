@@ -1417,18 +1417,6 @@ class XOffsetMirrorState(XOffsetMirror):
         return self._calc_lightpath_state(x_up, coating_state, pitch)
 
 
-class XOffsetMirror2D4PState(XOffsetMirrorState):
-    """
-    X-ray Offset Mirror with coating states that have 4 positions.
-
-    The coating states use 2 dimensional state movers with PMPS.
-
-    Currently services MR1L0.
-    """
-    coating = Cpt(MirrorStripe2D4P, ':COATING:STATE', kind='hinted',
-                  doc='Control of the coating states via saved positions.')
-
-
 class XOffsetMirrorStateCool(XOffsetMirrorState):
     """
     X-ray Offset Mirror with Yleft/Yright
@@ -1455,6 +1443,18 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
     cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc='Mirror cooling panel loop pressure sensor')
 
     variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
+
+
+class XOffsetMirror2D4PState(XOffsetMirrorStateCool):
+    """
+    X-ray Offset Mirror with coating states that have 4 positions.
+
+    The coating states use 2 dimensional state movers with PMPS.
+
+    Currently services MR1L0.
+    """
+    coating = Cpt(MirrorStripe2D4P, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
 
 
 class XOffsetMirrorStateCoolNoBend(XOffsetMirrorStateCool):
