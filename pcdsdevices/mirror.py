@@ -1286,7 +1286,7 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
         return 1
 
 
-class CoatStatesPMPS2D4P(TwinCATMirrorStripe):
+class MirrorStripe2D4P(TwinCATMirrorStripe):
     """
     2D Coatings states with 4 positons and PMPS.
 
@@ -1425,7 +1425,7 @@ class XoffsetMirror2D4PState(XOffsetMirrorState):
 
     Currently services MR1L0.
     """
-    coating = Cpt(CoatStatesPMPS2D4P, ':COATING:STATE', kind='hinted',
+    coating = Cpt(MirrorStripe2D4P, ':COATING:STATE', kind='hinted',
                   doc='Control of the coating states via saved positions.')
 
 
