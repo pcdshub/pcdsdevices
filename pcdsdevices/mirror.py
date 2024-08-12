@@ -1286,6 +1286,15 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
         return 1
 
 
+class MR1L0CoatingStates(TwinCATMirrorStripe):
+    """
+    2D Coatings states with 4 positons and PMPS
+
+    Currently services MR1L0
+    """
+    config = UpCpt(state_count=4, motor_count=4)
+
+
 @reorder_components(
     end_with=[
         'coating', 'x', 'y', 'pitch', 'bender_us', 'bender_ds',
@@ -1406,6 +1415,18 @@ class XOffsetMirrorState(XOffsetMirror):
         pitch: float
     ) -> LightpathState:
         return self._calc_lightpath_state(x_up, coating_state, pitch)
+
+
+class MR1L0(XOffsetMirrorState):
+    """
+    X-ray Offset Mirror with whos coating state has 4 positions.
+
+    The coating states use 2 dimensional state moves with PMPS.
+
+    Currently services MR1L0
+    """
+    coating = Cpt(MR1L0CoatingStates, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
 
 
 class XOffsetMirrorStateCool(XOffsetMirrorState):
