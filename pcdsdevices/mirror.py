@@ -1419,9 +1419,9 @@ class XOffsetMirrorState(XOffsetMirror):
 
 class MR1L0(XOffsetMirrorState):
     """
-    X-ray Offset Mirror with whos coating state has 4 positions.
+    X-ray Offset Mirror with coating states that have 4 positions.
 
-    The coating states use 2 dimensional state moves with PMPS.
+    The coating states use 2 dimensional state movers with PMPS.
 
     Currently services MR1L0
     """
