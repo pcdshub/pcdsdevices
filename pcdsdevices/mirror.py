@@ -1292,7 +1292,7 @@ class MirrorStripe2D4P(TwinCATMirrorStripe):
 
     Currently services MR1L0.
     """
-    config = UpCpt(state_count=4, motor_count=4)
+    config = UpCpt(state_count=4, motor_count=2)
 
 
 @reorder_components(
