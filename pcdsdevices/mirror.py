@@ -1286,7 +1286,7 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
         return 1
 
 
-class TwoDim4PosCoatStatesPMPS(TwinCATMirrorStripe):
+class CoatStatesPMPS2D4P(TwinCATMirrorStripe):
     """
     2D Coatings states with 4 positons and PMPS.
 
@@ -1417,7 +1417,7 @@ class XOffsetMirrorState(XOffsetMirror):
         return self._calc_lightpath_state(x_up, coating_state, pitch)
 
 
-class XoffsetMirror2D4PosState(XOffsetMirrorState):
+class XoffsetMirror2D4PState(XOffsetMirrorState):
     """
     X-ray Offset Mirror with coating states that have 4 positions.
 
@@ -1425,7 +1425,7 @@ class XoffsetMirror2D4PosState(XOffsetMirrorState):
 
     Currently services MR1L0.
     """
-    coating = Cpt(TwoDim4PosCoatStatesPMPS, ':COATING:STATE', kind='hinted',
+    coating = Cpt(CoatStatesPMPS2D4P, ':COATING:STATE', kind='hinted',
                   doc='Control of the coating states via saved positions.')
 
 
