@@ -1288,9 +1288,9 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
 
 class TwoDim4PosCoatStatesPMPS(TwinCATMirrorStripe):
     """
-    2D Coatings states with 4 positons and PMPS
+    2D Coatings states with 4 positons and PMPS.
 
-    Currently services MR1L0
+    Currently services MR1L0.
     """
     config = UpCpt(state_count=4, motor_count=4)
 
@@ -1423,7 +1423,7 @@ class MR1L0(XOffsetMirrorState):
 
     The coating states use 2 dimensional state movers with PMPS.
 
-    Currently services MR1L0
+    Currently services MR1L0.
     """
     coating = Cpt(TwoDim4PosCoatStatesPMPS, ':COATING:STATE', kind='hinted',
                   doc='Control of the coating states via saved positions.')
