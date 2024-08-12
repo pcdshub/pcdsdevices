@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- adds `MirrorStripe2D4P` for coatings states with 2 dimensional position states movers with PMPS.
+- adds `MirrorStripe2D4P` for coating states with 2 dimensional position states movers with PMPS.
 - adds `XOffsetMirror2D4PState` for OffsetMirrors with 2D 4Position coating states.
 
 Bugfixes
