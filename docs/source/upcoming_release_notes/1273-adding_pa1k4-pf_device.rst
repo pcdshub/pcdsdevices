@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- @tongju12
+- tongju12
