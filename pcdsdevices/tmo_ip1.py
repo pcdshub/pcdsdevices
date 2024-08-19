@@ -34,7 +34,7 @@ class SCaFoil(BaseInterface, GroupDevice, LightpathMixin):
 
     # Sample calibration Y axe
 
-    pf = Cpt(CalibrationAxis, 'PA1K4:PF:STATE', add_prefix=(), kind='normal')
+    pf = Cpt(CalibrationAxis, ':STATE', kind='normal')
     pf_y = Cpt(BeckhoffAxis, ':MMS:Y', doc="Y-axis of photo filter pa1k4", kind='normal')
     removed = False
     transmission = 1
