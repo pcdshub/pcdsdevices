@@ -1,4 +1,4 @@
-"TMO sample calibration foil to work with spectrometer"
+"""TMO sample calibration foil to work with spectrometer"""
 from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 
@@ -32,9 +32,9 @@ class SCaFoil(BaseInterface, GroupDevice, LightpathMixin):
     _icon = 'fa.minus-square'
     tab_component_names = True
 
-    # Sample calibration Y axe
+    # Sample calibration Y axis
 
-    pf = Cpt(CalibrationAxis, ':STATE', kind='normal')
+    pf_state = Cpt(CalibrationAxis, ':STATE', kind='normal')
     pf_y = Cpt(BeckhoffAxis, ':MMS:Y', doc="Y-axis of photo filter pa1k4", kind='normal')
     removed = False
     transmission = 1
