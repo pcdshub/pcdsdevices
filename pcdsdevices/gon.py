@@ -4,13 +4,14 @@ Module for goniometers and sample stages used with them.
 import logging
 
 import numpy as np
-from ophyd import FormattedComponent as FCpt, Device
+from ophyd import Device
+from ophyd import FormattedComponent as FCpt
 from ophyd.device import Component as Cpt
 from ophyd.status import DeviceStatus
 from prettytable import PrettyTable
 
 from .device import GroupDevice
-from .epics_motor import (IMS, BeckhoffAxis)
+from .epics_motor import IMS, BeckhoffAxis
 from .interface import BaseInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
@@ -656,26 +657,6 @@ eta, kappa, phi: {eta}, {kappa}, {phi} [{angle_units}]
 e_eta, e_chi, e_phi: {e_eta}, {e_chi}, {e_phi}
 x, y, z: {x}, {y}, {z} [{units}]
 """
-
-
-class SimSampleStage(KappaXYZStage):
-    x = Cpt(FastMotor, limits=(-100, 100))
-    y = Cpt(FastMotor, limits=(-100, 100))
-    z = Cpt(FastMotor, limits=(-100, 100))
-
-
-class SimKappa(Kappa):
-    """Test version of the Kappa object."""
-    sample_stage = Cpt(SimSampleStage, name='')
-    eta = Cpt(FastMotor, limits=(-180, 180))
-    kappa = Cpt(FastMotor, limits=(-360, 360))
-    phi = Cpt(FastMotor, limits=(-180, 180))
-
-    def __init__(self):
-        super().__init__(name='SimKappa', prefix_x='X', prefix_y='Y',
-                         prefix_z='Z', prefix_eta='ETA', prefix_kappa='KAPPA',
-                         prefix_phi='PHI')
-
 class HxrDiffractometer(BaseInterface, Device):
     """
     Class for diffractometer.
@@ -697,4 +678,21 @@ class HxrDiffractometer(BaseInterface, Device):
 
     tab_component_names = True
 
-    
+
+class SimSampleStage(KappaXYZStage):
+    x = Cpt(FastMotor, limits=(-100, 100))
+    y = Cpt(FastMotor, limits=(-100, 100))
+    z = Cpt(FastMotor, limits=(-100, 100))
+
+
+class SimKappa(Kappa):
+    """Test version of the Kappa object."""
+    sample_stage = Cpt(SimSampleStage, name='')
+    eta = Cpt(FastMotor, limits=(-180, 180))
+    kappa = Cpt(FastMotor, limits=(-360, 360))
+    phi = Cpt(FastMotor, limits=(-180, 180))
+
+    def __init__(self):
+        super().__init__(name='SimKappa', prefix_x='X', prefix_y='Y',
+                         prefix_z='Z', prefix_eta='ETA', prefix_kappa='KAPPA',
+                         prefix_phi='PHI')
