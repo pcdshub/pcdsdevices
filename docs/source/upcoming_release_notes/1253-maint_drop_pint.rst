@@ -1,4 +1,4 @@
-1184 Add opcpa LXT motor
+1253 maint_drop_pint
 #################
 
 API Breaks
@@ -15,8 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- Lcls2LaserTiming: New class supporting control of laser timing for the OPCPA
-  laser locker system.
+- N/A
 
 Bugfixes
 --------
@@ -24,8 +23,10 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Use sympy instead of pint for unit conversions for simpler
+  maintainability.
+- Various CI tweaks due to numpy 2.0's chaos.
 
 Contributors
 ------------
-- slactjohnson
+- zllentz

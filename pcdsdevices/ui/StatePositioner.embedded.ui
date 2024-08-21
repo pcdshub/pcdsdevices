@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>824</width>
-    <height>238</height>
+    <width>691</width>
+    <height>135</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -64,10 +64,16 @@
    </property>
    <item>
     <widget class="TyphosPositionerRowWidget" name="TyphosPositionerWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
-       <width>0</width>
-       <height>0</height>
+       <width>681</width>
+       <height>125</height>
       </size>
      </property>
      <property name="maximumSize">
@@ -112,13 +118,13 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TyphosPositionerWidget</class>
-   <extends>QWidget</extends>
+   <class>TyphosPositionerRowWidget</class>
+   <extends>TyphosPositionerWidget</extends>
    <header>typhos.positioner</header>
   </customwidget>
   <customwidget>
-   <class>TyphosPositionerRowWidget</class>
-   <extends>TyphosPositionerWidget</extends>
+   <class>TyphosPositionerWidget</class>
+   <extends>QWidget</extends>
    <header>typhos.positioner</header>
   </customwidget>
  </customwidgets>

@@ -1,4 +1,4 @@
-1201 modify sp1k4-att RTD PV to match the prefix SPEC
+4500 Add motor class for MEC hexapod axis
 #################
 
 API Breaks
@@ -7,7 +7,7 @@ API Breaks
 
 Features
 --------
-- N/A
+- Added PI_M824 motor class for MEC hexapod motors
 
 Device Updates
 --------------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- Modify SP1K4 Attenuator RTD class to match prefix for SP1K4 group device
+- N/A
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- @tongju12
+- jozamudi

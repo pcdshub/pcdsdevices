@@ -539,6 +539,8 @@ class SmarActMotor(LCLSItem):
 class SmarActTipTiltMotor(LCLSItem):
     """
     Container for SmarAct tip-tilt motor pairs.
+    Use pcdsdevices.epics_motor.SmarActEncodedTipTilt device_class for
+    encoded tip-tilts.
     """
     device_class = copy(LCLSItem.device_class)
     device_class.default = 'pcdsdevices.epics_motor.SmarActTipTilt'
@@ -666,6 +668,10 @@ class EnvironmentalMonitor(LCLSItem):
                        optional=True, enforce=str)
     ioc_base = EntryInfo('Base PV of the EK9000 IOC', optional=True,
                          enforce=str)
+    ioc_chan_num = EntryInfo('Channel number for the environmental monitor.',
+                             optional=True, enforce=str)
+    ioc_card_num = EntryInfo('Card number for the environmental monitor.',
+                             optional=True, enforce=str)
 
 
 class Leviton(LCLSItem):

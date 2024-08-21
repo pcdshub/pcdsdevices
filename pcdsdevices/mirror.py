@@ -752,11 +752,15 @@ class XOffsetMirrorNoBend(XOffsetMirror):
 
     name : str
 
-    Currently (10/11/2023) services: mr1l1
+    Currently (5/15/2024) services: mr1l1, mr1k3, mr2k3
 
     """
     bender = None
     bender_enc_rms = None
+
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc='Mirror cooling panel loop flow sensor')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal', doc='Mirror cooling panel loop flow sensor')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc='Mirror cooling panel loop pressure sensor')
 
     variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
 
@@ -1253,10 +1257,10 @@ class FFMirrorZ(FFMirror):
                          kind='normal')
     chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL:TEMP', io='i',
                         kind='normal')
-    # Kill these until MR4 and MR5 K4 implement them.
-    cool_flow1 = None
+
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 1")
     cool_flow2 = None
-    cool_press = None
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc="Axilon Panel Pressure Meter")
 
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
@@ -1280,6 +1284,15 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
     def transmission(self):
         """The mirror coating never blocks the beam."""
         return 1
+
+
+class MirrorStripe2D4P(TwinCATMirrorStripe):
+    """
+    2D Coating states with 4 positons and PMPS.
+
+    Currently services MR1L0.
+    """
+    config = UpCpt(state_count=4, motor_count=2)
 
 
 @reorder_components(
@@ -1432,6 +1445,37 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
     variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
 
 
+class XOffsetMirror2D4PState(XOffsetMirrorStateCool):
+    """
+    X-ray Offset Mirror with coating states that have 4 positions.
+
+    The coating states use 2 dimensional state movers with PMPS.
+
+    Currently services MR1L0.
+    """
+    coating = Cpt(MirrorStripe2D4P, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
+
+
+class XOffsetMirrorStateCoolNoBend(XOffsetMirrorStateCool):
+    """
+    X-ray offset Mirror with all the features of
+
+    XOffsetMirrorStateCool with no bender.
+
+    Currently (06/14/2024) services: mr1k4.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    bender = None
+
+
 class MirrorInsertState(TwinCATStatePMPS):
     """
     A state positioner with two states (3 including Unknown) representing
@@ -1461,6 +1505,9 @@ class XOffsetMirrorXYState(XOffsetMirrorState):
     lightpath_cpts = ['insertion.state', 'coating.state',
                       'pitch.user_readback']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def _get_insertion_state(
         self,
         insertion_state: int
@@ -1487,10 +1534,12 @@ class XOffsetMirrorXYState(XOffsetMirrorState):
         if not self.insertion._state_initialized:
             self.log.debug('insertion state not initialized, '
                            'scheduling lightpath calcs for later')
+            if self._retry_lightpath:
+                self._retry_lightpath = False
+                schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            return True, True
 
-            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
-            raise MirrorLogicError('insertion state not initialized')
-
+        self._retry_lightpath = True
         x_in = self.insertion.check_inserted(insertion_state)
         x_out = self.insertion.check_removed(insertion_state)
 

@@ -3,13 +3,13 @@ happi
 jsonschema
 lightpath>=1.0.0
 numpy
-ophyd>=1.5.1
+ophyd>=1.7.0
 pcdscalc>=0.2.0
 pcdsutils>=0.4.0
-pint
 prettytable
 pyepics>=3.4.2
 pytmc>=2.7.0
 pyyaml
 schema
 scipy
+sympy

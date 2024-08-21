@@ -166,10 +166,10 @@ def test_laser_timing_delay(lxt):
     assert lxt.wm() == 0
     assert lxt._fs_tgt_time.get() == -0
     lxt.mv(1e-6)
-    assert lxt.wm() == 1e-6
+    assert lxt.wm() == pytest.approx(1e-6)
     assert lxt._fs_tgt_time.get() == pytest.approx(-1000)
     lxt.mv(-5e-6)
-    assert lxt.wm() == -5e-6
+    assert lxt.wm() == pytest.approx(-5e-6)
     assert lxt._fs_tgt_time.get() == pytest.approx(5000)
 
 

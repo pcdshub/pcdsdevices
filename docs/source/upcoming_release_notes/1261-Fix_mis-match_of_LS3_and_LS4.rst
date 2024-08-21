@@ -1,5 +1,5 @@
-1116 smarpod
-############
+1261 Fix mis-match of LS3 and LS4
+#################
 
 API Breaks
 ----------
@@ -15,11 +15,11 @@ Device Updates
 
 New Devices
 -----------
-- Add `SmarPod` and related devices in new `pcdsdevices.smarpod` module.
+- N/A
 
 Bugfixes
 --------
-- N/A
+- BtpsState: Fix mis-match of LS3 and LS4 PVs.
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- patoppermann
+- slactjohnson

@@ -344,11 +344,29 @@ class DestinationConfig(BaseInterface, Device):
         source_pos=SourcePosition.ls1,
         doc="Settings for source LS1 (bay 1) to this destination",
     )
+    ls3 = Cpt(
+        SourceToDestinationConfig,
+        "LS3:",
+        source_pos=SourcePosition.ls3,
+        doc="Settings for source LS3 (bay 2 1um) to this destination",
+    )
+    ls4 = Cpt(
+        SourceToDestinationConfig,
+        "LS4:",
+        source_pos=SourcePosition.ls4,
+        doc="Settings for source LS4 (bay 2 800m) to this destination",
+    )
     ls5 = Cpt(
         SourceToDestinationConfig,
         "LS5:",
         source_pos=SourcePosition.ls5,
-        doc="Settings for source LS5 (bay 3) to this destination",
+        doc="Settings for source LS5 (bay 3 800nm) to this destination",
+    )
+    ls6 = Cpt(
+        SourceToDestinationConfig,
+        "LS6:",
+        source_pos=SourcePosition.ls6,
+        doc="Settings for source LS6 (bay 3 1um) to this destination",
     )
     ls8 = Cpt(
         SourceToDestinationConfig,
@@ -356,7 +374,8 @@ class DestinationConfig(BaseInterface, Device):
         source_pos=SourcePosition.ls8,
         doc="Settings for source LS8 (bay 4) to this destination",
     )
-    exit_valve = Cpt(BtpsVGC, "VGC:01", kind="normal", doc="Destination exit valve")
+    exit_valve = Cpt(BtpsVGC, "VGC:01", kind="normal",
+                     doc="Destination exit valve")
 
     @property
     def sources(self) -> dict[SourcePosition, SourceToDestinationConfig]:
@@ -369,7 +388,8 @@ class DestinationConfig(BaseInterface, Device):
         """
         return {
             source.source_pos: source
-            for source in (self.ls1, self.ls5, self.ls8)
+            for source in (self.ls1, self.ls3, self.ls4, self.ls5, self.ls6,
+                           self.ls8)
         }
 
 
@@ -647,6 +667,24 @@ class BtpsState(BaseInterface, Device):
         goniometer_prefix="LAS:BTS:MCS2:01:m3",
         doc="Source status for LS1 (Bay 1)"
     )
+    ls3 = Cpt(
+        BtpsSourceStatus,
+        "LTLHN:LS3:",
+        source_pos=SourcePosition.ls3,
+        linear_prefix="LAS:BTS:MCS2:01:m15",
+        rotary_prefix="LAS:BTS:MCS2:01:m14",
+        goniometer_prefix="LAS:BTS:MCS2:01:m13",
+        doc="Source status for LS3 (Bay 2 1um)"
+    )
+    ls4 = Cpt(
+        BtpsSourceStatus,
+        "LTLHN:LS4:",
+        source_pos=SourcePosition.ls4,
+        linear_prefix="LAS:BTS:MCS2:01:m10",
+        rotary_prefix="LAS:BTS:MCS2:01:m12",
+        goniometer_prefix="LAS:BTS:MCS2:01:m11",
+        doc="Source status for LS3 (Bay 2 800m)"
+    )
     ls5 = Cpt(
         BtpsSourceStatus,
         "LTLHN:LS5:",
@@ -654,7 +692,16 @@ class BtpsState(BaseInterface, Device):
         linear_prefix="LAS:BTS:MCS2:01:m4",
         rotary_prefix="LAS:BTS:MCS2:01:m6",
         goniometer_prefix="LAS:BTS:MCS2:01:m5",
-        doc="Source status for LS5 (Bay 3)"
+        doc="Source status for LS5 (Bay 3 800nm)"
+    )
+    ls6 = Cpt(
+        BtpsSourceStatus,
+        "LTLHN:LS6:",
+        source_pos=SourcePosition.ls6,
+        linear_prefix="LAS:BTS:MCS2:01:m16",
+        rotary_prefix="LAS:BTS:MCS2:01:m17",
+        goniometer_prefix="LAS:BTS:MCS2:01:m18",
+        doc="Source status for LS3 (Bay 3 1um)"
     )
     ls8 = Cpt(
         BtpsSourceStatus,

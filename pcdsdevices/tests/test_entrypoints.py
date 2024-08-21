@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.metadata
 import pathlib
+import sys
 
 import pytest
 import typhos
@@ -11,6 +12,10 @@ from .. import ui
 
 @pytest.fixture(scope="session")
 def entry_points() -> dict[str, importlib.metadata.EntryPoints]:
+    if sys.version_info[1] >= 12:
+        # re-organize entrypoints to match old
+        eps = importlib.metadata.entry_points()
+        return {group_name: eps.select(group=group_name) for group_name in eps.groups}
     return importlib.metadata.entry_points()
 
 

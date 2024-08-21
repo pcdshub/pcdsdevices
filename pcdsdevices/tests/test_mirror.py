@@ -4,8 +4,10 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import ReadOnlyError, make_fake_device
 
+from pcdsdevices import mirror
+
 from ..mirror import (KBOMirror, OffsetMirror, PointingMirror,
-                      XOffsetMirrorStateCool)
+                      XOffsetMirrorStateCool, XOffsetMirrorXYState)
 
 
 @pytest.fixture(scope='function')
@@ -145,6 +147,17 @@ def fake_offset_cooled_mirror():
     return FakeCooledOffsetMirror('TST:MR1', name="Test Mirror")
 
 
+@pytest.fixture(scope='function')
+def fake_xy_offset_mirror():
+    FakeCooledOffsetMirror = make_fake_device(XOffsetMirrorXYState)
+    fake_mirror = FakeCooledOffsetMirror('TST:MR1', name="Test Mirror")
+    # do lightpath setup
+    fake_mirror._init_summary_signal()
+    fake_mirror.output_branches = ['L0', 'L1']
+    fake_mirror.input_branches = ['L0']
+    return fake_mirror
+
+
 def test_kbomirror_lighpath(fake_kbo_mirror):
     km = fake_kbo_mirror
     lp_state = km.get_lightpath_state()
@@ -179,3 +192,27 @@ def test_mirror_cooling(fake_offset_cooled_mirror):
 
     with pytest.raises(ReadOnlyError):
         om.cool_press.put(0.34)
+
+
+def test_xy_mirror_lightpath(fake_xy_offset_mirror, monkeypatch):
+    xym = fake_xy_offset_mirror
+    mock_schedule = Mock()
+    monkeypatch.setattr(mirror, 'schedule_task', mock_schedule)
+
+    assert xym._retry_lightpath is True
+    xym.insertion._state_initialized = False
+    # try getting lightpath state once, which should fail and schedule
+    xym.get_lightpath_state(use_cache=False)
+    assert mock_schedule.call_count == 1
+    assert xym._retry_lightpath is False
+
+    # subsequent calls to get_lightpath_state should not schedule
+    xym.get_lightpath_state(use_cache=False)
+    assert mock_schedule.call_count == 1
+    assert xym._retry_lightpath is False
+
+    xym._retry_lightpath = True
+    # After reset has completed, can retry
+    xym.get_lightpath_state(use_cache=False)
+    assert mock_schedule.call_count == 2
+    assert xym._retry_lightpath is False

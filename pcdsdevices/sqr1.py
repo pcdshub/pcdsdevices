@@ -19,6 +19,7 @@ from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositionerIsClose
 from ophyd.signal import EpicsSignal
+from ophyd.status import MoveStatus as StatusBase
 from ophyd.status import wait as status_wait
 
 logger = logging.getLogger(__name__)
@@ -139,6 +140,48 @@ class SQR1Axis(PVPositionerIsClose):
         if sync_enable and self._sync_setpoints:
             self._sync_setpoints()
         return super().move(position, wait, timeout, moved_cb)
+
+    def set(
+        self,
+        new_position: typing.Any,
+        *,
+        timeout: float = None,
+        moved_cb: typing.Callable = None,
+        wait: bool = False,
+    ) -> StatusBase:
+        """
+        Set SQR1 single axis new position.
+
+        Parameters
+        ----------
+        new_position : typing.Any
+            The target position to move to.
+        timeout : float, optional
+            The maximum time to wait for the move to complete.If None,
+            no timeout is applied.
+        moved_cb : typing.Callable, optional
+            A callback function that is called when the move is complete.
+        wait : bool, optional
+            always will be false. kept for consistent method signature
+            across future implementations.
+
+        Returns
+        -------
+        StatusBase
+            Status object to indicate when the motion is done.
+
+        Notes
+        -----
+        This method calls the `move` method with the provided parameters,
+        while keeping `wait=False` and `sync_enable=False` to allow multi-axis
+        scans without one axis blocking other axes.
+
+        """
+        return self.move(new_position,
+                         wait=False,
+                         moved_cb=moved_cb,
+                         timeout=timeout,
+                         sync_enable=False)
 
 
 class SQR1(Device):

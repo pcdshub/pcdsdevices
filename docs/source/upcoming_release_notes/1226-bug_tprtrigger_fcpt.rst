@@ -1,5 +1,5 @@
-1206 var-cool
-#################
+1226 bug_tprtrigger_fcpt
+########################
 
 API Breaks
 ----------
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- `XOffsetMirrorStateCool` and `XOffsetMirrorNoBend` gets `variable_cool` for controlling 24V solenoid valve.
+- N/A
 
 New Devices
 -----------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Properly fill the `sys` keyword argument in ``TprTrigger.ns_delay_scan``
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- nrwslac
+- tangkong

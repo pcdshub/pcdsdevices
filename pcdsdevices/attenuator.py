@@ -1078,14 +1078,18 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=2.0)
+                if self._retry_lightpath:
+                    self._retry_lightpath = False
+                    utils.schedule_task(self._calc_cache_lightpath_state,
+                                        delay=2.0)
 
                 return LightpathState(
                     inserted=True,
                     removed=True,
                     output={self.output_branches[0]: 1}
                 )
+
+            self._retry_lightpath = True
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))
@@ -1245,14 +1249,18 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=2.0)
+                if self._retry_lightpath:
+                    self._retry_lightpath = False
+                    utils.schedule_task(self._calc_cache_lightpath_state,
+                                        delay=2.0)
 
                 return LightpathState(
                     inserted=True,
                     removed=True,
                     output={self.output_branches[0]: 1}
                 )
+
+            self._retry_lightpath = True
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))
@@ -1593,14 +1601,18 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=2.0)
+                if self._retry_lightpath:
+                    self._retry_lightpath = False
+                    utils.schedule_task(self._calc_cache_lightpath_state,
+                                        delay=2.0)
 
                 return LightpathState(
                     inserted=True,
                     removed=True,
                     output={self.output_branches[0]: 1}
                 )
+
+            self._retry_lightpath = True
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))
