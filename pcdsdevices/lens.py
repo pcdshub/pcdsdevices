@@ -66,6 +66,9 @@ class Prefocus(CombinedInOutRecordPositioner, LightpathInOutMixin):
     # In should be everything except state 0 (Unknown) and state 1 (Out)
     _in_if_not_out = True
 
+    tab_whitelist = ['x', 'y']
+    tab_component_names = True
+
     def __init__(self, prefix, *, name, **kwargs):
         # Set default transmission
         # Done this way because states are still unknown at this point
@@ -75,6 +78,9 @@ class Prefocus(CombinedInOutRecordPositioner, LightpathInOutMixin):
                                          else (1 if state in self.out_states
                                                else 0))
         super().__init__(prefix, name=name, **kwargs)
+        # motor aliases
+        self.x = self.x_motor
+        self.y = self.y_motor
 
 
 class LensStackBase(BaseInterface, PseudoPositioner):
@@ -123,21 +129,22 @@ class LensStackBase(BaseInterface, PseudoPositioner):
     y = FCpt(IMS, '{self.y_prefix}')
     z = FCpt(IMS, '{self.z_prefix}')
 
-    calib_z = Cpt(PseudoSingleInterface)
-    beam_size = Cpt(PseudoSingleInterface)
+    calib_z = Cpt(PseudoSingleInterface, egu='m')
+    beam_size = Cpt(PseudoSingleInterface, egu='m')
 
     tab_whitelist = ['tweak', 'align', 'calib_z', 'beam_size', 'create_lens',
                      'read_lens']
     tab_component_names = True
 
     def __init__(self, x_prefix, y_prefix, z_prefix, lens_set,
-                 z_offset, z_dir, E, att_obj,
+                 z_offset, z_dir, E, att_obj, fwhm_unfocused=None,
                  lcls_obj=None, mono_obj=None, *args, **kwargs):
         self.x_prefix = x_prefix
         self.y_prefix = y_prefix
         self.z_prefix = z_prefix
         self.z_dir = z_dir
         self.z_offset = z_offset
+        self.fwhm_unfocused = fwhm_unfocused or 500e-6
 
         self._E = None
         self._which_E = None
@@ -184,8 +191,8 @@ class LensStackBase(BaseInterface, PseudoPositioner):
         positin (distance to the interaction point).
         """
         dist_m = self.z.position / 1000 * self.z_dir + self.z_offset
-        beamsize = calcs.calc_beam_fwhm(self.energy, self.lens_set,
-                                        distance=dist_m)
+        beamsize = calcs.calc_beam_fwhm(self.energy, self.lens_set, distance=dist_m,
+                                        fwhm_unfocused=self.fwhm_unfocused)
         print(f"Distance for beamsize {beamsize}: {dist_m}m")
         return
 
@@ -231,7 +238,7 @@ class LensStackBase(BaseInterface, PseudoPositioner):
             dist = calcs.calc_distance_for_size(beam_size, self.lens_set,
                                                 self.energy)[0]
             z_pos = (dist - self.z_offset) * self.z_dir * 1000
-            z_pos = z_pos - 100  # dirty trick to get z in the range
+            # z_pos = z_pos - 100  # dirty trick to get z in the range
         else:
             z_pos = pseudo_pos.calib_z
         try:
@@ -269,7 +276,6 @@ class LensStackBase(BaseInterface, PseudoPositioner):
             PseudoPosition
         """
         dist_m = real_pos.z / 1000 * self.z_dir + self.z_offset
-        logger.info('dist_m %s', dist_m)
         beamsize = calcs.calc_beam_fwhm(self.energy, self.lens_set,
                                         distance=dist_m,
                                         printsummary=False)
