@@ -21,7 +21,7 @@ requirements:
     - setuptools_scm
   run:
     - python >=3.9
-    - bluesky >=1.6.4
+    - bluesky-base >=1.6.4
     - happi
     - jsonschema
     - lightpath >=1.0.0
@@ -45,7 +45,7 @@ test:
   requires:
     - pytest
     - pytest-timeout
-    - matplotlib
+    - matplotlib <3.9  # avoid installing qt6
     - typhos
   imports:
     - {{ import_name }}
