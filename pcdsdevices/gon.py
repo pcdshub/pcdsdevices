@@ -677,6 +677,8 @@ class HxrDiffractometer(BaseInterface, Device):
     chi = Cpt(BeckhoffAxis, '2TH', kind='normal')
 
     tab_component_names = True
+    def __init__(self, prefix, name, **kwargs):
+        super().__init__(prefix, name = name, **kwargs)
 
 
 class SimSampleStage(KappaXYZStage):
