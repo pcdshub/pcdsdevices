@@ -45,7 +45,6 @@ test:
   requires:
     - pytest
     - pytest-timeout
-    - matplotlib <3.9  # avoid installing qt6
     - typhos
   imports:
     - {{ import_name }}
