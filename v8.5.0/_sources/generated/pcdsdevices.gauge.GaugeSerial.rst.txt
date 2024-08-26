@@ -1,0 +1,369 @@
+﻿pcdsdevices.gauge.GaugeSerial
+=============================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: GaugeSerial
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - gastype
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GASTYPE``
+          - 
+          - omitted
+          - 
+    
+        * - gastypedes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GASTYPEDES``
+          - 
+          - omitted
+          - 
+    
+        * - hystsprbck_1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HYSTSPRBCK_1_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - hystsprbck_2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HYSTSPRBCK_2_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - p
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:P``
+          - 
+          - omitted
+          - 
+    
+        * - padel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PADEL``
+          - 
+          - omitted
+          - 
+    
+        * - plog
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PLOG``
+          - 
+          - omitted
+          - 
+    
+        * - pmon
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PMON``
+          - 
+          - omitted
+          - 
+    
+        * - pmonraw
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PMONRAW``
+          - 
+          - omitted
+          - 
+    
+        * - pstat_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTAT_1``
+          - 
+          - omitted
+          - 
+    
+        * - pstat_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTAT_2``
+          - 
+          - omitted
+          - 
+    
+        * - pstat_calc
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTAT_CALC``
+          - 
+          - omitted
+          - 
+    
+        * - pstat_sum
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTAT_SUM``
+          - 
+          - omitted
+          - 
+    
+        * - pstatdirdes_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATDIRDES_1``
+          - 
+          - omitted
+          - 
+    
+        * - pstatdirdes_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATDIRDES_2``
+          - 
+          - omitted
+          - 
+    
+        * - pstatenable_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENABLE_1``
+          - 
+          - omitted
+          - 
+    
+        * - pstatenable_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENABLE_2``
+          - 
+          - omitted
+          - 
+    
+        * - pstatenades_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENADES_1``
+          - 
+          - omitted
+          - 
+    
+        * - pstatenades_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENADES_2``
+          - 
+          - omitted
+          - 
+    
+        * - pstatspdes_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDES_1``
+          - 
+          - omitted
+          - 
+    
+        * - pstatspdes_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDES_2``
+          - 
+          - omitted
+          - 
+    
+        * - pstatspdir_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDIR_1``
+          - 
+          - omitted
+          - 
+    
+        * - pstatspdir_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDIR_2``
+          - 
+          - omitted
+          - 
+    
+        * - pstatsprbck_1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PSTATSPRBCK_1_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pstatsprbck_2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PSTATSPRBCK_2_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATE``
+          - 
+          - omitted
+          - 
+    
+        * - statedes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATEDES``
+          - 
+          - omitted
+          - 
+    
+        * - staterbck
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATERBCK_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - status_rs
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RS``
+          - 
+          - omitted
+          - 
+    
+        * - status_rs_calc1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RS_CALC1``
+          - 
+          - omitted
+          - 
+    
+        * - status_rs_calc2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RS_CALC2``
+          - 
+          - omitted
+          - 
+    
+        * - status_rscalc
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RSCALC``
+          - 
+          - omitted
+          - 
+    
+        * - status_rscalc2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RSCALC2``
+          - 
+          - omitted
+          - 
+    
+        * - status_rsmon
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RSMON``
+          - 
+          - omitted
+          - 
+    
+        * - status_rsout
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RSOUT``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

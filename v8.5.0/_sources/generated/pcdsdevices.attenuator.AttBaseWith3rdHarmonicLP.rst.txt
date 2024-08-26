@@ -1,0 +1,245 @@
+﻿pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP
+===============================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: AttBaseWith3rdHarmonicLP
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathInOutCptMixin`
+    
+        * - setpoint
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM:R_DES``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - readback
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:R_CUR``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - actuate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM:GO``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - done
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:STATUS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:T_CALC.VALE``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - trans_ceil
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:R_CEIL``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - trans_floor
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:R_FLOOR``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - user_energy
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM:EDES``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - eget_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM:EACT.SCAN``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - calcpend
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:CALCP``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - setpoint_3rd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM:R3_DES``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - readback_3rd
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:R3_CUR``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - energy_3rd
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:T_CALC.VALH``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - trans_ceil_3rd
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:R3_CEIL``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - trans_floor_3rd
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:R3_FLOOR``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+        * - user_energy_3rd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM:E3DES``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBaseWith3rdHarmonic`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_energy
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: md
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

@@ -1,0 +1,100 @@
+﻿pcdsdevices.valve.VVCNO
+=======================
+
+.. currentmodule:: pcdsdevices.valve
+
+.. autoclass:: VVCNO
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - close_command
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:CLS_SW``
+          - Epics command to close valve
+          - normal
+          - 
+    
+        * - override_force_close
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:FORCE_CLS``
+          - Epics Command for close the valve in override mode
+          - omitted
+          - 
+    
+        * - override_on
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:OVRD_ON``
+          - Epics Command to set/reset Override mode
+          - omitted
+          - 
+    
+        * - close_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CLS_OK_RBV``
+          - used for normally open valves
+          - normal
+          - 
+    
+        * - close_do
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CLS_DO_RBV``
+          - PLC Output to close valve
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: close_override
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

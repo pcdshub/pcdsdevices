@@ -1,0 +1,217 @@
+﻿pcdsdevices.pneumatic.BeckhoffPneumatic
+=======================================
+
+.. currentmodule:: pcdsdevices.pneumatic
+
+.. autoclass:: BeckhoffPneumatic
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
+    
+        * - limit_switch_in
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PLC:bInLimitSwitch``
+          - 
+          - normal
+          - 
+    
+        * - limit_switch_out
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PLC:bOutLimitSwitch``
+          - 
+          - normal
+          - 
+    
+        * - retract_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bRetractDigitalOutput``
+          - 
+          - normal
+          - 
+    
+        * - insert_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bInsertDigitalOutput``
+          - 
+          - normal
+          - 
+    
+        * - interlock_ok
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bInterlockOK``
+          - 
+          - normal
+          - 
+    
+        * - insert_ok
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bInsertEnable``
+          - 
+          - normal
+          - 
+    
+        * - retract_ok
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bRetractEnable``
+          - 
+          - normal
+          - 
+    
+        * - insert_signal
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CMD:IN``
+          - 
+          - normal
+          - 
+    
+        * - retract_signal
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CMD:OUT``
+          - 
+          - normal
+          - 
+    
+        * - busy
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bBusy``
+          - 
+          - normal
+          - 
+    
+        * - done
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bDone``
+          - 
+          - normal
+          - 
+    
+        * - reset
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bReset``
+          - 
+          - normal
+          - 
+    
+        * - error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PLC:bError``
+          - 
+          - normal
+          - 
+    
+        * - error_id
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PLC:nErrorId``
+          - 
+          - normal
+          - 
+    
+        * - error_message
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PLC:sErrorMessage``
+          - 
+          - normal
+          - 
+    
+        * - position_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:nPositionState``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: callback
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: insert
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: subscriptions
+    
+    
