@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- pos_ao PV PIPPLC class no longer reads 'connection timed out' in typhos screens
+- pos_ao PV in PIPPLC class no longer reads 'connection timed out' in typhos screens
 
 Maintenance
 -----------
