@@ -5,12 +5,12 @@ API Breaks
 ----------
 - N/A
 
-Features
---------
+Library Features
+----------------
 - N/A
 
-Device Updates
---------------
+Device Features
+---------------
 - N/A
 
 New Devices
