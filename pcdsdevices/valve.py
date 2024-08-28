@@ -699,7 +699,7 @@ class VCN(Device):
     )
     pos_ao = Cpt(
         EpicsSignalRO,
-        ':POS_AO_RBV',
+        ':POS_AO_R_RBV',
         kind='hinted'
     )
 
