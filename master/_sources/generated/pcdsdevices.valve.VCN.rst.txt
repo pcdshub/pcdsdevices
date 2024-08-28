@@ -62,7 +62,7 @@
     
         * - pos_ao
           - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:POS_AO_RBV``
+          - ``:POS_AO_R_RBV``
           - 
           - hinted
           - 

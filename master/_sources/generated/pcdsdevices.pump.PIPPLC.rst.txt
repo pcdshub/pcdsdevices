@@ -32,6 +32,13 @@
           - normal
           - 
     
+        * - high_voltage_in
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HV_DI_RBV``
+          - high voltage digital input
+          - normal
+          - 
+    
         * - interlock_ok
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:ILK_OK_RBV``
@@ -107,13 +114,6 @@
           - ``:FORCE_START``
           - Force Ion Pump to turn on
           - omitted
-          - 
-    
-        * - qpc_name
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:VPCNAME``
-          - Quad Ion Pump Controller Name
-          - config
           - 
     
         * - qpc_pumpsize
