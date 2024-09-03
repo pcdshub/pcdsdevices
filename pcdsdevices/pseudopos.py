@@ -1013,10 +1013,18 @@ class LookupTablePositioner(PseudoPositioner):
         pseudo_field, = self.PseudoPosition._fields
         real_field, = self.RealPosition._fields
 
+        xp = self._table_data_by_name[pseudo_field]
+        fp = self._table_data_by_name[real_field]
+
+        # xp must be increasing
+        if not xp[1] > xp[0]:
+            xp = xp[::-1]
+            fp = fp[::-1]
+
         real_value = np.interp(
             values[pseudo_field],
-            self._table_data_by_name[pseudo_field],
-            self._table_data_by_name[real_field]
+            xp,
+            fp,
         )
         return self.RealPosition(**{real_field: real_value})
 
@@ -1040,10 +1048,18 @@ class LookupTablePositioner(PseudoPositioner):
         pseudo_field, = self.PseudoPosition._fields
         real_field, = self.RealPosition._fields
 
+        xp = self._table_data_by_name[real_field]
+        fp = self._table_data_by_name[pseudo_field]
+
+        # xp must be increasing
+        if not xp[1] > xp[0]:
+            xp = xp[::-1]
+            fp = fp[::-1]
+
         pseudo_value = np.interp(
             values[real_field],
-            self._table_data_by_name[real_field],
-            self._table_data_by_name[pseudo_field]
+            xp,
+            fp,
         )
         return self.PseudoPosition(**{pseudo_field: pseudo_value})
 
