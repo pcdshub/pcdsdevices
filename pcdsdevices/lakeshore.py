@@ -21,8 +21,8 @@ class Heater(BaseInterface, Device):
     channel_prefix : str
         The EPICS base of the HeaterState Channel. E.g.: ``
     """
-    htr_state = FCpt(EpicsSignal, ':GET_RANGE_{self.channel}', write_pv=':PUT_RANGE_{self.channel}', kind='normal', doc='heater range')
-    htr_state_rbv = FCpt(EpicsSignalRO, ':GET_HTRSTAT_{self.channel}', kind='normal')
+    htr_state = FCpt(EpicsSignal, '{prefix}:GET_RANGE_{channel}', write_pv='{prefix}:PUT_RANGE_{channel}', kind='normal', doc='heater range')
+    htr_state_rbv = FCpt(EpicsSignalRO, '{prefix}:GET_HTRSTAT_{channel}', kind='normal')
 
     # insert tab white list
 
@@ -32,10 +32,10 @@ class Heater(BaseInterface, Device):
 
 
 class TemperatureSensor(BaseInterface, Device):
-    input_name = FCpt(EpicsSignalRO, ':GET_INAME_{channel}', kind='config')
-    temp = FCpt(EpicsSignalRO, ':GET_TEMP_{channel}', kind='normal')
-    units = FCpt(EpicsSignal, ':GET_UNITS_{channel}', write_pv=':PUT_UNITS_{channel}', kind='normal')
-    sensor_type = FCpt(EpicsSignalRO, ':GET_SENSOR_{channel}', kind='normal')
+    input_name = FCpt(EpicsSignalRO, '{prefix}:GET_INNAME_{channel}', kind='config')
+    temp = FCpt(EpicsSignalRO, '{prefix}:GET_TEMP_{channel}', kind='normal')
+    units = FCpt(EpicsSignal, '{prefix}:GET_UNITS_{channel}', write_pv=':PUT_UNITS_{channel}', kind='normal')
+    sensor_type = FCpt(EpicsSignalRO, '{prefix}:GET_SENSOR_{channel}', kind='normal')
 
     def __init__(self, prefix, channel, **kwargs):
         self.channel = channel
@@ -62,14 +62,14 @@ class Lakeshore336(BaseInterface, Device):
     an_loop_4 = Cpt(EpicsSignal, ':GET_AOUT_4', write_pv=':PUT_MOUT_4', kind='normal')
 
     # heater control
-    set_heater_1 = Cpt(Heater, channel='1', kind="normal")
-    set_heater_2 = Cpt(Heater, channel='2', kind="normal")
+    set_heater_1 = Cpt(Heater, '', channel='1', kind="normal")
+    set_heater_2 = Cpt(Heater, '', channel='2', kind="normal")
 
     # 4 temperature sensors
-    temp_A = Cpt(TemperatureSensor, channel='A', kind='normal')
-    temp_B = Cpt(TemperatureSensor, channel='B', kind='normal')
-    temp_C = Cpt(TemperatureSensor, channel='C', kind='normal')
-    temp_D = Cpt(TemperatureSensor, channel='D', kind='normal')
+    temp_A = Cpt(TemperatureSensor, '', channel='A', kind='normal')
+    temp_B = Cpt(TemperatureSensor, '', channel='B', kind='normal')
+    temp_C = Cpt(TemperatureSensor, '', channel='C', kind='normal')
+    temp_D = Cpt(TemperatureSensor, '', channel='D', kind='normal')
 
     # device control mode
     mode = Cpt(EpicsSignal, 'GET_MODE', write_pv='PUT_MODE', kind='normal', doc='control mode')
@@ -81,3 +81,7 @@ class Lakeshore336(BaseInterface, Device):
     # temp_loop_2 = Cpt(EpicsSignalRO, ':GET_SOLL_2', kind='normal')
     htr_out_1 = Cpt(EpicsSignalRO, ':GET_HTR_1', kind='normal')
     htr_out_2 = Cpt(EpicsSignalRO, ':GET_HTR_2', kind='normal')
+
+    # def __init__(self, prefix, *, name, **kwargs):
+    #     self.prefix = prefix
+    #     super().__init__(prefix=prefix, name=name, **kwargs)
