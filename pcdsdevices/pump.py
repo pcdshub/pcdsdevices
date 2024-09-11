@@ -158,6 +158,8 @@ class PIPPLC(Device):
                    doc='pressure reading')
     high_voltage_do = Cpt(EpicsSignalRO, ':HV_DO_RBV', kind='normal',
                           doc='high voltage digital output')
+    high_voltage_in = Cpt(EpicsSignalRO, ':HV_DI_RBV', kind='normal',
+                          doc='high voltage digital input')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock  is ok when true')
     protection_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='config',
@@ -183,8 +185,6 @@ class PIPPLC(Device):
                           doc='Regional Override Status')
     override_force_on = Cpt(EpicsSignalWithRBV, ':FORCE_START', kind='omitted',
                             doc='Force Ion Pump to turn on')
-    qpc_name = Cpt(EpicsSignalRO, ':VPCNAME', kind='config',
-                   doc='Quad Ion Pump Controller Name')
     qpc_pumpsize = Cpt(EpicsSignalRO, ':PUMPSIZE', kind='config',
                        doc='Ion Pump Size (L/s)')
     interlock_device = Cpt(EpicsSignalRO, ':ILK_DEVICE_RBV', kind='config',

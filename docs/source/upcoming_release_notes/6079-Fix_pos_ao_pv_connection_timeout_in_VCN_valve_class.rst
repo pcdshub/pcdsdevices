@@ -1,4 +1,4 @@
-IssueNumber Title
+6079 Fix pos_ao pv connection timeout in PIPPLC pump class
 #################
 
 API Breaks
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- pos_ao PV in VCN class no longer reads 'connection timed out' in typhos screens
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- jozamudi

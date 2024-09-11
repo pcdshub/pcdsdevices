@@ -1,5 +1,5 @@
-IssueNumber Title
-#################
+1281 bld_lightpath_base
+#######################
 
 API Breaks
 ----------
@@ -23,8 +23,9 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Switch build recipes to rely on lightpath >= 1.0.5 (and lightpath-base in conda)
+  to avoid unnecessary ui dependencies.
 
 Contributors
 ------------
-- N/A
+- tangkong

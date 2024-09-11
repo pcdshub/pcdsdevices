@@ -1286,6 +1286,15 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
         return 1
 
 
+class MirrorStripe2D4P(TwinCATMirrorStripe):
+    """
+    2D Coating states with 4 positons and PMPS.
+
+    Currently services MR1L0.
+    """
+    config = UpCpt(state_count=4, motor_count=2)
+
+
 @reorder_components(
     end_with=[
         'coating', 'x', 'y', 'pitch', 'bender_us', 'bender_ds',
@@ -1434,6 +1443,18 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
     cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc='Mirror cooling panel loop pressure sensor')
 
     variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
+
+
+class XOffsetMirror2D4PState(XOffsetMirrorStateCool):
+    """
+    X-ray Offset Mirror with coating states that have 4 positions.
+
+    The coating states use 2 dimensional state movers with PMPS.
+
+    Currently services MR1L0.
+    """
+    coating = Cpt(MirrorStripe2D4P, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
 
 
 class XOffsetMirrorStateCoolNoBend(XOffsetMirrorStateCool):
