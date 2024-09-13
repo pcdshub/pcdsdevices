@@ -1,4 +1,4 @@
-IssueNumber Title
+6090 Added HI_DI PV to PIPPLC class to show high voltage input for pump diagnostics
 #################
 
 API Breaks
@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- N/A
+- Added HI_DI PV to PIPPLC class to show high voltage input for pump diagnostics
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- jozamudi

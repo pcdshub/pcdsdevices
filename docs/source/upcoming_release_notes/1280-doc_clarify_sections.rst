@@ -1,5 +1,5 @@
-IssueNumber Title
-#################
+1280 doc_clarify_sections
+#########################
 
 API Breaks
 ----------
@@ -23,8 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Adjusted docs template headers to make them more intuitive
 
 Contributors
 ------------
-- N/A
+- zllentz

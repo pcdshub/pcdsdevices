@@ -1,4 +1,4 @@
-4500 Add motor class for MEC hexapod axis
+1266 Reduce Lcls2LaserTiming timeout
 #################
 
 API Breaks
@@ -7,11 +7,11 @@ API Breaks
 
 Features
 --------
-- Added PI_M824 motor class for MEC hexapod motors
+- N/A
 
 Device Updates
 --------------
-- N/A
+- Lcls2LaserTiming: Reduce timeout on moves from 2 seconds to 0.2 seconds
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- jozamudi
+- slactjohnson
