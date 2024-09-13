@@ -18,13 +18,15 @@ class Heater(BaseInterface, Device):
 
     Parameters
     ----------
-    channel_prefix : str
-        The EPICS base of the HeaterState Channel. E.g.: ``
+    prefix : str
+        The EPICS base of the HeaterState PV. E.g.:'XCS:USR:TCT:02:'
+    channel : str
+        The channel number of the Heater State.
     """
     htr_state = FCpt(EpicsSignal, '{prefix}:GET_RANGE_{channel}', write_pv='{prefix}:PUT_RANGE_{channel}', kind='normal', doc='heater range')
     htr_state_rbv = FCpt(EpicsSignalRO, '{prefix}:GET_HTRSTAT_{channel}', kind='normal')
 
-    # insert tab white list
+    tab_component_names = True
 
     def __init__(self, prefix, channel, **kwargs):
         self.channel = channel
@@ -32,10 +34,22 @@ class Heater(BaseInterface, Device):
 
 
 class TemperatureSensor(BaseInterface, Device):
+    """
+    HeaterState Channel Object.
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base of the HeaterState PV. E.g.:'XCS:USR:TCT:02:'
+    channel : str
+        The channel number of the Heater State.
+    """
     input_name = FCpt(EpicsSignalRO, '{prefix}:GET_INNAME_{channel}', kind='config')
     temp = FCpt(EpicsSignalRO, '{prefix}:GET_TEMP_{channel}', kind='normal')
     units = FCpt(EpicsSignal, '{prefix}:GET_UNITS_{channel}', write_pv=':PUT_UNITS_{channel}', kind='normal')
     sensor_type = FCpt(EpicsSignalRO, '{prefix}:GET_SENSOR_{channel}', kind='normal')
+
+    tab_component_names = True
 
     def __init__(self, prefix, channel, **kwargs):
         self.channel = channel
@@ -44,9 +58,14 @@ class TemperatureSensor(BaseInterface, Device):
 
 class Lakeshore336(BaseInterface, Device):
     """
-    two loops
+    This class supports the Lakeshore Model 336 Temperature controller.
+
+    It includes:
+    2 loops for setting the temperature
+    2 range controls for the heater
+    2 sets of controls for manual and analog output
     4 temperature sensors
-    also include device control mode
+    Various read-only signals.
     """
 
     # temp loops
@@ -77,11 +96,7 @@ class Lakeshore336(BaseInterface, Device):
     # read only
     loop_ramp_1 = Cpt(EpicsSignalRO, ':GET_RAMP_1', kind='normal')
     loop_ramp_2 = Cpt(EpicsSignalRO, ':GET_RAMP_2', kind='normal')
-    # temp_loop_1 = Cpt(EpicsSignalRO, ':GET_SOLL_1', kind='normal')
-    # temp_loop_2 = Cpt(EpicsSignalRO, ':GET_SOLL_2', kind='normal')
     htr_out_1 = Cpt(EpicsSignalRO, ':GET_HTR_1', kind='normal')
     htr_out_2 = Cpt(EpicsSignalRO, ':GET_HTR_2', kind='normal')
 
-    # def __init__(self, prefix, *, name, **kwargs):
-    #     self.prefix = prefix
-    #     super().__init__(prefix=prefix, name=name, **kwargs)
+    tab_component_names = True
