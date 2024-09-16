@@ -35,12 +35,12 @@ class Heater(BaseInterface, Device):
 
 class TemperatureSensor(BaseInterface, Device):
     """
-    HeaterState Channel Object.
+    Temperature Sensor Channel Object.
 
     Parameters
     ----------
     prefix : str
-        The EPICS base of the HeaterState PV. E.g.:'XCS:USR:TCT:02:'
+        The channel number or letter of the Temperature Sesnor.
     channel : str
         The channel number of the Heater State.
     """
