@@ -5,12 +5,12 @@ API Breaks
 ----------
 - N/A
 
-Features
---------
+Library Features
+----------------
 - N/A
 
-Device Updates
---------------
+Device Features
+---------------
 - Lcls2LaserTiming: Reduce timeout on moves from 2 seconds to 0.2 seconds
 
 New Devices
