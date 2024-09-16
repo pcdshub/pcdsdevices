@@ -1,0 +1,189 @@
+﻿pcdsdevices.lasers.zoomtelescope.ZoomTelescope
+==============================================
+
+.. currentmodule:: pcdsdevices.lasers.zoomtelescope
+
+.. autoclass:: ZoomTelescope
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - _l2_p0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL:L2:P0``
+          - 
+          - omitted
+          - 
+    
+        * - _l2_p1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL:L2:P1``
+          - 
+          - omitted
+          - 
+    
+        * - _l3_p0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL:L3:P0``
+          - 
+          - omitted
+          - 
+    
+        * - _l3_p1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL:L3:P1``
+          - 
+          - omitted
+          - 
+    
+        * - _l3_p2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL:L3:P2``
+          - 
+          - omitted
+          - 
+    
+        * - _l3_p3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL:L3:P3``
+          - 
+          - omitted
+          - 
+    
+        * - _l3_p4
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL:L3:P4``
+          - 
+          - omitted
+          - 
+    
+        * - _l3_p5
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL:L3:P5``
+          - 
+          - omitted
+          - 
+    
+        * - min_zoom
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL:MIN_ZOOM``
+          - 
+          - config
+          - 
+    
+        * - max_zoom
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL:MAX_ZOOM``
+          - 
+          - config
+          - 
+    
+        * - req_zoom
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:REQ_ZOOM``
+          - 
+          - normal
+          - 
+    
+        * - tweak_plus
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TWEAK_ZOOM_PLUS.PROC``
+          - 
+          - normal
+          - 
+    
+        * - tweak_minus
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TWEAK_ZOOM_MINUS.PROC``
+          - 
+          - normal
+          - 
+    
+        * - tweak_val
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TWEAK``
+          - 
+          - normal
+          - 
+    
+        * - permission
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PERMISSION_STATUS``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

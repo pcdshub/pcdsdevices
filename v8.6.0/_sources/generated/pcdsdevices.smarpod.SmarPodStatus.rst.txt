@@ -1,0 +1,189 @@
+﻿pcdsdevices.smarpod.SmarPodStatus
+=================================
+
+.. currentmodule:: pcdsdevices.smarpod
+
+.. autoclass:: SmarPodStatus
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TEMP``
+          - 
+          - omitted
+          - 
+    
+        * - load
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:LOAD``
+          - 
+          - omitted
+          - 
+    
+        * - memory
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MEMORY``
+          - 
+          - omitted
+          - 
+    
+        * - net_bytes_in
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NET_BYTES_IN``
+          - 
+          - omitted
+          - 
+    
+        * - net_bytes_out
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NET_BYTES_OUT``
+          - 
+          - omitted
+          - 
+    
+        * - net
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NET``
+          - 
+          - omitted
+          - 
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUS``
+          - 
+          - omitted
+          - 
+    
+        * - bootcnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:BOOTCNT``
+          - 
+          - omitted
+          - 
+    
+        * - uptime
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:UPTIME``
+          - 
+          - omitted
+          - 
+    
+        * - ip
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:IP``
+          - 
+          - omitted
+          - 
+    
+        * - client_ip
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CLIENT_IP``
+          - 
+          - omitted
+          - 
+    
+        * - ser_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SER_STATUS``
+          - 
+          - omitted
+          - 
+    
+        * - ser_bytes_in
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SER_BYTES_IN``
+          - 
+          - omitted
+          - 
+    
+        * - ser_bytes_out
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SER_BYTES_OUT``
+          - 
+          - omitted
+          - 
+    
+        * - display
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DISPLAY``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

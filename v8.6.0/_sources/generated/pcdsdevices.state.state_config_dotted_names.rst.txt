@@ -1,0 +1,6 @@
+﻿pcdsdevices.state.state\_config\_dotted\_names
+==============================================
+
+.. currentmodule:: pcdsdevices.state
+
+.. autofunction:: state_config_dotted_names

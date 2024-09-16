@@ -1,0 +1,87 @@
+﻿pcdsdevices.analog\_signals.FDQ
+===============================
+
+.. currentmodule:: pcdsdevices.analog_signals
+
+.. autoclass:: FDQ
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - flow_res
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:FWM:RES``
+          - Flow meter resolution
+          - config
+          - 
+    
+        * - flow_off
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:FWM:OFF``
+          - Flow meter offset
+          - config
+          - 
+    
+        * - flow_val
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:FWM:VAL``
+          - Flow meter value
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_flow_offset
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: get_flow_offset
+    .. autoattribute:: get_flow_rate
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

@@ -1,0 +1,270 @@
+﻿pcdsdevices.tpr.TprTrigger
+==========================
+
+.. currentmodule:: pcdsdevices.tpr
+
+.. autoclass:: TprTrigger
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ratemode (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.ch}RATEMODE``
+          - Channel rate mode selector
+          - config
+          - 
+    
+        * - group (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.ch}GROUP``
+          - Channel group Bit
+          - config
+          - 
+    
+        * - seqcode (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.ch}SEQCODE``
+          - Channel sequence code
+          - config
+          - 
+    
+        * - fixedrate (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.ch}FIXEDRATE``
+          - Channel Fxed rate selector
+          - config
+          - 
+    
+        * - count (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.ch}CNT``
+          - Channel counter
+          - omitted
+          - 
+    
+        * - destmask (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.ch}DESTMASK``
+          - Channel destination mask
+          - config
+          - 
+    
+        * - destmode (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.ch}DESTMODE``
+          - Channel destination mode selector
+          - config
+          - 
+    
+        * - src (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.trg}SOURCE``
+          - Trigger source
+          - config
+          - 
+    
+        * - eventcode (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.ch}EVCODE``
+          - Channel LCLS1 event code
+          - config
+          - 
+    
+        * - eventrate (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}{self.ch}RATE``
+          - Channel event rates
+          - normal
+          - 
+    
+        * - label (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.ch}{self.sys}TCTL.DESC``
+          - Channel description
+          - normal
+          - 
+    
+        * - delay_ticks (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.trg}TDESTICKS``
+          - Trigger delay in clock ticks
+          - omitted
+          - 
+    
+        * - delay_taps (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.trg}TDESTAPS``
+          - Trigger delay in delay taps
+          - omitted
+          - 
+    
+        * - delay_setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.trg}{self.sys}TDES``
+          - Trigger delay setpoint in nsec
+          - config
+          - 
+    
+        * - ns_delay
+          - :class:`~pcdsdevices.signal.MultiDerivedSignal`
+          - 
+          - Get/set trigger delay in ns
+          - normal
+          - 
+    
+        * - ns_delay_scan (FCpt)
+          - :class:`~pcdsdevices.tpr.TprMotor`
+          - ``{self.prefix}{self.trg}``
+          - Motor-like tpr interface
+          - omitted
+          - 
+    
+        * - polarity (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.trg}TPOL``
+          - Trigger description
+          - config
+          - 
+    
+        * - width_setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.trg}{self.sys}TWID``
+          - Trigger width in ns
+          - config
+          - 
+    
+        * - width_ticks (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}{self.trg}TWIDTICKS``
+          - Trigger width in clock ticks
+          - omitted
+          - 
+    
+        * - width
+          - :class:`~pcdsdevices.signal.MultiDerivedSignal`
+          - 
+          - Get/set trigger width in nsec
+          - normal
+          - 
+    
+        * - enable_ch_cmd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.ch}{self.sys}TCTL``
+          - Channel enable/disable
+          - config
+          - 
+    
+        * - enable_trg_cmd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.trg}{self.sys}TCTL``
+          - Trigger enable/disable
+          - config
+          - 
+    
+        * - operation (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}{self.trg}TCMPL``
+          - Trigger complementary logic
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: disable
+    .. automethod:: disable_ch
+    .. automethod:: disable_trg
+    .. automethod:: enable
+    .. automethod:: enable_ch
+    .. automethod:: enable_trg
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

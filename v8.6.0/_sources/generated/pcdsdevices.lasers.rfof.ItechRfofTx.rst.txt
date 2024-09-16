@@ -1,0 +1,345 @@
+﻿pcdsdevices.lasers.rfof.ItechRfofTx
+===================================
+
+.. currentmodule:: pcdsdevices.lasers.rfof
+
+.. autoclass:: ItechRfofTx
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - low_drift_opt_link_lock
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_PC1``
+          - Low-drift optical link loop lock (uV)
+          - normal
+          - 
+    
+        * - las_and_mod_loop_lock
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_PC2``
+          - Laser and modulator loop lock (uV)
+          - normal
+          - 
+    
+        * - pd1_current_return
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_PD1_I``
+          - PD1 current - returned optical signal (uA)
+          - normal
+          - 
+    
+        * - pd2_current_transmit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_PD2_I``
+          - PD2 current - transmitted optical signal (uA)
+          - normal
+          - 
+    
+        * - las_diode_sp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_LD_S``
+          - Laser diode setpoint (uA)
+          - normal
+          - 
+    
+        * - las_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_LAS_T``
+          - Laser temperature (C)
+          - normal
+          - 
+    
+        * - comp_spool_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_SPL_T``
+          - Compensation spool temperature (C)
+          - normal
+          - 
+    
+        * - comp_spool_temp_sp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_SPL_S``
+          - Compensation spool temperature setpoint (C)
+          - normal
+          - 
+    
+        * - input_rf_power
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_RFIN``
+          - Input RF power (dBm)
+          - normal
+          - 
+    
+        * - pd1_rf_power_return
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_PD1_RF``
+          - PD1 RF power - returned optical signal (dBm)
+          - normal
+          - 
+    
+        * - pd2_rf_power_transmit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_PD2_RF``
+          - PD2 RF power - transmitted optical signal (dBm)
+          - normal
+          - 
+    
+        * - las_opt_power
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_LAS_P``
+          - Laser optical power (mW)
+          - normal
+          - 
+    
+        * - rf_output_mzm_power
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_RFO``
+          - RF output power to MZM (dBm)
+          - normal
+          - 
+    
+        * - las_current
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_LAS_I``
+          - Laser current (mA)
+          - normal
+          - 
+    
+        * - elect_phase_shift_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_PS_V``
+          - Electrical phase shifter voltage (V)
+          - normal
+          - 
+    
+        * - attenuator_setpoint_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_ATTS_V``
+          - Variable RF attenuator controller setpoint voltage (V)
+          - normal
+          - 
+    
+        * - attenuator_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_ATT_V``
+          - Variable RF attenuator voltage (V)
+          - normal
+          - 
+    
+        * - input_phase_shift_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_PSI_V``
+          - Input phase shifter voltage (V)
+          - normal
+          - 
+    
+        * - mzm_bias_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_MZM_V``
+          - MZ modulator bias voltage (V)
+          - normal
+          - 
+    
+        * - voa_control_sp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_VOA_S``
+          - VOA controller setpoint (mA)
+          - normal
+          - 
+    
+        * - voa_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_VOA_V``
+          - VOA voltage (V)
+          - normal
+          - 
+    
+        * - int_mod_temp_sp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_STP_T``
+          - Temperature setpoint for internal modules (C)
+          - normal
+          - 
+    
+        * - board_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_T``
+          - Tx board temperature (C)
+          - normal
+          - 
+    
+        * - opt_assembly_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_OPT_T``
+          - Optical assembly temperature (C)
+          - normal
+          - 
+    
+        * - ext_rel_hum
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_EXT_H``
+          - External relative humidity (%)
+          - normal
+          - 
+    
+        * - ext_temp_hum_sens
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_EXTH_T``
+          - External temperature (humidity sensor) (C)
+          - normal
+          - 
+    
+        * - ext_press
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_EXT_P``
+          - External pressure (mbar)
+          - normal
+          - 
+    
+        * - ext_temp_press_sens
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_EXTP_T``
+          - External temperature (pressure sensor) (C)
+          - normal
+          - 
+    
+        * - int_rel_hum
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_INT_H``
+          - Interal relative humidity (%)
+          - normal
+          - 
+    
+        * - int_temp_hum_sens
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_INTH_T``
+          - Internal temperature (humidity sensor) (C)
+          - normal
+          - 
+    
+        * - int_press
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_INT_P``
+          - Internal pressure (mbar)
+          - normal
+          - 
+    
+        * - int_temp_press_sens
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TX_INTP_T``
+          - Internal temperature (pressure sensor) (C)
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
