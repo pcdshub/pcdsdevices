@@ -18,17 +18,59 @@
           - Kind
           - Notes
     
+        * - responsivity
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RESP``
+          - Responsivity in  V/W, unique for every power meter.
+          - normal
+          - 
+    
+        * - background_voltage
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:VOLT``
+          - Background voltage value used to calculate pulse energy.
+          - normal
+          - 
+    
+        * - auto_background_reset
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:RESET``
+          - Set to reset auto background voltage collection.
+          - normal
+          - 
+    
+        * - background_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:MODE``
+          - Can be manual or auto In manual mode, you can collect for a specified number of seconds. In auto mode, a buffer of automatically collected background voltages will be used to calculate the background voltage.
+          - normal
+          - 
+    
+        * - manual_collect
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:COLL``
+          - Start collecting background voltages for specified time.
+          - normal
+          - 
+    
+        * - manual_in_progress
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:MANUAL_COLLECTING``
+          - Manual collection currntly in progress
+          - normal
+          - 
+    
+        * - manual_collect_time
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:TIME``
+          - Time to collect background voltages for.
+          - normal
+          - 
+    
         * - raw_voltage
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:VOLT``
           - Raw readback from the power meter.
-          - normal
-          - 
-    
-        * - dimensionless
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:CALIB``
-          - Calibrated dimensionless readback for cross-meter comparisons.
           - normal
           - 
     
@@ -39,6 +81,20 @@
           - normal
           - 
     
+        * - calibrated_uj
+          - :class:`~pcdsdevices.signal.UnitConversionDerivedSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - wattage
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:WATT``
+          - Wattage measured by power meter, equals MJ times Beamrate.
+          - normal
+          - 
+    
         * - thermocouple
           - :class:`~pcdsdevices.sensors.TwinCATThermocouple`
           - 
@@ -46,38 +102,10 @@
           - normal
           - 
     
-        * - calib_offset
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:CALIB:OFFSET``
-          - Calibration parameter to offset raw voltage to zero for the calibrated quantities. Unique per power meter.
-          - config
-          - 
-    
-        * - calib_ratio
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:CALIB:RATIO``
-          - Calibration multiplier to convert to the dimensionless constant. Unique per power meter.
-          - config
-          - 
-    
-        * - calib_mj_ratio
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:CALIB:MJ_RATIO``
-          - Calibration multiplier to convert from the dimensionless constant to calibrated scientific quantity. Same for every power meter.
-          - config
-          - 
-    
         * - raw_voltage_buffer
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:VOLT_BUFFER``
           - Array of the last 1000 raw measurements. Polls faster than the EPICS updates.
-          - omitted
-          - 
-    
-        * - dimensionless_buffer
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:CALIB_BUFFER``
-          - Array of the last 1000 dimensionless measurements. Polls faster than the EPICS updates.
           - omitted
           - 
     
@@ -88,7 +116,24 @@
           - omitted
           - 
     
+        * - wattage_buffer
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:WATT_BUFFER``
+          - Array of the last 1000 wattages. Polls faster than the EPICS updates.
+          - omitted
+          - 
+    
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

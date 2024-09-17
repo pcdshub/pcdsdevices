@@ -42,6 +42,7 @@
     .. autoattribute:: metadata_keys
     .. autoattribute:: precision
     .. autoattribute:: read_access
+    .. autoattribute:: source_name
     .. autoattribute:: subscriptions
     .. autoattribute:: timestamp
     .. autoattribute:: tolerance

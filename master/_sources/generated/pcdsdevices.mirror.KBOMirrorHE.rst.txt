@@ -123,7 +123,25 @@
           - normal
           - 
     
+        * - mirror_temp_l
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:CHIN:L:TEMP``
+          - mirror temperature left chin guard
+          - normal
+          - 
+    
+        * - mirror_temp_r
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:CHIN:R:TEMP``
+          - mirror temperature right chin guard
+          - normal
+          - 
+    
 
+    
+    
+    
+    
     
     
     

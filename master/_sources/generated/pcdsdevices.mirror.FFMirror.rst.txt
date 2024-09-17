@@ -25,6 +25,13 @@
           - omitted
           - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
     
+        * - coating
+          - :class:`~pcdsdevices.mirror.TwinCATMirrorStripe`
+          - ``:COATING:STATE``
+          - Control of the coating states via saved positions.
+          - hinted
+          - 
+    
         * - x
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
           - ``:MMS:X``
@@ -89,6 +96,8 @@
           - 
     
 
+    
+    
     
     
     

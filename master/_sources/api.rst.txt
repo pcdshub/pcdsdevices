@@ -370,6 +370,7 @@ pcdsdevices.gon
     pcdsdevices.gon.BaseGon
     pcdsdevices.gon.GonWithDetArm
     pcdsdevices.gon.Goniometer
+    pcdsdevices.gon.HxrDiffractometer
     pcdsdevices.gon.Kappa
     pcdsdevices.gon.KappaXYZStage
     pcdsdevices.gon.SamPhi
@@ -460,6 +461,16 @@ pcdsdevices.keithley
     pcdsdevices.keithley.IM3L0_K2700
     pcdsdevices.keithley.K2700
     pcdsdevices.keithley.K6514
+
+pcdsdevices.lakeshore
+---------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.lakeshore.Heater
+    pcdsdevices.lakeshore.Lakeshore336
+    pcdsdevices.lakeshore.TemperatureSensor
 
 pcdsdevices.lamp_motion
 -----------------------
@@ -694,6 +705,7 @@ pcdsdevices.mirror
     pcdsdevices.mirror.KBOMirrorHEStates
     pcdsdevices.mirror.KBOMirrorStates
     pcdsdevices.mirror.MirrorInsertState
+    pcdsdevices.mirror.MirrorStripe2D2P
     pcdsdevices.mirror.MirrorStripe2D4P
     pcdsdevices.mirror.OMMotor
     pcdsdevices.mirror.OffsetMirror
@@ -774,6 +786,7 @@ pcdsdevices.pc
     :toctree: generated
 
     pcdsdevices.pc.PhotonCollimator
+    pcdsdevices.pc.PhotonCollimatorFDQ
 
 pcdsdevices.piezo
 -----------------
@@ -823,6 +836,7 @@ pcdsdevices.pneumatic
     :toctree: generated
 
     pcdsdevices.pneumatic.BeckhoffPneumatic
+    pcdsdevices.pneumatic.BeckhoffPneumaticFDQ
 
 pcdsdevices.positioner
 ----------------------
@@ -849,6 +863,7 @@ pcdsdevices.pseudopos
     pcdsdevices.pseudopos.SyncAxis
     pcdsdevices.pseudopos.delay_class_factory
     pcdsdevices.pseudopos.delay_instance_factory
+    pcdsdevices.pseudopos.is_strictly_increasing
 
 pcdsdevices.pulsepicker
 -----------------------
@@ -1070,6 +1085,7 @@ pcdsdevices.spectrometer
     pcdsdevices.spectrometer.HXRSpectrometer
     pcdsdevices.spectrometer.Kmono
     pcdsdevices.spectrometer.Mono
+    pcdsdevices.spectrometer.MonoGratingStates
     pcdsdevices.spectrometer.TMOSpectrometer
     pcdsdevices.spectrometer.TMOSpectrometerSOLIDATTStates
     pcdsdevices.spectrometer.VonHamos4Crystal
@@ -1220,6 +1236,7 @@ pcdsdevices.valve
 
     pcdsdevices.valve.GateValve
     pcdsdevices.valve.VCN
+    pcdsdevices.valve.VCN_OpenLoop
     pcdsdevices.valve.VCN_VAT590
     pcdsdevices.valve.VCN_VAT590_Status
     pcdsdevices.valve.VFS
