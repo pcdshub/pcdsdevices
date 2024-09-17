@@ -1,0 +1,226 @@
+﻿pcdsdevices.pneumatic.BeckhoffPneumaticFDQ
+==========================================
+
+.. currentmodule:: pcdsdevices.pneumatic
+
+.. autoclass:: BeckhoffPneumaticFDQ
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - limit_switch_in
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PLC:bInLimitSwitch``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - limit_switch_out
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PLC:bOutLimitSwitch``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - retract_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bRetractDigitalOutput``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - insert_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bInsertDigitalOutput``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - interlock_ok
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bInterlockOK``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - insert_ok
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bInsertEnable``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - retract_ok
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bRetractEnable``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - insert_signal
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CMD:IN``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - retract_signal
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CMD:OUT``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - busy
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bBusy``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - done
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bDone``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - reset
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bReset``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PLC:bError``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - error_id
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PLC:nErrorId``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - error_message
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PLC:sErrorMessage``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - position_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:nPositionState``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pneumatic.BeckhoffPneumatic`
+    
+        * - flow_meter
+          - :class:`~pcdsdevices.analog_signals.FDQ`
+          - 
+          - Device that measures PCW Flow Rate.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: callback
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: insert
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: subscriptions
+    
+    

@@ -18,6 +18,7 @@
     .. automethod:: get
     .. automethod:: read
     .. automethod:: read_configuration
+    .. automethod:: reset_buffer
     .. automethod:: set
     .. automethod:: trigger
     
