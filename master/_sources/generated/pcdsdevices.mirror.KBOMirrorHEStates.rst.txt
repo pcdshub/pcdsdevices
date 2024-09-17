@@ -102,6 +102,20 @@
           - normal
           - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
     
+        * - mirror_temp_l
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:CHIN:L:TEMP``
+          - mirror temperature left chin guard
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - mirror_temp_r
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:CHIN:R:TEMP``
+          - mirror temperature right chin guard
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
         * - us_rtd
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:RTD:BEND:US:1_RBV``
@@ -131,6 +145,10 @@
           - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
     
 
+    
+    
+    
+    
     
     
     

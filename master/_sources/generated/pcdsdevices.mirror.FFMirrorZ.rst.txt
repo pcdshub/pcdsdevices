@@ -46,20 +46,6 @@
           - hinted
           - Inherited from :class:`~pcdsdevices.mirror.FFMirror`
     
-        * - cool_flow1
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:FWM:1_RBV``
-          - Axilon Panel Flow Meter Loop 1
-          - normal
-          - Inherited from :class:`~pcdsdevices.mirror.FFMirror`
-    
-        * - cool_press
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:PRSM:1_RBV``
-          - Axilon Panel Pressure Meter
-          - normal
-          - Inherited from :class:`~pcdsdevices.mirror.FFMirror`
-    
         * - z
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
           - ``:MMS:Z``
@@ -67,24 +53,24 @@
           - hinted
           - 
     
-        * - chin_left_rtd
+        * - mirror_temp_l
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:CHIN:L:TEMP``
-          - 
+          - mirror temperature left chin guard
           - normal
           - 
     
-        * - chin_right_rtd
+        * - mirror_temp_r
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:CHIN:R:TEMP``
-          - 
+          - mirror temperature right chin guard
           - normal
           - 
     
-        * - chin_tail_rtd
+        * - mirror_temp_tail
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RTD:TAIL:TEMP``
-          - 
+          - mirror temperature tail
           - normal
           - 
     
@@ -113,6 +99,20 @@
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:ENC:PITCH:RMS``
           - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.FFMirror`
+    
+        * - cool_flow1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWM:1_RBV``
+          - Axilon Panel Flow Meter Loop 1
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.FFMirror`
+    
+        * - cool_press
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PRSM:1_RBV``
+          - Axilon Panel Pressure Meter
           - normal
           - Inherited from :class:`~pcdsdevices.mirror.FFMirror`
     
@@ -177,6 +177,7 @@
     .. rubric:: Attributes
 
     
+    .. autoattribute:: coating
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
     .. autoattribute:: cool_flow2

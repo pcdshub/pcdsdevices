@@ -270,6 +270,20 @@
           - config
           - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
     
+        * - save_spectrum
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - file_dest
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
         * - event_code (FCpt)
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{self._evr_pv}:TRIG{self._evr_ch}:EC_RBV``
@@ -371,6 +385,10 @@
     
     
     
+    
+    
+    
+    
 
     
     
@@ -385,6 +403,7 @@
     .. automethod:: get
     .. automethod:: read
     .. automethod:: read_configuration
+    .. automethod:: save_data
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger

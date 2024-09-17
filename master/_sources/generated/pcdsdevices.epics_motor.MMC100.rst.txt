@@ -189,8 +189,8 @@
           - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
     
         * - velocity_base
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``.VBAS``
+          - :class:`~ophyd.signal.Signal`
+          - 
           - 
           - omitted
           - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`

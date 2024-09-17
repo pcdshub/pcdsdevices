@@ -47,6 +47,7 @@
     .. autoattribute:: precision
     .. autoattribute:: pvname
     .. autoattribute:: read_access
+    .. autoattribute:: source_name
     .. autoattribute:: subscriptions
     .. autoattribute:: timeout
     .. autoattribute:: timestamp

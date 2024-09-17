@@ -270,7 +270,25 @@
           - config
           - 
     
+        * - save_spectrum
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - omitted
+          - 
+    
+        * - file_dest
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - omitted
+          - 
+    
 
+    
+    
+    
+    
     
     
     
@@ -358,6 +376,7 @@
     .. automethod:: get
     .. automethod:: read
     .. automethod:: read_configuration
+    .. automethod:: save_data
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger

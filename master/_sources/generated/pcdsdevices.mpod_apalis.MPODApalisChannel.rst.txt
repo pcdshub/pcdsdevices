@@ -19,9 +19,9 @@
           - Notes
     
         * - voltage
-          - :class:`~ophyd.signal.EpicsSignal`
+          - :class:`~pcdsdevices.signal.EpicsSignalEditMD`
           - ``:VoltageMeasure``
-          - MPOD Channel Voltage Measurement [V]
+          - MPOD Channel Voltage Measurement [V]. The value of this signal is the actual measured voltage of the channel. If you put to this signal it will change the channel's voltage setpoint.
           - normal
           - 
     
@@ -33,9 +33,9 @@
           - 
     
         * - current
-          - :class:`~ophyd.signal.EpicsSignal`
+          - :class:`~pcdsdevices.signal.EpicsSignalEditMD`
           - ``:CurrentMeasure``
-          - MPOD Channel Current Measure
+          - MPOD Channel Current Measurement [A]. The value of this signal is the actual measured current of the channel. If you put to this signal it will change the channel's current setpoint.
           - normal
           - 
     
@@ -53,7 +53,34 @@
           - normal
           - 
     
+        * - desc
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VoltageMeasure.DESC``
+          - MPOD Channel Description
+          - normal
+          - 
+    
+        * - last_voltage_set
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VoltageSet``
+          - Readback to verify the MPOD Channel Voltage Setpoint [V]. This is used to compare the measured readback voltage with the last value we set to the channel. To change the voltage, use the voltage signal or the set_voltage helper method.
+          - normal
+          - 
+    
+        * - is_trip
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:isTrip``
+          - True if MPOD channel is tripped.
+          - omitted
+          - 
+    
 
+    
+    
+    
+    
+    
+    
     
     
     
@@ -102,5 +129,6 @@
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: subscriptions
+    .. autoattribute:: voltage_setpoint
     
     

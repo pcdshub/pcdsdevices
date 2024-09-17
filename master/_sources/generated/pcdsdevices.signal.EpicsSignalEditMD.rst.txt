@@ -57,6 +57,7 @@
     .. autoattribute:: setpoint_alarm_status
     .. autoattribute:: setpoint_pvname
     .. autoattribute:: setpoint_ts
+    .. autoattribute:: source_name
     .. autoattribute:: subscriptions
     .. autoattribute:: timeout
     .. autoattribute:: timestamp

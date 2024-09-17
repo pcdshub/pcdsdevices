@@ -1,25 +1,23 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.signal.PytmcSignalRO &mdash; PCDS Devices 8.5.1.dev30+gd6e98430 documentation</title>
+  <title>pcdsdevices.signal.PytmcSignalRO &mdash; PCDS Devices 8.6.1.dev172+gaf3a7e77 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=becdb24f"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=7a7007f6"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -38,9 +36,6 @@
           <a href="../index.html" class="icon icon-home">
             PCDS Devices
           </a>
-              <div class="version">
-                8.5.1.dev30+gd6e98430
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -80,6 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ipm">pcdsdevices.ipm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-jet">pcdsdevices.jet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-keithley">pcdsdevices.keithley</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lakeshore">pcdsdevices.lakeshore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lamp-motion">pcdsdevices.lamp_motion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-btps">pcdsdevices.lasers.btps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-counters">pcdsdevices.lasers.counters</a></li>
@@ -236,20 +232,20 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.signal.PytmcSignalRO.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_string=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form='time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_monitor=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.PytmcSignalRO.get" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_string=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">form='time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_monitor=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.PytmcSignalRO.get" title="Link to this definition"></a></dt>
 <dd><p>Get the readback value through an explicit call to EPICS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Explicitly limit count for array data</p></li>
-<li><p><strong>as_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Get a string representation of the value, defaults to as_string
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Explicitly limit count for array data</p></li>
+<li><p><strong>as_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Get a string representation of the value, defaults to as_string
 from this signal, optional</p></li>
-<li><p><strong>as_numpy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Use numpy array as the return type for array data.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – maximum time to wait for value to be received.
+<li><p><strong>as_numpy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Use numpy array as the return type for array data.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – maximum time to wait for value to be received.
 (default = 0.5 + log10(count) seconds)</p></li>
-<li><p><strong>use_monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – to use value from latest monitor callback or to make an
+<li><p><strong>use_monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – to use value from latest monitor callback or to make an
 explicit CA call for the value. (default: True)</p></li>
-<li><p><strong>connection_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – If not already connected, allow up to <a class="reference internal" href="#pcdsdevices.signal.PytmcSignalRO.connection_timeout" title="pcdsdevices.signal.PytmcSignalRO.connection_timeout"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">connection_timeout</span></code></a> seconds
+<li><p><strong>connection_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – If not already connected, allow up to <a class="reference internal" href="#pcdsdevices.signal.PytmcSignalRO.connection_timeout" title="pcdsdevices.signal.PytmcSignalRO.connection_timeout"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">connection_timeout</span></code></a> seconds
 for the connection to complete.</p></li>
 <li><p><strong>form</strong> (<em>{'time'</em><em>, </em><em>'ctrl'}</em>) – PV form to request</p></li>
 </ul>
@@ -307,12 +303,12 @@ subclasses of <code class="docutils literal notranslate"><span class="pre">Epics
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auto_monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, update cached value from EPICS CA monitor callbacks.
+<li><p><strong>auto_monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, update cached value from EPICS CA monitor callbacks.
 If <code class="docutils literal notranslate"><span class="pre">False</span></code>, request new value from EPICS each time get() is called.</p></li>
-<li><p><strong>connection_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Time (seconds) allocated for establishing a connection with the
+<li><p><strong>connection_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Time (seconds) allocated for establishing a connection with the
 IOC.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Total time budget (seconds) for reading, not including connection time.</p></li>
-<li><p><strong>write_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Time (seconds) allocated for writing, not including connection time.
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Total time budget (seconds) for reading, not including connection time.</p></li>
+<li><p><strong>write_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Time (seconds) allocated for writing, not including connection time.
 The write_timeout is very different than the connection and read timeouts
 above. It relates to how long an action takes to complete. Any
 default value we choose here is likely to cause problems—either
@@ -322,7 +318,7 @@ None, waits forever.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If called after <code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalBase</span></code> has been instantiated for
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.13)"><strong>RuntimeError</strong></a> – If called after <code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalBase</span></code> has been instantiated for
     the first time.</p>
 </dd>
 </dl>
@@ -435,8 +431,13 @@ None, waits forever.</p></li>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.PytmcSignalRO.source_name">
+<span class="sig-name descname"><span class="pre">source_name</span></span><a class="headerlink" href="#pcdsdevices.signal.PytmcSignalRO.source_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.signal.PytmcSignalRO.subscriptions">
-<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'meta',</span> <span class="pre">'value'})</span></em><a class="headerlink" href="#pcdsdevices.signal.PytmcSignalRO.subscriptions" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'meta',</span> <span class="pre">'value'})</span></em><a class="headerlink" href="#pcdsdevices.signal.PytmcSignalRO.subscriptions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

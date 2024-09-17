@@ -25,6 +25,13 @@
           - omitted
           - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
     
+        * - coating
+          - :class:`~pcdsdevices.mirror.TwinCATMirrorStripe`
+          - ``:COATING:STATE``
+          - Control of the coating states via saved positions.
+          - hinted
+          - 
+    
         * - x_up
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
           - ``:MMS:XUP``
@@ -159,6 +166,8 @@
           - 
     
 
+    
+    
     
     
     

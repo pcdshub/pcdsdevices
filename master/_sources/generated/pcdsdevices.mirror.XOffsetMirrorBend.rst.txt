@@ -18,6 +18,13 @@
           - Kind
           - Notes
     
+        * - coating
+          - :class:`~pcdsdevices.mirror.TwinCATMirrorStripe`
+          - ``:COATING:STATE``
+          - Control of the coating states via saved positions.
+          - hinted
+          - 
+    
         * - lightpath_summary
           - :class:`~pcdsdevices.signal.SummarySignal`
           - 
@@ -201,6 +208,8 @@
           - 
     
 
+    
+    
     
     
     
