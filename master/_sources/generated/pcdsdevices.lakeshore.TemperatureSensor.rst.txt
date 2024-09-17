@@ -1,0 +1,93 @@
+﻿pcdsdevices.lakeshore.TemperatureSensor
+=======================================
+
+.. currentmodule:: pcdsdevices.lakeshore
+
+.. autoclass:: TemperatureSensor
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - input_name (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:GET_INNAME_{channel}``
+          - 
+          - config
+          - 
+    
+        * - temp (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:GET_TEMP_{channel}``
+          - 
+          - normal
+          - 
+    
+        * - units (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:GET_UNITS_{channel}``
+          - 
+          - normal
+          - 
+    
+        * - sensor_type (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:GET_SENSOR_{channel}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

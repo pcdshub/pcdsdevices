@@ -25,6 +25,13 @@
           - omitted
           - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
     
+        * - grating_states
+          - :class:`~pcdsdevices.spectrometer.MonoGratingStates`
+          - ``:GRATING:STATE``
+          - mono grating states g_h
+          - normal
+          - 
+    
         * - m_pi
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
           - ``:MMS:M_PI``
@@ -208,6 +215,8 @@
           - 
     
 
+    
+    
     
     
     
