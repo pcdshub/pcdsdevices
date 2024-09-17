@@ -116,6 +116,13 @@
           - omitted
           - 
     
+        * - qpc_name
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VPCNAME``
+          - Quad Ion Pump Controller Name
+          - config
+          - 
+    
         * - qpc_pumpsize
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:PUMPSIZE``
@@ -138,6 +145,8 @@
           - 
     
 
+    
+    
     
     
     

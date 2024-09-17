@@ -177,6 +177,7 @@
     .. rubric:: Attributes
 
     
+    .. autoattribute:: coating
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
     .. autoattribute:: cool_flow2
