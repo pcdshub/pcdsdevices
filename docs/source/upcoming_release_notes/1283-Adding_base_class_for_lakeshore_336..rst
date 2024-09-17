@@ -29,4 +29,4 @@ Maintenance
 
 Contributors
 ------------
-- ctsoi
+- c-tsoi
