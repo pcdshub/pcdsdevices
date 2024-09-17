@@ -1,7 +1,7 @@
 bluesky>=1.6.4
 happi
 jsonschema
-lightpath>=1.0.0
+lightpath>=1.0.5
 numpy
 ophyd>=1.7.0
 pcdscalc>=0.2.0

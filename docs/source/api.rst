@@ -273,11 +273,13 @@ pcdsdevices.epics_motor
     pcdsdevices.epics_motor.OffsetIMSWithPreset
     pcdsdevices.epics_motor.OffsetMotor
     pcdsdevices.epics_motor.PCDSMotorBase
+    pcdsdevices.epics_motor.PI_M824
     pcdsdevices.epics_motor.PMC100
     pcdsdevices.epics_motor.SmarAct
     pcdsdevices.epics_motor.SmarActEncodedTipTilt
     pcdsdevices.epics_motor.SmarActOpenLoop
     pcdsdevices.epics_motor.SmarActOpenLoopPositioner
+    pcdsdevices.epics_motor.SmarActPicoscale
     pcdsdevices.epics_motor.SmarActTipTilt
 
 pcdsdevices.eps
@@ -599,6 +601,7 @@ pcdsdevices.lic_2d_tmo
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.lic_2d_tmo.LaserCouplingStates
     pcdsdevices.lic_2d_tmo.TMOLaserInCouplingTwoDimension
 
 pcdsdevices.light_control
@@ -691,6 +694,7 @@ pcdsdevices.mirror
     pcdsdevices.mirror.KBOMirrorHEStates
     pcdsdevices.mirror.KBOMirrorStates
     pcdsdevices.mirror.MirrorInsertState
+    pcdsdevices.mirror.MirrorStripe2D4P
     pcdsdevices.mirror.OMMotor
     pcdsdevices.mirror.OffsetMirror
     pcdsdevices.mirror.OpticsPitchNotepad
@@ -698,11 +702,13 @@ pcdsdevices.mirror
     pcdsdevices.mirror.PointingMirror
     pcdsdevices.mirror.TwinCATMirrorStripe
     pcdsdevices.mirror.XOffsetMirror
+    pcdsdevices.mirror.XOffsetMirror2D4PState
     pcdsdevices.mirror.XOffsetMirrorBend
     pcdsdevices.mirror.XOffsetMirrorNoBend
     pcdsdevices.mirror.XOffsetMirrorRTDs
     pcdsdevices.mirror.XOffsetMirrorState
     pcdsdevices.mirror.XOffsetMirrorStateCool
+    pcdsdevices.mirror.XOffsetMirrorStateCoolNoBend
     pcdsdevices.mirror.XOffsetMirrorSwitch
     pcdsdevices.mirror.XOffsetMirrorXYState
 
@@ -881,6 +887,7 @@ pcdsdevices.pv_positioner
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.pv_positioner.OnePVMotor
     pcdsdevices.pv_positioner.PVPositionerComparator
     pcdsdevices.pv_positioner.PVPositionerDone
     pcdsdevices.pv_positioner.PVPositionerIsClose
@@ -1066,7 +1073,9 @@ pcdsdevices.spectrometer
     pcdsdevices.spectrometer.TMOSpectrometer
     pcdsdevices.spectrometer.TMOSpectrometerSOLIDATTStates
     pcdsdevices.spectrometer.VonHamos4Crystal
+    pcdsdevices.spectrometer.VonHamos6Crystal
     pcdsdevices.spectrometer.VonHamosCrystal
+    pcdsdevices.spectrometer.VonHamosCrystal_2
     pcdsdevices.spectrometer.VonHamosFE
     pcdsdevices.spectrometer.VonHamosFER
 
@@ -1147,6 +1156,15 @@ pcdsdevices.timetool
 
     pcdsdevices.timetool.Timetool
     pcdsdevices.timetool.TimetoolWithNav
+
+pcdsdevices.tmo_ip1
+-------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.tmo_ip1.CalibrationAxis
+    pcdsdevices.tmo_ip1.SCaFoil
 
 pcdsdevices.tpr
 ---------------

@@ -1,6 +1,138 @@
 Release History
 ###############
 
+
+v8.6.0 (2024-09-16)
+===================
+
+Device Features
+---------------
+- Lcls2LaserTiming: Reduce timeout on moves from 2 seconds to 0.2 seconds
+- Added HI_DI PV to PIPPLC class to show high voltage input for pump diagnostics
+
+Bugfixes
+--------
+- pos_ao PV in VCN class no longer reads 'connection timed out' in typhos screens
+
+Maintenance
+-----------
+- Adjusted docs template headers to make them more intuitive
+- Switch build recipes to rely on lightpath >= 1.0.5 (and lightpath-base in conda)
+  to avoid unnecessary ui dependencies.
+
+Contributors
+------------
+- jozamudi
+- slactjohnson
+- tangkong
+- zllentz
+
+
+
+v8.5.0 (2024-08-22)
+===================
+
+Features
+--------
+- `MstaEnum`: Enum describing the motor record MSTA bits.
+- `NewportMstaEnum`: Enum describing the special Newport motor record MSTA bits.
+- `IMSMstaEnum`: Enum describing the special IMS motor record MSTA bits.
+
+Device Updates
+--------------
+- Includes new PV RBVs for Picoscale at motor level: `pico_present`, `pico_exists`, `pico_sig_qual`, `pico_enable`.
+- Includes new PV RBVs for Picoscale at controller level: `pico_stable`, `pico_name`, `pico_wmin` (working distance min), `pico_wmax` (working distance max).
+- Add state mover to LI2K4.
+- Added ``RST_SW`` pv to Ebara EVA pumps. This PV is used to reset alarm errors.
+- Added ``PI_M824`` motor class for MEC hexapod motors.
+- `TprTrigger`: change delay_setpoint and width_setpoint to kind=config.
+- `TprTrigger`: Make LCLS2 timing the default timing_mode.
+- `XOffsetMirrorNoBend` in mirror.py gets 3 new cooling readout components.
+- `Mono` in spectrometer.py gets 4 new RTD components and re-named RTDs 1-8. Also, Made cooling component names consistent with mirror cooling component names.
+- ST1K4 can move freely without automode.
+- `EpicsMotorInterface`: Add a "raw" MSTA value, as well as the interpreted
+  values as a dictionary. Adds a "homed" property based on this. Uses a "generic"
+  MstaEnum class.
+- `Newport`: Add a "raw" MSTA value, as well as the interpreted values as a
+  dictionary. Adds a "homed" property based on this. Uses the `NewportMstaEnum`
+  class.
+- `IMS`: Add a "raw" MSTA value, as well as the interpreted values as a
+  dictionary. Adds a "homed" property based on this. Uses the `IMSMstaEnum`
+  class.
+- `btps.BtpsState`: add LS3, LS4, and LS6
+- `btps.DestinationConfig`: add LS3, LS4, and LS6
+- `btms_config.SourcePosition`: add LS3, LS4, and LS6
+- `btms_config.valid_sources`: add LS3, LS4, and LS6
+- UI file updates to support above device updates
+- `sqr1`: overwrite SQR1Axis set method to avoid waiting and setpoints synchronization.
+- `FFMirrorZ` updated to read out flow sensors for ``MR4K4`` and ``MR5K4``.
+- `lasers.btms_config.SourcePosition`: Add a new method to get the happi device
+    name, turn the PV name into a dictionary rather than generating from bay
+    number.
+- `IMS`: Move VBAS and VMAX signals into EpicsMotorInterface parent class.
+- `EpicsMotorInterface`: Update tab_whitelist for ``.VBAS`` and ``.VMAX`` signals.
+
+New Devices
+-----------
+- added `SmarActPicoscale` subclass of SmarAct.
+- adds `MirrorStripe2D4P` for coating states with 2 dimensional position state movers with PMPS.
+- adds `XOffsetMirror2D4PState` for OffsetMirrors with 2D 4Position coating states.
+- adding new device PA1K4-PF
+- Adds `OnePvMotor`: a pv_positioner that simply writes to and reads from a single PV.
+  This could be useful if you encounter a reason to use the motor interface on
+  non-motor PVs.
+- `XOffsetMirrorStateCoolNoBend` is added to support ``MR1K4``.
+- `VonHamos6Crystal`: New MFX 6-crystals spectrometer running on plc-mfx-motion. Contains 6 crystals motions + 3 translations and 1 rotation for the base.
+- `VonHamosCrystal_2`: interface to the motor stack of a single crystal in the spectrometer.
+
+Bugfixes
+--------
+- Overwrite ``velocity_max`` and ``velocity_base`` signals for ``Newport``
+  class to fix a bug that prevented these motors from moving.
+- `BtpsState``: Fix mis-match of LS3 and LS4 PVs.
+- Prevent some devices from creating threads at high frequency when
+  trying to get the lightpath state.  These devices classes include
+  `XOffsetMirrorXYState`, `AttenuatorSXR_Ladder`,
+  `AttenuatorSXR_LadderTwoBladeLBD`, `AT2L0`, `XCSLODCM`, and `XPPLODCM`
+- `SmarActEncodedTipTilt``: Fix typo in tilt axis instantiation.
+- Replace the broken motor "disabled" (.DISP) typhos widget with a bitmask toggle button.
+- Properly fill the `sys` keyword argument in `TprTrigger.ns_delay_scan`
+- `btms_config.DestinationPosition`: fix description of RIX IP3
+- `btms_config.valid_destinations`: fix description of RIX IP3
+- Implement a workaround for an issue where `Lcls2LaserTiming` could not be scanned
+  with small scan steps.
+- Remove two targets from the tmo spectrometer's foil attenuator.
+  These were removed from the PLC/IOC.
+  This fixes an issue where the state device was not moveable.
+- Fix an issue with classes like `IMS` and `Newport` where calling
+  ``set_current_position`` on a position outside of the user limits
+  would fail, rather than change the limits to support the new
+  offsets.
+
+Maintenance
+-----------
+- Allow motion uis to expand vertically once this functionality gets added to typhos.
+- Use sympy instead of pint for unit conversions for simpler
+  maintainability.
+- Various CI tweaks due to numpy 2.0's chaos.
+- Modifies entrypoint tests to be forward-compatible with py3.12 entrypoint API.
+- Unpins numpy in CI, build incompatibility has been fixed upstream.
+
+Contributors
+------------
+- aberges-SLAC
+- baljamal
+- ghalym
+- jozamudi
+- nrwslac
+- rcjwoods
+- slactjohnson
+- tangkong
+- tongju12
+- vespos
+- zllentz
+
+
 v8.4.0 (2024-04-16)
 ===================
 
