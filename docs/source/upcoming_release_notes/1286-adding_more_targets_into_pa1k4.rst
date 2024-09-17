@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- Adding two more targets in device
+- CalibrationAxis from 5 -> 7 states
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- @tongju12
+- tongju12
