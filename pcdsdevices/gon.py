@@ -15,7 +15,6 @@ from .epics_motor import IMS, BeckhoffAxis
 from .interface import BaseInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
-from .signal import PytmcSignal
 from .sim import FastMotor
 from .utils import get_status_float, get_status_value
 
@@ -657,6 +656,8 @@ eta, kappa, phi: {eta}, {kappa}, {phi} [{angle_units}]
 e_eta, e_chi, e_phi: {e_eta}, {e_chi}, {e_phi}
 x, y, z: {x}, {y}, {z} [{units}]
 """
+
+
 class HxrDiffractometer(BaseInterface, Device):
     """
     Class for diffractometer.
@@ -672,13 +673,14 @@ class HxrDiffractometer(BaseInterface, Device):
 
     base_h = Cpt(BeckhoffAxis, 'BASE_H', kind='normal')
     base_v = Cpt(BeckhoffAxis, 'BASE_V', kind='normal')
-    th = Cpt(BeckhoffAxis, 'CHI', kind='normal')
-    two_th = Cpt(BeckhoffAxis, 'TH', kind='normal')
-    chi = Cpt(BeckhoffAxis, '2TH', kind='normal')
+    th = Cpt(BeckhoffAxis, 'TH', kind='normal')
+    tth = Cpt(BeckhoffAxis, 'TTH', kind='normal')
+    chi = Cpt(BeckhoffAxis, 'CHI', kind='normal')
 
     tab_component_names = True
+
     def __init__(self, prefix, name, **kwargs):
-        super().__init__(prefix, name = name, **kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class SimSampleStage(KappaXYZStage):
