@@ -863,6 +863,8 @@ class VCN_VAT590(BaseInterface, Device):
 class VFV(Device):
     """
     VFV = Variable Frequency Valves
+
+    It corresponds to ST_VCN in the lcls-twincat-vacuum library.
     """
     position_control = Cpt(
         EpicsSignalWithRBV,
