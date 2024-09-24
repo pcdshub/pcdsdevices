@@ -15,7 +15,9 @@ Device Features
 
 New Devices
 -----------
-- VFV
+- VFV: similar to VCN w/ the removal of 'open' and 'position_readback'
+  commands. The 'state' member vairable has been renamed to 'control_mode' and
+  the associated doc string was been updated.
 
 Bugfixes
 --------
@@ -27,4 +29,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- jozamudi
