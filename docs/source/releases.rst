@@ -5,6 +5,11 @@ Release History
 v8.6.0 (2024-09-16)
 ===================
 
+API Breaks
+----------
+- Removed ``qpc_name`` (``:VPCNAME`` PV).
+  This will be brought back in the next release.
+
 Device Features
 ---------------
 - Lcls2LaserTiming: Reduce timeout on moves from 2 seconds to 0.2 seconds
