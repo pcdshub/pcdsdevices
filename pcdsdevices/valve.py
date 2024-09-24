@@ -858,3 +858,41 @@ class VCN_VAT590(BaseInterface, Device):
     )
 
     status = Cpt(VCN_VAT590_Status, '',)
+
+
+class VFV(Device):
+    """
+    VFV = Variable Controlled Needle valve
+
+    """
+    position_control = Cpt(
+        EpicsSignalWithRBV,
+        ':POS_REQ',
+        kind='normal',
+        doc=('requested positition to control the valve '
+             '0-100%')
+    )
+    upper_limit = Cpt(
+        EpicsSignalWithRBV,
+        ':Limit',
+        kind='normal',
+        doc=('max upper limit position to open the valve '
+             '0-100%')
+    )
+    interlock_ok = Cpt(
+        EpicsSignalRO,
+        ':ILK_OK_RBV',
+        kind='normal',
+        doc='interlock ok status'
+    )
+    control_mode = Cpt(
+        EpicsSignalWithRBV,
+        ':STATE',
+        kind='normal',
+        doc='Open mode will open valve to upper limit'
+    )
+    pos_ao = Cpt(
+        EpicsSignalRO,
+        ':POS_AO_R_RBV',
+        kind='normal'
+    )
