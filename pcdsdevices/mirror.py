@@ -790,9 +790,9 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
 
 class MirrorStripe2D2P(TwinCATMirrorStripe):
     """
-    2D Coating states with 4 positons and PMPS.
+    2D Coating states with 2 positons and PMPS.
 
-    Currently services MR1L0.
+    Currently services MR1K1.
     """
     config = UpCpt(state_count=2, motor_count=2)
 
