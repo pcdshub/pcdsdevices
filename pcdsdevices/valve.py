@@ -862,8 +862,7 @@ class VCN_VAT590(BaseInterface, Device):
 
 class VFV(Device):
     """
-    VFV = Variable Controlled Needle valve
-
+    VFV = Variable Frequency Valves
     """
     position_control = Cpt(
         EpicsSignalWithRBV,
