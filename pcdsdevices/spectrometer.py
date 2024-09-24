@@ -252,11 +252,19 @@ class VonHamos6Crystal(BaseInterface, GroupDevice):
     x_top = Cpt(BeckhoffAxis, ':T3', kind='normal')
 
 
+class MonoGratingStates(TwinCATStatePMPS):
+    """
+    SP1K1 Mono Grating States Axis G_H with PMPS.
+
+    """
+    config = UpCpt(state_count=6)
+
+
 class Mono(BaseInterface, GroupDevice, LightpathMixin):
     """
     L2S-I NEH 2.X Monochromator
 
-    Axilon mechatronic desig with LCLS-II Beckhoff motion architecture.
+    Axilon mechatronic design with LCLS-II Beckhoff motion architecture.
 
     Parameters:
     -----------
@@ -268,7 +276,9 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
     """
     # UI representation
     _icon = 'fa.minus-square'
-
+    # G_H states
+    grating_states = Cpt(MonoGratingStates, ':GRATING:STATE', kind='normal',
+                         doc="mono grating states g_h")
     # Motor components: can read/write positions
     m_pi = Cpt(BeckhoffAxisNoOffset, ':MMS:M_PI', kind='normal',
                doc='mirror pitch [urad]')
