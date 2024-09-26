@@ -1,4 +1,4 @@
-848 create new VFV device class
+848 create new VCN_OpenLoop device class
 #################
 
 API Breaks
@@ -15,8 +15,8 @@ Device Features
 
 New Devices
 -----------
-- VFV: similar to VCN w/ the removal of 'open' and 'position_readback'
-  commands. The 'state' member vairable has been renamed to 'control_mode' and
+- VCN_OpenLoop: similar to VCN w/ the removal of 'open' and 'position_readback'
+  commands. The 'state' member variable has been renamed to 'control_mode' and
   the associated doc string was been updated.
 
 Bugfixes

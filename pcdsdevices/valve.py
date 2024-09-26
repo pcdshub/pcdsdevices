@@ -860,10 +860,11 @@ class VCN_VAT590(BaseInterface, Device):
     status = Cpt(VCN_VAT590_Status, '',)
 
 
-class VFV(Device):
+class VCN_OpenLoop(Device):
     """
-    VFV = Variable Frequency Valves
+    VCN = Variable Controlled Needle
 
+    VCN w/ open loop control
     It corresponds to ST_VCN in the lcls-twincat-vacuum library.
     """
     position_control = Cpt(
