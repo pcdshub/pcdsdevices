@@ -389,7 +389,7 @@ class PPMPowerMeter(BaseInterface, Device):
     background_collect = Cpt(PytmcSignal, ':BACK:COLL', io='io', kind='normal', doc='Start collecting background voltages for specified time.')
     set_metadata(background_collect, dict(variety='command-proc', value=1))
 
-    background_collect_time = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal', doc='Time to collect background voltages for.')
+    background_collect_time = Cpt(PytmcSignal, ':BACK:TIME', io='io', kind='normal', doc='Time to collect background voltages for.')
 
     raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal',
                       doc='Raw readback from the power meter.')
@@ -398,7 +398,7 @@ class PPMPowerMeter(BaseInterface, Device):
                         doc='Calibrated absolute measurement of beam '
                             'power in physics units.')
 
-    wattage = Cpt(PytmcSignal, ':WATT', io='i', kind='omitted', doc='Wattage measured by power meter, equals MJ times Beamrate.')
+    wattage = Cpt(PytmcSignal, ':WATT', io='i', kind='normal', doc='Wattage measured by power meter, equals MJ times Beamrate.')
 
     thermocouple = Cpt(TwinCATThermocouple, '', kind='normal',
                        doc='Thermocouple on the power meter holder.')
