@@ -5,6 +5,7 @@ from typing import Callable, Optional
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.pv_positioner import PVPositioner
+from ophyd.signal import EpicsSignal
 
 from .interface import FltMvInterface
 from .signal import InternalSignal
@@ -271,3 +272,20 @@ class PVPositionerNoInterrupt(PVPositioner):
             )
         else:
             return super().move(position, wait=wait, timeout=timeout, moved_cb=moved_cb)
+
+
+class OnePVMotor(PVPositionerDone):
+    """
+    The simplest possible pv_positioner: a single PV.
+
+    You can use this when you want to control an EpicsSignal as if it was
+    a positioner.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV to control
+    name : str, keyword-only
+        A name to refer to this positioner.
+    """
+    setpoint = Cpt(EpicsSignal, "")

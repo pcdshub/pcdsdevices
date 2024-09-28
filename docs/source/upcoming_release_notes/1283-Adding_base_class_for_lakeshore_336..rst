@@ -1,4 +1,4 @@
-1231 add LI2K4 state mover
+1283 Adding base class for lakeshore 336.
 #################
 
 API Breaks
@@ -7,7 +7,9 @@ API Breaks
 
 Features
 --------
-- Add state mover to LI2K4
+-Base class for lakeshore 336
+-Class for Temperature Sensor
+-Class for Heater
 
 Device Updates
 --------------
@@ -15,7 +17,7 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- Lakeshore 336
 
 Bugfixes
 --------
@@ -27,4 +29,4 @@ Maintenance
 
 Contributors
 ------------
-- @tongju12
+- c-tsoi

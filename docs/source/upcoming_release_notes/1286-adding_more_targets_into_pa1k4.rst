@@ -1,17 +1,17 @@
-1241 Add default TprTrigger timing mode
+1286 adding more targets into pa1k4
 #################
 
 API Breaks
 ----------
 - N/A
 
-Features
---------
+Library Features
+----------------
 - N/A
 
-Device Updates
---------------
-- TprTrigger: Make LCLS2 timing the default timing_mode
+Device Features
+---------------
+- CalibrationAxis from 5 -> 7 states
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- slactjohnson
+- tongju12

@@ -166,7 +166,10 @@ class SourcePosition(str, enum.Enum):
         """
         return {
             SourcePosition.ls1: "Bay 1",
-            SourcePosition.ls5: "Bay 3",
+            SourcePosition.ls3: "Bay 2 1um",
+            SourcePosition.ls4: "Bay 2 800nm",
+            SourcePosition.ls5: "Bay 3 800nm",
+            SourcePosition.ls6: "Bay 3 1um",
             SourcePosition.ls8: "Bay 4",
         }.get(self, "Unknown")
 
@@ -190,25 +193,64 @@ class SourcePosition(str, enum.Enum):
         """The near field camera prefix associated with this source position."""
         return {
             SourcePosition.ls1: 1,
+            SourcePosition.ls3: 2,
+            SourcePosition.ls4: 2,
             SourcePosition.ls5: 3,
+            SourcePosition.ls6: 3,
             SourcePosition.ls8: 4,
+        }.get(self, None)
+
+    @property
+    def nf_camera_device(self) -> str | None:
+        """
+        The near field camera happi entry associated with this source position.
+        """
+        return {
+            SourcePosition.ls1: "las_lhn_bay1_cam_nf",
+            SourcePosition.ls3: "las_lhn_bay2_amphos_nf",
+            SourcePosition.ls4: "las_lhn_bay2_amphos_nf",
+            SourcePosition.ls5: "las_lhn_bay3_amphos_nf",
+            SourcePosition.ls6: "las_lhn_bay3_amphos_nf",
+            SourcePosition.ls8: "las_lhn_bay4_cam_nf",
+        }.get(self, None)
+
+    @property
+    def ff_camera_device(self) -> str | None:
+        """
+        The far field camera happi entry associated with this source position.
+        """
+        return {
+            SourcePosition.ls1: "las_lhn_bay1_cam_ff",
+            SourcePosition.ls3: "las_lhn_bay2_amphos_ff",
+            SourcePosition.ls4: "las_lhn_bay2_amphos_ff",
+            SourcePosition.ls5: "las_lhn_bay3_amphos_ff",
+            SourcePosition.ls6: "las_lhn_bay3_amphos_ff",
+            SourcePosition.ls8: "las_lhn_bay4_cam_ff",
         }.get(self, None)
 
     @property
     def near_field_camera_prefix(self) -> str | None:
         """The near field camera prefix associated with this source position."""
-        bay = self.bay
-        if bay is not None:
-            return f"LAS:LHN:BAY{bay}:CAM:01:"
-        return None
+        return {
+            SourcePosition.ls1: "LAS:LHN:BAY1:CAM:01:",
+            SourcePosition.ls3: "LAS:LHN:BAY2:CAM:01:",
+            SourcePosition.ls4: "LAS:LHN:BAY2:CAM:01:",
+            SourcePosition.ls5: "LAS:LHN:BAY3:CAM:01:",
+            SourcePosition.ls6: "LAS:LHN:BAY3:CAM:01:",
+            SourcePosition.ls8: "LAS:LHN:BAY4:CAM:01:",
+        }.get(self, None)
 
     @property
     def far_field_camera_prefix(self) -> str | None:
         """The far field camera prefix associated with this source position."""
-        bay = self.bay
-        if bay is not None:
-            return f"LAS:LHN:BAY{bay}:CAM:02:"
-        return None
+        return {
+            SourcePosition.ls1: "LAS:LHN:BAY1:CAM:02:",
+            SourcePosition.ls3: "LAS:LHN:BAY2:CAM:02:",
+            SourcePosition.ls4: "LAS:LHN:BAY2:CAM:02:",
+            SourcePosition.ls5: "LAS:LHN:BAY3:CAM:02:",
+            SourcePosition.ls6: "LAS:LHN:BAY3:CAM:02:",
+            SourcePosition.ls8: "LAS:LHN:BAY4:CAM:02:",
+        }.get(self, None)
 
 
 class DestinationPosition(str, enum.Enum):
@@ -258,7 +300,7 @@ class DestinationPosition(str, enum.Enum):
         # NOTE: Add new descriptions here.
         return {
             DestinationPosition.ld1: "Diagnostics",
-            DestinationPosition.ld2: "TMO IP3",
+            DestinationPosition.ld2: "RIX IP3",
             DestinationPosition.ld4: "RIX ChemRIXS",
             DestinationPosition.ld6: "RIX QRIXS",
             DestinationPosition.ld8: "TMO IP1",
@@ -332,13 +374,16 @@ PORT_SPACING_MM = 215.9  # 8.5 in
 # PV source index (bay) to installed LS port
 valid_sources: tuple[SourcePosition, ...] = (
     SourcePosition.ls1,  # Bay 1
-    SourcePosition.ls5,  # Bay 3
+    SourcePosition.ls3,  # Bay 2 1um
+    SourcePosition.ls4,  # Bay 2 800nm
+    SourcePosition.ls5,  # Bay 3 800nm
+    SourcePosition.ls6,  # Bay 3 1um
     SourcePosition.ls8,  # Bay 4
 )
 # PV destination index (bay) to installed LD port
 valid_destinations: tuple[DestinationPosition, ...] = (
     DestinationPosition.ld1,   # Diagnostics box
-    DestinationPosition.ld2,   # TMO IP3
+    DestinationPosition.ld2,   # RIX IP3
     DestinationPosition.ld4,   # RIX ChemRIXS
     DestinationPosition.ld6,   # RIX QRIXS
     DestinationPosition.ld8,   # TMO IP1
