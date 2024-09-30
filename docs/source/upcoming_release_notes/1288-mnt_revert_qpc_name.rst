@@ -1,16 +1,16 @@
-1226 bug_tprtrigger_fcpt
+1288 mnt_revert_qpc_name
 ########################
 
 API Breaks
 ----------
 - N/A
 
-Features
---------
+Library Features
+----------------
 - N/A
 
-Device Updates
---------------
+Device Features
+---------------
 - N/A
 
 New Devices
@@ -19,12 +19,12 @@ New Devices
 
 Bugfixes
 --------
-- Properly fill the `sys` keyword argument in ``TprTrigger.ns_delay_scan``
+- N/A
 
 Maintenance
 -----------
-- N/A
+- Restore `PIPPLC`'s ``qpc_name`` component.
 
 Contributors
 ------------
-- tangkong
+- zllentz

@@ -1,4 +1,4 @@
-1253 maint_drop_pint
+1283 Adding base class for lakeshore 336.
 #################
 
 API Breaks
@@ -7,7 +7,9 @@ API Breaks
 
 Features
 --------
-- N/A
+-Base class for lakeshore 336
+-Class for Temperature Sensor
+-Class for Heater
 
 Device Updates
 --------------
@@ -15,7 +17,7 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- Lakeshore 336
 
 Bugfixes
 --------
@@ -23,10 +25,8 @@ Bugfixes
 
 Maintenance
 -----------
-- Use sympy instead of pint for unit conversions for simpler
-  maintainability.
-- Various CI tweaks due to numpy 2.0's chaos.
+- N/A
 
 Contributors
 ------------
-- zllentz
+- c-tsoi

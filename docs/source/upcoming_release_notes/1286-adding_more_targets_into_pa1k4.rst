@@ -1,17 +1,17 @@
-4500 Add motor class for MEC hexapod axis
+1286 adding more targets into pa1k4
 #################
 
 API Breaks
 ----------
 - N/A
 
-Features
---------
-- Added PI_M824 motor class for MEC hexapod motors
-
-Device Updates
---------------
+Library Features
+----------------
 - N/A
+
+Device Features
+---------------
+- CalibrationAxis from 5 -> 7 states
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- jozamudi
+- tongju12

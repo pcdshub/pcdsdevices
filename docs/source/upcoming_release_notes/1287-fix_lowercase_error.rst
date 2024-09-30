@@ -1,25 +1,25 @@
-1273 adding pa1k4-pf device
+1287 fix lowercase error
 #################
 
 API Breaks
 ----------
 - N/A
 
-Features
---------
+Library Features
+----------------
 - N/A
 
-Device Updates
---------------
+Device Features
+---------------
 - N/A
 
 New Devices
 -----------
-- adding new device PA1K4-PF
+- N/A
 
 Bugfixes
 --------
-- N/A
+- Change statecount from 7 to 8 to fix target name lower case issue
 
 Maintenance
 -----------
