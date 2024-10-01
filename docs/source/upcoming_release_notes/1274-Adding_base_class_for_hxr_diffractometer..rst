@@ -7,7 +7,7 @@ API Breaks
 
 Features
 --------
-- Adding base class for the hxr diffractometer, the class will ask user to input base PV e.g. HXR:GON:MMS as the prefix. All of the stages are hardcoded as suffixes.
+- Adding base class for hxr diffractometer, this class needs the base prefix to be passed in e.g. HXR:GON:MMS. The stage suffixes are hardcoded.
 
 Device Updates
 --------------
