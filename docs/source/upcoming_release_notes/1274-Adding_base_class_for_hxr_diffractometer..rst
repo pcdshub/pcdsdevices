@@ -5,17 +5,17 @@ API Breaks
 ----------
 - N/A
 
-Features
---------
-- Adding base class for hxr diffractometer, this class needs the base prefix to be passed in e.g. HXR:GON:MMS. The stage suffixes are hardcoded.
+Library Features
+----------------
+- N/A
 
-Device Updates
---------------
+Device Features
+---------------
 - N/A
 
 New Devices
 -----------
-- N/A
+- Adding base class for hxr diffractometer, this class needs the base prefix to be passed in e.g. HXR:GON:MMS. The stage suffixes are hardcoded.
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- c-tsoi
