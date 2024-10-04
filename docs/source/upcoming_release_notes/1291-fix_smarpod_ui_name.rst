@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- Rename ``Smarpod.detailed.ui`` to ``SmarPod.detailed.ui`` so that it will Breaks
+- Rename ``Smarpod.detailed.ui`` to ``SmarPod.detailed.ui`` so that it will be
   properly discovered by ``typhos`` for the `SmarPod` class.
 
 Maintenance
