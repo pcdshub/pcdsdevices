@@ -42,6 +42,15 @@ class MPODApalisChannel(BaseInterface, Device):
                 kind='normal', string=True,
                 doc='MPOD Channel State [Off/On]')
 
+    desc = Cpt(EpicsSignal, ':VoltageMeasure.DESC', kind='normal',
+               doc='MPOD Channel Description')
+
+    voltage_setpoint = Cpt(EpicsSignalRO, ':VoltageSet', kind='normal',
+                           doc='MPOD Channel Voltage Setpoint [V]')
+
+    is_trip = Cpt(EpicsSignalRO, ':isTrip', kind='omitted',
+                  doc='True if MPOD channel is tripped.')
+
     tab_component_names = True
     tab_whitelist = ['on', 'off',
                      'set_voltage', 'set_current']
@@ -64,7 +73,7 @@ class MPODApalisChannel(BaseInterface, Device):
         """
         max_voltage = self.max_voltage.get()
 
-        if voltage_number <= max_voltage:
+        if abs(voltage_number) <= abs(max_voltage):
             self.voltage.put(voltage_number)
         else:
             self.voltage.put(max_voltage)
