@@ -1177,7 +1177,7 @@ class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
     # UI representation
     _icon = 'fa.minus-square'
 
-    # Basic 2 Coating State Selection
+    # 2 Coating State Selection 1 axis with PMPS
     coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
                   doc='Control of the coating states via saved positions.')
 
