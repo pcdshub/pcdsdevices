@@ -22,7 +22,7 @@ Bugfixes
 --------
 - Fix an issue where arbitrarily large negative values were permitted to be
   passed during the `MPODApalisChannel.set_voltage` method, and where
-  small values passed to a negative-polarity channel would clamp to the
+  small values passed to a negative-polarity channel would jump to the
   most negative value.
 
 Maintenance
