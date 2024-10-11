@@ -1,6 +1,8 @@
 """
 Module to define ophyd Signal subclass utilities.
 """
+from __future__ import annotations
+
 # Catch semi-frequent issue with scripts accidentally run from inside module
 if __name__ != 'pcdsdevices.signal':
     raise RuntimeError('A script tried to import pcdsdevices.signal '

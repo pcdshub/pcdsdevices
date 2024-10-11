@@ -60,6 +60,34 @@ def test_avg_signal():
     assert cb.called
 
 
+def test_avg_signal_with_duration():
+    logger.debug("test_avg_signal_with_duration")
+    sig = Signal(name='raw')
+    avg = AvgSignal(sig, 2, name='avg', duration=2)
+
+    assert avg.averages == 2
+
+    sig.put(1)
+    sig.put(3)
+    assert avg.get() == 2
+
+    # trigger should clear the buffer and not take the full duration to return
+    start_time = time.monotonic()
+    st = avg.trigger()
+    end_time = time.monotonic()
+    assert end_time - start_time < avg.duration
+    assert not st.done
+
+    sig.put(100)
+    # If the buffer doesn't clear this would be 51.5 instead
+    assert avg.get() == 100
+    sig.put(200)
+    assert avg.get() == 150
+
+    # Make sure we get a good result
+    st.wait()
+
+
 class MockCallbackHelper:
     """
     Simple helper for getting a callback, setting an event, and checking args.
