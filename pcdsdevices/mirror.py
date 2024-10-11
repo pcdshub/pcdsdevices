@@ -1164,6 +1164,8 @@ class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
 
     1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
 
+    MR2K2
+
     Parameters
     ----------
     prefix : str
@@ -1174,6 +1176,10 @@ class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
     """
     # UI representation
     _icon = 'fa.minus-square'
+
+    # 2 Coating State Selection 1 axis with PMPS
+    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
 
     # Motor components: can read/write positions
     x = Cpt(BeckhoffAxisNoOffset, ':MMS:X', kind='hinted')
@@ -1281,6 +1287,8 @@ class FFMirrorZ(FFMirror):
 
     1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
 
+    MR4/5K4
+
     Parameters
     ----------
     prefix : str
@@ -1289,6 +1297,8 @@ class FFMirrorZ(FFMirror):
     name : str
         Alias for the device.
     """
+    # Coating States not implemented yet.
+    coating = None
     # Motor components: can read/write positions
     z = Cpt(BeckhoffAxisNoOffset, ':MMS:Z', kind='hinted')
 
