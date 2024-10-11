@@ -21,6 +21,7 @@ from typing import Any, Generator, Mapping, Optional, Union
 
 import numpy as np
 import ophyd
+from ophyd.device import Device
 from ophyd.signal import (DEFAULT_WRITE_TIMEOUT, DerivedSignal, EpicsSignal,
                           EpicsSignalBase, EpicsSignalRO, Signal, SignalRO)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
@@ -799,9 +800,11 @@ class AvgSignal(Signal):
 
     Parameters
     ----------
-    signal : Signal
+    signal : Signal or str
         Any subclass of `ophyd.signal.Signal` that returns a numeric value.
         This signal will be subscribed to be `AvgSignal` to calculate the mean.
+        Parent classes can pass a str instead that matches the attr name
+        of one of their component signals.
 
     averages : int
         The number of ``SUB_VALUE`` updates to include in the average. New values
@@ -813,7 +816,16 @@ class AvgSignal(Signal):
         If omitted, we will not reset the buffer or wait for values at scan points.
     """
 
-    def __init__(self, signal, averages, duration=None, *, name, parent=None, **kwargs):
+    def __init__(
+        self,
+        signal: Signal | str,
+        averages: int,
+        duration: float | None = None,
+        *,
+        name: str,
+        parent: Device | None = None,
+        **kwargs,
+    ):
         super().__init__(name=name, parent=parent, **kwargs)
         if isinstance(signal, str):
             signal = getattr(parent, signal)
@@ -824,16 +836,16 @@ class AvgSignal(Signal):
         self.raw_sig.subscribe(self._update_avg)
 
     @property
-    def connected(self):
+    def connected(self) -> bool:
         return self.raw_sig.connected
 
     @property
-    def averages(self):
+    def averages(self) -> int:
         """The size of the internal buffer of values to average over."""
         return self._avg
 
     @averages.setter
-    def averages(self, avg):
+    def averages(self, avg: int) -> None:
         """Change the buffer size and reinitialize an empty buffer."""
         self._avg = avg
         self.reset_buffer()
@@ -847,7 +859,7 @@ class AvgSignal(Signal):
             # Fill with nan
             self.values.fill(np.nan)
 
-    def _update_avg(self, *args, value, **kwargs):
+    def _update_avg(self, *args, value: float, **kwargs) -> None:
         """Add new value to the buffer, overriding old values if needed."""
         with self._lock:
             self.values[self.index] = value
