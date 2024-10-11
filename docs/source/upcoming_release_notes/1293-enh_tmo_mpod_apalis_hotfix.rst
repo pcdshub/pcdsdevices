@@ -11,8 +11,10 @@ Library Features
 
 Device Features
 ---------------
-- Add the ``desc``, ``voltage_setpoint``, and ``is_trip`` component signals to
+- Add the ``desc``, ``last_voltage_set``, and ``is_trip`` component signals to
   `MPODApalisChannel`. These have been helpful during operations at TMO.
+  ``last_voltage_set`` will also get a ``voltage_setpoint`` alias, which is the
+  original name as used in TMO's scripts.
 
 New Devices
 -----------

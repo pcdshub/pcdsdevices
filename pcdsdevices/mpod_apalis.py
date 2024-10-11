@@ -45,8 +45,16 @@ class MPODApalisChannel(BaseInterface, Device):
     desc = Cpt(EpicsSignal, ':VoltageMeasure.DESC', kind='normal',
                doc='MPOD Channel Description')
 
-    voltage_setpoint = Cpt(EpicsSignalRO, ':VoltageSet', kind='normal',
-                           doc='MPOD Channel Voltage Setpoint [V]')
+    last_voltage_set = Cpt(
+        EpicsSignalRO, ':VoltageSet', kind='normal',
+        doc=(
+            'Readback to verify the MPOD Channel Voltage Setpoint [V]. '
+            'This is used to compare the measured readback voltage with '
+            'the last value we set to the channel. '
+            'To change the voltage, use the voltage signal or the '
+            'set_voltage helper method.'
+        )
+    )
 
     is_trip = Cpt(EpicsSignalRO, ':isTrip', kind='omitted',
                   doc='True if MPOD channel is tripped.')
@@ -54,6 +62,11 @@ class MPODApalisChannel(BaseInterface, Device):
     tab_component_names = True
     tab_whitelist = ['on', 'off',
                      'set_voltage', 'set_current']
+
+    @property
+    def voltage_setpoint(self) -> EpicsSignalRO:
+        """Name alias for backwards compatibility."""
+        return self.last_voltage_set
 
     def on(self):
         """Set mpod channel On."""
