@@ -784,7 +784,7 @@ class MultiDerivedSignalRO(SignalRO, MultiDerivedSignal):
 
 class AvgSignal(Signal):
     """
-    Signal that acts as a rolling average of another signal
+    Signal that acts as a rolling average of another signal.
 
     Optionally, the rolling average can be reset every time the ``trigger`` method
     is called (e.g. at every point in a bluesky scan).
