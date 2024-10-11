@@ -24,6 +24,7 @@ import ophyd
 from ophyd.signal import (DEFAULT_WRITE_TIMEOUT, DerivedSignal, EpicsSignal,
                           EpicsSignalBase, EpicsSignalRO, Signal, SignalRO)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
+from ophyd.status import StatusBase
 from ophyd.utils import ReadOnlyError
 from pytmc.pragmas import normalize_io
 
