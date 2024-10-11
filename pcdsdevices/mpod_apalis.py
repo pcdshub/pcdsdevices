@@ -141,7 +141,7 @@ def _put_clamped(signal: EpicsSignal, value: float) -> None:
     """
     Force put value to be within the limits of the signal.
 
-    Warn if the value is outside the range and needed to be clampted
+    Warn if the value is outside the range and needed to be clamped
     """
     low_val = min(signal.limits)
     high_val = max(signal.limits)
