@@ -24,6 +24,7 @@ import ophyd
 from ophyd.signal import (DEFAULT_WRITE_TIMEOUT, DerivedSignal, EpicsSignal,
                           EpicsSignalBase, EpicsSignalRO, Signal, SignalRO)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
+from ophyd.status import StatusBase
 from ophyd.utils import ReadOnlyError
 from pytmc.pragmas import normalize_io
 
@@ -838,6 +839,54 @@ class AvgSignal(Signal):
             self.index = (self.index + 1) % len(self.values)
             # This takes a mean, skipping nan values.
             self.put(np.nanmean(self.values))
+
+class AvgSignalTriggered(AvgSignal):
+    """
+    Signal that acts as a rolling average of another signal, with the rolling average reset every
+    time the trigger method is called (e.g. at every point in a bluesky scan).
+
+    This will subscribe to a signal, and fill an internal buffer with values
+    from `SUB_VALUE`. It will update its own value to be the mean of the last n
+    accumulated values, up to the buffer size. If we haven't filled this
+    buffer, this will still report a mean value composed of all the values
+    we've receieved so far.
+
+    Warning: this means that if we only have recieved ONE value, the mean will
+    just be the mean of a single value!
+
+    Parameters
+    ----------
+    signal : Signal
+        Any subclass of `ophyd.signal.Signal` that returns a numeric value.
+        This signal will be subscribed to be `AvgSignal` to calculate the mean.
+
+    averages : int
+        The number of `SUB_VALUE` updates to include in the average. New values
+        after this number is reached will begin overriding old values.
+    
+    duration : float
+        The number of seconds to wait before returning complete. Nominally this
+        should be set to averages divided by the expected update rate of the signal.
+    """
+
+
+    def __init__(self, signal, averages, duration, *, name, parent=None, **kwargs):
+        super().__init__(signal, averages, name=name, parent=parent, **kwargs)
+        if isinstance(signal, str):
+            signal = getattr(parent, signal)
+        self.raw_sig = signal
+        self._lock = RLock()
+        self.averages = averages
+        self.duration = duration
+        self.raw_sig.subscribe(self._update_avg)
+    
+    def trigger(self):
+        # reset the averaging buffer
+        self.averages = self._avg
+        # set status to complete after duration
+        status = StatusBase(settle_time=self.duration)
+        status.set_finished()
+        return status
 
 
 class NotImplementedSignal(SignalRO):
