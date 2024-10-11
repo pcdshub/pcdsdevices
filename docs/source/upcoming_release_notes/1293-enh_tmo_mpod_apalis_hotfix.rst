@@ -33,7 +33,7 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Added unit tests to cover the `MPODApalisChannel` changes.
 
 Contributors
 ------------
