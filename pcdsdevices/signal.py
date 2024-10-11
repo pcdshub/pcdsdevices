@@ -27,7 +27,7 @@ from ophyd.device import Device
 from ophyd.signal import (DEFAULT_WRITE_TIMEOUT, DerivedSignal, EpicsSignal,
                           EpicsSignalBase, EpicsSignalRO, Signal, SignalRO)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
-from ophyd.status import StatusBase
+from ophyd.status import Status
 from ophyd.utils import ReadOnlyError
 from pytmc.pragmas import normalize_io
 
@@ -869,13 +869,13 @@ class AvgSignal(Signal):
             # This takes a mean, skipping nan values.
             self.put(np.nanmean(self.values))
 
-    def trigger(self):
+    def trigger(self) -> Status:
         if self.duration is None:
             return super().trigger()
         # reset the averaging buffer
         self.reset_buffer()
         # set status to complete after duration
-        status = StatusBase(settle_time=self.duration)
+        status = Status(obj=self, settle_time=self.duration)
         status.set_finished()
         return status
 
