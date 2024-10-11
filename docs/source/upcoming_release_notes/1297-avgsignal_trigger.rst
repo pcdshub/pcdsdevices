@@ -27,7 +27,7 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Add unit tests for the new `AvgSignal` features.
 
 Contributors
 ------------
