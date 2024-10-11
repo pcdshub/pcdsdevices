@@ -6,6 +6,7 @@ from ophyd.device import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from pcdsdevices.interface import BaseInterface
+from pcdsdevices.signal import EpicsSignalEditMD
 
 from .device import GroupDevice
 
@@ -18,22 +19,35 @@ class MPODApalisChannel(BaseInterface, Device):
 
     Parameters
     ----------
-    channel_prefix : str
+    prefix : str
         The EPICS base of the MPOD Channel, e.g. 'TMO:MPOD:01:M6:C6'.
-    name : str
+    name : str, keyword-only
         A name to refer to the device.
-
     """
-    voltage = Cpt(EpicsSignal, ':VoltageMeasure',
-                  write_pv=':VoltageSet', kind='normal',
-                  doc='MPOD Channel Voltage Measurement [V]')
+    voltage = Cpt(
+        EpicsSignalEditMD, ':VoltageMeasure',
+        write_pv=':VoltageSet', kind='normal', limits=True,
+        doc=(
+            "MPOD Channel Voltage Measurement [V]. "
+            "The value of this signal is the actual measured voltage "
+            "of the channel. If you put to this signal it will change "
+            "the channel's voltage setpoint."
+        ),
+    )
 
     max_voltage = Cpt(EpicsSignalRO, ':VoltageNominal', kind='normal',
                       doc='MPOD Channel Maximum Voltage [V]')
 
-    current = Cpt(EpicsSignal, ':CurrentMeasure',
-                  write_pv=':CurrentSet', kind='normal',
-                  doc='MPOD Channel Current Measure')
+    current = Cpt(
+        EpicsSignalEditMD, ':CurrentMeasure',
+        write_pv=':CurrentSet', kind='normal', limits=True,
+        doc=(
+            "MPOD Channel Current Measurement [A]. "
+            "The value of this signal is the actual measured current "
+            "of the channel. If you put to this signal it will change "
+            "the channel's current setpoint."
+        ),
+    )
 
     max_current = Cpt(EpicsSignalRO, ':CurrentNominal', kind='normal',
                       doc='MPOD Channel Current Maximum')
@@ -76,40 +90,76 @@ class MPODApalisChannel(BaseInterface, Device):
         """Set mpod channel Off."""
         self.state.put(0)
 
-    def set_voltage(self, voltage_number):
+    def set_voltage(self, voltage_number: float) -> None:
         """
         Set mpod channel voltage in V.
+
+        Values above or below the channel's range will be clamped
+        to the range.
+
         Parameters
         ----------
         voltage_number : number
             Voltage in V.
         """
-        max_voltage = self.max_voltage.get()
+        return _put_clamped(signal=self.voltage, value=voltage_number)
 
-        if abs(voltage_number) <= abs(max_voltage):
-            self.voltage.put(voltage_number)
-        else:
-            self.voltage.put(max_voltage)
-            logger.warning('The maximal voltage is %g will set voltage to %g'
-                           % (max_voltage, max_voltage))
-
-    def set_current(self, current_number):
+    def set_current(self, current_number: float) -> None:
         """
         Set mpod channel current in A.
+
+        Values above or below the channel's range will be clamped
+        to the range.
+
         Parameters
         ----------
         current_number : number
             Current in A.
         """
+        return _put_clamped(signal=self.current, value=current_number)
 
-        max_current = self.max_current.get()
+    @max_voltage.sub_value
+    def _new_max_voltage(self, value: float, **kwargs) -> None:
+        """Set explicit limits on voltage for better error reporting."""
+        bounds = (0, value)
+        self.voltage._override_metadata(
+            lower_ctrl_limit=min(bounds),
+            upper_ctrl_limit=max(bounds),
+        )
 
-        if current_number <= max_current:
-            self.current.put(current_number)
-        else:
-            self.current.put(max_current)
-            logger.warning('The maximal current is %g will set current to %g'
-                           % (max_current, max_current))
+    @max_current.sub_value
+    def _new_max_current(self, value: float, **kwargs) -> None:
+        """Set explicit limits on current for better error reporting."""
+        bounds = (0, value)
+        self.current._override_metadata(
+            lower_ctrl_limit=min(bounds),
+            upper_ctrl_limit=max(bounds),
+        )
+
+
+def _put_clamped(signal: EpicsSignal, value: float) -> None:
+    """
+    Force put value to be within the limits of the signal.
+
+    Warn if the value is outside the range and needed to be clampted
+    """
+    low_val = min(signal.limits)
+    high_val = max(signal.limits)
+
+    def local_warn(alt_value: float):
+        logger.warning(
+            "Cannot put %g. The limits are %s, will set %s to %g",
+            value, signal.limits, signal.attr_name, alt_value,
+        )
+
+    if value < low_val:
+        local_warn(alt_value=low_val)
+        value = low_val
+    elif value > high_val:
+        local_warn(alt_value=high_val)
+        value = high_val
+
+    signal.put(value)
 
 
 class MPODApalisModule(BaseInterface, GroupDevice):

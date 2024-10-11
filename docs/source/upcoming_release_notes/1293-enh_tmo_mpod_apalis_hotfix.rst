@@ -15,6 +15,9 @@ Device Features
   `MPODApalisChannel`. These have been helpful during operations at TMO.
   ``last_voltage_set`` will also get a ``voltage_setpoint`` alias, which is the
   original name as used in TMO's scripts.
+- Add proper control limits to `MPODApalisChannel.voltage` and `MPODApalisChannel.current`.
+  This will give useful errors when someone tries to put values outside of the
+  channel's supported range.
 
 New Devices
 -----------
@@ -25,7 +28,8 @@ Bugfixes
 - Fix an issue where arbitrarily large negative values were permitted to be
   passed during the `MPODApalisChannel.set_voltage` method, and where
   small values passed to a negative-polarity channel would jump to the
-  most negative value.
+  most negative value. Now, this function will clamp all values between
+  zero and the maximum channel voltage.
 
 Maintenance
 -----------
