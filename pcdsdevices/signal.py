@@ -781,7 +781,12 @@ class MultiDerivedSignalRO(SignalRO, MultiDerivedSignal):
 
 class AvgSignal(Signal):
     """
-    Signal that acts as a rolling average of another signal.
+    Signal that acts as a rolling average of another signal
+
+    Optionally, the rolling average can be reset every time the ``trigger`` method
+    is called (e.g. at every point in a bluesky scan).
+    This is the behavior if you specific a duration for the ``trigger`` using
+    the ``duration`` argument.
 
     This will subscribe to a signal, and fill an internal buffer with values
     from `SUB_VALUE`. It will update its own value to be the mean of the last n
@@ -799,17 +804,23 @@ class AvgSignal(Signal):
         This signal will be subscribed to be `AvgSignal` to calculate the mean.
 
     averages : int
-        The number of `SUB_VALUE` updates to include in the average. New values
+        The number of ``SUB_VALUE`` updates to include in the average. New values
         after this number is reached will begin overriding old values.
+
+    duration : float, optional
+        The number of seconds to wait before returning trigger complete. Nominally this
+        should be set to averages divided by the expected update rate of the signal.
+        If omitted, we will not reset the buffer or wait for values at scan points.
     """
 
-    def __init__(self, signal, averages, *, name, parent=None, **kwargs):
+    def __init__(self, signal, averages, duration=None, *, name, parent=None, **kwargs):
         super().__init__(name=name, parent=parent, **kwargs)
         if isinstance(signal, str):
             signal = getattr(parent, signal)
         self.raw_sig = signal
         self._lock = RLock()
         self.averages = averages
+        self.duration = duration
         self.raw_sig.subscribe(self._update_avg)
 
     @property
@@ -823,12 +834,16 @@ class AvgSignal(Signal):
 
     @averages.setter
     def averages(self, avg):
-        """Reinitialize an empty internal buffer of size `avg`."""
+        """Change the buffer size and reinitialize an empty buffer."""
+        self._avg = avg
+        self.reset_buffer()
+
+    def reset_buffer(self) -> None:
+        """Re-initialize the avg signal buffer."""
         with self._lock:
-            self._avg = avg
             self.index = 0
             # Allocate uninitalized array
-            self.values = np.empty(avg)
+            self.values = np.empty(self._avg)
             # Fill with nan
             self.values.fill(np.nan)
 
@@ -840,49 +855,11 @@ class AvgSignal(Signal):
             # This takes a mean, skipping nan values.
             self.put(np.nanmean(self.values))
 
-class AvgSignalTriggered(AvgSignal):
-    """
-    Signal that acts as a rolling average of another signal, with the rolling average reset every
-    time the trigger method is called (e.g. at every point in a bluesky scan).
-
-    This will subscribe to a signal, and fill an internal buffer with values
-    from `SUB_VALUE`. It will update its own value to be the mean of the last n
-    accumulated values, up to the buffer size. If we haven't filled this
-    buffer, this will still report a mean value composed of all the values
-    we've receieved so far.
-
-    Warning: this means that if we only have recieved ONE value, the mean will
-    just be the mean of a single value!
-
-    Parameters
-    ----------
-    signal : Signal
-        Any subclass of `ophyd.signal.Signal` that returns a numeric value.
-        This signal will be subscribed to be `AvgSignal` to calculate the mean.
-
-    averages : int
-        The number of `SUB_VALUE` updates to include in the average. New values
-        after this number is reached will begin overriding old values.
-    
-    duration : float
-        The number of seconds to wait before returning complete. Nominally this
-        should be set to averages divided by the expected update rate of the signal.
-    """
-
-
-    def __init__(self, signal, averages, duration, *, name, parent=None, **kwargs):
-        super().__init__(signal, averages, name=name, parent=parent, **kwargs)
-        if isinstance(signal, str):
-            signal = getattr(parent, signal)
-        self.raw_sig = signal
-        self._lock = RLock()
-        self.averages = averages
-        self.duration = duration
-        self.raw_sig.subscribe(self._update_avg)
-    
     def trigger(self):
+        if self.duration is None:
+            return super().trigger()
         # reset the averaging buffer
-        self.averages = self._avg
+        self.reset_buffer()
         # set status to complete after duration
         status = StatusBase(settle_time=self.duration)
         status.set_finished()
