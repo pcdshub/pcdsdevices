@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- recover target number from 3 to 5
+- recover sp1k4 attenuator targets number from 3 to 5
 
 New Devices
 -----------
