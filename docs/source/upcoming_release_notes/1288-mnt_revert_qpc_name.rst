@@ -1,5 +1,5 @@
-6079 Fix pos_ao pv connection timeout in PIPPLC pump class
-#################
+1288 mnt_revert_qpc_name
+########################
 
 API Breaks
 ----------
@@ -19,12 +19,12 @@ New Devices
 
 Bugfixes
 --------
-- pos_ao PV in VCN class no longer reads 'connection timed out' in typhos screens
+- N/A
 
 Maintenance
 -----------
-- N/A
+- Restore `PIPPLC`'s ``qpc_name`` component.
 
 Contributors
 ------------
-- jozamudi
+- zllentz

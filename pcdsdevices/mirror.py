@@ -765,6 +765,43 @@ class XOffsetMirrorNoBend(XOffsetMirror):
     variable_cool = Cpt(PytmcSignal, ':VCV', kind='normal', io='io', doc='Activates variable cooling valve')
 
 
+class TwinCATMirrorStripe(TwinCATStatePMPS):
+    """
+    Subclass of TwinCATStatePMPS for the mirror coatings.
+
+    Unless most TwinCATStatePMPS, we have:
+    - Only in_states
+    - No in_states block the beam
+
+    We also clear the states_list and set _in_if_not_out to True
+    to automatically pick up the coatings from each mirror enum.
+    """
+    states_list = []
+    in_states = []
+    out_states = []
+    _in_if_not_out = True
+    config = UpCpt(state_count=2)
+
+    @property
+    def transmission(self):
+        """The mirror coating never blocks the beam."""
+        return 1
+
+
+class MirrorStripe2D2P(TwinCATMirrorStripe):
+    """
+    2D Coating states with 2 positons and PMPS.
+
+    Currently services MR1K1.
+    """
+    config = UpCpt(state_count=2, motor_count=2)
+
+
+@reorder_components(
+    start_with=[
+        'coating'
+    ]
+)
 class XOffsetMirrorBend(XOffsetMirror):
     """
     X-ray Offset Mirror with 2 bender acutators.
@@ -772,6 +809,8 @@ class XOffsetMirrorBend(XOffsetMirror):
     1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
 
     Currently (09/28/2022) services: mr1k1
+
+    With 2 dimensional coating selection and OUT state.
 
     Parameters
     ----------
@@ -787,6 +826,9 @@ class XOffsetMirrorBend(XOffsetMirror):
     # Do a dumb thing and kill inherited single bender
     bender = None
     bender_enc_rms = None
+
+    coating = Cpt(MirrorStripe2D2P, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
 
     # Motor components: can read/write positions
     bender_us = Cpt(BeckhoffAxisNoOffset, ':MMS:US', kind='hinted')
@@ -901,6 +943,9 @@ class XOffsetMirrorSwitch(XOffsetMirror):
     y_dwn = None
     bender = None
     bender_enc_rms = None
+
+    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
 
     # Motor components: can read/write positions
     y_left = Cpt(BeckhoffAxisNoOffset, ':MMS:YLEFT', kind='hinted',
@@ -1119,6 +1164,8 @@ class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
 
     1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
 
+    MR2K2
+
     Parameters
     ----------
     prefix : str
@@ -1129,6 +1176,10 @@ class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
     """
     # UI representation
     _icon = 'fa.minus-square'
+
+    # 2 Coating State Selection 1 axis with PMPS
+    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
 
     # Motor components: can read/write positions
     x = Cpt(BeckhoffAxisNoOffset, ':MMS:X', kind='hinted')
@@ -1236,6 +1287,8 @@ class FFMirrorZ(FFMirror):
 
     1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
 
+    MR4/5K4
+
     Parameters
     ----------
     prefix : str
@@ -1244,6 +1297,8 @@ class FFMirrorZ(FFMirror):
     name : str
         Alias for the device.
     """
+    # Coating States not implemented yet.
+    coating = None
     # Motor components: can read/write positions
     z = Cpt(BeckhoffAxisNoOffset, ':MMS:Z', kind='hinted')
 
@@ -1261,29 +1316,6 @@ class FFMirrorZ(FFMirror):
     cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 1")
     cool_flow2 = None
     cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal', doc="Axilon Panel Pressure Meter")
-
-
-class TwinCATMirrorStripe(TwinCATStatePMPS):
-    """
-    Subclass of TwinCATStatePMPS for the mirror coatings.
-
-    Unless most TwinCATStatePMPS, we have:
-    - Only in_states
-    - No in_states block the beam
-
-    We also clear the states_list and set _in_if_not_out to True
-    to automatically pick up the coatings from each mirror enum.
-    """
-    states_list = []
-    in_states = []
-    out_states = []
-    _in_if_not_out = True
-    config = UpCpt(state_count=2)
-
-    @property
-    def transmission(self):
-        """The mirror coating never blocks the beam."""
-        return 1
 
 
 class MirrorStripe2D4P(TwinCATMirrorStripe):

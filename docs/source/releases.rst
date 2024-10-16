@@ -2,6 +2,38 @@ Release History
 ###############
 
 
+v8.6.0 (2024-09-16)
+===================
+
+API Breaks
+----------
+- Removed ``qpc_name`` (``:VPCNAME`` PV).
+  This will be brought back in the next release.
+
+Device Features
+---------------
+- Lcls2LaserTiming: Reduce timeout on moves from 2 seconds to 0.2 seconds
+- Added HI_DI PV to PIPPLC class to show high voltage input for pump diagnostics
+
+Bugfixes
+--------
+- pos_ao PV in VCN class no longer reads 'connection timed out' in typhos screens
+
+Maintenance
+-----------
+- Adjusted docs template headers to make them more intuitive
+- Switch build recipes to rely on lightpath >= 1.0.5 (and lightpath-base in conda)
+  to avoid unnecessary ui dependencies.
+
+Contributors
+------------
+- jozamudi
+- slactjohnson
+- tangkong
+- zllentz
+
+
+
 v8.5.0 (2024-08-22)
 ===================
 

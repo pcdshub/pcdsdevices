@@ -2,6 +2,7 @@ import logging
 
 import pytest
 from ophyd.sim import make_fake_device
+from ophyd.utils import LimitError
 
 from ..device_types import MPODApalisModule4Channel
 from ..mpod_apalis import MPODApalisChannel, MPODApalisCrate
@@ -12,27 +13,40 @@ logger = logging.getLogger(__name__)
 @pytest.fixture(scope='function')
 def fake_mpod_channel1():
     FakeMPODChannel = make_fake_device(MPODApalisChannel)
-    C1 = FakeMPODChannel('TEST:MPOD:CHANNEL1', name='TestC1')
+    c1 = FakeMPODChannel('TEST:MPOD:CHANNEL1', name='TestC1')
     # switch off
-    C1.state.sim_put(0)
-    C1.voltage.sim_put(50)
-    C1.current.sim_put(0.02)
-    C1.max_voltage.sim_put(100)
-    C1.max_current.sim_put(0.1)
-    return C1
+    c1.state.sim_put(0)
+    c1.voltage.sim_put(50)
+    c1.current.sim_put(0.02)
+    c1.max_voltage.sim_put(100)
+    c1.max_current.sim_put(0.1)
+    return c1
 
 
 @pytest.fixture(scope='function')
 def fake_mpod_channel2():
     FakeMPODChannel = make_fake_device(MPODApalisChannel)
-    C2 = FakeMPODChannel('TEST:MPOD:CHANNEL2', name='TestC2')
+    c2 = FakeMPODChannel('TEST:MPOD:CHANNEL2', name='TestC2')
     # switch off
-    C2.state.sim_put(0)
-    C2.voltage.sim_put(90)
-    C2.current.sim_put(0.01)
-    C2.max_voltage.sim_put(100)
-    C2.max_current.sim_put(0.1)
-    return C2
+    c2.state.sim_put(0)
+    c2.voltage.sim_put(90)
+    c2.current.sim_put(0.01)
+    c2.max_voltage.sim_put(100)
+    c2.max_current.sim_put(0.1)
+    return c2
+
+
+@pytest.fixture(scope='function')
+def fake_mpod_channel_neg():
+    FakeMPODChannel = make_fake_device(MPODApalisChannel)
+    cn = FakeMPODChannel('TEST:MPOD:CHANNEL2', name='TestC2')
+    # switch off
+    cn.state.sim_put(0)
+    cn.voltage.sim_put(-90)
+    cn.current.sim_put(0.01)
+    cn.max_voltage.sim_put(-100)
+    cn.max_current.sim_put(0.1)
+    return cn
 
 
 @pytest.fixture(scope='function')
@@ -61,7 +75,27 @@ def test_switch_on_off(fake_mpod_channel1):
     assert fake_mpod_channel1.state.get() == '1'
 
 
-def test_set_voltage(fake_mpod_channel1, fake_mpod_channel2):
+def test_channel_limits(fake_mpod_channel1, fake_mpod_channel2, fake_mpod_channel_neg):
+    logger.debug('Testing MPOD Channel control limits')
+    assert fake_mpod_channel1.voltage.limits == (0, 100)
+    assert fake_mpod_channel1.current.limits == (0, 0.1)
+    with pytest.raises(LimitError):
+        fake_mpod_channel1.voltage.put(-1)
+    with pytest.raises(LimitError):
+        fake_mpod_channel1.voltage.put(150)
+    with pytest.raises(LimitError):
+        fake_mpod_channel1.current.put(-1)
+    with pytest.raises(LimitError):
+        fake_mpod_channel1.current.put(2)
+
+    assert fake_mpod_channel_neg.voltage.limits == (-100, 0)
+    with pytest.raises(LimitError):
+        fake_mpod_channel_neg.voltage.put(1)
+    with pytest.raises(LimitError):
+        fake_mpod_channel_neg.voltage.put(-150)
+
+
+def test_set_voltage(fake_mpod_channel1, fake_mpod_channel2, fake_mpod_channel_neg):
     logger.debug('Testing MPOD Channel Setting Voltage')
     assert fake_mpod_channel1.voltage.get() == 50
     fake_mpod_channel1.set_voltage(0)
@@ -69,6 +103,14 @@ def test_set_voltage(fake_mpod_channel1, fake_mpod_channel2):
     assert fake_mpod_channel2.voltage.get() == 90
     fake_mpod_channel2.set_voltage(140)
     assert fake_mpod_channel2.voltage.get() == 100
+    fake_mpod_channel2.set_voltage(-140)
+    assert fake_mpod_channel1.voltage.get() == 0
+    fake_mpod_channel_neg.set_voltage(-20)
+    assert fake_mpod_channel_neg.voltage.get() == -20
+    fake_mpod_channel_neg.set_voltage(20)
+    assert fake_mpod_channel_neg.voltage.get() == 0
+    fake_mpod_channel_neg.set_voltage(-2000000)
+    assert fake_mpod_channel_neg.voltage.get() == -100
 
 
 def test_set_current(fake_mpod_channel1, fake_mpod_channel2):
@@ -79,6 +121,8 @@ def test_set_current(fake_mpod_channel1, fake_mpod_channel2):
     assert fake_mpod_channel1.current.get() == 0.02
     fake_mpod_channel1.set_current(0.4)
     assert fake_mpod_channel1.current.get() == 0.1
+    fake_mpod_channel1.set_current(-0.4)
+    assert fake_mpod_channel1.current.get() == 0
 
 
 def test_clear_faults(fake_mpod_module4Channel):
