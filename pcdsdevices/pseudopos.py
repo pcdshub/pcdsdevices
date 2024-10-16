@@ -1087,12 +1087,24 @@ class LookupTablePositioner(PseudoPositioner):
         xp = self._table_data_by_name[x_name]
         fp = self._table_data_by_name[f_name]
 
-        # xp must be increasing
-        if not xp[1] > xp[0]:
+        # xp must be monotonically increasing for np.interp
+        if not is_monotonically_increasing(xp):
+            # Try reverse
             xp = xp[::-1]
             fp = fp[::-1]
+            # Check one more time in case neither direction works
+            if not is_monotonically_increasing(xp):
+                self.log.warning("Lookup table is not monotonic! This will give inconsistent results!")
 
         return xp, fp
+
+
+def is_monotonically_increasing(arr: np.ndarray) -> bool:
+    """
+    Returns True if axis 1 of arr is monotonically increasing and False otherwise.
+    """
+    # compare each array element with the adjacent element
+    return np.all(arr[:, 1:] >= arr[:, :-1], axis=1)
 
 
 class OffsetMotorBase(FltMvInterface, PseudoPositioner):
