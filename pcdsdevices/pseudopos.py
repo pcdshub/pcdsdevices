@@ -994,9 +994,7 @@ class LookupTablePositioner(PseudoPositioner):
     @pseudo_position_argument
     def forward(self, pseudo_pos: tuple) -> tuple:
         '''
-        Calculate a RealPosition from a given PseudoPosition
-
-        Must be defined on the subclass.
+        Calculate the real motor position given the pseudo position, using the lookup table.
 
         Parameters
         ----------
@@ -1021,9 +1019,8 @@ class LookupTablePositioner(PseudoPositioner):
 
     @real_position_argument
     def inverse(self, real_pos: tuple) -> tuple:
-        '''Calculate a PseudoPosition from a given RealPosition
-
-        Must be defined on the subclass.
+        '''
+        Calculate the pseudo motor position given the real position, using the lookup table.
 
         Parameters
         ----------
