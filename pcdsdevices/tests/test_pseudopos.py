@@ -250,6 +250,7 @@ def test_lut_positioner(real_sign: bool, pseudo_sign: bool):
     "input,expected",
     (
         (np.asarray((0, 1, 2, 3, 4, 5)), True),
+        (np.asarray((0, 1, 2, 3, 4, 4)), False),
         (np.asarray((0, -1, -2, -3, -4, -5)), False),
         (np.asarray((0, 2, 4, -3, 5, 10)), False),
     ),
