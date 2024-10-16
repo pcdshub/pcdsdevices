@@ -15,7 +15,8 @@ Device Features
 
 New Devices
 -----------
-- Adding base class for hxr diffractometer, this class needs the base prefix to be passed in e.g. HXR:GON:MMS. The stage suffixes are hardcoded.
+- Added `HxrDiffractometer` for the Beckhoff-based HXR diffractomoeter.
+  This controls the diffractometer in XPP with prefix ``"HXR:GON:MMS"``.
 
 Bugfixes
 --------
@@ -28,3 +29,4 @@ Maintenance
 Contributors
 ------------
 - c-tsoi
+- zllentz
