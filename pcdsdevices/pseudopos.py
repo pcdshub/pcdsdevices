@@ -1103,8 +1103,8 @@ def is_monotonically_increasing(arr: np.ndarray) -> bool:
     """
     Returns True if axis 1 of arr is monotonically increasing and False otherwise.
     """
-    # compare each array element with the adjacent element
-    return np.all(arr[:, 1:] >= arr[:, :-1], axis=1)
+    # compare each array element with the previous element
+    return np.all(arr[1:] > arr[:-1])
 
 
 class OffsetMotorBase(FltMvInterface, PseudoPositioner):
