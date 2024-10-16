@@ -1104,8 +1104,8 @@ def is_strictly_increasing(arr: np.ndarray) -> bool:
     """
     Returns True if axis 1 of arr is strictly increasing and False otherwise.
     """
-    # compare each array element with the previous element
-    return np.all(arr[1:] > arr[:-1])
+    # see numpy.interp docs https://numpy.org/doc/stable/reference/generated/numpy.interp.html
+    return np.all(np.diff(arr) > 0)
 
 
 class OffsetMotorBase(FltMvInterface, PseudoPositioner):
