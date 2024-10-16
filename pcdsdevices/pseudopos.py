@@ -1009,17 +1009,8 @@ class LookupTablePositioner(PseudoPositioner):
             The real position output, a namedtuple.
         '''
         values = pseudo_pos._asdict()
-
-        pseudo_field, = self.PseudoPosition._fields
-        real_field, = self.RealPosition._fields
-
-        xp = self._table_data_by_name[pseudo_field]
-        fp = self._table_data_by_name[real_field]
-
-        # xp must be increasing
-        if not xp[1] > xp[0]:
-            xp = xp[::-1]
-            fp = fp[::-1]
+        pseudo_field, real_field = self._get_field_names()
+        xp, fp = self._load_table_arrays(x_name=pseudo_field, f_name=real_field)
 
         real_value = np.interp(
             values[pseudo_field],
@@ -1045,16 +1036,8 @@ class LookupTablePositioner(PseudoPositioner):
             The pseudo position output
         '''
         values = real_pos._asdict()
-        pseudo_field, = self.PseudoPosition._fields
-        real_field, = self.RealPosition._fields
-
-        xp = self._table_data_by_name[real_field]
-        fp = self._table_data_by_name[pseudo_field]
-
-        # xp must be increasing
-        if not xp[1] > xp[0]:
-            xp = xp[::-1]
-            fp = fp[::-1]
+        pseudo_field, real_field = self._get_field_names()
+        xp, fp = self._load_table_arrays(x_name=real_field, f_name=pseudo_field)
 
         pseudo_value = np.interp(
             values[real_field],
@@ -1062,6 +1045,57 @@ class LookupTablePositioner(PseudoPositioner):
             fp,
         )
         return self.PseudoPosition(**{pseudo_field: pseudo_value})
+
+    def _get_field_names(self) -> tuple[str, str]:
+        """
+        Returns the name of the pseudo field and the name of the real field.
+
+        Returns
+        -------
+        fields: tuple of str
+            (pseudo_field, real_field)
+        """
+        pseudo_field, = self.PseudoPosition._fields
+        real_field, = self.RealPosition._fields
+
+        return pseudo_field, real_field
+
+    def _load_table_arrays(self, x_name: str, f_name: str) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Load array data from the lookup table in a format ready for np.interp.
+
+        This returns the xp and fp arguments that np.interp is expecting.
+        xp is the x-coordinates of the data points, and
+        fp is the y-coordinates of the data points.
+
+        np.interp is expecting xp to monotonically increasing,
+        this function will ensure that it is by reversing the arrays if needed
+        before returning them.
+
+        If xp is neither monotonically increasing nor monotonically decreasing
+        and therefore cannot be coerced into a monotonically increasing sequence,
+        this will show a warning but continue anyway.
+
+        Parameters
+        ----------
+        x_name: str
+            The name associated with the x-axis data.
+        f_name: str
+            The name associated with the y-axis data.
+
+        Returns
+        xp, fp: tuple of np.ndarray
+            The xp and fp arguments needed for np.interp.
+        """
+        xp = self._table_data_by_name[x_name]
+        fp = self._table_data_by_name[f_name]
+
+        # xp must be increasing
+        if not xp[1] > xp[0]:
+            xp = xp[::-1]
+            fp = fp[::-1]
+
+        return xp, fp
 
 
 class OffsetMotorBase(FltMvInterface, PseudoPositioner):
