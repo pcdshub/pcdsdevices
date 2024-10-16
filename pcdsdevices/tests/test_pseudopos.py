@@ -10,8 +10,7 @@ from ophyd.sim import make_fake_device
 
 from ..pseudopos import (DelayBase, LookupTablePositioner, OffsetMotorBase,
                          PseudoSingleInterface, SimDelayStage, SyncAxesBase,
-                         SyncAxis, SyncAxisOffsetMode,
-                         is_monotonically_increasing)
+                         SyncAxis, SyncAxisOffsetMode, is_strictly_increasing)
 from ..sim import FastMotor
 
 logger = logging.getLogger(__name__)
@@ -255,9 +254,9 @@ def test_lut_positioner(real_sign: bool, pseudo_sign: bool):
         (np.asarray((0, 2, 4, -3, 5, 10)), False),
     ),
 )
-def test_monotonic_helper(input: np.ndarray, expected: bool):
-    logger.debug("test_monotonic_helper")
-    assert is_monotonically_increasing(input) == expected
+def test_increasing_helper(input: np.ndarray, expected: bool):
+    logger.debug("test_increasing_helper")
+    assert is_strictly_increasing(input) == expected
 
 
 FakeDelayBase = make_fake_device(DelayBase)

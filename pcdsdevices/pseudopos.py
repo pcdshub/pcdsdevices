@@ -1065,12 +1065,13 @@ class LookupTablePositioner(PseudoPositioner):
         xp is the x-coordinates of the data points, and
         fp is the y-coordinates of the data points.
 
-        np.interp is expecting xp to monotonically increasing,
-        this function will ensure that it is by reversing the arrays if needed
-        before returning them.
+        np.interp is expecting xp to be strictly increasing.
+        If xp is not strictly increasing, this function will try reversing
+        the array ordering to make it so, which will work if xp is strictly
+        decreasing.
 
-        If xp is neither monotonically increasing nor monotonically decreasing
-        and therefore cannot be coerced into a monotonically increasing sequence,
+        If xp is neither strictly increasing nor strictly decreasing
+        and therefore cannot be coerced into a strictly increasing sequence,
         this will show a warning but continue anyway.
 
         Parameters
@@ -1088,20 +1089,20 @@ class LookupTablePositioner(PseudoPositioner):
         fp = self._table_data_by_name[f_name]
 
         # xp must be monotonically increasing for np.interp
-        if not is_monotonically_increasing(xp):
+        if not is_strictly_increasing(xp):
             # Try reverse
             xp = xp[::-1]
             fp = fp[::-1]
             # Check one more time in case neither direction works
-            if not is_monotonically_increasing(xp):
+            if not is_strictly_increasing(xp):
                 self.log.warning("Lookup table is not monotonic! This will give inconsistent results!")
 
         return xp, fp
 
 
-def is_monotonically_increasing(arr: np.ndarray) -> bool:
+def is_strictly_increasing(arr: np.ndarray) -> bool:
     """
-    Returns True if axis 1 of arr is monotonically increasing and False otherwise.
+    Returns True if axis 1 of arr is strictly increasing and False otherwise.
     """
     # compare each array element with the previous element
     return np.all(arr[1:] > arr[:-1])
