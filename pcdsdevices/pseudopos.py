@@ -1088,14 +1088,17 @@ class LookupTablePositioner(PseudoPositioner):
         xp = self._table_data_by_name[x_name]
         fp = self._table_data_by_name[f_name]
 
-        # xp must be monotonically increasing for np.interp
+        # xp must be strictly increasing for np.interp
         if not is_strictly_increasing(xp):
             # Try reverse
             xp = xp[::-1]
             fp = fp[::-1]
             # Check one more time in case neither direction works
             if not is_strictly_increasing(xp):
-                self.log.warning("Lookup table is not monotonic! This will give inconsistent results!")
+                self.log.warning(
+                    "Lookup table is not strictly increasing or decreasing! "
+                    "This will give inconsistent results!"
+                )
 
         return xp, fp
 
