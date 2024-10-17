@@ -291,13 +291,17 @@ class LaserTiming(FltMvInterface, PVPositioner):
     done = Cpt(EpicsSignal, ':MMS:PH.DMOV', auto_monitor=True, kind='omitted')
     done_value = 1
 
-    def __init__(self, prefix='', *, egu=None, **kwargs):
+    def __init__(self, prefix='', *, egu=None, invert=True, **kwargs):
         if egu not in (None, 's'):
             raise ValueError(
                 f'{self.__class__.__name__} is pre-configured to work in units'
                 f' of seconds.'
             )
         super().__init__(prefix, egu='s', **kwargs)
+        if invert:
+            self.setpoint.scale = -1
+        else:
+            self.setpoint.scale = 1
 
     @user_offset.sub_value
     def _offset_changed(self, value, **kwargs):
