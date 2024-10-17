@@ -1,5 +1,5 @@
-1281 bld_lightpath_base
-#######################
+1287 fix lowercase error
+#################
 
 API Breaks
 ----------
@@ -19,13 +19,12 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Change statecount from 7 to 8 to fix target name lower case issue
 
 Maintenance
 -----------
-- Switch build recipes to rely on lightpath >= 1.0.5 (and lightpath-base in conda)
-  to avoid unnecessary ui dependencies.
+- N/A
 
 Contributors
 ------------
-- tangkong
+- tongju12

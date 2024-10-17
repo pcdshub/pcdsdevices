@@ -4,13 +4,14 @@ Module for goniometers and sample stages used with them.
 import logging
 
 import numpy as np
+from ophyd import Device
 from ophyd import FormattedComponent as FCpt
 from ophyd.device import Component as Cpt
 from ophyd.status import DeviceStatus
 from prettytable import PrettyTable
 
 from .device import GroupDevice
-from .epics_motor import IMS
+from .epics_motor import IMS, BeckhoffAxis
 from .interface import BaseInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
@@ -655,6 +656,28 @@ eta, kappa, phi: {eta}, {kappa}, {phi} [{angle_units}]
 e_eta, e_chi, e_phi: {e_eta}, {e_chi}, {e_phi}
 x, y, z: {x}, {y}, {z} [{units}]
 """
+
+
+class HxrDiffractometer(BaseInterface, Device):
+    """
+    Class for Beckhoff-based diffractometer.
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base PV of the diffractometer stages
+
+    name : str, keyword-only
+        A name to refer to the device
+    """
+
+    base_h = Cpt(BeckhoffAxis, 'BASE_H', kind='normal')
+    base_v = Cpt(BeckhoffAxis, 'BASE_V', kind='normal')
+    th = Cpt(BeckhoffAxis, 'TH', kind='normal')
+    tth = Cpt(BeckhoffAxis, 'TTH', kind='normal')
+    chi = Cpt(BeckhoffAxis, 'CHI', kind='normal')
+
+    tab_component_names = True
 
 
 class SimSampleStage(KappaXYZStage):

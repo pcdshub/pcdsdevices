@@ -10,7 +10,7 @@ from ophyd.sim import make_fake_device
 
 from ..pseudopos import (DelayBase, LookupTablePositioner, OffsetMotorBase,
                          PseudoSingleInterface, SimDelayStage, SyncAxesBase,
-                         SyncAxis, SyncAxisOffsetMode)
+                         SyncAxis, SyncAxisOffsetMode, is_strictly_increasing)
 from ..sim import FastMotor
 
 logger = logging.getLogger(__name__)
@@ -190,8 +190,19 @@ def test_subcls_warning():
         OffsetMotorBase('prefix', name='name')
 
 
-def test_lut_positioner():
-    logger.debug('test_lut_positioner')
+@pytest.mark.parametrize(
+    "real_sign,pseudo_sign",
+    (
+        (1, 1),
+        (1, -1),
+        (-1, 1),
+        (-1, -1),
+    )
+)
+def test_lut_positioner(real_sign: bool, pseudo_sign: bool):
+    logger.debug('test_lut_positioner_normal')
+    rs = real_sign
+    ps = pseudo_sign
 
     class LimitSettableSoftPositioner(SoftPositioner):
         @property
@@ -206,6 +217,7 @@ def test_lut_positioner():
         pseudo = Cpt(PseudoSingleInterface)
         real = Cpt(LimitSettableSoftPositioner)
 
+    signs = np.asarray([[rs, ps]] * 8)
     table = np.asarray(
         [[0, 40],
          [1, 50],
@@ -216,21 +228,35 @@ def test_lut_positioner():
          [8, 300],
          [9, 400],
          ]
-    )
+    ) * signs
     column_names = ['real', 'pseudo']
     lut = MyLUTPositioner('', table=table, column_names=column_names,
                           name='lut')
 
-    np.testing.assert_allclose(lut.forward(60)[0], 2)
-    np.testing.assert_allclose(lut.inverse(7)[0], 200)
-    np.testing.assert_allclose(lut.inverse(1.5)[0], 55)
+    np.testing.assert_allclose(lut.forward(60 * ps)[0], 2 * rs)
+    np.testing.assert_allclose(lut.inverse(7 * rs)[0], 200 * ps)
+    np.testing.assert_allclose(lut.inverse(1.5 * rs)[0], 55 * ps)
 
-    lut.move(100, wait=True)
-    np.testing.assert_allclose(lut.pseudo.position, 100)
-    np.testing.assert_allclose(lut.real.position, 6)
+    lut.move(100 * ps, wait=True)
+    np.testing.assert_allclose(lut.pseudo.position, 100 * ps)
+    np.testing.assert_allclose(lut.real.position, 6 * rs)
 
-    assert lut.real.limits == (0, 9)
-    assert lut.pseudo.limits == (40, 400)
+    assert lut.real.limits == tuple(sorted([0 * rs, 9 * rs]))
+    assert lut.pseudo.limits == tuple(sorted([40 * ps, 400 * ps]))
+
+
+@pytest.mark.parametrize(
+    "input,expected",
+    (
+        (np.asarray((0, 1, 2, 3, 4, 5)), True),
+        (np.asarray((0, 1, 2, 3, 4, 4)), False),
+        (np.asarray((0, -1, -2, -3, -4, -5)), False),
+        (np.asarray((0, 2, 4, -3, 5, 10)), False),
+    ),
+)
+def test_increasing_helper(input: np.ndarray, expected: bool):
+    logger.debug("test_increasing_helper")
+    assert is_strictly_increasing(input) == expected
 
 
 FakeDelayBase = make_fake_device(DelayBase)

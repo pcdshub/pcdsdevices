@@ -185,6 +185,8 @@ class PIPPLC(Device):
                           doc='Regional Override Status')
     override_force_on = Cpt(EpicsSignalWithRBV, ':FORCE_START', kind='omitted',
                             doc='Force Ion Pump to turn on')
+    qpc_name = Cpt(EpicsSignalRO, ':VPCNAME', kind='config',
+                   doc='Quad Ion Pump Controller Name')
     qpc_pumpsize = Cpt(EpicsSignalRO, ':PUMPSIZE', kind='config',
                        doc='Ion Pump Size (L/s)')
     interlock_device = Cpt(EpicsSignalRO, ':ILK_DEVICE_RBV', kind='config',

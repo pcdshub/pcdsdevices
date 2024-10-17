@@ -1,5 +1,5 @@
-1280 doc_clarify_sections
-#########################
+1295 ffmirror-states
+#################
 
 API Breaks
 ----------
@@ -11,7 +11,8 @@ Library Features
 
 Device Features
 ---------------
-- N/A
+- `FFMirror` gets `coating` a `TwinCATMirrorStripe`
+- `FFMirrorZ` inherits these and sets them `None`
 
 New Devices
 -----------
@@ -23,8 +24,8 @@ Bugfixes
 
 Maintenance
 -----------
-- Adjusted docs template headers to make them more intuitive
+- N/A
 
 Contributors
 ------------
-- zllentz
+- nrwslac

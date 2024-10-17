@@ -1,4 +1,4 @@
-6090 Added HI_DI PV to PIPPLC class to show high voltage input for pump diagnostics
+1274 Adding base class for hxr diffractometer.
 #################
 
 API Breaks
@@ -11,11 +11,12 @@ Library Features
 
 Device Features
 ---------------
-- Added HI_DI PV to PIPPLC class to show high voltage input for pump diagnostics
+- N/A
 
 New Devices
 -----------
-- N/A
+- Added `HxrDiffractometer` for the Beckhoff-based HXR diffractomoeter.
+  This controls the diffractometer in XPP with prefix ``"HXR:GON:MMS"``.
 
 Bugfixes
 --------
@@ -27,4 +28,5 @@ Maintenance
 
 Contributors
 ------------
-- jozamudi
+- c-tsoi
+- zllentz

@@ -9,7 +9,7 @@ from ophyd.status import StatusTimeoutError
 from ophyd.status import wait as wait_status
 
 from ..lxe import (LaserEnergyPlotContext, LaserEnergyPositioner, LaserTiming,
-                   LaserTimingCompensation)
+                   LaserTimingCompensation, Lcls2LaserTiming)
 from ..utils import convert_unit
 from .conftest import MODULE_PATH
 
@@ -236,6 +236,29 @@ def test_laser_timing_notepad(lxt):
     lxt.mv(5e-6)
     assert lxt.notepad_setpoint.get() == 5e-6
     assert lxt.notepad_readback.get() == 5e-6
+
+
+def test_laser_timing_init_configurables():
+    logger.debug("test_laser_timing_init_configurables")
+
+    lcls1_lxt = LaserTiming("notarealpvplease", name="lcls1_lxt", invert=False, limits=(-1, 1))
+    lcls2_lxt = Lcls2LaserTiming("notarealpvplease", name="lcls1_lxt", invert=False, limits=(-1, 1))
+
+    # The limits we put in should read back
+    assert lcls1_lxt.limits == (-1, 1)
+    assert lcls2_lxt.limits == (-1, 1)
+    assert lcls1_lxt.setpoint.limits == (-1, 1)
+    assert lcls2_lxt.setpoint.limits == (-1, 1)
+
+    # The next test assumes user offset is zero
+    assert lcls1_lxt.setpoint.user_offset == 0
+    assert lcls2_lxt.setpoint.user_offset == 0
+
+    # No inversions -> should stay positive
+    assert lcls1_lxt.setpoint.forward(10) > 0
+    assert lcls2_lxt.setpoint.forward(10) > 0
+    assert lcls1_lxt.setpoint.inverse(10) > 0
+    assert lcls2_lxt.setpoint.inverse(10) > 0
 
 
 @pytest.fixture
