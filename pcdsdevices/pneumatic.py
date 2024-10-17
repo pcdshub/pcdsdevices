@@ -10,6 +10,7 @@ from ophyd.status import Status
 
 from pcdsdevices.interface import BaseInterface, LightpathMixin
 
+from .analog_signals import FDQ
 from .signal import PytmcSignal
 
 
@@ -96,3 +97,12 @@ class BeckhoffPneumatic(BaseInterface, LightpathMixin):
             output={self.output_branches[0]: trans}
         )
         return status
+
+
+class BeckhoffPneumaticFDQ(BeckhoffPneumatic):
+    """
+    Beckhoff Pneumatics with a flow meter for cooling readback.
+
+    """
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')
