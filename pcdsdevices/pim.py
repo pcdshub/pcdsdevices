@@ -388,19 +388,30 @@ class PPMPowerMeter(BaseInterface, Device):
 
     tab_component_names = True
 
-    responsivity = Cpt(PytmcSignal, ':RES', io='i', kind='normal', doc='Responsivity in  V/W, unique for every power meter.')
+    responsivity = Cpt(PytmcSignal, ':RES', io='i', kind='normal',
+                       doc='Responsivity in  V/W, unique for every power meter.')
 
-    background_voltage = Cpt(PytmcSignal, ':BACK:VOLT', io='io', kind='normal', doc='Background voltage value used to calculate pulse energy.')
+    background_voltage = Cpt(PytmcSignal, ':BACK:VOLT', io='io', kind='normal',
+                             doc='Background voltage value used to calculate pulse energy.')
 
-    auto_background_reset = Cpt(PytmcSignal, ':BACK:RESET', io='io', kind='normal', doc='Set to reset auto background voltage collection.')
+    auto_background_reset = Cpt(PytmcSignal, ':BACK:RESET', io='io', kind='normal',
+                                doc='Set to reset auto background voltage collection.')
     set_metadata(auto_background_reset, dict(variety='command-proc', value=1))
 
-    background_mode = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal', doc='Can be manual or auto In manual mode, you can collect for a specified number of seconds. In auto mode, a buffer of automatically collected background voltages will be used to calculate the background voltage.')
+    background_mode = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal',
+                          doc='Can be manual or auto In manual mode, you can collect '
+                          'for a specified number of seconds. In auto mode, a buffer of '
+                          'automatically collected background voltages will be used to calculate the background voltage.')
 
-    manual_collect = Cpt(PytmcSignal, ':BACK:COLL', io='io', kind='normal', doc='Start collecting background voltages for specified time.')
+    manual_collect = Cpt(PytmcSignal, ':BACK:COLL', io='io', kind='normal',
+                         doc='Start collecting background voltages for specified time.')
     set_metadata(manual_collect, dict(variety='command-proc', value=1))
-    manual_in_progress = Cpt(PytmcSignal, 'BACK:MANUAL_COLLECTING', io='i', kind='normal', doc='Manual collection currntly in progress')
-    manual_collect_time = Cpt(PytmcSignal, ':BACK:TIME', io='io', kind='normal', doc='Time to collect background voltages for.')
+
+    manual_in_progress = Cpt(PytmcSignal, 'BACK:MANUAL_COLLECTING', io='i', kind='normal',
+                             doc='Manual collection currntly in progress')
+
+    manual_collect_time = Cpt(PytmcSignal, ':BACK:TIME', io='io', kind='normal',
+                              doc='Time to collect background voltages for.')
 
     raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal',
                       doc='Raw readback from the power meter.')
@@ -408,8 +419,12 @@ class PPMPowerMeter(BaseInterface, Device):
     calibrated_mj = Cpt(PytmcSignal, ':MJ', io='i', kind='normal',
                         doc='Calibrated absolute measurement of beam '
                             'power in physics units.')
-    calibrated_uj = Cpt(UnitConversionDerivedSignal, derived_from='calibrated_mj', derived_units='uJ', original_units='mJ', write_access=False)
-    wattage = Cpt(PytmcSignal, ':WATT', io='i', kind='normal', doc='Wattage measured by power meter, equals MJ times Beamrate.')
+
+    calibrated_uj = Cpt(UnitConversionDerivedSignal, derived_from='calibrated_mj',
+                        derived_units='uJ', original_units='mJ', write_access=False)
+
+    wattage = Cpt(PytmcSignal, ':WATT', io='i', kind='normal',
+                  doc='Wattage measured by power meter, equals MJ times Beamrate.')
 
     thermocouple = Cpt(TwinCATThermocouple, '', kind='normal',
                        doc='Thermocouple on the power meter holder.')
