@@ -397,10 +397,10 @@ class PPMPowerMeter(BaseInterface, Device):
 
     background_mode = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal', doc='Can be manual or auto In manual mode, you can collect for a specified number of seconds. In auto mode, a buffer of automatically collected background voltages will be used to calculate the background voltage.')
 
-    background_collect = Cpt(PytmcSignal, ':BACK:COLL', io='io', kind='normal', doc='Start collecting background voltages for specified time.')
-    set_metadata(background_collect, dict(variety='command-proc', value=1))
-
-    background_collect_time = Cpt(PytmcSignal, ':BACK:TIME', io='io', kind='normal', doc='Time to collect background voltages for.')
+    manual_collect = Cpt(PytmcSignal, ':BACK:COLL', io='io', kind='normal', doc='Start collecting background voltages for specified time.')
+    set_metadata(manual_collect, dict(variety='command-proc', value=1))
+    manual_in_progress = Cpt(PytmcSignal, 'BACK:MANUAL_COLLECTING', io='i', kind='normal', doc='Manual collection currntly in progress')
+    manual_collect_time = Cpt(PytmcSignal, ':BACK:TIME', io='io', kind='normal', doc='Time to collect background voltages for.')
 
     raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal',
                       doc='Raw readback from the power meter.')
