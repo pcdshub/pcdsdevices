@@ -27,7 +27,7 @@ from .interface import BaseInterface, LightpathInOutCptMixin
 from .keithley import IM3L0_K2700
 from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATThermocouple
-from .signal import PytmcSignal
+from .signal import PytmcSignal, UnitConversionDerivedSignal
 from .state import StatePositioner
 from .utils import get_status_float, get_status_value, reorder_components
 from .variety import set_metadata
@@ -372,19 +372,30 @@ class PPMPowerMeter(BaseInterface, Device):
     calibrated for each power meter in units of volts per watt
     is used to calculate the actual energy in the following way:
 
-    `calibrated_mj` = 1000 * (Signal - Background) / (Responsivity * Beam_Rate)
+    `calibrated_mj` = (Signal - Background) / (Responsivity * Beam_Rate)
     """
+    def __init__(self, prefix, *, name, **kwargs):
+        import sympy.physics.units as units
+        from sympy.physics.units.prefixes import micro, milli
+        from sympy.physics.units.quantities import Quantity
+        millijoule = mJ = Quantity("millijoule", abbrev='mJ')
+        millijoule.set_global_relative_scale_factor(milli, units.joule)
+        microjoule = uJ = Quantity("microjoule", abbrev='uJ')
+        microjoule.set_global_relative_scale_factor(micro, units.joule)
+        setattr(units, 'mJ', mJ)
+        setattr(units, 'uJ', uJ)
+        super().__init__(prefix, name=name, **kwargs)
 
     tab_component_names = True
 
-    responsivity = Cpt(PytmcSignal, ':RES', io='io', kind='normal', doc='Responsivity in  V/W, unique for every power meter.')
+    responsivity = Cpt(PytmcSignal, ':RES', io='i', kind='normal', doc='Responsivity in  V/W, unique for every power meter.')
 
     background_voltage = Cpt(PytmcSignal, ':BACK:VOLT', io='io', kind='normal', doc='Background voltage value used to calculate pulse energy.')
 
     auto_background_reset = Cpt(PytmcSignal, ':BACK:RESET', io='io', kind='normal', doc='Set to reset auto background voltage collection.')
     set_metadata(auto_background_reset, dict(variety='command-proc', value=1))
 
-    background_mode = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal', doc='Can be manual or passive. In manual mode, you can collect for a specified number of seconds. In passive mode, a buffer of automatically collected background voltages will be used to calculate the background voltage.')
+    background_mode = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal', doc='Can be manual or auto In manual mode, you can collect for a specified number of seconds. In auto mode, a buffer of automatically collected background voltages will be used to calculate the background voltage.')
 
     background_collect = Cpt(PytmcSignal, ':BACK:COLL', io='io', kind='normal', doc='Start collecting background voltages for specified time.')
     set_metadata(background_collect, dict(variety='command-proc', value=1))
@@ -397,7 +408,7 @@ class PPMPowerMeter(BaseInterface, Device):
     calibrated_mj = Cpt(PytmcSignal, ':MJ', io='i', kind='normal',
                         doc='Calibrated absolute measurement of beam '
                             'power in physics units.')
-
+    calibrated_uj = Cpt(UnitConversionDerivedSignal, derived_from='calibrated_mj', derived_units='uJ', original_units='mJ', write_access=False)
     wattage = Cpt(PytmcSignal, ':WATT', io='i', kind='normal', doc='Wattage measured by power meter, equals MJ times Beamrate.')
 
     thermocouple = Cpt(TwinCATThermocouple, '', kind='normal',
