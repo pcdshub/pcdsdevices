@@ -158,12 +158,12 @@ def convert_unit(value: float, unit: str, new_unit: str):
     """
     try:
         unit = getattr(units, unit)
-    except Exception:
+    except AttributeError:
         unit = getattr(custom_units, unit)
 
     try:
         new_unit = getattr(units, new_unit)
-    except Exception:
+    except AttributeError:
         new_unit = getattr(custom_units, new_unit)
 
     if unit == new_unit:
