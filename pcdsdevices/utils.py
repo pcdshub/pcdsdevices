@@ -22,6 +22,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.ophydobj import Kind
 
+from . import custom_units
 from ._html import collapse_list_head, collapse_list_tail
 from .type_hints import Number, OphydDataType
 
@@ -155,8 +156,15 @@ def convert_unit(value: float, unit: str, new_unit: str):
     new_value : float
         The starting value, but converted to the new unit.
     """
-    unit = getattr(units, unit)
-    new_unit = getattr(units, new_unit)
+    try:
+        unit = getattr(units, unit)
+    except Exception:
+        unit = getattr(custom_units, unit)
+
+    try:
+        new_unit = getattr(units, new_unit)
+    except Exception:
+        new_unit = getattr(custom_units, new_unit)
 
     if unit == new_unit:
         return value

@@ -375,15 +375,6 @@ class PPMPowerMeter(BaseInterface, Device):
     `calibrated_mj` = (Signal - Background) / (Responsivity * Beam_Rate)
     """
     def __init__(self, prefix, *, name, **kwargs):
-        import sympy.physics.units as units
-        from sympy.physics.units.prefixes import micro, milli
-        from sympy.physics.units.quantities import Quantity
-        millijoule = mJ = Quantity("millijoule", abbrev='mJ')
-        millijoule.set_global_relative_scale_factor(milli, units.joule)
-        microjoule = uJ = Quantity("microjoule", abbrev='uJ')
-        microjoule.set_global_relative_scale_factor(micro, units.joule)
-        setattr(units, 'mJ', mJ)
-        setattr(units, 'uJ', uJ)
         super().__init__(prefix, name=name, **kwargs)
 
     tab_component_names = True
