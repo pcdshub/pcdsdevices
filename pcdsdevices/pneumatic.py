@@ -102,7 +102,6 @@ class BeckhoffPneumatic(BaseInterface, LightpathMixin):
 class BeckhoffPneumaticFDQ(BeckhoffPneumatic):
     """
     Beckhoff Pneumatics with a flow meter for cooling readback.
-
     """
     flow_meter = Cpt(FDQ, '', kind='normal',
                      doc='Device that measures PCW Flow Rate.')

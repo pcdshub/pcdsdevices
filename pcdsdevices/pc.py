@@ -10,15 +10,16 @@ from .digital_signals import J120K
 
 class PhotonCollimator(Device):
     """
-    Photon Collimator Stub for Cooling Switch Readback
+    Photon Collimator with Cooling Switch Readback
     """
     flow_switch = Cpt(J120K, '', kind='normal',
                       doc='Device that indicates nominal PCW Flow Rate.')
 
 
-class PhotonCollimatorFDQ(Device):
+class PhotonCollimatorFDQ(PhotonCollimator):
     """
-    Photon Collimator Stub for Cooling Meter Readback
+    Photon Collimator with Cooling Meter Readback
     """
+    flow_switch = None
     flow_meter = Cpt(FDQ, '', kind='normal',
                      doc='Device that measures PCW Flow Rate.')
