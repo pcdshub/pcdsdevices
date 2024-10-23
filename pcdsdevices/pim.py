@@ -398,7 +398,7 @@ class PPMPowerMeter(BaseInterface, Device):
                          doc='Start collecting background voltages for specified time.')
     set_metadata(manual_collect, dict(variety='command-proc', value=1))
 
-    manual_in_progress = Cpt(PytmcSignal, 'BACK:MANUAL_COLLECTING', io='i', kind='normal',
+    manual_in_progress = Cpt(PytmcSignal, ':BACK:MANUAL_COLLECTING', io='i', kind='normal',
                              doc='Manual collection currntly in progress')
 
     manual_collect_time = Cpt(PytmcSignal, ':BACK:TIME', io='io', kind='normal',
