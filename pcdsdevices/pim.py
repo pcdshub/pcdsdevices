@@ -400,6 +400,7 @@ class PPMPowerMeter(BaseInterface, Device):
 
     manual_in_progress = Cpt(PytmcSignal, ':BACK:MANUAL_COLLECTING', io='i', kind='normal',
                              doc='Manual collection currntly in progress')
+    set_metadata(manual_in_progress, dict(variety='command'))
 
     manual_collect_time = Cpt(PytmcSignal, ':BACK:TIME', io='io', kind='normal',
                               doc='Time to collect background voltages for.')
