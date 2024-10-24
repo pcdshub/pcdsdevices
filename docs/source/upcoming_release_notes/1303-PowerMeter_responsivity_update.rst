@@ -7,7 +7,7 @@ API Breaks
 
 Library Features
 ----------------
-- Added the ability to add custom units for convert_unit
+- Added the ability to add custom units for convert_unit with a unit test
 
 Device Features
 ---------------
