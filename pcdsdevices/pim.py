@@ -374,8 +374,6 @@ class PPMPowerMeter(BaseInterface, Device):
 
     `calibrated_mj` = (Signal - Background) / (Responsivity * Beam_Rate)
     """
-    def __init__(self, prefix, *, name, **kwargs):
-        super().__init__(prefix, name=name, **kwargs)
 
     tab_component_names = True
 
