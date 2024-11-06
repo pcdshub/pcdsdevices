@@ -3,7 +3,7 @@
 
 API Breaks
 ----------
-- N/A
+- `FFMirrorZ` components `chin_left_rtd`, `chin_right_rtd`, and `chin_tail_rtd` are renamed: `mirror_temp_[l,r,tail]`.
 
 Library Features
 ----------------
@@ -19,11 +19,12 @@ New Devices
 
 Bugfixes
 --------
-- reorder some components in `KBOMirrorHE`
+- N/A
 
 Maintenance
 -----------
-- `FFMirrorZ` same type of RTDs on mirrors, so standardize naming.
+- reorder `cool_flow1` and `cool_flow2` components in `KBOMirrorHE` to the end of the list.
+- reorder `mirror_temp_[l,r,tail]` components in `FFMirrorZ` to align with other temperature sensors.
 
 Contributors
 ------------
