@@ -1154,6 +1154,9 @@ class KBOMirrorHE(KBOMirror):
     cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
     cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
+    mirror_temp_l = Cpt(PytmcSignal, ':RTD:CHIN:L:TEMP', io='i', kind='normal', doc="mirror temperature left chin guard")
+    mirror_temp_r = Cpt(PytmcSignal, ':RTD:CHIN:R:TEMP', io='i', kind='normal', doc="mirror temperature right chin guard")
+
     # Tab config: show components
     tab_component_names = True
 
@@ -1279,7 +1282,7 @@ pitch: ({self.pitch.prefix})
 
 
 @reorder_components(
-    end_with=['x_enc_rms', 'y_enc_rms', 'z_enc_rms', 'pitch_enc_rms']
+    end_with=['x_enc_rms', 'y_enc_rms', 'z_enc_rms', 'pitch_enc_rms', 'cool_flow1', 'cool_press']
 )
 class FFMirrorZ(FFMirror):
     """
@@ -1306,12 +1309,12 @@ class FFMirrorZ(FFMirror):
     z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
 
     # Chin Guard RTDs
-    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L:TEMP', io='i',
-                        kind='normal')
-    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R:TEMP', io='i',
-                         kind='normal')
-    chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL:TEMP', io='i',
-                        kind='normal')
+    mirror_temp_l = Cpt(PytmcSignal, ':RTD:CHIN:L:TEMP', io='i',
+                        kind='normal', doc="mirror temperature left chin guard")
+    mirror_temp_r = Cpt(PytmcSignal, ':RTD:CHIN:R:TEMP', io='i',
+                        kind='normal', doc="mirror temperature right chin guard")
+    mirror_temp_tail = Cpt(PytmcSignal, ':RTD:TAIL:TEMP', io='i',
+                           kind='normal', doc="mirror temperature tail")
 
     cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal', doc="Axilon Panel Flow Meter Loop 1")
     cool_flow2 = None
@@ -1359,7 +1362,7 @@ class KBOMirrorStates(KBOMirror):
     end_with=[
         'coating', 'x', 'y', 'pitch', 'bender_us', 'bender_ds',
         'x_enc_rms', 'y_enc_rms', 'pitch_enc_rms', 'bender_us_enc_rms',
-        'bender_ds_enc_rms', 'us_rtd', 'ds_rtd', 'cool_flow1',
+        'bender_ds_enc_rms', 'mirror_temp_l', 'mirror_temp_r', 'us_rtd', 'ds_rtd', 'cool_flow1',
         'cool_press'
     ]
 )
