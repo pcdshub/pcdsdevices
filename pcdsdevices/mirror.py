@@ -1154,7 +1154,6 @@ class KBOMirrorHE(KBOMirror):
     cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
     cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
-    #
     mirror_temp_l = Cpt(PytmcSignal, ':RTD:CHIN:L:TEMP', io='i', kind='normal', doc="mirror temperature left chin guard")
     mirror_temp_r = Cpt(PytmcSignal, ':RTD:CHIN:R:TEMP', io='i', kind='normal', doc="mirror temperature right chin guard")
 
