@@ -50,10 +50,10 @@ class TM1K4Target(ATMTarget):
     """
     Controls TM1K4's states, and ATM in TMO.
 
-    Defines the state count as 8 (OUT and 7 targets), two more than the
+    Defines the state count as 9 (OUT and 8 targets), three more than the
     standard ATM.
     """
-    config = UpCpt(state_count=8)
+    config = UpCpt(state_count=9)
 
 
 class TM1K4(ArrivalTimeMonitor):
