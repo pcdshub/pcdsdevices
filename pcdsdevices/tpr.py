@@ -10,7 +10,7 @@ from .signal import MultiDerivedSignal, MultiDerivedSignalRO
 from .type_hints import SignalToValue
 from .variety import set_metadata
 
-TPR_TICK_NS = 5.384
+TPR_TICK_NS = 70/13
 TPR_TAP_NS = 0.08
 
 
