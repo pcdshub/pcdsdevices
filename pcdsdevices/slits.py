@@ -26,6 +26,7 @@ from ophyd.signal import Signal, SignalRO
 from ophyd.status import Status
 from ophyd.status import wait as status_wait
 
+from .analog_signals import FDQ
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
@@ -693,6 +694,13 @@ class ExitSlits(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     def y_states(self):
         """Alias old name. Will deprecate."""
         return self.target
+
+
+class ExitSlitsFDQ(ExitSlits):
+    """
+    ExitSlits with a Keyence FDQ Flow Meter.
+    """
+    flow_meter = Cpt(FDQ, '', kind='normal')
 
 
 class SimLusiSlits(LusiSlits):
