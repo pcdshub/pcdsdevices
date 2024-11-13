@@ -10,6 +10,8 @@ from .signal import MultiDerivedSignal, MultiDerivedSignalRO
 from .type_hints import SignalToValue
 from .variety import set_metadata
 
+# This fraction comes from the accelerator phase reference line operating at
+# 1.3GHz divided by 7 to derive the TPR clock. It is approximately 5.384.
 TPR_TICK_NS = 70/13
 TPR_TAP_NS = 0.08
 
