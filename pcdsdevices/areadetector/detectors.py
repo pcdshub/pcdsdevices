@@ -16,7 +16,7 @@ from ophyd.areadetector.detectors import DetectorBase
 from ophyd.areadetector.trigger_mixins import SingleTrigger
 from ophyd.device import Component as Cpt
 from ophyd.ophydobj import OphydObject
-from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
+from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO, Signal
 from pcdsutils.ext_scripts import get_hutch_name
 
 from pcdsdevices.variety import set_metadata
@@ -399,7 +399,9 @@ class PCDSAreaDetectorTyphos(Device):
                    '--instrument',
                    '{}.format(get_hutch_name())',
                    '--oneline',
-                   'GE:16,{0}:IMAGE1;{0},,{0}'.format(self.prefix[0:-1])]
+                   'GE:16,{0}:IMAGE1;{0},,{0}'.format(self.prefix[0:-1]),
+                   '--rate',
+                   str(self.viewer_rate.get()),]
 
         self.log.info('Opening python viewer for camera...')
         subprocess.run(arglist, stdout=subprocess.DEVNULL,
@@ -408,6 +410,9 @@ class PCDSAreaDetectorTyphos(Device):
     # Make viewer available in Typhos screen
     cam_viewer = Cpt(AttributeSignal, attr='_open_screen', kind='normal')
     set_metadata(cam_viewer, dict(variety='command-proc', value=1))
+    viewer_rate = Cpt(Signal, value=5, kind='normal')
+    set_metadata(viewer_rate, dict(variety='scalar-range',
+                                   range={'value': (0, 100), 'source': 'value'}))
 
     @property
     def _open_screen(self):
