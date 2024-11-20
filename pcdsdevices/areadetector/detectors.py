@@ -410,7 +410,7 @@ class PCDSAreaDetectorTyphos(Device):
     # Make viewer available in Typhos screen
     cam_viewer = Cpt(AttributeSignal, attr='_open_screen', kind='normal')
     set_metadata(cam_viewer, dict(variety='command-proc', value=1))
-    viewer_rate = Cpt(Signal, value=5, kind='normal')
+    viewer_rate = Cpt(Signal, value=5, kind='normal', doc='Rate for camViewer')
     set_metadata(viewer_rate, dict(variety='scalar-range',
                                    range={'value': (0, 100), 'source': 'value'}))
 
