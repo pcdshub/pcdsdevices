@@ -827,7 +827,7 @@ class XOffsetMirrorBend(XOffsetMirror):
     bender = None
     bender_enc_rms = None
 
-    coating = Cpt(MirrorStripe2D2P, ':COATING:STATE', kind='hinted',
+    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
                   doc='Control of the coating states via saved positions.')
 
     # Motor components: can read/write positions
