@@ -700,7 +700,8 @@ class ExitSlitsFDQ(ExitSlits):
     """
     ExitSlits with a Keyence FDQ Flow Meter.
     """
-    flow_meter = Cpt(FDQ, '', kind='normal')
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')
 
 
 class SimLusiSlits(LusiSlits):
