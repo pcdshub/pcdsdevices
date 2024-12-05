@@ -261,4 +261,5 @@ def test_at2l0_clear_errors(at2l0):
         assert not sig.get()
     at2l0.clear_errors()
     for sig in signals:
+        # temporary comment
         assert sig.get()
