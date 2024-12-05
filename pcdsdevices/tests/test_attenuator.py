@@ -9,6 +9,7 @@ from ophyd.status import wait as status_wait
 
 from ..attenuator import (AT1K2, AT1K4, AT2K2, AT2L0, MAX_FILTERS, AttBase,
                           Attenuator, _att_classes)
+from .conftest import wait_and_assert
 
 logger = logging.getLogger(__name__)
 
@@ -261,8 +262,4 @@ def test_at2l0_clear_errors(at2l0):
         assert not sig.get()
     at2l0.clear_errors()
     for sig in signals:
-        for _ in range(10):
-            if sig.get():
-                break
-            time.sleep(0.1)
-        assert sig.get()
+        wait_and_assert(sig, 1)
