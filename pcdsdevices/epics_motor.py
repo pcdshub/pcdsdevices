@@ -1235,6 +1235,8 @@ class MMC100(PCDSMotorBase):
     home_forward = Cpt(EpicsSignal, '.MLP', kind='omitted')
     home_reverse = Cpt(EpicsSignal, '.MLN', kind='omitted')
 
+    velocity_base = Cpt(Signal, kind='omitted')
+
 
 class BeckhoffAxisPLC(Device):
     """
