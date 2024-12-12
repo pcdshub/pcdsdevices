@@ -11,11 +11,11 @@ Library Features
 
 Device Features
 ---------------
-- N/A
+- Adding an FDQ component to ExitSlits
 
 New Devices
 -----------
-- ExitSlitsFDQ, just an ExitSlits subclass with an FDQ component
+- N/A
 
 Bugfixes
 --------

@@ -689,19 +689,15 @@ class ExitSlits(BaseInterface, GroupDevice, LightpathInOutCptMixin):
         doc='Thermocouple on the Heat Sync.'
     )
     set_metadata(cam_power, dict(variety='command-enum'))
+    flow_meter = Cpt(
+        FDQ, '', kind='normal',
+        doc='Device that measures PCW Flow Rate.'
+    )
 
     @property
     def y_states(self):
         """Alias old name. Will deprecate."""
         return self.target
-
-
-class ExitSlitsFDQ(ExitSlits):
-    """
-    ExitSlits with a Keyence FDQ Flow Meter.
-    """
-    flow_meter = Cpt(FDQ, '', kind='normal',
-                     doc='Device that measures PCW Flow Rate.')
 
 
 class SimLusiSlits(LusiSlits):
