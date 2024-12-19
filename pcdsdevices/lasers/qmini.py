@@ -1,8 +1,12 @@
+import json
 import logging
+import os
+import time
 
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
+from ophyd.signal import AttributeSignal, Signal
 
 from pcdsdevices.variety import set_metadata
 
@@ -82,6 +86,47 @@ class QminiSpectrometer(Device):
     fit_amplitude = Cpt(EpicsSignalRO, ':AMPLITUDE', kind='config')
     fit_stdev = Cpt(EpicsSignalRO, ':STDEV', kind='config')
     fit_chisq = Cpt(EpicsSignalRO, ':CHISQ', kind='config')
+
+    # Save spectra functions
+    def save_data(self):
+        """
+        Save the wavelength and spectrum PVs to a text file
+        """
+        if len(self.file_dest.get().strip()) == 0:
+            # set a default destination for the file if you're lazy or give it whitespace
+            _file = os.getcwd() + '/' + self.name + time.strftime("_%Y-%m-%d_%H%M%S") + '.txt'
+        else:
+            _file = self.file_dest.get()
+        self.log.info('Saving spectrum to disk...')
+        # Let's format to JSON for the science folk with sinful f-string mangling
+        _settings = ['sensitivity_cal', 'correct_prnu', 'correct_nonlinearity',
+                     'normalize_exposure', 'adjust_offset', 'subtract_dark',
+                     'remove_bad_pixels', 'remove_temp_bad_pixels']
+        _data = {'timestamp': time.strftime("%Y-%m-%d %H:%M:%S"),
+                 'exposure (us)': str(self.exposure.get()),
+                 'averages': str(self.exposures_to_average.get()),
+                 # Lets do some sneaky conversion to bool from int
+                 'settings': {f"{sig}": str(eval(f"{self}.{sig}.get() > 0")).lower()
+                              for sig in _settings},
+                 'wavelength (nm)': [str(x) for x in self.wavelengths.get()],
+                 'intensity (a.u.)': [str(y) for y in self.spectrum.get()]
+                 }
+        # and let's assume you have permission to save your file where you want to
+        with open(_file, 'w') as _f:
+            _f.write(json.dumps(_data))
+
+    save_spectrum = Cpt(AttributeSignal, attr='_save_spectrum', kind='omitted')
+    file_dest = Cpt(Signal, value='', kind='omitted')
+    set_metadata(save_spectrum, dict(variety='command-proc', value=1))
+
+    @property
+    def _save_spectrum(self):
+        return 0
+
+    # Setter will just save the data
+    @_save_spectrum.setter
+    def _save_spectrum(self, value):
+        self.save_data()
 
 
 class QminiWithEvr(QminiSpectrometer):
