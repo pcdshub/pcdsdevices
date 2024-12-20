@@ -21,7 +21,7 @@ Library Features
 Device Features
 ---------------
 - `KBOMirrorHE` gets 2 new RTD readouts for RTDs installed on the mirror inside vaccum.
-- Added calibrated_uj and manual_in_progress
+- Add `calibrated_uj` and `manual_in_progress` components to `pcdsdevices.pim.PPMPowerMeter`
 - Renamed manual-collections components to have manual in their name to distinguish them from auto-background collection
 - Add the ``desc``, ``last_voltage_set``, and ``is_trip`` component signals to
   `MPODApalisChannel`. These have been helpful during operations at TMO.
@@ -30,31 +30,30 @@ Device Features
 - Add proper control limits to `MPODApalisChannel.voltage` and `MPODApalisChannel.current`.
   This will give useful errors when someone tries to put values outside of the
   channel's supported range.
-- CalibrationAxis from 5 -> 7 states
-- `Mono` in `spectrometer.py` gets `MonoGratingStates`
-- `XOffsetMirrorSwitch` in `mirror.py` gets `TwinCATMirrorStripe`
-- `XOffsetMirrorBend` in `mirror.py` gets `MirrorStripe2D2P`
-- add `FDQ` to `TMOSpectrometer` in spectrometer.py
-- recover sp1k4 attenuator targets number from 3 to 5
-- adding one more target into TM1K4
-- `FFMirror` gets `coating` a `TwinCATMirrorStripe`
-- `FFMirrorZ` inherits these and sets them `None`
-- Adding an FDQ component to ExitSlits
+- Adjust `pcdsdevices.tmo_ip1.CalibrationAxis` from 5 -> 7 -> 8 states
+- `pcdsdevices.spectrometer.Mono` now has a `MonoGratingStates` component (`grating_states`)
+- `pcdsdevices.mirror.XOffsetMirrorSwitch` now has a `TwinCATMirrorStripe` component (`coating`)
+- Add `FDQ` to `pcdsdevices.spectrometer.TMOSpectrometer` (`flow_meter`)
+- Recover sp1k4 attenuator targets number from 3 to 5
+- Add one additional (SiN) target into TM1K4 (8 targets, 9 states with OUT)
+- `pcdsdevices.mirror.FFMirror` now has a `TwinCATMirrorStripe` component (`coating`)
+  - `FFMirrorZ` inherits these and sets them `None`
+- `pcdsdevices.slits.ExitSlits` now has an `FDQ` component (`flow_meter`)
 - Allow init-time configuration of phase shifter inversion and setpoint limits
   for `LaserTiming` and `LCLS2LaserTiming` devices.
 
 New Devices
 -----------
-- Added `HxrDiffractometer` for the Beckhoff-based HXR diffractomoeter.
+- `HxrDiffractometer` for the Beckhoff-based HXR diffractometer.
   This controls the diffractometer in XPP with prefix ``"HXR:GON:MMS"``.
-- `MonoGratingStates`
-- `MirrorStripe2D2P`
-- `PhotonCollimatorFDQ`
-- `BeckhoffPneumaticFDQ`
-- VCN_OpenLoop: similar to VCN w/ the removal of 'open' and 'position_readback'
+- `MonoGratingStates`: SP1K1 Mono Grating States Axis G_H with PMPS.
+- `MirrorStripe2D2P`: Mirror Stripe with 2D Coating states, 2 positions and PMPS.
+- `PhotonCollimatorFDQ`: Photon Collimator with Cooling Meter Readback
+- `BeckhoffPneumaticFDQ`: Beckhoff Pneumatics with a flow meter for cooling readback
+- `VCN_OpenLoop`: similar to VCN w/ the removal of 'open' and 'position_readback'
   commands. The 'state' member variable has been renamed to 'control_mode' and
   the associated doc string was been updated.
-- Lakeshore 336
+- `Lakeshore336`: support for Lakeshore 336 temperature controller
 
 Bugfixes
 --------
@@ -65,8 +64,7 @@ Bugfixes
   will now be supported.
   Lookup tables that have inconsistent ordering in either axis will
   log a warning when the conversion is done.
-- _get_delay, and by extension TprMotor.readback.get() and TprTrigger.ns_delay.get() will no longer calculate wrong delays
-- Change statecount from 7 to 8 to fix target name lower case issue
+- `pcdsdevices.tpr._get_delay`, and by extension `TprMotor.readback` and `TprTrigger.ns_delay` will no longer calculate wrong delays
 - Fix an issue where arbitrarily large negative values were permitted to be
   passed during the `MPODApalisChannel.set_voltage` method, and where
   small values passed to a negative-polarity channel would jump to the
@@ -93,7 +91,6 @@ Maintenance
 
 Contributors
 ------------
-- @tongju12
 - KaushikMalapati
 - c-tsoi
 - jozamudi

@@ -790,7 +790,7 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
 
 class MirrorStripe2D2P(TwinCATMirrorStripe):
     """
-    2D Coating states with 2 positons and PMPS.
+    2D Coating states with 2 positions and PMPS.
 
     Currently services MR1K1.
     """
@@ -1323,7 +1323,7 @@ class FFMirrorZ(FFMirror):
 
 class MirrorStripe2D4P(TwinCATMirrorStripe):
     """
-    2D Coating states with 4 positons and PMPS.
+    2D Coating states with 4 positions and PMPS.
 
     Currently services MR1L0.
     """
