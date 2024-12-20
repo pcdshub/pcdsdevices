@@ -41,9 +41,9 @@ Device Features
 - `pcdsdevices.slits.ExitSlits` now has an `FDQ` component (`flow_meter`)
 - Allow init-time configuration of phase shifter inversion and setpoint limits
   for `LaserTiming` and `LCLS2LaserTiming` devices.
-- Improve QminiSpectrometer.embedded.ui
-- Add QminiSpectrometer.detailed.ui
-- Add save_data() function and accompanying signals to `QminiSpectrometer`for use in the UIs.
+- Improve ``QminiSpectrometer.embedded.ui``
+- Add ``QminiSpectrometer.detailed.ui``
+- Add ``save_data()`` function and accompanying signals to `QminiSpectrometer` for use in the UIs.
 
 New Devices
 -----------
