@@ -2,7 +2,7 @@ Release History
 ###############
 
 
-v8.7.0 (2024-12-19)
+v8.7.0 (2024-12-20)
 ===================
 
 API Breaks
@@ -41,6 +41,9 @@ Device Features
 - `pcdsdevices.slits.ExitSlits` now has an `FDQ` component (`flow_meter`)
 - Allow init-time configuration of phase shifter inversion and setpoint limits
   for `LaserTiming` and `LCLS2LaserTiming` devices.
+- Improve QminiSpectrometer.embedded.ui
+- Add QminiSpectrometer.detailed.ui
+- Add save_data() function and accompanying signals to `QminiSpectrometer`for use in the UIs.
 
 New Devices
 -----------
@@ -91,6 +94,7 @@ Maintenance
 
 Contributors
 ------------
+- aberges-SLAC
 - KaushikMalapati
 - c-tsoi
 - jozamudi
