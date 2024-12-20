@@ -88,25 +88,32 @@ class QminiSpectrometer(Device):
     fit_chisq = Cpt(EpicsSignalRO, ':CHISQ', kind='config')
 
     # Save spectra functions
-    def save_data(self):
+    def save_data(self, file_dest: str = ''):
         """
         Save the wavelength and spectrum PVs to a text file
         """
-        if not self.file_dest.get().strip():
-            # set a default destination for the file if you're lazy or give it whitespace
-            _file = os.getcwd() + '/' + self.name + time.strftime("_%Y-%m-%d_%H%M%S") + '.txt'
+        # Let's check to see if we set this in a non-gui context
+        if not file_dest.strip():
+            # let's try to use the signal instead
+            if not self.file_dest.get().strip():
+                # set a default destination for the file we didn't set it
+                _file = (os.getcwd() + '/' + self.name
+                         + time.strftime("_%Y-%m-%d_%H%M%S") + '.txt')
+            # otherwise just use it, silly
+            else:
+                _file = self.file_dest.get()
         else:
-            _file = self.file_dest.get()
+            _file = file_dest
         self.log.info('Saving spectrum to disk...')
         # Let's format to JSON for the science folk with sinful f-string mangling
         _settings = ['sensitivity_cal', 'correct_prnu', 'correct_nonlinearity',
                      'normalize_exposure', 'adjust_offset', 'subtract_dark',
                      'remove_bad_pixels', 'remove_temp_bad_pixels']
         _data = {'timestamp': time.strftime("%Y-%m-%d %H:%M:%S"),
-                 'exposure (us)': str(self.exposure.get()),
-                 'averages': str(self.exposures_to_average.get()),
+                 'exposure (us)': self.exposure.get(),
+                 'averages': self.exposures_to_average.get(),
                  # Lets do some sneaky conversion to bool from int
-                 'settings': {f"{sig}": str(eval(f"{self}.{sig}.get() > 0")).lower()
+                 'settings': {f"{sig}": bool(getattr(self, sig).get())
                               for sig in _settings},
                  'wavelength (nm)': [str(x) for x in self.wavelengths.get()],
                  'intensity (a.u.)': [str(y) for y in self.spectrum.get()]
