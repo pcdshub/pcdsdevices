@@ -92,7 +92,7 @@ class QminiSpectrometer(Device):
         """
         Save the wavelength and spectrum PVs to a text file
         """
-        if len(self.file_dest.get().strip()) == 0:
+        if not self.file_dest.get().strip():
             # set a default destination for the file if you're lazy or give it whitespace
             _file = os.getcwd() + '/' + self.name + time.strftime("_%Y-%m-%d_%H%M%S") + '.txt'
         else:
