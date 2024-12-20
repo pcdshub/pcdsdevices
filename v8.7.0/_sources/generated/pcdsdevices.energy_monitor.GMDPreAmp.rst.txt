@@ -1,0 +1,129 @@
+﻿pcdsdevices.energy\_monitor.GMDPreAmp
+=====================================
+
+.. currentmodule:: pcdsdevices.energy_monitor
+
+.. autoclass:: GMDPreAmp
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ion_pre_att
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AMP_PREATTN1_RBV``
+          - Channel 1 PRE attenuator
+          - normal
+          - 
+    
+        * - ion_post_att
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AMP_POSATTN1_RBV``
+          - Channel 1 POS attenuator
+          - normal
+          - 
+    
+        * - elec1_pre_att
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AMP_PREATTN2_RBV``
+          - Channel 2 PRE attenuator
+          - normal
+          - 
+    
+        * - elec1_post_att
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AMP_POSATTN2_RBV``
+          - Channel 2 POS attenuator
+          - normal
+          - 
+    
+        * - elec2_pre_att
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AMP_PREATTN3_RBV``
+          - Channel 3 PRE attenuator
+          - normal
+          - 
+    
+        * - elec2_post_att
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AMP_POSATTN3_RBV``
+          - Channel 3 POS attenuator
+          - normal
+          - 
+    
+        * - spare_pre_att
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AMP_PREATTN4_RBV``
+          - Channel 4 PRE attenuator
+          - normal
+          - 
+    
+        * - spare_post_att
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AMP_POSATTN4_RBV``
+          - Channel 4 POS attenuator
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

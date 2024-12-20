@@ -1,0 +1,192 @@
+﻿pcdsdevices.pim.PPMPowerMeter
+=============================
+
+.. currentmodule:: pcdsdevices.pim
+
+.. autoclass:: PPMPowerMeter
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - responsivity
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RESP``
+          - Responsivity in  V/W, unique for every power meter.
+          - normal
+          - 
+    
+        * - background_voltage
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:VOLT``
+          - Background voltage value used to calculate pulse energy.
+          - normal
+          - 
+    
+        * - auto_background_reset
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:RESET``
+          - Set to reset auto background voltage collection.
+          - normal
+          - 
+    
+        * - background_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:MODE``
+          - Can be manual or auto In manual mode, you can collect for a specified number of seconds. In auto mode, a buffer of automatically collected background voltages will be used to calculate the background voltage.
+          - normal
+          - 
+    
+        * - manual_collect
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:COLL``
+          - Start collecting background voltages for specified time.
+          - normal
+          - 
+    
+        * - manual_in_progress
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:MANUAL_COLLECTING``
+          - Manual collection currntly in progress
+          - normal
+          - 
+    
+        * - manual_collect_time
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BACK:TIME``
+          - Time to collect background voltages for.
+          - normal
+          - 
+    
+        * - raw_voltage
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:VOLT``
+          - Raw readback from the power meter.
+          - normal
+          - 
+    
+        * - calibrated_mj
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MJ``
+          - Calibrated absolute measurement of beam power in physics units.
+          - normal
+          - 
+    
+        * - calibrated_uj
+          - :class:`~pcdsdevices.signal.UnitConversionDerivedSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - wattage
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:WATT``
+          - Wattage measured by power meter, equals MJ times Beamrate.
+          - normal
+          - 
+    
+        * - thermocouple
+          - :class:`~pcdsdevices.sensors.TwinCATThermocouple`
+          - 
+          - Thermocouple on the power meter holder.
+          - normal
+          - 
+    
+        * - raw_voltage_buffer
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:VOLT_BUFFER``
+          - Array of the last 1000 raw measurements. Polls faster than the EPICS updates.
+          - omitted
+          - 
+    
+        * - calibrated_mj_buffer
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MJ_BUFFER``
+          - Array of the last 1000 fully calibrated measurements. Polls faster than the EPICS updates.
+          - omitted
+          - 
+    
+        * - wattage_buffer
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:WATT_BUFFER``
+          - Array of the last 1000 wattages. Polls faster than the EPICS updates.
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
