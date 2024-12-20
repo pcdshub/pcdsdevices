@@ -11,7 +11,7 @@ API Breaks
 
 Library Features
 ----------------
-- Added the ability to add custom units for convert_unit with a unit test
+- Added the ability to add custom units in custom_units.py which convert_unit if the unit can't be found in scipy, and a unit test for it
 - Add the capability for `AvgSignal` to reset itself on trigger,
   then wait a duration before marking the trigger as complete.
   This lets you use `AvgSignal` in a bluesky plan as a way to
@@ -22,7 +22,7 @@ Device Features
 ---------------
 - `KBOMirrorHE` gets 2 new RTD readouts for RTDs installed on the mirror inside vaccum.
 - Add `calibrated_uj` and `manual_in_progress` components to `pcdsdevices.pim.PPMPowerMeter`
-- Renamed manual-collections components to have manual in their name to distinguish them from auto-background collection
+-Added manual to names of components in PPMPowerMeter that are used for manual background voltage collection to distinguish them from components related to automatic background voltage collection
 - Add the ``desc``, ``last_voltage_set``, and ``is_trip`` component signals to
   `MPODApalisChannel`. These have been helpful during operations at TMO.
   ``last_voltage_set`` will also get a ``voltage_setpoint`` alias, which is the
@@ -57,14 +57,14 @@ New Devices
 
 Bugfixes
 --------
-- Made responsivity component input only like the pytmc pragma so the connection does not fail when looking for the non-RBV pv
+- Made `PPMPowerMeter`'s ``responsivity`` component input-only, like the pytmc pragma, so the connection does not fail when looking for a non-existant non-RBV pv.
 - Fix an issue where the LookupTablePositioner would fail silently if the
   lookup table was not strictly increasing in both axes.
   Lookup tables that are strictly decreasing in either axis
   will now be supported.
   Lookup tables that have inconsistent ordering in either axis will
   log a warning when the conversion is done.
-- `pcdsdevices.tpr._get_delay`, and by extension `TprMotor.readback` and `TprTrigger.ns_delay` will no longer calculate wrong delays
+- `pcdsdevices.tpr._get_delay`, and by extension `TprMotor.readback` and `TprTrigger.ns_delay` now calculate delays correctly by using a more precise conversion factor from ticks to nanoseconds
 - Fix an issue where arbitrarily large negative values were permitted to be
   passed during the `MPODApalisChannel.set_voltage` method, and where
   small values passed to a negative-polarity channel would jump to the
