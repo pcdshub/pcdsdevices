@@ -2,6 +2,109 @@ Release History
 ###############
 
 
+v8.7.0 (2024-12-20)
+===================
+
+API Breaks
+----------
+- `FFMirrorZ` components `chin_left_rtd`, `chin_right_rtd`, and `chin_tail_rtd` are renamed: `mirror_temp_[l,r,tail]`.
+
+Library Features
+----------------
+- Added the ability to add custom units in custom_units.py which convert_unit if the unit can't be found in scipy, and a unit test for it
+- Add the capability for `AvgSignal` to reset itself on trigger,
+  then wait a duration before marking the trigger as complete.
+  This lets you use `AvgSignal` in a bluesky plan as a way to
+  accumulate the time average of a fast-updating signal at each
+  scan point. To enable this, provide a ``duration`` argument.
+
+Device Features
+---------------
+- `KBOMirrorHE` gets 2 new RTD readouts for RTDs installed on the mirror inside vaccum.
+- Add `calibrated_uj` and `manual_in_progress` components to `pcdsdevices.pim.PPMPowerMeter`
+-Added manual to names of components in PPMPowerMeter that are used for manual background voltage collection to distinguish them from components related to automatic background voltage collection
+- Add the ``desc``, ``last_voltage_set``, and ``is_trip`` component signals to
+  `MPODApalisChannel`. These have been helpful during operations at TMO.
+  ``last_voltage_set`` will also get a ``voltage_setpoint`` alias, which is the
+  original name as used in TMO's scripts.
+- Add proper control limits to `MPODApalisChannel.voltage` and `MPODApalisChannel.current`.
+  This will give useful errors when someone tries to put values outside of the
+  channel's supported range.
+- Adjust `pcdsdevices.tmo_ip1.CalibrationAxis` from 5 -> 7 -> 8 states
+- `pcdsdevices.spectrometer.Mono` now has a `MonoGratingStates` component (`grating_states`)
+- `pcdsdevices.mirror.XOffsetMirrorSwitch` now has a `TwinCATMirrorStripe` component (`coating`)
+- Add `FDQ` to `pcdsdevices.spectrometer.TMOSpectrometer` (`flow_meter`)
+- Recover sp1k4 attenuator targets number from 3 to 5
+- Add one additional (SiN) target into TM1K4 (8 targets, 9 states with OUT)
+- `pcdsdevices.mirror.FFMirror` now has a `TwinCATMirrorStripe` component (`coating`)
+  - `FFMirrorZ` inherits these and sets them `None`
+- `pcdsdevices.slits.ExitSlits` now has an `FDQ` component (`flow_meter`)
+- Allow init-time configuration of phase shifter inversion and setpoint limits
+  for `LaserTiming` and `LCLS2LaserTiming` devices.
+- Improve ``QminiSpectrometer.embedded.ui``
+- Add ``QminiSpectrometer.detailed.ui``
+- Add ``save_data()`` function and accompanying signals to `QminiSpectrometer` for use in the UIs.
+
+New Devices
+-----------
+- `HxrDiffractometer` for the Beckhoff-based HXR diffractometer.
+  This controls the diffractometer in XPP with prefix ``"HXR:GON:MMS"``.
+- `MonoGratingStates`: SP1K1 Mono Grating States Axis G_H with PMPS.
+- `MirrorStripe2D2P`: Mirror Stripe with 2D Coating states, 2 positions and PMPS.
+- `PhotonCollimatorFDQ`: Photon Collimator with Cooling Meter Readback
+- `BeckhoffPneumaticFDQ`: Beckhoff Pneumatics with a flow meter for cooling readback
+- `VCN_OpenLoop`: similar to VCN w/ the removal of 'open' and 'position_readback'
+  commands. The 'state' member variable has been renamed to 'control_mode' and
+  the associated doc string was been updated.
+- `Lakeshore336`: support for Lakeshore 336 temperature controller
+
+Bugfixes
+--------
+- Made `PPMPowerMeter`'s ``responsivity`` component input-only, like the pytmc pragma, so the connection does not fail when looking for a non-existant non-RBV pv.
+- Fix an issue where the LookupTablePositioner would fail silently if the
+  lookup table was not strictly increasing in both axes.
+  Lookup tables that are strictly decreasing in either axis
+  will now be supported.
+  Lookup tables that have inconsistent ordering in either axis will
+  log a warning when the conversion is done.
+- `pcdsdevices.tpr._get_delay`, and by extension `TprMotor.readback` and `TprTrigger.ns_delay` now calculate delays correctly by using a more precise conversion factor from ticks to nanoseconds
+- Fix an issue where arbitrarily large negative values were permitted to be
+  passed during the `MPODApalisChannel.set_voltage` method, and where
+  small values passed to a negative-polarity channel would jump to the
+  most negative value. Now, this function will clamp all values between
+  zero and the maximum channel voltage.
+- Rename ``Smarpod.detailed.ui`` to ``SmarPod.detailed.ui`` so that it will be
+  properly discovered by ``typhos`` for the `SmarPod` class.
+- Replace the ``velocity_base`` (``.VBAS``) signal in the `MMC100` class
+  with a base `Signal` to avoid a PV disconnected error
+  that was preventing moves.
+  The `MMC100` record does not have this field.
+  With this fix, `MMC100` devices can move again.
+
+Maintenance
+-----------
+- reorder `cool_flow1` and `cool_flow2` components in `KBOMirrorHE` to the end of the list.
+- reorder `mirror_temp_[l,r,tail]` components in `FFMirrorZ` to align with other temperature sensors.
+- Make test_at2l0_clear_errors pass more consistently on CI.
+- Add a utility for checking signal values that don't update promptly.
+- Added unit tests to cover the `MPODApalisChannel` changes.
+- Restore `PIPPLC`'s ``qpc_name`` component.
+- `XOffsetMirrorBend` `coating` changed to `TwinCATMirrorStripe` from `MirrorStripe2D2P`
+- Add unit tests for the new `AvgSignal` features.
+
+Contributors
+------------
+- aberges-SLAC
+- KaushikMalapati
+- c-tsoi
+- jozamudi
+- mseaberg
+- nrwslac
+- tongju12
+- zllentz
+
+
+
 v8.6.0 (2024-09-16)
 ===================
 
