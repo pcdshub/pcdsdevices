@@ -74,14 +74,14 @@ class Prefocus(CombinedInOutRecordPositioner, LightpathInOutMixin):
         # Set default transmission
         # Done this way because states are still unknown at this point
         # Assume that having any target in gives transmission 0.8
-        self.x = self.x_motor
-        self.y = self.y_motor
         self._transmission = defaultdict(lambda state: 0.8
                                          if state in self.in_states
                                          else (1 if state in self.out_states
                                                else 0))
         super().__init__(prefix, name=name, **kwargs)
-
+      
+        self.x = self.x_motor
+        self.y = self.y_motor
 
 class LensStackBase(BaseInterface, PseudoPositioner):
     """
