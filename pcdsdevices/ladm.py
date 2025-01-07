@@ -84,9 +84,9 @@ def MotorsTox(x1, x2, z):
 def ThetaToMotors_print(theta):
     x1, x2, z = ThetaToMotors(theta)
     print(
-           f"Move x1 to {x1}"
-           f"Move x2 to {x2}"
-           f"Move z to {z}"
+          f"Move x1 to {x1}"
+          f"Move x2 to {x2}"
+          f"Move z to {z}"
           )
 
 
@@ -114,7 +114,7 @@ class LADM(BaseInterface, GroupDevice):
              doc='Y2 Downstream')
     z = Cpt(IMS, ':MMS:02', name="z", kind='normal',
             doc='Z Upstream')
-    bs6_r = Cpt(IMS, ':MMS:12', name="bs6_r",  kind='normal',
+    bs6_r = Cpt(IMS, ':MMS:12', name="bs6_r", kind='normal',
                 doc='Beam Stop In Out 1')
     bs6_t = Cpt(IMS, ':MMS:11', name="bs6_t", kind='normal',
                 doc='Beam Stop Trans 1')
@@ -127,11 +127,9 @@ class LADM(BaseInterface, GroupDevice):
     bs10_t = Cpt(IMS, ':MMS:16', name="bs10_t", kind='normal',
                  doc='Beam Stop Trans 2')
     det_x = Cpt(IMS, ':MMS:06', name="det_x", kind='normal',
-                 doc='Detector Motor x')
+                doc='Detector Motor x')
     det_y = Cpt(IMS, ':MMS:07', name="det_y", kind='normal',
-                 doc='Detector Motor y')
-
-
+                doc='Detector Motor y')
 
     theta_pv = EpicsSignal('XCS:VARS:LAM:Theta', name='LADM_theta')
     gamma_pv = EpicsSignal('XCS:VARS:LAM:Gamma', name='LADM_gamma')
@@ -188,7 +186,7 @@ class LADM(BaseInterface, GroupDevice):
                   "x2": self.x2,
                   "y2": self.y2,
                   "z": self.z
-                 }
+                  }
         table = PrettyTable()
         table.field_names = ["Motor", "User", "Dial"]
         table.add_row(["Theta", self.theta.position, "-"])
