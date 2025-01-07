@@ -78,8 +78,7 @@ class Prefocus(CombinedInOutRecordPositioner, LightpathInOutMixin):
                                          if state in self.in_states
                                          else (1 if state in self.out_states
                                                else 0))
-        super().__init__(prefix, name=name, **kwargs)
-                                                                                
+        super().__init__(prefix, name=name, **kwargs)                                                                        
         self.x = self.x_motor
         self.y = self.y_motor
 
