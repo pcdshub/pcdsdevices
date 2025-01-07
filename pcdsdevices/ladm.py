@@ -83,8 +83,7 @@ def MotorsTox(x1, x2, z):
 
 def ThetaToMotors_print(theta):
     x1, x2, z = ThetaToMotors(theta)
-    print(
-          f"Move x1 to {x1}"
+    print(f"Move x1 to {x1}"
           f"Move x2 to {x2}"
           f"Move z to {z}"
           )
@@ -180,8 +179,7 @@ class LADM(BaseInterface, GroupDevice):
             self.theta_pv.put(self.wmTheta())
 
     def status(self):
-        motors = {
-                  "x1": self.x1,
+        motors = {"x1": self.x1,
                   "y1": self.y1,
                   "x2": self.x2,
                   "y2": self.y2,
