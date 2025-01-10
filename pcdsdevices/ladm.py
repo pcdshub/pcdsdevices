@@ -295,7 +295,7 @@ class LADM(BaseInterface, GroupDevice):
         else:
             try:
                 x1_var = xTox12(x)
-                x2_var = xTox12(x)
+                x2_var = x1_var
                 z_var = xToz(x)
                 z_now = self.z.wm()
                 if z_var > z_now:
