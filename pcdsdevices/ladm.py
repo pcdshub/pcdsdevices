@@ -196,7 +196,6 @@ class LADM(BaseInterface, GroupDevice):
             m = motors[key]
             table.add_row([key, m.wm(), m.dial_position.get()])
         print(table.get_string(title="LADM Status"))
-        print(table)
 
     def ThetaToMotors_print(self, theta):
         x1_var, x2_var, z_var = ThetaToMotors(theta)
