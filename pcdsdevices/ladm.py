@@ -90,6 +90,11 @@ def ThetaToMotors_print(theta):
 class LADM(BaseInterface, GroupDevice):
     """
     Class to control the LADM. Includes Single motors and beamstops.
+    
+    The LADM is the Large Angle Detector Mover in XCS.
+    It's the large device that sweeps across the instrument's floor in a wide angle.
+    It can be used to position and reposition a detector at various angles relative
+    to the sample position.
 
     Parameters
     ----------
