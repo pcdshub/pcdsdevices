@@ -116,9 +116,6 @@ def fake_lensstack(fake_att):
                                   E=sample_E,
                                   z_offset=.01, z_dir=1, att_obj=fake_att,
                                   lcls_obj=.01, mono_obj=.01)
-    # "activate" tab completion
-    for attr in ['x', 'y', 'z']:
-        getattr(fake_lensstack, attr)._tab_initialized = True
     return fake_lensstack
 
 

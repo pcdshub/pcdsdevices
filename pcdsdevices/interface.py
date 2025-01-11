@@ -904,7 +904,7 @@ class FltMvInterface(MvInterface):
         self.set_current_position(position)
 
 
-def setup_preset_paths(**paths):
+def setup_preset_paths(**kwargs):
     """
     Prepare the :class:`Presets` class.
 
@@ -912,17 +912,21 @@ def setup_preset_paths(**paths):
 
     Parameters
     ----------
-    **paths : str keyword args
+    **kwargs: str keyword args
         A mapping from type of preset to destination path. These will be
         directories that contain the yaml files that define the preset
         positions.
-    """
 
+        (Optional) "defer_loading": bool, whether or not to defer the loading
+        of preset files until the first tab completion
+    """
+    defer_loading = kwargs.pop("defer_loading", False)
+    paths = kwargs
     Presets._paths = {}
     for k, v in paths.items():
         Presets._paths[k] = Path(v)
     for preset in Presets._registry:
-        preset.sync()
+        preset.sync(defer_loading=defer_loading)
 
 
 class Presets:
@@ -1084,15 +1088,15 @@ class Presets:
         except BlockingIOError:
             self._log_flock_error()
 
-    def sync(self):
+    def sync(self, defer_loading: bool = False):
         """Synchronize the presets with the database."""
         logger.debug('call %s presets.sync()', self._device.name)
         self._remove_methods()
         self._cache = {}
         logger.debug('filling %s cache', self.name)
 
-        # only consult files if tab-completion has been attempted
-        if self._device._tab_initialized:
+        # only consult files if requested
+        if not defer_loading:
             for preset_type in self._paths.keys():
                 path = self._path(preset_type)
                 if path.exists():
