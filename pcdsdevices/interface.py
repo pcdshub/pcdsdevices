@@ -227,8 +227,13 @@ class BaseInterface:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._tab = self._class_tab.new_instance(self)
+        self._tab_initialized = False
 
     def __dir__(self):
+        if not self._tab_initialized and hasattr(self, 'presets'):
+            self._tab_initialized = True
+            self.presets.sync()
+
         return self._tab.get_dir()
 
     def __repr__(self):
@@ -1085,16 +1090,19 @@ class Presets:
         self._remove_methods()
         self._cache = {}
         logger.debug('filling %s cache', self.name)
-        for preset_type in self._paths.keys():
-            path = self._path(preset_type)
-            if path.exists():
-                try:
-                    self._cache[preset_type] = self._read(preset_type)
-                except BlockingIOError:
-                    self._log_flock_error()
-            else:
-                logger.debug('No %s preset file for %s',
-                             preset_type, self._device.name)
+
+        # only consult files if tab-completion has been attempted
+        if self._device._tab_initialized:
+            for preset_type in self._paths.keys():
+                path = self._path(preset_type)
+                if path.exists():
+                    try:
+                        self._cache[preset_type] = self._read(preset_type)
+                    except BlockingIOError:
+                        self._log_flock_error()
+                else:
+                    logger.debug('No %s preset file for %s',
+                                 preset_type, self._device.name)
         self._create_methods()
 
     def _log_flock_error(self):
@@ -1140,6 +1148,7 @@ class Presets:
         self._methods.append((obj, method_name))
         setattr(obj, method_name, MethodType(method, obj))
         if hasattr(obj, '_tab'):
+            # obj._tab: TabCompletionHelperInstance
             obj._tab.add(method_name)
 
     def _make_add(self, preset_type):
