@@ -227,13 +227,8 @@ class BaseInterface:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._tab = self._class_tab.new_instance(self)
-        self._tab_initialized = False
 
     def __dir__(self):
-        if not self._tab_initialized and hasattr(self, 'presets'):
-            self._tab_initialized = True
-            self.presets.sync()
-
         return self._tab.get_dir()
 
     def __repr__(self):
@@ -752,6 +747,25 @@ class FltMvInterface(MvInterface):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.presets = Presets(self)
+        self._presets_initialized = False
+
+    def __dir__(self):
+        # Initialize presets if tab-completion requested.
+        if not self._presets_initialized and hasattr(self, 'presets'):
+            self._presets_initialized = True
+            self.presets.sync()
+
+        return super().__dir__()
+
+    def __getattribute__(self, name: str):
+        if any((name.startswith(prefix)) for prefix in ['mv_', 'wm_', 'umv_']):
+            # Must nest if statements to avoid recursion, since getattribute
+            # is also called in the evaluation of this logic.
+            if not self._presets_initialized:
+                self._presets_initialized = True
+                self.presets.sync()
+
+        return super().__getattribute__(name)
 
     def wm(self):
         pos = super().wm()
