@@ -4,6 +4,7 @@ Module for defining bell-and-whistles movement features.
 import functools
 import logging
 import numbers
+import os
 import re
 import shutil
 import signal
@@ -751,19 +752,15 @@ class FltMvInterface(MvInterface):
 
     def __dir__(self):
         # Initialize presets if tab-completion requested.
-        if not self._presets_initialized and hasattr(self, 'presets'):
-            self._presets_initialized = True
+        if self.presets.sync_needed:
             self.presets.sync()
 
         return super().__dir__()
 
     def __getattribute__(self, name: str):
-        if any((name.startswith(prefix)) for prefix in ['mv_', 'wm_', 'umv_']):
-            # Must nest if statements to avoid recursion, since getattribute
-            # is also called in the evaluation of this logic.
-            if not self._presets_initialized:
-                self._presets_initialized = True
-                self.presets.sync()
+        if (any((name.startswith(prefix)) for prefix in ['mv_', 'wm_', 'umv_'])
+                and self.presets.sync_needed):
+            self.presets.sync()
 
         return super().__getattribute__(name)
 
@@ -974,9 +971,10 @@ class Presets:
         self._fd = None
         self._registry.add(self)
         self.name = device.name + '_presets'
+        self._mtimes = {}
         self.sync()
 
-    def _path(self, preset_type):
+    def _path(self, preset_type) -> Path:
         """Utility function to get the preset file :class:`~pathlib.Path`."""
         path = self._paths[preset_type] / (self._device.name + '.yml')
         logger.debug('select presets path %s', path)
@@ -1105,13 +1103,14 @@ class Presets:
         logger.debug('call %s presets.sync()', self._device.name)
         self._remove_methods()
         self._cache = {}
-        logger.debug('filling %s cache', self.name)
-
+        self._mtimes = {}
         # only consult files if requested
         if not defer_loading:
+            logger.debug('filling %s cache', self.name)
             for preset_type in self._paths.keys():
                 path = self._path(preset_type)
                 if path.exists():
+                    self._mtimes[preset_type] = os.path.getmtime(path)
                     try:
                         self._cache[preset_type] = self._read(preset_type)
                     except BlockingIOError:
@@ -1328,6 +1327,17 @@ class Presets:
                     state = state_name
                     closest = diff
         return state
+
+    @property
+    def sync_needed(self) -> bool:
+        """True if this preset has fallen out of sync with backing files"""
+        curr_mtimes = {}
+        for preset_type in self._paths.keys():
+            preset_path = self._path(preset_type)
+            if preset_path.exists():
+                curr_mtimes[preset_type] = os.path.getmtime(preset_path)
+
+        return not curr_mtimes == self._mtimes
 
 
 class PresetPosition:
