@@ -904,7 +904,7 @@ class FltMvInterface(MvInterface):
         self.set_current_position(position)
 
 
-def setup_preset_paths(**kwargs):
+def setup_preset_paths(defer_loading: bool = False, **paths):
     """
     Prepare the :class:`Presets` class.
 
@@ -920,8 +920,6 @@ def setup_preset_paths(**kwargs):
         (Optional) "defer_loading": bool, whether or not to defer the loading
         of preset files until the first tab completion
     """
-    defer_loading = kwargs.pop("defer_loading", False)
-    paths = kwargs
     Presets._paths = {}
     for k, v in paths.items():
         Presets._paths[k] = Path(v)
