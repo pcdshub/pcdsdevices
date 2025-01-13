@@ -912,11 +912,11 @@ def setup_preset_paths(defer_loading: bool = False, **paths):
 
     Parameters
     ----------
-    **kwargs: str keyword args
+    **paths : str keyword args
         A mapping from type of preset to destination path. These will be
         directories that contain the yaml files that define the preset
         positions.
-
+    defer_loading : bool, by default False
         (Optional) "defer_loading": bool, whether or not to defer the loading
         of preset files until the first tab completion
     """
