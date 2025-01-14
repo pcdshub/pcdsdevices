@@ -202,12 +202,12 @@ def test_presets_type(presets, fast_motor: FastMotor):
 
 
 def test_presets_desync(presets, fast_motor: FastMotor):
-    assert not fast_motor.presets.sync_needed
+    assert not fast_motor.presets.sync_needed()
 
     fast_motor.mv(4, wait=True)
     fast_motor.presets.add_hutch('four', comment='four!')
 
-    assert not fast_motor.presets.sync_needed
+    assert not fast_motor.presets.sync_needed()
 
     # modify preset from other object with the same, to force collision
     fast_motor2 = FastMotor(name='sim_fast')
@@ -222,16 +222,16 @@ def test_presets_desync(presets, fast_motor: FastMotor):
     assert fast_motor.presets._path("hutch") == fast_motor2.presets._path("hutch")
 
     # original object needs a sync, but second does not
-    assert fast_motor.presets.sync_needed
-    assert not fast_motor2.presets.sync_needed
+    assert fast_motor.presets.sync_needed()
+    assert not fast_motor2.presets.sync_needed()
 
 
 def test_presets_tab_init(fast_motor: FastMotor, deferred_fast_motor_presets):
     # deferred_fast_motor_preset must come last,
     # to clear cache after motor is created (and sync-ed at init)
-    assert fast_motor.presets.sync_needed
+    assert fast_motor.presets.sync_needed()
     fast_motor.__dir__()  # mimic tab completion request
-    assert not fast_motor.presets.sync_needed
+    assert not fast_motor.presets.sync_needed()
 
 
 @pytest.mark.parametrize("attr,", [
@@ -242,12 +242,12 @@ def test_presets_getattribute_init(
 ):
     # deferred_fast_motor_preset must come last,
     # to clear cache after motor is created (and sync-ed at init)
-    assert fast_motor.presets.sync_needed
+    assert fast_motor.presets.sync_needed()
     try:
         getattr(fast_motor, attr)  # mimic completion request
     except AttributeError:
         pass
-    assert not fast_motor.presets.sync_needed
+    assert not fast_motor.presets.sync_needed()
 
 
 def test_engineering_mode():

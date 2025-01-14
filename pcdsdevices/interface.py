@@ -752,14 +752,14 @@ class FltMvInterface(MvInterface):
 
     def __dir__(self):
         # Initialize presets if tab-completion requested.
-        if self.presets.sync_needed:
+        if self.presets.sync_needed():
             self.presets.sync()
 
         return super().__dir__()
 
     def __getattribute__(self, name: str):
         if (any((name.startswith(prefix)) for prefix in ['mv_', 'wm_', 'umv_'])
-                and self.presets.sync_needed):
+                and self.presets.sync_needed()):
             self.presets.sync()
 
         return super().__getattribute__(name)
@@ -1328,7 +1328,6 @@ class Presets:
                     closest = diff
         return state
 
-    @property
     def sync_needed(self) -> bool:
         """True if this preset has fallen out of sync with backing files"""
         curr_mtimes = {}
