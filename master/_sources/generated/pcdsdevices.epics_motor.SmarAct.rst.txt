@@ -279,6 +279,13 @@
           - normal
           - 
     
+        * - channel_state_raw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE_RBV``
+          - Channel state bitmask represented as raw int
+          - omitted
+          - 
+    
         * - open_loop
           - :class:`~pcdsdevices.epics_motor.SmarActOpenLoop`
           - 
@@ -287,6 +294,8 @@
           - 
     
 
+    
+    
     
     
     

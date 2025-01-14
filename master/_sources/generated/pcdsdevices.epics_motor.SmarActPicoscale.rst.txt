@@ -279,6 +279,13 @@
           - normal
           - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
     
+        * - channel_state_raw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE_RBV``
+          - Channel state bitmask represented as raw int
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.SmarAct`
+    
         * - open_loop
           - :class:`~pcdsdevices.epics_motor.SmarActOpenLoop`
           - 
@@ -371,6 +378,8 @@
           - 
     
 
+    
+    
     
     
     

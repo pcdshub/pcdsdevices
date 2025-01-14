@@ -20,14 +20,14 @@
     
         * - gas_needle_x
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:02``
+          - ``:MMS:01``
           - 
           - normal
           - 
     
         * - gas_needle_y
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:01``
+          - ``:MMS:02``
           - 
           - normal
           - 

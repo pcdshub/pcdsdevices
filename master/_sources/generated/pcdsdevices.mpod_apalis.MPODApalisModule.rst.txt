@@ -95,7 +95,25 @@
           - normal
           - 
     
+        * - limit_pos
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VoltageLimit``
+          - Positive voltage limit as a % of the max voltage
+          - omitted
+          - 
+    
+        * - limit_neg
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VoltageLimitNegative``
+          - Negative voltage limit as a % of the max voltage
+          - omitted
+          - 
+    
 
+    
+    
+    
+    
     
     
     
@@ -155,6 +173,7 @@
     .. autoattribute:: connected
     .. autoattribute:: hints
     .. autoattribute:: kind
+    .. autoattribute:: limit_percents
     .. autoattribute:: needs_parent
     .. autoattribute:: stage_group
     .. autoattribute:: subscriptions
