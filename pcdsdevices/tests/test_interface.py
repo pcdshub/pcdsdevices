@@ -3,6 +3,7 @@ import multiprocessing as mp
 import sys
 import threading
 import time
+from pathlib import Path
 
 import ophyd
 import pytest
@@ -29,6 +30,15 @@ def slow_motor():
 @pytest.fixture(scope='function')
 def fast_motor():
     return FastMotor(name='sim_fast')
+
+
+@pytest.fixture(scope="function")
+def deferred_fast_motor_presets():
+    """deferred loading fast_motor presets, backed by a file but unloaded"""
+    setup_preset_paths(defer_loading=True,
+                       hutch=Path(__file__).parent / 'sim_fast_presets')
+    yield
+    setup_preset_paths()
 
 
 @pytest.mark.timeout(5)
@@ -101,7 +111,7 @@ def test_mv_ginput(monkeypatch, fast_motor):
     sys.platform in ("win32", "darwin"),
     reason="Fails on Windows, no fcntl and different signal handling",
 )
-def test_presets(presets, fast_motor):
+def test_presets(presets, fast_motor: FastMotor):
     logger.debug('test_presets')
 
     fast_motor.mv(4, wait=True)
@@ -181,7 +191,7 @@ def test_presets(presets, fast_motor):
     assert hasattr(fast_motor, 'mv_sample')
 
 
-def test_presets_type(presets, fast_motor):
+def test_presets_type(presets, fast_motor: FastMotor):
     logger.debug('test_presets_type')
     # Mess up the input types, fail before opening the file
 
@@ -189,6 +199,55 @@ def test_presets_type(presets, fast_motor):
         fast_motor.presets.add_here_user(123)
     with pytest.raises(TypeError):
         fast_motor.presets.add_user(234234, 'cats')
+
+
+def test_presets_desync(presets, fast_motor: FastMotor):
+    assert not fast_motor.presets.sync_needed()
+
+    fast_motor.mv(4, wait=True)
+    fast_motor.presets.add_hutch('four', comment='four!')
+
+    assert not fast_motor.presets.sync_needed()
+
+    # modify preset from other object with the same, to force collision
+    fast_motor2 = FastMotor(name='sim_fast')
+    fast_motor2.mv(5, wait=True)
+    fast_motor2.presets.positions.four.update_pos()
+
+    # in-memory python objects have different preset positions
+    assert fast_motor.presets.positions.four.pos == 4
+    assert fast_motor2.presets.positions.four.pos == 5
+
+    # but point to the same file
+    assert fast_motor.presets._path("hutch") == fast_motor2.presets._path("hutch")
+
+    # original object needs a sync, but second does not
+    assert fast_motor.presets.sync_needed()
+    assert not fast_motor2.presets.sync_needed()
+
+
+def test_presets_tab_init(fast_motor: FastMotor, deferred_fast_motor_presets):
+    # deferred_fast_motor_preset must come last,
+    # to clear cache after motor is created (and sync-ed at init)
+    assert fast_motor.presets.sync_needed()
+    fast_motor.__dir__()  # mimic tab completion request
+    assert not fast_motor.presets.sync_needed()
+
+
+@pytest.mark.parametrize("attr,", [
+    "wm_dne", "wm_in", "mv_dne", "mv_in", "umv_dne, umv_in"
+])
+def test_presets_getattribute_init(
+    fast_motor: FastMotor, attr: str, deferred_fast_motor_presets
+):
+    # deferred_fast_motor_preset must come last,
+    # to clear cache after motor is created (and sync-ed at init)
+    assert fast_motor.presets.sync_needed()
+    try:
+        getattr(fast_motor, attr)  # mimic completion request
+    except AttributeError:
+        pass
+    assert not fast_motor.presets.sync_needed()
 
 
 def test_engineering_mode():
