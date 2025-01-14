@@ -270,7 +270,43 @@
           - normal
           - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
     
+        * - default_setting
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``UserSetDefaultSe_RBV``
+          - Default User Set to use on startup. See UserSetSelector for more options
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - user_setting
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``UserSetSelector_RBV``
+          - Current User Set to save/load
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - save_setting
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``UserSetSave.PROC``
+          - Save current settings into selected User Set
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - load_setting
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``UserSetLoad.PROC``
+          - Load current settings into selected User Set
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
 
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
