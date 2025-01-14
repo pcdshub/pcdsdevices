@@ -6,15 +6,15 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.areadetector.detectors.PCDSHDF5BlueskyTriggerable &mdash; PCDS Devices 8.6.1.dev172+gaf3a7e77 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+  <title>pcdsdevices.areadetector.detectors.PCDSHDF5BlueskyTriggerable &mdash; PCDS Devices 8.7.1.dev159+gaa642923 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=7a7007f6"></script>
+      <script src="../_static/documentation_options.js?v=c6efdd39"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -73,6 +73,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-beam-stats">pcdsdevices.beam_stats</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ccm">pcdsdevices.ccm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-crix-motion">pcdsdevices.crix_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-bootstrap">pcdsdevices.cvmi_bootstrap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-motion">pcdsdevices.cvmi_motion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dc-devices">pcdsdevices.dc_devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-delay-generator">pcdsdevices.delay_generator</a></li>
@@ -282,7 +283,7 @@ function.</p>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase.html#pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase" title="pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCDSAreaDetectorBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>cam (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.2.dev10+g1e5f0375)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.2.dev58+gf654d5dd)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
@@ -350,9 +351,9 @@ key which is a label like ‘light’, ‘dark’, or ‘gain8’.</p>
 <p>It in turn calls <code class="docutils literal notranslate"><span class="pre">generate_datum</span></code> on all of the plugins that have
 that method.</p>
 <p>File plugins are identified by searching for a
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.10.2.dev10+g1e5f0375)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.10.2.dev58+gf654d5dd)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
 method that must have the signature</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_datum</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">datum_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">generate_datum</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">datum_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
    <span class="o">...</span>
 </pre></div>
 </div>
@@ -395,9 +396,9 @@ key which is a label like ‘light’, ‘dark’, or ‘gain8’.</p>
 <p>It in turn calls <code class="docutils literal notranslate"><span class="pre">generate_datum</span></code> on all of the plugins that have
 that method.</p>
 <p>File plugins are identified by searching for a
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.10.2.dev10+g1e5f0375)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.10.2.dev58+gf654d5dd)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
 method that must have the signature</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_datum</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">datum_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">generate_datum</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">datum_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
    <span class="o">...</span>
 </pre></div>
 </div>
@@ -638,7 +639,7 @@ plotted on the specified axes.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

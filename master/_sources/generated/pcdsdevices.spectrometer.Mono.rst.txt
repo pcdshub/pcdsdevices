@@ -78,13 +78,27 @@
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:ENC:M_PI:02``
           - mirror pitch upstream encoder [urad]
-          - normal
+          - omitted
           - 
     
         * - g_pi_up_enc
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:ENC:G_PI:02``
           - grating pitch upstream encoder [urad]
+          - omitted
+          - 
+    
+        * - m_pi_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MMS:M_PI:ENCDIFF:STATS:RMS``
+          - mirror pitch encoder RMS deviation [nrad]
+          - normal
+          - 
+    
+        * - g_pi_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MMS:G_PI:ENCDIFF:STATS:RMS``
+          - grating pitch encoder RMS deviation [nrad]
           - normal
           - 
     
@@ -215,6 +229,10 @@
           - 
     
 
+    
+    
+    
+    
     
     
     

@@ -123,6 +123,13 @@
           - omitted
           - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
     
+        * - error_message (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:STATUS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
         * - name_0 (FCpt)
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{prefix}:M{self._channel}:NAME0``
@@ -159,6 +166,8 @@
           - 
     
 
+    
+    
     
     
     

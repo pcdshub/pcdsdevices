@@ -164,6 +164,15 @@ pcdsdevices.crix_motion
     pcdsdevices.crix_motion.VLSOptics
     pcdsdevices.crix_motion.VLSOpticsSim
 
+pcdsdevices.cvmi_bootstrap
+--------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.cvmi_bootstrap.CVMI
+    pcdsdevices.cvmi_bootstrap.KTOF
+
 pcdsdevices.cvmi_motion
 -----------------------
 
@@ -1079,6 +1088,7 @@ pcdsdevices.spectrometer
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.spectrometer.DCCMono
     pcdsdevices.spectrometer.FZPStates
     pcdsdevices.spectrometer.Gen1VonHamos4Crystal
     pcdsdevices.spectrometer.Gen1VonHamosCrystal

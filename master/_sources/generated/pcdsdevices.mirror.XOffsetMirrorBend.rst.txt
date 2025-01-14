@@ -139,8 +139,8 @@
     
         * - pitch_enc_rms
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:ENC:PITCH:RMS``
-          - Pitch encoder RMS deviation [urad]
+          - ``:MMS:PITCH:ENCDIFF:STATS:RMS``
+          - Pitch encoder RMS deviation [nrad]
           - normal
           - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
     
