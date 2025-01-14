@@ -61,7 +61,7 @@
           - Inherited from :class:`~pcdsdevices.atm.ATMTarget`
     
         * - reset_cmd
-          - :class:`~ophyd.signal.EpicsSignal`
+          - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:RESET``
           - Command to reset an error.
           - normal
