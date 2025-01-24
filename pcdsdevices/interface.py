@@ -1331,7 +1331,7 @@ class Presets:
                 state_name = method_name.replace('wm_', '', 1)
                 wm_state = getattr(device, method_name)
                 state_val = wm_state()
-                if not isinstance(state_val, (int, float)):
+                if not isinstance(state_val, numbers.Real):
                     continue
                 diff = abs(state_val)
                 if diff < closest:
