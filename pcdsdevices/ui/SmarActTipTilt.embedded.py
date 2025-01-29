@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class _SmarActTipTiltEmbeddedUI(QtWidgets.QWidget):
-    """Annotations helper for SmarAct.embedded.ui. Do not instantiate."""
+    """Annotations helper for SmarActTipTilt.embedded.ui. Do not instantiate."""
     dpad_label: QtWidgets.QLabel
     tip_forward: pydm.widgets.pushbutton.PyDMPushButton
     tip_reverse: pydm.widgets.pushbutton.PyDMPushButton
@@ -246,12 +246,14 @@ class SettingsPanel(QtWidgets.QWidget):
         """
         button = self.mirror.ui.settings_button
         button.PyDMIcon = 'SP_ToolBarVerticalExtensionButton'
+        offset = button.mapToGlobal(QtCore.QPoint(0, 0))
         self.move(
             button.mapToGlobal(
                 QtCore.QPoint(
-                    button.pos().x(),
+                    button.pos().x() + button.width(),
                     button.pos().y() + button.height()
-                    + self.style().pixelMetric(QtWidgets.QStyle.PM_TitleBarHeight),
+                    + self.style().pixelMetric(QtWidgets.QStyle.PM_TitleBarHeight)
+                    - offset.y(),
                 )
             )
         )
@@ -272,16 +274,21 @@ class SettingsPanel(QtWidgets.QWidget):
         --------------------------------------------------------------------
         Also shamelessly stolen from TyphosPositionerRow
         """
-        for panel in [self.tip_panel, self.tilt_panel]:
-            if panel.minimumWidth() <= panel.original_panel_min_width:
-                # No change
-                self.resize_timer.start()
-                return
-            elif panel.last_resize_width != panel.minimumWidth():
-                # We are not stable yet
-                panel.last_resize_width = panel.minimumWidth()
-                self.resize_timer.start()
-                return
+        if (self.tip_panel.minimumWidth() <= self.tip_panel.original_panel_min_width or
+                self.tilt_panel.minimumWidth() <= self.tilt_panel.original_panel_min_width):
+            # No change
+            self.resize_timer.start()
+            return
+        _check_tip = self.tip_panel.last_resize_width != self.tip_panel.minimumWidth()
+        _check_tilt = self.tilt_panel.last_resize_width != self.tilt_panel.minimumWidth()
+        if _check_tip:
+            # We are not stable yet!
+            self.tip_panel.last_resize_width = self.tip_panel.minimumWidth()
+        if _check_tilt:
+            self.tip_panel.last_resize_width = self.tip_panel.minimumWidth()
+        if _check_tip or _check_tilt:
+            self.resize_timer.start()
+            return
 
         def make_space(self, scroll_area, panel):
             """Generalize fixing the dimensions of the scroll areas for multiple panels"""
