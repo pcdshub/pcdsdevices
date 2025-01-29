@@ -239,6 +239,9 @@
    </item>
    <item>
     <widget class="QTabWidget" name="controls_tabs">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
@@ -1490,7 +1493,7 @@
                   <bool>false</bool>
                  </property>
                  <property name="channel" stdset="0">
-                  <string>ca://${prefix}.HOMR</string>
+                  <string>ca://${prefix}.HOMF</string>
                  </property>
                  <property name="PyDMIcon" stdset="0">
                   <string>fast-forward</string>
@@ -3141,52 +3144,12 @@
             <number>9</number>
            </property>
            <item>
-            <layout class="QGridLayout" name="gridLayout">
+            <layout class="QGridLayout" name="config_grid_layout">
              <property name="horizontalSpacing">
               <number>6</number>
              </property>
-             <item row="2" column="2">
-              <widget class="PyDMLineEdit" name="ptype_set">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="precision" stdset="0">
-                <number>0</number>
-               </property>
-               <property name="showUnits" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="precisionFromPV" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string/>
-               </property>
-               <property name="monitorDisp" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}:PTYPE</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="PyDMLabel" name="egu_rbv">
+             <item row="6" column="1">
+              <widget class="PyDMLabel" name="ttzv_rbv">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -3221,18 +3184,18 @@
                 <bool>true</bool>
                </property>
                <property name="PyDMToolTip" stdset="0">
-                <string/>
+                <string>Closed-loop ONLY: Whether TTZV is enabled or not</string>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}.EGU</string>
+                <string>ca://${prefix}:TTZV_MODE_RBV</string>
                </property>
                <property name="enableRichText" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
              </item>
-             <item row="10" column="2">
-              <widget class="PyDMLineEdit" name="def_range_min_set">
+             <item row="1" column="2">
+              <widget class="PyDMLineEdit" name="egu_set">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -3267,12 +3230,218 @@
                 <bool>false</bool>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}:SET_DRMIN</string>
+                <string>sig://${name}_motor_egu</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>13</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="desc_label">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Description</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="def_range_min_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Default minimum range for logical scale. Non-volatile.</string>
+               </property>
+               <property name="text">
+                <string>Default Range Min</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="PyDMLineEdit" name="desc_set">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="precision" stdset="0">
+                <number>0</number>
+               </property>
+               <property name="showUnits" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="precisionFromPV" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string/>
+               </property>
+               <property name="monitorDisp" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="channel" stdset="0">
+                <string>sig://${name}_description</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="2">
+              <widget class="PyDMLineEdit" name="logical_scale_offset_set">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="precision" stdset="0">
+                <number>0</number>
+               </property>
+               <property name="showUnits" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="precisionFromPV" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string/>
+               </property>
+               <property name="monitorDisp" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}:SET_LSCO</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>TTZV Threshold</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="ttzv_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Target to Zero Voltage</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="ptype_label">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>PTYPE</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item row="3" column="1">
-              <layout class="QGridLayout" name="gridLayout_2">
+              <layout class="QGridLayout" name="calib_led_grid_layout">
                <item row="0" column="2">
                 <spacer name="horizontalSpacer_5">
                  <property name="orientation">
@@ -3373,8 +3542,8 @@
                </item>
               </layout>
              </item>
-             <item row="1" column="2">
-              <widget class="PyDMLineEdit" name="egu_set">
+             <item row="4" column="2">
+              <widget class="PyDMLineEdit" name="low_limit_set">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -3409,28 +3578,12 @@
                 <bool>false</bool>
                </property>
                <property name="channel" stdset="0">
-                <string>sig://${name}_motor_egu</string>
+                <string>ca://${prefix}.LLM</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="3">
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::MinimumExpanding</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>13</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="9" column="1">
-              <widget class="PyDMLabel" name="logical_scale_inversion_rbv">
+             <item row="4" column="1">
+              <widget class="PyDMLabel" name="low_limit_rbv">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -3465,18 +3618,64 @@
                 <bool>true</bool>
                </property>
                <property name="PyDMToolTip" stdset="0">
-                <string>Invert the logical scale. Must home after changing to take effect. Non-volatile.</string>
+                <string/>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}:LSCI_RBV</string>
+                <string>ca://${prefix}.LLM</string>
                </property>
                <property name="enableRichText" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
              </item>
-             <item row="8" column="2">
-              <widget class="PyDMLineEdit" name="logical_scale_offset_set">
+             <item row="1" column="1">
+              <widget class="PyDMLabel" name="egu_rbv">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="precision" stdset="0">
+                <number>0</number>
+               </property>
+               <property name="showUnits" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="precisionFromPV" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string/>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}.EGU</string>
+               </property>
+               <property name="enableRichText" stdset="0">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="2">
+              <widget class="PyDMLineEdit" name="high_limit_set">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -3511,206 +3710,7 @@
                 <bool>false</bool>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}:SET_LSCO</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="high_limit_label">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>High Limit</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="ptype_label">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>PTYPE</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="2">
-              <widget class="PyDMLineEdit" name="ttzv_threshold_set">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="precision" stdset="0">
-                <number>0</number>
-               </property>
-               <property name="showUnits" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="precisionFromPV" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string>TTZV position threshold in encoder ticks (pm or ndeg). Range: 0 - 1E7</string>
-               </property>
-               <property name="monitorDisp" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}:TTZ_THRESHOLD_RBV</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="1">
-              <widget class="PyDMLabel" name="ttzv_et">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="precision" stdset="0">
-                <number>0</number>
-               </property>
-               <property name="showUnits" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="precisionFromPV" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string>Closed-loop ONLY: Whether TTZV is enabled or not</string>
-               </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}:TTZV_MODE_RBV</string>
-               </property>
-               <property name="enableRichText" stdset="0">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="need_calib_label">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Needs Calibration</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="1">
-              <widget class="PyDMLabel" name="ttzv_threshold_rbv">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="precision" stdset="0">
-                <number>0</number>
-               </property>
-               <property name="showUnits" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="precisionFromPV" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string>Current TTZV position threshold in encoder ticks (pm or ndeg)</string>
-               </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}:TTZ_THRESHOLD_RBV</string>
-               </property>
-               <property name="enableRichText" stdset="0">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="11" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="def_range_max_label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Default Range Max</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
+                <string>ca://${prefix}.HLM</string>
                </property>
               </widget>
              </item>
@@ -3760,36 +3760,64 @@
                </property>
               </widget>
              </item>
-             <item row="12" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="dist_code_inversion_label">
+             <item row="6" column="2">
+              <widget class="PyDMEnumComboBox" name="ttzv_set">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>0</width>
+                 <width>100</width>
                  <height>25</height>
                 </size>
                </property>
                <property name="toolTip">
-                <string>Sets the distance code inversion flag. Non-volatile.</string>
+                <string/>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string>Closed-loop ONLY: toggle TTZV state</string>
+               </property>
+               <property name="monitorDisp" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}:TTZV_MODE</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="high_limit_label">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
                </property>
                <property name="text">
-                <string>Distance Code Inversion</string>
+                <string>High Limit</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
                </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
               </widget>
              </item>
-             <item row="4" column="2">
-              <widget class="PyDMLineEdit" name="low_limit_set">
+             <item row="9" column="1">
+              <widget class="PyDMLabel" name="logical_scale_inversion_rbv">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -3818,18 +3846,40 @@
                 <bool>true</bool>
                </property>
                <property name="PyDMToolTip" stdset="0">
-                <string/>
-               </property>
-               <property name="monitorDisp" stdset="0">
-                <bool>false</bool>
+                <string>Invert the logical scale. Must home after changing to take effect. Non-volatile.</string>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}.LLM</string>
+                <string>ca://${prefix}:LSCI_RBV</string>
+               </property>
+               <property name="enableRichText" stdset="0">
+                <bool>false</bool>
                </property>
               </widget>
              </item>
-             <item row="9" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="logical_scale_inversion_label">
+             <item row="4" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="low_limit_label">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Low Limit</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="dist_code_inversion_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -3837,10 +3887,10 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>Invert the logical scale. Must home after changing to take effect. Non-volatile.</string>
+                <string>Sets the distance code inversion flag. Non-volatile.</string>
                </property>
                <property name="text">
-                <string>Logical Scale Inversion</string>
+                <string>Distance Code Inversion</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3896,8 +3946,163 @@
                </property>
               </widget>
              </item>
-             <item row="10" column="1">
-              <widget class="PyDMLabel" name="def_range_min_rbv">
+             <item row="7" column="1">
+              <widget class="PyDMLabel" name="ttzv_threshold_rbv">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="precision" stdset="0">
+                <number>0</number>
+               </property>
+               <property name="showUnits" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="precisionFromPV" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string>Current TTZV position threshold in encoder ticks (pm or ndeg)</string>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}:TTZ_THRESHOLD_RBV</string>
+               </property>
+               <property name="enableRichText" stdset="0">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="2">
+              <widget class="PyDMLineEdit" name="def_range_min_set">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="precision" stdset="0">
+                <number>0</number>
+               </property>
+               <property name="showUnits" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="precisionFromPV" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string/>
+               </property>
+               <property name="monitorDisp" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}:SET_DRMIN</string>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="def_range_max_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Default Range Max</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="2">
+              <widget class="PyDMEnumComboBox" name="dist_code_inversion_set">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string/>
+               </property>
+               <property name="monitorDisp" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}:SET_DCIN</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="egu_label">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>EGU</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="1">
+              <widget class="PyDMLabel" name="def_range_max_rbv">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -3911,7 +4116,7 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string/>
+                <string>Default maximum range for logical scale. Non-volatile.</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -3932,10 +4137,10 @@
                 <bool>true</bool>
                </property>
                <property name="PyDMToolTip" stdset="0">
-                <string>Default minimum range for logical scale. Non-volatile.</string>
+                <string>Default maximum range for logical scale. Non-volatile.</string>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}:DRMIN</string>
+                <string>ca://${prefix}:DRMAX</string>
                </property>
                <property name="enableRichText" stdset="0">
                 <bool>false</bool>
@@ -4023,6 +4228,40 @@
                </property>
               </widget>
              </item>
+             <item row="9" column="2">
+              <widget class="PyDMEnumComboBox" name="logical_scale_inversion_set">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string/>
+               </property>
+               <property name="monitorDisp" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}:SET_LSCI</string>
+               </property>
+              </widget>
+             </item>
              <item row="2" column="1">
               <widget class="PyDMLabel" name="ptype_rbv">
                <property name="sizePolicy">
@@ -4069,8 +4308,8 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="2">
-              <widget class="PyDMLineEdit" name="high_limit_set">
+             <item row="9" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="logical_scale_inversion_label">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -4078,81 +4317,23 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string/>
+                <string>Invert the logical scale. Must home after changing to take effect. Non-volatile.</string>
+               </property>
+               <property name="text">
+                <string>Logical Scale Inversion</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
                </property>
-               <property name="precision" stdset="0">
-                <number>0</number>
-               </property>
-               <property name="showUnits" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="precisionFromPV" stdset="0">
+               <property name="wordWrap">
                 <bool>true</bool>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string/>
-               </property>
-               <property name="monitorDisp" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}.HLM</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="2">
-              <widget class="PyDMLineEdit" name="desc_set">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="precision" stdset="0">
-                <number>0</number>
-               </property>
-               <property name="showUnits" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="precisionFromPV" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string/>
-               </property>
-               <property name="monitorDisp" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="channel" stdset="0">
-                <string>sig://${name}_description</string>
-               </property>
-              </widget>
-             </item>
-             <item row="11" column="1">
-              <widget class="PyDMLabel" name="def_range_max_rbv">
+             <item row="8" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="logical_scale_offset_label">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -4164,55 +4345,30 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>Default maximum range for logical scale. Non-volatile.</string>
+                <string>Shift the logical scale in mm. Non-volatile.</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="precision" stdset="0">
-                <number>0</number>
-               </property>
-               <property name="showUnits" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="precisionFromPV" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
+               <property name="autoFillBackground">
                 <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string>Default maximum range for logical scale. Non-volatile.</string>
-               </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}:DRMAX</string>
-               </property>
-               <property name="enableRichText" stdset="0">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="low_limit_label">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
                </property>
                <property name="text">
-                <string>Low Limit</string>
+                <string>Logical Scale Offset</string>
+               </property>
+               <property name="scaledContents">
+                <bool>false</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
                </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="margin">
+                <number>0</number>
+               </property>
               </widget>
              </item>
-             <item row="11" column="2">
-              <widget class="PyDMLineEdit" name="def_range_max_set">
+             <item row="2" column="2">
+              <widget class="PyDMLineEdit" name="ptype_set">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -4247,7 +4403,63 @@
                 <bool>false</bool>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}:SET_DRMAX</string>
+                <string>ca://${prefix}:PTYPE</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="2">
+              <widget class="PyDMLineEdit" name="ttzv_threshold_set">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="precision" stdset="0">
+                <number>0</number>
+               </property>
+               <property name="showUnits" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="precisionFromPV" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string>TTZV position threshold in encoder ticks (pm or ndeg). Range: 0 - 1E7</string>
+               </property>
+               <property name="monitorDisp" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}:TTZ_THRESHOLD_RBV</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="need_calib_label">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Needs Calibration</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -4291,6 +4503,52 @@
                </property>
                <property name="channel" stdset="0">
                 <string>ca://${prefix}.DESC</string>
+               </property>
+               <property name="enableRichText" stdset="0">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="1">
+              <widget class="PyDMLabel" name="def_range_min_rbv">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="precision" stdset="0">
+                <number>0</number>
+               </property>
+               <property name="showUnits" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="precisionFromPV" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string>Default minimum range for logical scale. Non-volatile.</string>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}:DRMIN</string>
                </property>
                <property name="enableRichText" stdset="0">
                 <bool>false</bool>
@@ -4343,95 +4601,8 @@
                </property>
               </widget>
              </item>
-             <item row="8" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="logical_scale_offset_label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>Shift the logical scale in mm. Non-volatile.</string>
-               </property>
-               <property name="autoFillBackground">
-                <bool>false</bool>
-               </property>
-               <property name="text">
-                <string>Logical Scale Offset</string>
-               </property>
-               <property name="scaledContents">
-                <bool>false</bool>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-               <property name="margin">
-                <number>0</number>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="desc_label">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Description</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="10" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="def_range_min_label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>Default minimum range for logical scale. Non-volatile.</string>
-               </property>
-               <property name="text">
-                <string>Default Range Min</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
-              <widget class="PyDMLabel" name="low_limit_rbv">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
+             <item row="11" column="2">
+              <widget class="PyDMLineEdit" name="def_range_max_set">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -4462,179 +4633,11 @@
                <property name="PyDMToolTip" stdset="0">
                 <string/>
                </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}.LLM</string>
-               </property>
-               <property name="enableRichText" stdset="0">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="ttzv_label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Target to Zero Voltage</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="label">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>TTZV Threshold</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="egu_label">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>EGU</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="2">
-              <widget class="PyDMEnumComboBox" name="ttzv_set">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>100</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string>Closed-loop ONLY: toggle TTZV state</string>
-               </property>
                <property name="monitorDisp" stdset="0">
                 <bool>false</bool>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}:TTZV_MODE</string>
-               </property>
-              </widget>
-             </item>
-             <item row="9" column="2">
-              <widget class="PyDMEnumComboBox" name="logical_scale_inversion_set">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>100</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string/>
-               </property>
-               <property name="monitorDisp" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}:SET_LSCI</string>
-               </property>
-              </widget>
-             </item>
-             <item row="12" column="2">
-              <widget class="PyDMEnumComboBox" name="dist_code_inversion_set">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>100</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string/>
-               </property>
-               <property name="monitorDisp" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}:SET_DCIN</string>
+                <string>ca://${prefix}:SET_DRMAX</string>
                </property>
               </widget>
              </item>
