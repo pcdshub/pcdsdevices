@@ -4,6 +4,7 @@ Module for defining bell-and-whistles movement features.
 import functools
 import logging
 import numbers
+import os
 import re
 import shutil
 import signal
@@ -747,6 +748,21 @@ class FltMvInterface(MvInterface):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.presets = Presets(self)
+        self._presets_initialized = False
+
+    def __dir__(self):
+        # Initialize presets if tab-completion requested.
+        if self.presets.sync_needed():
+            self.presets.sync()
+
+        return super().__dir__()
+
+    def __getattribute__(self, name: str):
+        if (any((name.startswith(prefix)) for prefix in ['mv_', 'wm_', 'umv_'])
+                and self.presets.sync_needed()):
+            self.presets.sync()
+
+        return super().__getattribute__(name)
 
     def wm(self):
         pos = super().wm()
@@ -899,7 +915,7 @@ class FltMvInterface(MvInterface):
         self.set_current_position(position)
 
 
-def setup_preset_paths(**paths):
+def setup_preset_paths(defer_loading: bool = False, **paths):
     """
     Prepare the :class:`Presets` class.
 
@@ -911,13 +927,15 @@ def setup_preset_paths(**paths):
         A mapping from type of preset to destination path. These will be
         directories that contain the yaml files that define the preset
         positions.
+    defer_loading : bool, by default False
+        (Optional) "defer_loading": bool, whether or not to defer the loading
+        of preset files until the first tab completion
     """
-
     Presets._paths = {}
     for k, v in paths.items():
         Presets._paths[k] = Path(v)
     for preset in Presets._registry:
-        preset.sync()
+        preset.sync(defer_loading=defer_loading)
 
 
 class Presets:
@@ -953,9 +971,10 @@ class Presets:
         self._fd = None
         self._registry.add(self)
         self.name = device.name + '_presets'
+        self._mtimes = {}
         self.sync()
 
-    def _path(self, preset_type):
+    def _path(self, preset_type) -> Path:
         """Utility function to get the preset file :class:`~pathlib.Path`."""
         path = self._paths[preset_type] / (self._device.name + '.yml')
         logger.debug('select presets path %s', path)
@@ -1079,22 +1098,26 @@ class Presets:
         except BlockingIOError:
             self._log_flock_error()
 
-    def sync(self):
+    def sync(self, defer_loading: bool = False):
         """Synchronize the presets with the database."""
         logger.debug('call %s presets.sync()', self._device.name)
         self._remove_methods()
         self._cache = {}
-        logger.debug('filling %s cache', self.name)
-        for preset_type in self._paths.keys():
-            path = self._path(preset_type)
-            if path.exists():
-                try:
-                    self._cache[preset_type] = self._read(preset_type)
-                except BlockingIOError:
-                    self._log_flock_error()
-            else:
-                logger.debug('No %s preset file for %s',
-                             preset_type, self._device.name)
+        self._mtimes = {}
+        # only consult files if requested
+        if not defer_loading:
+            logger.debug('filling %s cache', self.name)
+            for preset_type in self._paths.keys():
+                path = self._path(preset_type)
+                if path.exists():
+                    self._mtimes[preset_type] = os.path.getmtime(path)
+                    try:
+                        self._cache[preset_type] = self._read(preset_type)
+                    except BlockingIOError:
+                        self._log_flock_error()
+                else:
+                    logger.debug('No %s preset file for %s',
+                                 preset_type, self._device.name)
         self._create_methods()
 
     def _log_flock_error(self):
@@ -1140,6 +1163,7 @@ class Presets:
         self._methods.append((obj, method_name))
         setattr(obj, method_name, MethodType(method, obj))
         if hasattr(obj, '_tab'):
+            # obj._tab: TabCompletionHelperInstance
             obj._tab.add(method_name)
 
     def _make_add(self, preset_type):
@@ -1253,14 +1277,22 @@ class Presets:
 
             Returns
             -------
-            offset : float
+            offset : Optional[float, str]
                 How far we are from the preset position. If this is near zero,
                 we are at the position. If this positive, the preset position
                 is in the positive direction from us.
+                If the current position is unknown, return "Unknown".
             """
+            preset_pos = self.presets._cache[preset_type][name]['value']
+            # here we expect self: FltMvInterface
+            curr_pos = self.wm()
+            try:
+                pos = preset_pos - curr_pos
+            except Exception:
+                # current position is not known or unset
+                pos = "Unknown"
 
-            pos = self.presets._cache[preset_type][name]['value']
-            return pos - self.wm()
+            return pos
 
         wm_pre.__doc__ = wm_pre.__doc__.format(name)
         return wm_pre
@@ -1298,11 +1330,24 @@ class Presets:
             if method_name.startswith('wm_'):
                 state_name = method_name.replace('wm_', '', 1)
                 wm_state = getattr(device, method_name)
-                diff = abs(wm_state())
+                state_val = wm_state()
+                if not isinstance(state_val, numbers.Real):
+                    continue
+                diff = abs(state_val)
                 if diff < closest:
                     state = state_name
                     closest = diff
         return state
+
+    def sync_needed(self) -> bool:
+        """True if this preset has fallen out of sync with backing files"""
+        curr_mtimes = {}
+        for preset_type in self._paths.keys():
+            preset_path = self._path(preset_type)
+            if preset_path.exists():
+                curr_mtimes[preset_type] = os.path.getmtime(preset_path)
+
+        return not curr_mtimes == self._mtimes
 
 
 class PresetPosition:

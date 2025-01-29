@@ -1,5 +1,5 @@
-1288 mnt_revert_qpc_name
-########################
+1319 bug_preset_error
+#####################
 
 API Breaks
 ----------
@@ -19,12 +19,12 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Improves error handling for presets when the position is unknown or uninitialized.
 
 Maintenance
 -----------
-- Restore `PIPPLC`'s ``qpc_name`` component.
+- N/A
 
 Contributors
 ------------
-- zllentz
+- tangkong

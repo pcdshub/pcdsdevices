@@ -1,4 +1,4 @@
-1274 Adding base class for hxr diffractometer.
+1318 TwinCATStatePositionerResetIndicator
 #################
 
 API Breaks
@@ -15,12 +15,11 @@ Device Features
 
 New Devices
 -----------
-- Added `HxrDiffractometer` for the Beckhoff-based HXR diffractomoeter.
-  This controls the diffractometer in XPP with prefix ``"HXR:GON:MMS"``.
+- N/A
 
 Bugfixes
 --------
-- N/A
+- TwinCATStatePositioner.reset_cmd is now a PytmcSignal with io='io' instead of an EpicsSignal to properly display the RBV readback PV in typhos.
 
 Maintenance
 -----------
@@ -28,5 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- c-tsoi
-- zllentz
+- KaushikMalapati

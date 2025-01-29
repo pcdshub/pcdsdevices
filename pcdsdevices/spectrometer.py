@@ -5,6 +5,7 @@ from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
+from .analog_signals import FDQ
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .epics_motor import (IMS, BeckhoffAxis, BeckhoffAxisNoOffset,
@@ -236,7 +237,7 @@ class VonHamosCrystal_2(BaseInterface, GroupDevice):
 
 
 class VonHamos6Crystal(BaseInterface, GroupDevice):
-    """ MFX 6-crystal VonHamos spectrometer """
+    """MFX 6-crystal VonHamos spectrometer"""
     tab_component_names = True
 
     c1 = Cpt(VonHamosCrystal_2, ':C1', kind='normal')
@@ -253,10 +254,7 @@ class VonHamos6Crystal(BaseInterface, GroupDevice):
 
 
 class MonoGratingStates(TwinCATStatePMPS):
-    """
-    SP1K1 Mono Grating States Axis G_H with PMPS.
-
-    """
+    """SP1K1 Mono Grating States Axis G_H with PMPS"""
     config = UpCpt(state_count=6)
 
 
@@ -417,6 +415,8 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     # sp1k4-att-rtd
     att_rtd_01 = Cpt(PytmcSignal, ':RTD:01:TEMP', doc="solid attenuator 01 PT100", io='i', kind='normal')
     att_rtd_02 = Cpt(PytmcSignal, ':RTD:02:TEMP', doc="solid attenuator 02 PT100", io='i', kind='normal')
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')
     # Lightpath constants
     inserted = True
     removed = False
