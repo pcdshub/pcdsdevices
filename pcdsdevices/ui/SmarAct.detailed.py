@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import logging
 import re
-import typing
 from os import path
 
 import pydm
 from pydm import Display
-from qtpy import QtCore, QtWidgets, uic
+from qtpy import QtCore, QtWidgets
 from typhos import utils
 
 logger = logging.getLogger(__name__)
@@ -95,12 +94,11 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
     Custom widget for managing the SmarAct detailed screen
     """
     ui: _SmarActDetailedUI
+    # Seems confusing, but really just cleans up the call to pydm for setting self.ui
     ui_template = path.join(path.dirname(path.realpath(__file__)), 'SmarAct.detailed.ui')
 
-    def __init__(self, parent=None, **kwargs):
-        super().__init__(parent=parent)
-
-        self.ui = typing.cast(_SmarActDetailedUI, uic.loadUi(self.ui_template, self))
+    def __init__(self, parent=None, ui_filename=ui_template, **kwargs):
+        super().__init__(parent=parent, ui_filename=ui_filename)
 
     @property
     def device(self):

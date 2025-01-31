@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import logging
-import typing
 from os import path
 from typing import Optional
 
 import ophyd
 import pydm
 from pydm import Display
-from qtpy import QtCore, QtGui, QtWidgets, uic
+from qtpy import QtCore, QtGui, QtWidgets
 from typhos import utils
 from typhos.panel import SignalOrder, TyphosSignalPanel
 
@@ -30,12 +29,12 @@ class _SmarActTipTiltEmbeddedUI(QtWidgets.QWidget):
 class SmarActTipTiltWidget(Display, utils.TyphosBase):
     """Custom widget for controlling a tip-tilt with d-pad buttons"""
     ui: _SmarActTipTiltEmbeddedUI
+    # Seems confusing, but really just cleans up the call to pydm for setting self.ui
     ui_template = path.join(path.dirname(path.realpath(__file__)), 'SmarActTipTilt.embedded.ui')
 
-    def __init__(self, parent=None, **kwargs):
-        super().__init__(parent=parent)
+    def __init__(self, parent=None, ui_filename=ui_template, **kwargs,):
+        super().__init__(parent=parent, ui_filename=ui_filename)
 
-        self.ui = typing.cast(_SmarActTipTiltEmbeddedUI, uic.loadUi(self.ui_template, self))
         self._omit_names = ['jog_fwd', 'jog_rev']
         self.ui.extended_signal_panel = None
 
@@ -279,14 +278,11 @@ class SettingsPanel(QtWidgets.QWidget):
             # No change
             self.resize_timer.start()
             return
-        _check_tip = self.tip_panel.last_resize_width != self.tip_panel.minimumWidth()
-        _check_tilt = self.tilt_panel.last_resize_width != self.tilt_panel.minimumWidth()
-        if _check_tip:
+        elif (self.tip_panel.last_resize_width != self.tip_panel.minimumWidth() or
+                self.tilt_panel.last_resize_width != self.tilt_panel.minimumWidth()):
             # We are not stable yet!
             self.tip_panel.last_resize_width = self.tip_panel.minimumWidth()
-        if _check_tilt:
-            self.tip_panel.last_resize_width = self.tip_panel.minimumWidth()
-        if _check_tip or _check_tilt:
+            self.tilt_panel.last_resize_width = self.tilt_panel.minimumWidth()
             self.resize_timer.start()
             return
 
