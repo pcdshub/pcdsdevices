@@ -1277,14 +1277,22 @@ class Presets:
 
             Returns
             -------
-            offset : float
+            offset : Optional[float, str]
                 How far we are from the preset position. If this is near zero,
                 we are at the position. If this positive, the preset position
                 is in the positive direction from us.
+                If the current position is unknown, return "Unknown".
             """
+            preset_pos = self.presets._cache[preset_type][name]['value']
+            # here we expect self: FltMvInterface
+            curr_pos = self.wm()
+            try:
+                pos = preset_pos - curr_pos
+            except Exception:
+                # current position is not known or unset
+                pos = "Unknown"
 
-            pos = self.presets._cache[preset_type][name]['value']
-            return pos - self.wm()
+            return pos
 
         wm_pre.__doc__ = wm_pre.__doc__.format(name)
         return wm_pre
@@ -1322,7 +1330,10 @@ class Presets:
             if method_name.startswith('wm_'):
                 state_name = method_name.replace('wm_', '', 1)
                 wm_state = getattr(device, method_name)
-                diff = abs(wm_state())
+                state_val = wm_state()
+                if not isinstance(state_val, numbers.Real):
+                    continue
+                diff = abs(state_val)
                 if diff < closest:
                     state = state_name
                     closest = diff
