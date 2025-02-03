@@ -1,6 +1,7 @@
 """
 CVMI Motion Classes for bootstrap experiment only
 
+The bootstrap experiment is for early March 2025
 This module contains classes related to the TMO-LAMP Motion System
 """
 

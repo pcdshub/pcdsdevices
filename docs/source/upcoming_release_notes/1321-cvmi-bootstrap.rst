@@ -11,7 +11,8 @@ Library Features
 
 Device Features
 ---------------
-- Rename the four axis names per request from scientists and remove three axis
+- Add ``cvmi_bootstrap`` module for the special CVMI RP bootstrapping experiment.
+  Rename the four axis names per request from scientists and remove three axes.
 
 New Devices
 -----------
