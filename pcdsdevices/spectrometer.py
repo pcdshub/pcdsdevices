@@ -539,8 +539,8 @@ class DCCMono(BaseInterface, GroupDevice):
     tab_component_names = True
     TH1 = Cpt(BeckhoffAxis, ':MMS:TH1', doc = 'Bragg Upstream/TH1 Axis', kind = 'normal')
     TH2 = Cpt(BeckhoffAxis, ':MMS:TH2', doc = 'Bragg Downstream/TH2 Axis', kind = 'normal')
-    Tx = Cpt(BeckhoffAxis, ':MMS:TX', doc = 'Translation X Axis', kind = 'normal')
-    Tdx = Cpt(BeckhoffAxis, ':MMS:TXD', doc = 'YAG Diagnostic X Axis', kind = 'normal')
-    Tdy = Cpt(BeckhoffAxis, ':MMS:TYD', doc = 'YAG Diagnostic Y Axis', kind = 'normal')
+    TX = Cpt(BeckhoffAxis, ':MMS:TX', doc = 'Translation X Axis', kind = 'normal')
+    TXD = Cpt(BeckhoffAxis, ':MMS:TXD', doc = 'YAG Diagnostic X Axis', kind = 'normal')
+    TYD = Cpt(BeckhoffAxis, ':MMS:TYD', doc = 'YAG Diagnostic Y Axis', kind = 'normal')
 
 	
