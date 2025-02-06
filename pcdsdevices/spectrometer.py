@@ -526,7 +526,10 @@ class Gen1VonHamos4Crystal(BaseInterface, GroupDevice):
 class DCCMono(BaseInterface, GroupDevice):
     """
     Double Channel Cut Monochrometer controlled with a Beckhoff PLC. 
-    This includes five axes in total, two for crystal manipulation (TH1/Upstream and TH2/Downstream), one for chamber translation in x direction, and two for YAG diagnostics (Txd and Tyd).
+    This includes five axes in total: 
+	- 2 for crystal manipulation (TH1/Upstream and TH2/Downstream)
+	- 1 for chamber translation in x direction (TX)
+	- 2 for YAG diagnostics (TXD and TYD)
 
     Parameters
     ----------
