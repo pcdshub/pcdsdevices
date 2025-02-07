@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- No special device features added at this time. The SP1L0:DCCM has a lakeshore controller than can be added later on as well as piezo motion for fine pitch on the two rotation axes. These devices were not apart of this pcdsdevice release. The only features of this new device is the five BeckhoffAxis stages.
+- No special device features added at this time. The SP1L0:DCCM has a lakeshore controller that can be added later on as well as piezo motion for fine pitch on the two rotation axes. These devices were not apart of this pcdsdevice release. The only features of this new device is the five BeckhoffAxis stages.
 
 New Devices
 -----------
