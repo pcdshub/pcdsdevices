@@ -15,7 +15,7 @@ Device Features
 
 New Devices
 -----------
-- The DCCMono is a new device to support SP1L0:DCCM installed on L0S09 in the FEE. This device is the first of many new DCCMs that will be coming to LCLS in the future. This pcdsdevice can also be used for other DCCMs such as the L2HE DXS HHLMs (High Heat Load Monochromaters). 
+- The DCCMono is a new device to support SP1L0:DCCM installed on L0S09 in the FEE. This SP1L0 is the first of many new DCCMs that will be coming to LCLS in the future. This pcdsdevice can also be used for other DCCMs such as the L2HE DXS HHLMs (High Heat Load Monochromaters) and other Double Chanel Cut Monochromaters.
 
 Bugfixes
 --------
