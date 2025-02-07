@@ -9,7 +9,8 @@ from ophyd.device import FormattedComponent as FCpt
 from .analog_signals import FDQ
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
-from .epics_motor import IMS, BeckhoffAxis, BeckhoffAxisNoOffset, EpicsMotorInterface
+from .epics_motor import (IMS, BeckhoffAxis, BeckhoffAxisNoOffset,
+                          EpicsMotorInterface)
 from .interface import BaseInterface, LightpathMixin
 from .pmps import TwinCATStatePMPS
 from .signal import InternalSignal, PytmcSignal
