@@ -3,7 +3,7 @@
 
 API Breaks
 ----------
-- Removed m_pi_up_enc and g_pi_up_enc components from spectrometer.Mono
+- N/A
 
 Library Features
 ----------------
@@ -11,6 +11,7 @@ Library Features
 
 Device Features
 ---------------
+- Made m_pi_up_enc and g_pi_up_enc components in spectrometer.Mono kind ommitted instead of normal so they aren't on gui
 - Added m_pi_enc_rms and g_pi_enc_rms components to spectrometer.Mono
 - Added pitch_enc_rms component to mirror.XOffsetMirrorBend to override the inherited component
   from mirror.XOffsetMirror with a different pv and docstring
