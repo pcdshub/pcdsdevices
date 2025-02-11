@@ -327,7 +327,22 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
     )
 
     # Additional Pytmc components
-    # Upstream Encoders pitch axes RMS deviation
+    # Upstream Encoders for pitch axes - not linked to NC axis in PLC
+    m_pi_up_enc = Cpt(
+        PytmcSignal,
+        ":ENC:M_PI:02",
+        io="i",
+        kind="omitted",
+        doc="mirror pitch upstream encoder [urad]",
+    )
+    g_pi_up_enc = Cpt(
+        PytmcSignal,
+        ":ENC:G_PI:02",
+        io="i",
+        kind="omitted",
+        doc="grating pitch upstream encoder [urad]",
+    )
+    # Pitch axes encoders' RMS deviation
     m_pi_enc_rms = Cpt(
         PytmcSignal,
         ":MMS:M_PI:ENCDIFF:STATS:RMS",
