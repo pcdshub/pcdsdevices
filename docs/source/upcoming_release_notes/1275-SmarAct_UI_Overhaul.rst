@@ -13,7 +13,7 @@ Library Features
 
 Device Features
 ---------------
-- N/A
+- Added long_name fields to various SmarAct classes in pcsdevices.epics_motor
 
 New Devices
 -----------
