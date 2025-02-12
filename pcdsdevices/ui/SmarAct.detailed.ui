@@ -1288,7 +1288,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-96</y>
             <width>527</width>
             <height>400</height>
            </rect>
@@ -1784,7 +1784,7 @@
                </property>
               </widget>
              </item>
-             <item row="6" column="0">
+             <item row="6" column="0" alignment="Qt::AlignLeft">
               <widget class="QLabel" name="closed_loop_freq_max_label">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -3230,7 +3230,7 @@
                 <bool>false</bool>
                </property>
                <property name="channel" stdset="0">
-                <string>sig://${name}_motor_egu</string>
+                <string></string>
                </property>
               </widget>
              </item>
@@ -3330,7 +3330,7 @@
                 <bool>false</bool>
                </property>
                <property name="channel" stdset="0">
-                <string>sig://${name}_description</string>
+                <string></string>
                </property>
               </widget>
              </item>
