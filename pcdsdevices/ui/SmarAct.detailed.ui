@@ -635,9 +635,9 @@
               </widget>
              </item>
              <item row="1" column="2">
-              <layout class="QHBoxLayout" name="clear_count_layout">
+              <layout class="QHBoxLayout" name="step_clear_cmd_layout">
                <item>
-                <widget class="PyDMPushButton" name="clear_count_button">
+                <widget class="PyDMPushButton" name="step_clear_cmd_button">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -714,14 +714,14 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="clear_count_label">
+                <widget class="QLabel" name="step_clear_cmd_label">
                  <property name="text">
                   <string>Clear Count</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <spacer name="clear_count_spacer">
+                <spacer name="step_clear_cmd_spacer">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -736,7 +736,7 @@
               </layout>
              </item>
              <item row="4" column="2">
-              <widget class="PyDMLineEdit" name="step_volt_set">
+              <widget class="PyDMLineEdit" name="step_voltage_set">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1024,7 +1024,7 @@
               </widget>
              </item>
              <item row="4" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="step_volt_label">
+              <widget class="QLabel" name="step_voltage_label">
                <property name="text">
                 <string>Step Voltage</string>
                </property>
@@ -1080,7 +1080,7 @@
               </widget>
              </item>
              <item row="4" column="1">
-              <widget class="PyDMLabel" name="step_volt_rbv">
+              <widget class="PyDMLabel" name="step_voltage_rbv">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                  <horstretch>0</horstretch>
