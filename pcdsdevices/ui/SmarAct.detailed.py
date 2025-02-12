@@ -143,10 +143,14 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         for obj in object_names:
             _widget = getattr(self, obj)
             _channel = getattr(_widget, 'channel')
+            if not _channel:
+                _channel = ''
             if re.search(r'\{prefix\}', _channel):
                 _widget.set_channel(_channel.replace('${prefix}', self.device.prefix))
-            if re.search(r'\{name\}', _channel):
-                _widget.set_channel(_channel.replace('${name}', self.device.name))
+
+        # Now let's manually add the funky egu and description signals here to avoid terminal spam
+        self.desc_set.set_channel(f'sig://{self.device.name}_description')
+        self.egu_set.set_channel(f'sig://{self.device.name}_motor_egu')
 
     def find_pydm_names(self) -> list[str]:
         """
@@ -197,28 +201,12 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
                     _d['read_pv'] = _sig.pvname
                 if hasattr(_sig, 'setpoint_pvname'):
                     _d['write_pv'] = _sig.setpoint_pvname
+                if hasattr(_sig, 'long_name'):
+                    _d['label'] = _sig.long_name
                 self.pico_signal_dict[sig] = _d
 
-            # Now we have to do some manual nonsense because I'm picky. If I was smart I'd figure out
-            # how to tweak Typhos and make this a lot easier for other use cases [:
-            # Manual label naming
-            _label_map = [('pico_present', 'PicoScale Present?'),
-                          ('pico_exists', 'PicoScale Exists?'),
-                          ('pico_valid', 'PicoScale Valid?'),
-                          ('pico_sig_qual', 'Signal Quality'),
-                          ('pico_adj_state', 'Adjustment State'),
-                          ('pico_curr_adj_prog', 'Current Adjustment Progress'),
-                          ('pico_adj_done', 'Adjustment Complete'),
-                          ('pico_enable', 'PicoScale Enabled'),
-                          ('pico_stable', 'Signal Stable?'),
-                          ('pico_name', 'PicoScale Name'),
-                          ('pico_wmin', 'Working Distance (min)'),
-                          ('pico_wmax', 'Working Distance (max)')]
-            for item in _label_map:
-                self.pico_signal_dict[item[0]]['label'] = item[-1]
-
             # Now let's add some metadata for customizing the display
-            _byte_sigs = ['pico_present', 'pico_exists', 'pico_valid', 'pico_enable', 'pico_stable']
+            _byte_sigs = ['pico_present', 'pico_exists', 'pico_valid', 'pico_enable', 'pico_stable', 'pico_adj_done']
             _enum_sigs = ['pico_adj_state']
             for sig in _byte_sigs:
                 self.pico_signal_dict[sig]['meta'] = 'byte'
@@ -228,21 +216,11 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             self.pico_signal_dict['pico_curr_adj_prog']['meta'] = 'progressbar'
 
             # Last but not least, let me manually dictate the signal order
-            _row_map = [('pico_name', 0),
-                        ('pico_present', 1),
-                        ('pico_exists', 2),
-                        ('pico_valid', 3),
-                        ('pico_enable', 4),
-                        ('pico_stable', 5),
-                        ('pico_adj_done', 6),
-                        ('pico_wmin', 7),
-                        ('pico_wmax', 8),
-                        ('pico_sig_qual', 9),
-                        ('pico_adj_state', 10),
-                        ('pico_curr_adj_prog', 11),
-                        ]
-            for item in _row_map:
-                self.pico_signal_dict[item[0]]['row'] = item[-1]
+            _rows = ['pico_name', 'pico_present', 'pico_exists', 'pico_valid', 'pico_enable',
+                     'pico_stable', 'pico_adj_done', 'pico_wmin', 'pico_wmax', 'pico_sig_qual',
+                     'pico_adj_state', 'pico_curr_adj_prog']
+            for pos, item in enumerate(_rows):
+                self.pico_signal_dict[item]['row'] = pos
 
             # Generate the tab
             self.generate_pico_tab()
