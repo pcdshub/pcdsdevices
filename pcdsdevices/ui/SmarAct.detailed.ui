@@ -255,7 +255,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="open_loop">
       <property name="sizePolicy">
@@ -2390,7 +2390,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>475</width>
+            <width>655</width>
             <height>250</height>
            </rect>
           </property>
