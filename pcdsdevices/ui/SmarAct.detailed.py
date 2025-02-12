@@ -19,9 +19,9 @@ class _SmarActDetailedUI(QtWidgets.QWidget):
     has_encoder_bool: pydm.widgets.byte.PyDMByteIndicator
     referenced_bool: pydm.widgets.byte.PyDMByteIndicator
     # Open-loop tab
-    jog_forward_button: pydm.widgets.pushbutton.PyDMPushButton
-    jog_reverse_button: pydm.widgets.pushbutton.PyDMPushButton
-    clear_count_button: pydm.widgets.pushbutton.PyDMPushButton
+    jog_fwd_button: pydm.widgets.pushbutton.PyDMPushButton
+    jog_rev_button: pydm.widgets.pushbutton.PyDMPushButton
+    step_clear_cmd_button: pydm.widgets.pushbutton.PyDMPushButton
     total_step_count_rbv: pydm.widgets.label.PyDMLabel
     step_size_rbv: pydm.widgets.label.PyDMLabel
     step_size_set: pydm.widgets.line_edit.PyDMLineEdit
@@ -29,8 +29,8 @@ class _SmarActDetailedUI(QtWidgets.QWidget):
     step_volt_set: pydm.widgets.line_edit.PyDMLineEdit
     step_freq_rbv: pydm.widgets.label.PyDMLabel
     step_freq_set: pydm.widgets.line_edit.PyDMLineEdit
-    scan_volt_rbv: pydm.widgets.label.PyDMLabel
-    scan_volt_set: pydm.widgets.line_edit.PyDMLineEdit
+    scan_move_rbv: pydm.widgets.label.PyDMLabel
+    scan_move_set: pydm.widgets.line_edit.PyDMLineEdit
     # Closed-loop tab
     home_forward_button: pydm.widgets.pushbutton.PyDMPushButton
     home_reverse_button: pydm.widgets.pushbutton.PyDMPushButton
@@ -49,8 +49,8 @@ class _SmarActDetailedUI(QtWidgets.QWidget):
     closed_loop_freq_max_rbv: pydm.widgets.label.PyDMLabel
     closed_loop_freq_max_set: pydm.widgets.line_edit.PyDMLineEdit
     # Diagnostics tab
-    chan_temp_rbv: pydm.widgets.label.PyDMLabel
-    mod_temp_rbv: pydm.widgets.label.PyDMLabel
+    channel_temp_rbv: pydm.widgets.label.PyDMLabel
+    module_temp_rbv: pydm.widgets.label.PyDMLabel
     motor_load_rbv: pydm.widgets.label.PyDMLabel
     chan_error_rbv: pydm.widgets.label.PyDMLabel
     diag_closed_loop_freq_max_rbv: pydm.widgets.label.PyDMLabel
@@ -62,10 +62,10 @@ class _SmarActDetailedUI(QtWidgets.QWidget):
     desc_set: pydm.widgets.line_edit.PyDMLineEdit
     egu_rbv: pydm.widgets.label.PyDMLabel
     egu_set: pydm.widgets.line_edit.PyDMLineEdit
-    ptype_rbv: pydm.widgets.label.PyDMLabel
-    ptype_set: pydm.widgets.line_edit.PyDMLineEdit
-    need_calib_led: pydm.widgets.byte.PyDMByteIndicator
-    calibrate_button: pydm.widgets.pushbutton.PyDMPushButton
+    pos_type_rbv: pydm.widgets.label.PyDMLabel
+    pos_type_set: pydm.widgets.line_edit.PyDMLineEdit
+    needs_calib_led: pydm.widgets.byte.PyDMByteIndicator
+    do_calib_button: pydm.widgets.pushbutton.PyDMPushButton
     low_limit_rbv: pydm.widgets.label.PyDMLabel
     low_limit_set: pydm.widgets.line_edit.PyDMLineEdit
     high_limit_rbv: pydm.widgets.label.PyDMLabel
@@ -74,10 +74,10 @@ class _SmarActDetailedUI(QtWidgets.QWidget):
     ttzv_set: pydm.widgets.enum_combo_box.PyDMEnumComboBox
     ttzv_threshold_rbv: pydm.widgets.label.PyDMLabel
     ttzv_treshold_set: pydm.widgets.line_edit.PyDMLineEdit
-    logical_scale_offset_rbv: pydm.widgets.label.PyDMLabel
-    logical_scale_offset_set: pydm.widgets.line_edit.PyDMLineEdit
-    logical_scale_inversion_rbv: pydm.widgets.label.PyDMLabel
-    logical_scale_inversion_set: pydm.widgets.enum_combo_box.PyDMEnumComboBox
+    log_scale_offset_rbv: pydm.widgets.label.PyDMLabel
+    log_scale_offset_set: pydm.widgets.line_edit.PyDMLineEdit
+    log_scale_inversion_rbv: pydm.widgets.label.PyDMLabel
+    log_scale_inversion_set: pydm.widgets.enum_combo_box.PyDMEnumComboBox
     def_range_min_rbv: pydm.widgets.label.PyDMLabel
     def_range_min_set: pydm.widgets.line_edit.PyDMLineEdit
     def_range_max_rbv: pydm.widgets.label.PyDMLabel
@@ -126,6 +126,7 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         """
         self.fix_pvs()
         self.maybe_add_pico()
+        self.add_tool_tips()
         # Only start this timer if PicoScale exists
         if hasattr(self.device, 'pico_exists'):
             self.adj_prog_timer = QtCore.QTimer(parent=self)
@@ -151,6 +152,41 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         # Now let's manually add the funky egu and description signals here to avoid terminal spam
         self.desc_set.set_channel(f'sig://{self.device.name}_description')
         self.egu_set.set_channel(f'sig://{self.device.name}_motor_egu')
+
+    def add_tool_tips(self):
+        """
+        Add hutch_python tooltips to label widgets, if they exist.
+        """
+        _signals = list(self.device.component_names)
+        # Let's deal with the subdevice signals afterwards
+        _signals.remove('open_loop')
+        _open_loop_signals = list(self.device.open_loop.component_names)
+
+        def _get_tooltip(device: any, signal: str) -> str:
+            """
+            Get the tooltip from the Ophyd.Device signal, if it exists.
+            """
+            _dotted_name = getattr(device, signal).dotted_name
+            try:
+                _tooltip = getattr(type(device), signal).doc
+            except AttributeError:
+                _tooltip = ''
+            _tooltip = (_dotted_name + '<br>'
+                        + round(1.75*len(_dotted_name))*'-' + '<br>'
+                        + _tooltip)
+            return _tooltip
+
+        for sig in (_signals + _open_loop_signals):
+            # Assume the QLabel's object name is standard form
+            _label_name = sig + '_label'
+            _device = self.device
+            # open_loop is a component device, nests differently
+            if sig in _open_loop_signals:
+                _device = self.device.open_loop
+            # Now let's add the tooltip for widgets that exist
+            if hasattr(self, _label_name):
+                _tooltip = _get_tooltip(_device, sig)
+                getattr(self, _label_name).setToolTip(_tooltip)
 
     def find_pydm_names(self) -> list[str]:
         """
