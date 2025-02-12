@@ -356,19 +356,19 @@
               </widget>
              </item>
              <item row="0" column="4">
-              <layout class="QHBoxLayout" name="jog_forward_layout">
+              <layout class="QHBoxLayout" name="jog_fwd_layout">
                <property name="sizeConstraint">
                 <enum>QLayout::SetDefaultConstraint</enum>
                </property>
                <item alignment="Qt::AlignRight|Qt::AlignVCenter">
-                <widget class="QLabel" name="label_2">
+                <widget class="QLabel" name="jog_fwd_label">
                  <property name="text">
                   <string>Forward</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="PyDMPushButton" name="jog_forward_button">
+                <widget class="PyDMPushButton" name="jog_fwd_button">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -448,7 +448,7 @@
                 </widget>
                </item>
                <item>
-                <spacer name="jog_forward_h_spacer">
+                <spacer name="jog_fwd_h_spacer">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -463,9 +463,9 @@
               </layout>
              </item>
              <item row="0" column="2">
-              <layout class="QHBoxLayout" name="jog_reverse_layout">
+              <layout class="QHBoxLayout" name="jog_rev_layout">
                <item>
-                <spacer name="jog_reverse_h_spacer">
+                <spacer name="jog_rev_h_spacer">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -481,7 +481,7 @@
                 </spacer>
                </item>
                <item>
-                <widget class="PyDMPushButton" name="jog_reverse_button">
+                <widget class="PyDMPushButton" name="jog_rev_button">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -561,7 +561,7 @@
                 </widget>
                </item>
                <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
-                <widget class="QLabel" name="jog_reverse_label">
+                <widget class="QLabel" name="jog_rev_label">
                  <property name="text">
                   <string>Reverse</string>
                  </property>
@@ -625,7 +625,7 @@
               <number>6</number>
              </property>
              <item row="6" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="scan_volt_label">
+              <widget class="QLabel" name="scan_move_label">
                <property name="text">
                 <string>Scan Voltage</string>
                </property>
@@ -838,7 +838,7 @@
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="PyDMLabel" name="step_size_rbv">
+              <widget class="PyDMLabel" name="jog_step_size_rbv">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -894,7 +894,7 @@
               </spacer>
              </item>
              <item row="3" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="step_size_label">
+              <widget class="QLabel" name="jog_step_size_label">
                <property name="text">
                 <string>Step Size</string>
                </property>
@@ -904,7 +904,7 @@
               </widget>
              </item>
              <item row="6" column="2">
-              <widget class="PyDMLineEdit" name="scan_volt_set">
+              <widget class="PyDMLineEdit" name="scan_move_set">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -978,7 +978,7 @@
               </widget>
              </item>
              <item row="3" column="2">
-              <widget class="PyDMLineEdit" name="step_size_set">
+              <widget class="PyDMLineEdit" name="jog_step_size_set">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1172,7 +1172,7 @@
               </widget>
              </item>
              <item row="6" column="1">
-              <widget class="PyDMLabel" name="scan_volt_rbv">
+              <widget class="PyDMLabel" name="scan_move_rbv">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                  <horstretch>0</horstretch>
