@@ -2669,7 +2669,7 @@
               </widget>
              </item>
              <item row="0" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="chan_temp_label">
+              <widget class="QLabel" name="channel_temp_label">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -2842,7 +2842,7 @@
               </widget>
              </item>
              <item row="1" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="mod_temp_label">
+              <widget class="QLabel" name="module_temp_label">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -2858,7 +2858,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="PyDMLabel" name="chan_temp_rbv">
+              <widget class="PyDMLabel" name="channel_temp_rbv">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -2942,7 +2942,7 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="PyDMLabel" name="mod_temp_rbv">
+              <widget class="PyDMLabel" name="module_temp_rbv">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -3047,14 +3047,14 @@
               </spacer>
              </item>
              <item row="0" column="2">
-              <widget class="QLabel" name="chan_temp_units">
+              <widget class="QLabel" name="channel_temp_units">
                <property name="text">
                 <string>Celsius</string>
                </property>
               </widget>
              </item>
              <item row="1" column="2">
-              <widget class="QLabel" name="mod_temp_units">
+              <widget class="QLabel" name="module_temp_units">
                <property name="text">
                 <string>Celsius</string>
                </property>
