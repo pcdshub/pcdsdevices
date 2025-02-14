@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from os import path
 from typing import Optional
 
 import ophyd
@@ -29,10 +28,8 @@ class _SmarActTipTiltEmbeddedUI(QtWidgets.QWidget):
 class SmarActTipTiltWidget(Display, utils.TyphosBase):
     """Custom widget for controlling a tip-tilt with d-pad buttons"""
     ui: _SmarActTipTiltEmbeddedUI
-    # Seems confusing, but really just cleans up the call to pydm for setting self.ui
-    ui_template = path.join(path.dirname(path.realpath(__file__)), 'SmarActTipTilt.embedded.ui')
 
-    def __init__(self, parent=None, ui_filename=ui_template, **kwargs,):
+    def __init__(self, parent=None, ui_filename='SmarActTipTilt.embedded.ui', **kwargs,):
         super().__init__(parent=parent, ui_filename=ui_filename)
 
         self._omit_names = ['jog_fwd', 'jog_rev']
