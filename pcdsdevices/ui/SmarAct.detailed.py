@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import re
-from os import path
 
 import pydm
 from pydm import Display
@@ -94,10 +93,8 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
     Custom widget for managing the SmarAct detailed screen
     """
     ui: _SmarActDetailedUI
-    # Seems confusing, but really just cleans up the call to pydm for setting self.ui
-    ui_template = path.join(path.dirname(path.realpath(__file__)), 'SmarAct.detailed.ui')
 
-    def __init__(self, parent=None, ui_filename=ui_template, **kwargs):
+    def __init__(self, parent=None, ui_filename='SmarAct.detailed.ui', **kwargs):
         super().__init__(parent=parent, ui_filename=ui_filename)
 
     @property
@@ -127,13 +124,6 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         self.fix_pvs()
         self.maybe_add_pico()
         self.add_tool_tips()
-        # Only start this timer if PicoScale exists
-        if hasattr(self.device, 'pico_exists'):
-            self.adj_prog_timer = QtCore.QTimer(parent=self)
-            self.adj_prog_timer.timeout.connect(self.update_adj_prog)
-            self.adj_prog_timer.setInterval(1000)
-            self.adj_prog_timer.start()
-            self._last_adj_prog = 0
 
     def fix_pvs(self):
         """
@@ -225,6 +215,12 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             if hasattr(self, 'picoscale'):
                 # Don't add infite tabs please :]
                 return
+            # Only start this timer if PicoScale exists
+            self.adj_prog_timer = QtCore.QTimer(parent=self)
+            self.adj_prog_timer.timeout.connect(self.update_adj_prog)
+            self.adj_prog_timer.setInterval(1000)
+            self.adj_prog_timer.start()
+            self._last_adj_prog = 0
             # Grab all the pico related signals
             _pico_signals = [sig for sig in self.device.component_names if 'pico' in sig]
             self.pico_signal_dict = {}
