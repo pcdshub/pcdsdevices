@@ -10,6 +10,7 @@ Library Features
 - Added SmarAct.detailed.ui screen
 - Accompanying SmarAct.detailed.py screen to handle closed loop and picoscale
 - Added SmarActTipTilt.embedded ui and py screens for operational support
+- Designed and implemented huge improvements for all the SmarAct typhos screens, a monumental win for laser folk.
 
 Device Features
 ---------------
