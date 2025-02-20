@@ -1,0 +1,31 @@
+1316 LADM
+#################
+
+API Breaks
+----------
+- N/A
+
+Library Features
+----------------
+- N/A
+
+Device Features
+---------------
+- N/A
+
+New Devices
+-----------
+-Adds ladm device
+
+Bugfixes
+--------
+- N/A
+
+Maintenance
+-----------
+- Add tab whitelists/alias names in lens.py
+
+Contributors
+------------
+- carogee
+
