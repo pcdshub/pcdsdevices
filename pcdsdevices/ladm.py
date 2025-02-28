@@ -19,6 +19,9 @@ alpha_cos = np.cos(27 * np.pi/180)
 
 
 def ThetaToMotors(theta, samz_offset=0):
+    """
+    Calculates lengths x1, x2, and dz
+    """
     theta = theta * np.pi/180  # change to radian
     x1 = (r) * np.sin(theta)/(np.sin(alpha_r) * np.sin(alpha_r+theta))
     x2 = (R) * np.sin(theta)/(np.sin(alpha_r) * np.sin(alpha_r+theta))
@@ -29,18 +32,27 @@ def ThetaToMotors(theta, samz_offset=0):
 
 
 def y1ToGamma(y1):
+    """
+    Calculates angle gamma=arctan(y1/r) in radians
+    """
     gamma = np.arctan((y1)/(r))
     gamma = gamma * 180/np.pi
     return gamma
 
 
 def y2ToGamma(y2):
+    """
+    Calculates angle gamma=arctan(y2/r) in radians
+    """
     gamma = np.arctan((y2)/(R))
     gamma = gamma * 180/np.pi
     return gamma
 
 
 def GammaToMotors(gamma):
+    """
+    Calculates lengths 'y1', 'y2', their difference 'dy'
+    """
     gamma = gamma * np.pi/180
     y1 = (r) * np.tan(gamma)
     y2 = (R) * np.tan(gamma)
@@ -49,6 +61,9 @@ def GammaToMotors(gamma):
 
 
 def x1ToTheta(x1, samz_offset=0):
+    """
+    Calculates angle theta in radians using length x1 and samz_offset
+    """
     theta = np.arctan(x1 * (np.sin(alpha_r))**2 /
                       (r-samz_offset * alpha_cos-x1 * np.sin(2 * alpha_r)/2))
     theta = theta * 180/np.pi
@@ -56,6 +71,9 @@ def x1ToTheta(x1, samz_offset=0):
 
 
 def x2ToTheta(x2, samz_offset=0):
+    """
+    Calculates angle theta in radians using length x2 and samz_offset
+    """
     theta = np.arctan(x2 * (np.sin(alpha_r))**2 /
                       (R-samz_offset * alpha_cos-x2 * np.sin(2 * alpha_r)/2))
     theta = theta * 180/np.pi
@@ -63,16 +81,25 @@ def x2ToTheta(x2, samz_offset=0):
 
 
 def xTox12(x):
+    """
+    Calculates 'x12' from 'x' and the rail angle alpha_r
+    """
     x12 = x/np.sin(alpha_r)
     return x12
 
 
 def xToz(x):
+    """
+    Calculates 'z' from 'x' and the rail angle alpha_r
+    """
     z = x/np.tan(alpha_r)
     return z
 
 
 def MotorsTox(x1, x2, z):
+    """
+    Calculates x_x1, x_x2, and x_z from x1, x2, and z trigonomic relationships with rail angle alpha_r
+    """
     x_x1 = x1 * np.sin(alpha_r)
     x_x2 = x2 * np.sin(alpha_r)
     x_z = z * np.tan(alpha_r)
@@ -80,6 +107,9 @@ def MotorsTox(x1, x2, z):
 
 
 def ThetaToMotors_print(theta):
+    """
+    Prints locations x1, x2, and z are moving to
+    """
     x1, x2, z = ThetaToMotors(theta)
     print(f"Move x1 to {x1}"
           f"Move x2 to {x2}"
