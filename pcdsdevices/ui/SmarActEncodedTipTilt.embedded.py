@@ -201,7 +201,8 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
             _prefix = getattr(self.device, axis).prefix
             _open_loop_dict = {'jog_fwd': ':STEP_FORWARD.PROC',
                                'jog_rev': ':STEP_REVERSE.PROC',
-                               'step_count': ':TOTAL_STEP_COUNT'}
+                               'step_count': ':TOTAL_STEP_COUNT',
+                               'jog_step_size': ':STEP_COUNT'}
             for obj, _suffix in _open_loop_dict.items():
                 _widget = getattr(self.ui, f'{axis}_{obj}')
                 _widget.set_channel(f'ca://{_prefix}{_suffix}')
