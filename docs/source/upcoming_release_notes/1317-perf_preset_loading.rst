@@ -1,5 +1,5 @@
-IssueNumber Title
-#################
+1317 perf_preset_loading
+########################
 
 API Breaks
 ----------
@@ -23,8 +23,9 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Adds option to defer preset path loading until needed.  Presets will
+  now load when tab-completion or preset-related attributes are accessed.
 
 Contributors
 ------------
-- N/A
+- tangkong

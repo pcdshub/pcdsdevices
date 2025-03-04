@@ -291,13 +291,19 @@ class LaserTiming(FltMvInterface, PVPositioner):
     done = Cpt(EpicsSignal, ':MMS:PH.DMOV', auto_monitor=True, kind='omitted')
     done_value = 1
 
-    def __init__(self, prefix='', *, egu=None, **kwargs):
+    def __init__(self, prefix='', *, egu=None, invert=True, limits=None, **kwargs):
         if egu not in (None, 's'):
             raise ValueError(
                 f'{self.__class__.__name__} is pre-configured to work in units'
                 f' of seconds.'
             )
         super().__init__(prefix, egu='s', **kwargs)
+        if invert:
+            self.setpoint.scale = -1
+        else:
+            self.setpoint.scale = 1
+        if limits is not None:
+            self.limits = limits
 
     @user_offset.sub_value
     def _offset_changed(self, value, **kwargs):
@@ -455,13 +461,19 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
     done = Cpt(EpicsSignal, ':PHASCTL:DELAY_MOVING', auto_monitor=True, kind='omitted')
     done_value = 0
 
-    def __init__(self, prefix='', *, egu=None, **kwargs):
+    def __init__(self, prefix='', *, egu=None, invert=True, limits=None, **kwargs):
         if egu not in (None, 's'):
             raise ValueError(
                 f'{self.__class__.__name__} is pre-configured to work in units'
                 f' of seconds.'
             )
         super().__init__(prefix, egu='s', **kwargs)
+        if invert:
+            self.setpoint.scale = -1
+        else:
+            self.setpoint.scale = 1
+        if limits is not None:
+            self.limits = limits
 
     @user_offset.sub_value
     def _offset_changed(self, value, **kwargs):
@@ -483,8 +495,8 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
         super()._setup_move(position)
 
         # Something is wrong with done signal, sleep and see if we missed the transition
-        # Done scans at 1s, wait 2s to be sure
-        time.sleep(2)
+        # Done scans at 0.1s, wait 0.2s to be sure
+        time.sleep(0.2)
         # If we missed the transition, mark done now
         if self.done.get() == self.done_value:
             self._move_changed(value=1-self.done_value)

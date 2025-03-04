@@ -27,7 +27,7 @@ from .interface import BaseInterface, LightpathInOutCptMixin
 from .keithley import IM3L0_K2700
 from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATThermocouple
-from .signal import PytmcSignal
+from .signal import PytmcSignal, UnitConversionDerivedSignal
 from .state import StatePositioner
 from .utils import get_status_float, get_status_value, reorder_components
 from .variety import set_metadata
@@ -368,56 +368,72 @@ class PPMPowerMeter(BaseInterface, Device):
     Analog measurement tool for beam energy as part of the PPM assembly.
 
     When inserted into the beam, the `raw_voltage` signal value should
-    increase proportional to the beam energy. The equivalent calibrated
-    readings are `dimensionless`, which is a unitless number that
-    represents the relative calibration of every power meter, and
-    `calibrated_mj`, which is the real engineering unit of the beam
-    power. These are calibrated using the other signals in the following way:
+    increase proportional to the beam energy. A responsivity value
+    calibrated for each power meter in units of volts per watt
+    is used to calculate the actual energy in the following way:
 
-    `dimensionless` = (`raw_voltage` + `calib_offset`) * `calib_ratio`
-    `calibrated_mj` = `dimensionless` * `calib_mj_ratio`
+    `calibrated_mj` = (Signal - Background) / (Responsivity * Beam_Rate)
     """
 
     tab_component_names = True
 
+    responsivity = Cpt(PytmcSignal, ':RESP', io='i', kind='normal',
+                       doc='Responsivity in  V/W, unique for every power meter.')
+
+    background_voltage = Cpt(PytmcSignal, ':BACK:VOLT', io='io', kind='normal',
+                             doc='Background voltage value used to calculate pulse energy.')
+
+    auto_background_reset = Cpt(PytmcSignal, ':BACK:RESET', io='io', kind='normal',
+                                doc='Set to reset auto background voltage collection.')
+    set_metadata(auto_background_reset, dict(variety='command-proc', value=1))
+
+    background_mode = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal',
+                          doc='Can be manual or auto In manual mode, you can collect '
+                          'for a specified number of seconds. In auto mode, a buffer of '
+                          'automatically collected background voltages will be used to calculate the background voltage.')
+
+    manual_collect = Cpt(PytmcSignal, ':BACK:COLL', io='io', kind='normal',
+                         doc='Start collecting background voltages for specified time.')
+    set_metadata(manual_collect, dict(variety='command-proc', value=1))
+
+    manual_in_progress = Cpt(PytmcSignal, ':BACK:MANUAL_COLLECTING', io='i', kind='normal',
+                             doc='Manual collection currntly in progress')
+    set_metadata(manual_in_progress, dict(variety='command'))
+
+    manual_collect_time = Cpt(PytmcSignal, ':BACK:TIME', io='io', kind='normal',
+                              doc='Time to collect background voltages for.')
+
     raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal',
                       doc='Raw readback from the power meter.')
-    dimensionless = Cpt(PytmcSignal, ':CALIB', io='i', kind='normal',
-                        doc='Calibrated dimensionless readback '
-                            'for cross-meter comparisons.')
+
     calibrated_mj = Cpt(PytmcSignal, ':MJ', io='i', kind='normal',
                         doc='Calibrated absolute measurement of beam '
                             'power in physics units.')
+
+    calibrated_uj = Cpt(UnitConversionDerivedSignal, derived_from='calibrated_mj',
+                        derived_units='uJ', original_units='mJ', write_access=False)
+
+    wattage = Cpt(PytmcSignal, ':WATT', io='i', kind='normal',
+                  doc='Wattage measured by power meter, equals MJ times Beamrate.')
+
     thermocouple = Cpt(TwinCATThermocouple, '', kind='normal',
                        doc='Thermocouple on the power meter holder.')
-
-    calib_offset = Cpt(PytmcSignal, ':CALIB:OFFSET', io='io', kind='config',
-                       doc='Calibration parameter to offset raw voltage to '
-                           'zero for the calibrated quantities. Unique per '
-                           'power meter.')
-    calib_ratio = Cpt(PytmcSignal, ':CALIB:RATIO', io='io', kind='config',
-                      doc='Calibration multiplier to convert to the '
-                          'dimensionless constant. Unique per power meter.')
-    calib_mj_ratio = Cpt(PytmcSignal, ':CALIB:MJ_RATIO', io='io',
-                         kind='config',
-                         doc='Calibration multiplier to convert from the '
-                             'dimensionless constant to calibrated scientific '
-                             'quantity. Same for every power meter.')
 
     raw_voltage_buffer = Cpt(PytmcSignal, ':VOLT_BUFFER', io='i',
                              kind='omitted',
                              doc='Array of the last 1000 raw measurements. '
                                  'Polls faster than the EPICS updates.')
-    dimensionless_buffer = Cpt(PytmcSignal, ':CALIB_BUFFER', io='i',
-                               kind='omitted',
-                               doc='Array of the last 1000 dimensionless '
-                                   'measurements. Polls faster than the '
-                                   'EPICS updates.')
+
     calibrated_mj_buffer = Cpt(PytmcSignal, ':MJ_BUFFER', io='i',
                                kind='omitted',
                                doc='Array of the last 1000 fully calibrated '
                                    'measurements. Polls faster than the '
                                    'EPICS updates.')
+
+    wattage_buffer = Cpt(PytmcSignal, ':WATT_BUFFER', io='i',
+                         kind='omitted',
+                         doc='Array of the last 1000 wattages. Polls faster than the '
+                         'EPICS updates.')
 
 
 class PPM(LCLS2ImagerBase):

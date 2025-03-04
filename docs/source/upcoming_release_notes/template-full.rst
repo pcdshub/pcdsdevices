@@ -13,13 +13,13 @@ API Breaks
   Changes to PVs don't count as API changes for this library,
   but changing method and component names or changing default behavior does.
 
-Features
---------
+Library Features
+----------------
 - List new updates that add utility to many classes,
   provide a new base classes, add options to helper methods, etc.
 
-Device Updates
---------------
+Device Features
+---------------
 - List new features or specific changes for individual devices.
 
 New Devices

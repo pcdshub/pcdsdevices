@@ -158,6 +158,8 @@ class PIPPLC(Device):
                    doc='pressure reading')
     high_voltage_do = Cpt(EpicsSignalRO, ':HV_DO_RBV', kind='normal',
                           doc='high voltage digital output')
+    high_voltage_in = Cpt(EpicsSignalRO, ':HV_DI_RBV', kind='normal',
+                          doc='high voltage digital input')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock  is ok when true')
     protection_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='config',

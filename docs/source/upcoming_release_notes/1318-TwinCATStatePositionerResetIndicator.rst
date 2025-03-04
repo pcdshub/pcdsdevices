@@ -1,4 +1,4 @@
-IssueNumber Title
+1318 TwinCATStatePositionerResetIndicator
 #################
 
 API Breaks
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- TwinCATStatePositioner.reset_cmd is now a PytmcSignal with io='io' instead of an EpicsSignal to properly display the RBV readback PV in typhos.
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- KaushikMalapati

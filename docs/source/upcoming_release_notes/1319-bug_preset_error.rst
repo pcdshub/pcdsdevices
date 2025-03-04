@@ -1,5 +1,5 @@
-IssueNumber Title
-#################
+1319 bug_preset_error
+#####################
 
 API Breaks
 ----------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Improves error handling for presets when the position is unknown or uninitialized.
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- tangkong

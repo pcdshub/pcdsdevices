@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>945</width>
-    <height>231</height>
+    <width>1045</width>
+    <height>232</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1000</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -41,7 +53,7 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="precision" stdset="0">
-        <number>0</number>
+        <number>3</number>
        </property>
        <property name="showUnits" stdset="0">
         <bool>false</bool>
@@ -72,7 +84,7 @@
         <string/>
        </property>
        <property name="precision" stdset="0">
-        <number>0</number>
+        <number>3</number>
        </property>
        <property name="showUnits" stdset="0">
         <bool>false</bool>
@@ -109,7 +121,7 @@
      </item>
      <item row="1" column="3">
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="4">
+       <item row="0" column="6">
         <widget class="QLabel" name="label_11">
          <property name="font">
           <font>
@@ -118,34 +130,6 @@
          </property>
          <property name="text">
           <string>Bay 4</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="4">
-        <widget class="PyDMLabel" name="PyDMLabel_8">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:LS8:FF:FrameTime_RBV</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QLabel" name="label_8">
-         <property name="font">
-          <font>
-           <underline>true</underline>
-          </font>
-         </property>
-         <property name="text">
-          <string>Bay 3</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -168,23 +152,37 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="4">
-        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_6">
-         <property name="toolTip">
-          <string/>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_9">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
          </property>
-         <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:LS8:FF:IsUpdating_RBV</string>
+         <property name="text">
+          <string>Bay 1</string>
          </property>
-         <property name="showLabels" stdset="0">
-          <bool>false</bool>
-         </property>
-         <property name="circles" stdset="0">
-          <bool>true</bool>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item row="2" column="3">
+       <item row="0" column="4">
+        <widget class="QLabel" name="label_8">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 3 - 800nm</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
         <widget class="PyDMByteIndicator" name="PyDMByteIndicator_4">
          <property name="toolTip">
           <string/>
@@ -200,22 +198,20 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="label_10">
-         <property name="font">
-          <font>
-           <underline>true</underline>
-          </font>
-         </property>
-         <property name="text">
-          <string>Bay 2</string>
+       <item row="1" column="6">
+        <widget class="PyDMLabel" name="PyDMLabel_8">
+         <property name="toolTip">
+          <string/>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS8:FF:FrameTime_RBV</string>
+         </property>
         </widget>
        </item>
-       <item row="1" column="3">
+       <item row="1" column="4">
         <widget class="PyDMLabel" name="PyDMLabel_7">
          <property name="toolTip">
           <string/>
@@ -228,15 +224,158 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="label_9">
+       <item row="2" column="3">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_10">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS3:FF:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="bigEndian" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="numBits" stdset="0">
+          <number>1</number>
+         </property>
+         <property name="shift" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="labels" stdset="0">
+          <stringlist>
+           <string>Bit 0</string>
+          </stringlist>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_8">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS4:FF:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="bigEndian" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="numBits" stdset="0">
+          <number>1</number>
+         </property>
+         <property name="shift" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="labels" stdset="0">
+          <stringlist>
+           <string>Bit 0</string>
+          </stringlist>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="PyDMLabel" name="PyDMLabel_12">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="precision" stdset="0">
+          <number>3</number>
+         </property>
+         <property name="showUnits" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="precisionFromPV" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS3:FF:FrameTime_RBV</string>
+         </property>
+         <property name="enableRichText" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="6">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_6">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS8:FF:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_14">
          <property name="font">
           <font>
            <underline>true</underline>
           </font>
          </property>
          <property name="text">
-          <string>Bay 1</string>
+          <string>Bay 2 - 1um</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_10">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 2 - 800nm</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -253,6 +392,128 @@
          </property>
          <property name="channel" stdset="0">
           <string>ca://LTLHN:BTPS:Chk:LS1:FF:FrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="PyDMLabel" name="PyDMLabel_10">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="precision" stdset="0">
+          <number>3</number>
+         </property>
+         <property name="showUnits" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="precisionFromPV" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS4:FF:FrameTime_RBV</string>
+         </property>
+         <property name="enableRichText" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="5">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_12">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS6:FF:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="bigEndian" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="numBits" stdset="0">
+          <number>1</number>
+         </property>
+         <property name="shift" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="labels" stdset="0">
+          <stringlist>
+           <string>Bit 0</string>
+          </stringlist>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5">
+        <widget class="PyDMLabel" name="PyDMLabel_14">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="precision" stdset="0">
+          <number>3</number>
+         </property>
+         <property name="showUnits" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="precisionFromPV" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS6:FF:FrameTime_RBV</string>
+         </property>
+         <property name="enableRichText" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="5">
+        <widget class="QLabel" name="label_16">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 3 - 1um</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -325,6 +586,166 @@
      </item>
      <item row="1" column="0">
       <layout class="QGridLayout" name="gridLayout">
+       <item row="2" column="5">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_3">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS8:NF:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="PyDMLabel" name="PyDMLabel_2">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="precision" stdset="0">
+          <number>3</number>
+         </property>
+         <property name="showUnits" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="precisionFromPV" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS4:NF:FrameTime_RBV</string>
+         </property>
+         <property name="enableRichText" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_7">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS4:NF:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="bigEndian" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="numBits" stdset="0">
+          <number>1</number>
+         </property>
+         <property name="shift" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="labels" stdset="0">
+          <stringlist>
+           <string>Bit 0</string>
+          </stringlist>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5">
+        <widget class="PyDMLabel" name="PyDMLabel_5">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS8:NF:FrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="5">
+        <widget class="QLabel" name="label_7">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 4</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="PyDMLabel" name="PyDMLabel_3">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS1:NF:FrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_5">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 3 - 800nm</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_13">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 2 - 1um</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="1">
         <widget class="QLabel" name="label_6">
          <property name="font">
@@ -333,29 +754,14 @@
           </font>
          </property>
          <property name="text">
-          <string>Bay 2</string>
+          <string>Bay 2 - 800nm</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="label_5">
-         <property name="font">
-          <font>
-           <underline>true</underline>
-          </font>
-         </property>
-         <property name="text">
-          <string>Bay 3</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
+       <item row="2" column="3">
         <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
          <property name="toolTip">
           <string/>
@@ -372,59 +778,36 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="PyDMLabel" name="PyDMLabel_4">
+        <widget class="PyDMLabel" name="PyDMLabel_11">
          <property name="toolTip">
           <string/>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
-         <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:LS5:NF:FrameTime_RBV</string>
+         <property name="precision" stdset="0">
+          <number>3</number>
          </property>
-        </widget>
-       </item>
-       <item row="2" column="3">
-        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_3">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:LS8:NF:IsUpdating_RBV</string>
-         </property>
-         <property name="showLabels" stdset="0">
+         <property name="showUnits" stdset="0">
           <bool>false</bool>
          </property>
-         <property name="circles" stdset="0">
+         <property name="precisionFromPV" stdset="0">
           <bool>true</bool>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QLabel" name="label_7">
-         <property name="font">
-          <font>
-           <underline>true</underline>
-          </font>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
          </property>
-         <property name="text">
-          <string>Bay 4</string>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="PyDMLabel" name="PyDMLabel_5">
-         <property name="toolTip">
+         <property name="PyDMToolTip" stdset="0">
           <string/>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:LS8:NF:FrameTime_RBV</string>
+          <string>ca://LTLHN:BTPS:Chk:LS3:NF:FrameTime_RBV</string>
+         </property>
+         <property name="enableRichText" stdset="0">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -444,19 +827,6 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="PyDMLabel" name="PyDMLabel_3">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:LS1:NF:FrameTime_RBV</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_4">
          <property name="font">
@@ -469,6 +839,146 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="PyDMLabel" name="PyDMLabel_4">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS5:NF:FrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_9">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS3:NF:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="bigEndian" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="numBits" stdset="0">
+          <number>1</number>
+         </property>
+         <property name="shift" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="labels" stdset="0">
+          <stringlist>
+           <string>Bit 0</string>
+          </stringlist>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="PyDMLabel" name="PyDMLabel_13">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="precision" stdset="0">
+          <number>3</number>
+         </property>
+         <property name="showUnits" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="precisionFromPV" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS6:NF:FrameTime_RBV</string>
+         </property>
+         <property name="enableRichText" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QLabel" name="label_15">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 3 - 1um</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_11">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://LTLHN:BTPS:Chk:LS6:NF:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="bigEndian" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="numBits" stdset="0">
+          <number>1</number>
+         </property>
+         <property name="shift" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="labels" stdset="0">
+          <stringlist>
+           <string>Bit 0</string>
+          </stringlist>
          </property>
         </widget>
        </item>

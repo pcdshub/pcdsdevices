@@ -26,6 +26,7 @@ from ophyd.signal import Signal, SignalRO
 from ophyd.status import Status
 from ophyd.status import wait as status_wait
 
+from .analog_signals import FDQ
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
@@ -688,6 +689,10 @@ class ExitSlits(BaseInterface, GroupDevice, LightpathInOutCptMixin):
         doc='Thermocouple on the Heat Sync.'
     )
     set_metadata(cam_power, dict(variety='command-enum'))
+    flow_meter = Cpt(
+        FDQ, '', kind='normal',
+        doc='Device that measures PCW Flow Rate.'
+    )
 
     @property
     def y_states(self):
