@@ -849,6 +849,9 @@ class XOffsetMirrorBend(XOffsetMirror):
     cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
     cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
+    pitch_enc_rms = Cpt(PytmcSignal, ':MMS:PITCH:ENCDIFF:STATS:RMS', io='i', kind='normal',
+                        doc='Pitch encoder RMS deviation [nrad]')
+
     # Tab config: show components
     tab_component_names = True
 
