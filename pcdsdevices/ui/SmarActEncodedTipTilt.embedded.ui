@@ -397,7 +397,7 @@
                <string/>
               </property>
               <property name="PyDMIcon" stdset="0">
-               <string>plus</string>
+               <string>angle-right</string>
               </property>
               <property name="PyDMIconColor" stdset="0">
                <color>
@@ -474,7 +474,7 @@
                <string/>
               </property>
               <property name="PyDMIcon" stdset="0">
-               <string>minus</string>
+               <string>angle-down</string>
               </property>
               <property name="PyDMIconColor" stdset="0">
                <color>
@@ -551,7 +551,7 @@
                <string/>
               </property>
               <property name="PyDMIcon" stdset="0">
-               <string>minus</string>
+               <string>angle-left</string>
               </property>
               <property name="PyDMIconColor" stdset="0">
                <color>
@@ -628,7 +628,7 @@
                <string/>
               </property>
               <property name="PyDMIcon" stdset="0">
-               <string>plus</string>
+               <string>angle-up</string>
               </property>
               <property name="PyDMIconColor" stdset="0">
                <color>
@@ -859,7 +859,7 @@
              </widget>
             </item>
             <item row="3" column="0">
-             <widget class="PyDMPushButton" name="tilt_jog_rev">
+             <widget class="PyDMPushButton" name="tip_jog_rev">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -952,7 +952,7 @@
              </spacer>
             </item>
             <item row="5" column="2" alignment="Qt::AlignHCenter">
-             <widget class="PyDMPushButton" name="tip_jog_rev">
+             <widget class="PyDMPushButton" name="tilt_jog_rev">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1029,7 +1029,7 @@
              </widget>
             </item>
             <item row="3" column="4">
-             <widget class="PyDMPushButton" name="tilt_jog_fwd">
+             <widget class="PyDMPushButton" name="tip_jog_fwd">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1122,7 +1122,7 @@
              </spacer>
             </item>
             <item row="1" column="2" alignment="Qt::AlignHCenter">
-             <widget class="PyDMPushButton" name="tip_jog_fwd">
+             <widget class="PyDMPushButton" name="tilt_jog_fwd">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1218,6 +1218,45 @@
           </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="settings_button_grid">
+         <item row="0" column="1">
+          <spacer name="settings_button_h_spacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="0">
+          <widget class="PyDMPushButton" name="settings_button">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="PyDMIcon" stdset="0">
+            <string>SP_ToolBarHorizontalExtensionButton</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
