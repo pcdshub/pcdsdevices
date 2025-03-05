@@ -64,8 +64,8 @@ class LAMPMagneticBottle(BaseInterface, GroupDevice):
     tab_component_names = True
 
     # Motor components
-    gas_needle_x = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
-    gas_needle_y = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
+    gas_needle_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
+    gas_needle_y = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
     gas_needle_z = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
 #    gas_needle_theta = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
 
