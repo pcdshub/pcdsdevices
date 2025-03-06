@@ -47,7 +47,6 @@ class _SmarActEncodedTipTiltEmbeddedUI(QtWidgets.QWidget):
     sequence_progress_bar: QtWidgets.QProgressBar
     tip_expert_button: TyphosRelatedSuiteButton
     tilt_expert_button: TyphosRelatedSuiteButton
-    devices: list
 
 
 class MotorThread(QtCore.QThread):
