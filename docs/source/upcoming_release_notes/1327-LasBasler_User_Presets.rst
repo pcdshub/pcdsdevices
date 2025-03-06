@@ -12,7 +12,7 @@ Library Features
 Device Features
 ---------------
 - LasBasler: Adds long_names to signals
-- LasBasler: Adds UserPresetSelector and UserPresetDefaultSe signals
+- LasBasler: Adds `save_setting` and `load_setting` signals for saving and loading settings
 
 New Devices
 -----------
