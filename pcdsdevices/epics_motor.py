@@ -1715,6 +1715,7 @@ class SmarActEncodedTipTilt(Device):
         self._tip_pv = tip_pv
         self._tilt_pv = tilt_pv
         super().__init__(prefix, **kwargs)
+        print("hello this is a dummy commit")
 
 
 class SmarActPicoscale(SmarAct):
