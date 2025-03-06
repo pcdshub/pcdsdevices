@@ -11,8 +11,8 @@ Library Features
 
 Device Features
 ---------------
-- Adds long_names to signals in LasBasler detector class
-- Adds UserPresetSelector and UserPresetDefaultSe signals to the class
+- LasBasler: Adds long_names to signals
+- LasBasler: Adds UserPresetSelector and UserPresetDefaultSe signals
 
 New Devices
 -----------
