@@ -503,19 +503,19 @@ class LasBasler(PCDSAreaDetectorTyphosBeamStats, BaslerBase):
         self.configure(self._conf_d)
 
     # Handle UserPresets configuration
-    default_preset = Cpt(EpicsSignal, 'UserSetDefaultSe_RBV', write_pv='UserSetDefaultSe',
-                         kind='config',
-                         doc='Default Preset to use on startup. See UserSetSelector'
-                         ' for more options')
-    user_preset = Cpt(EpicsSignal, 'UserSetSelector_RBV', write_pv='UserSetSelector',
-                      kind='config',
-                      doc='Current User Preset to save/load')
-    save_preset = Cpt(EpicsSignal, 'UserSetSave.PROC', kind='config',
-                      doc='Save current settings into selected user preset')
-    set_metadata(save_preset, dict(variety='command-proc', value=1))
-    load_preset = Cpt(EpicsSignal, 'UserSetLoad.PROC', kind='config',
-                      doc='Load current settings into selected user preset')
-    set_metadata(load_preset, dict(variety='command-proc', value=1))
+    default_setting = Cpt(EpicsSignal, 'UserSetDefaultSe_RBV', write_pv='UserSetDefaultSe',
+                          kind='config',
+                          doc='Default User Set to use on startup. See UserSetSelector'
+                          ' for more options')
+    user_setting = Cpt(EpicsSignal, 'UserSetSelector_RBV', write_pv='UserSetSelector',
+                       kind='config',
+                       doc='Current User Set to save/load')
+    save_setting = Cpt(EpicsSignal, 'UserSetSave.PROC', kind='config',
+                       doc='Save current settings into selected User Set')
+    set_metadata(save_setting, dict(variety='command-proc', value=1))
+    load_setting = Cpt(EpicsSignal, 'UserSetLoad.PROC', kind='config',
+                       doc='Load current settings into selected User Set')
+    set_metadata(load_setting, dict(variety='command-proc', value=1))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -555,10 +555,10 @@ class LasBasler(PCDSAreaDetectorTyphosBeamStats, BaslerBase):
         self.target_x.long_name = 'Target X'
         self.target_y.long_name = 'Target Y'
         self.auto_configure.long_name = 'Auto-configure'
-        self.default_preset.long_name = 'Default Preset'
-        self.user_preset.long_name = 'Current Preset'
-        self.save_preset.long_name = 'Save Preset'
-        self.load_preset.long_name = 'Load Preset'
+        self.default_setting.long_name = 'Default Preset'
+        self.user_setting.long_name = 'Current User Set'
+        self.save_setting.long_name = 'Save User Set'
+        self.load_setting.long_name = 'Load User Set'
 
 
 class LasBaslerNF(LasBasler):
