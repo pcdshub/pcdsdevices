@@ -1661,6 +1661,8 @@ class SmarAct(EpicsMotorInterface):
                        doc="Temperature at the channel's amplifier")
     module_temp = Cpt(EpicsSignalRO, ':MODTEMP', kind='normal',
                       doc='Temperature of the MCS2 Module in the rack')
+    channel_state_raw = Cpt(EpicsSignalRO, ':STATE_RBV', kind='omitted',
+                            doc='Channel state bitmask represented as raw int')
 
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
@@ -1700,6 +1702,7 @@ class SmarAct(EpicsMotorInterface):
         self.dist_code_inv.long_name = 'Distance Code Inversion'
         self.channel_temp.long_name = 'Channel Temp. (°C)'
         self.module_temp.long_name = 'Module Temp. (°C)'
+        self.channel_state_raw.long_name = 'Channel State'
 
 
 class SmarActEncodedTipTilt(Device):
