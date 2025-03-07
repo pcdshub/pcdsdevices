@@ -12,8 +12,9 @@ Library Features
 Device Features
 ---------------
 - SmarActEncodedTipTilt: added embedded screens
-- - bundles open-loop and closed-loop motion
-- - Wraps the home and calibrate sequence into single methods
+- SmarActEncodedTipTilt: bundles open-loop and closed-loop motion
+- SmarActEncodedTipTilt: wraps the home and calibrate sequence into single methods
+- SmarActEncodedTipTilt: add channel_state_raw, calibrating, and referencing signals
 
 New Devices
 -----------
