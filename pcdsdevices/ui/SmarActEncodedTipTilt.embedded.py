@@ -115,12 +115,8 @@ class _calibrate_thread(MotorThread):
             currently in the calibration sequence.
             """
             _state_raw = device.channel_state_raw.get()
-            # use this if the IOC is > R1.0.25
-            if device.calibrating.connected:
-                return device.calibrating.get()
-            else:
-                # manually check the 2nd bit
-                return (_state_raw & (1 << 2)) > 0
+            # manually check the 2nd bit
+            return (_state_raw & (1 << 2)) > 0
 
         def wait_on_calib(device):
             """
