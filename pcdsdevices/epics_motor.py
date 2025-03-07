@@ -1663,11 +1663,6 @@ class SmarAct(EpicsMotorInterface):
                       doc='Temperature of the MCS2 Module in the rack')
     channel_state_raw = Cpt(EpicsSignalRO, ':STATE_RBV', kind='omitted',
                             doc='Channel state bitmask represented as raw int')
-    # Only valid if using common IOC R1.0.25 or greater, else use channel_state_raw
-    calibrating = Cpt(EpicsSignalRO, ':STATE_RBV.B2', kind='omitted',
-                      doc='Channel is busy calibrating')
-    referencing = Cpt(EpicsSignalRO, ':STATE_RBV.B3', kind='omitted',
-                      doc='Channel is busy referencing')
 
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
@@ -1707,8 +1702,6 @@ class SmarAct(EpicsMotorInterface):
         self.dist_code_inv.long_name = 'Distance Code Inversion'
         self.channel_temp.long_name = 'Channel Temp. (°C)'
         self.module_temp.long_name = 'Module Temp. (°C)'
-        self.calibrating.long_name = 'Calibrating'
-        self.referencing.long_name = 'Referencing'
         self.channel_state_raw.long_name = 'Channel State'
 
 
