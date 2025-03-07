@@ -98,17 +98,26 @@ class SmarActTipTiltWidget(Display, utils.TyphosBase):
         Once we have the tip-tilt device, set the TIP and TILT channels to
         the buttons and labels.
         """
+        def set_open_loop(self, axis: str):
+            """
+            A wrapper to set the open-loop widget channels.
+            Ironically more lines than just hard coding it.
+            """
+            _prefix = getattr(self.device, axis).prefix
+            _open_loop_dict = {'forward': ':STEP_FORWARD.PROC',
+                               'reverse': ':STEP_REVERSE.PROC',
+                               'step_count': ':TOTAL_STEP_COUNT',
+                               'step_size': ':STEP_COUNT'}
+            for obj, _suffix in _open_loop_dict.items():
+                _widget = getattr(self.ui, f'{axis}_{obj}')
+                _widget.set_channel(f'ca://{_prefix}{_suffix}')
 
         if self.device is None:
             print('No device set!')
             return
 
-        self.ui.tip_forward.set_channel(f'ca://{self.device.tip.prefix}:STEP_FORWARD.PROC')
-        self.ui.tip_reverse.set_channel(f'ca://{self.device.tip.prefix}:STEP_REVERSE.PROC')
-        self.ui.tip_step_count.set_channel(f'ca://{self.device.tip.prefix}:TOTAL_STEP_COUNT')
-        self.ui.tilt_forward.set_channel(f'ca://{self.device.tilt.prefix}:STEP_FORWARD.PROC')
-        self.ui.tilt_reverse.set_channel(f'ca://{self.device.tilt.prefix}:STEP_REVERSE.PROC')
-        self.ui.tilt_step_count.set_channel(f'ca://{self.device.tilt.prefix}:TOTAL_STEP_COUNT')
+        set_open_loop(self, axis='tip')
+        set_open_loop(self, axis='tilt')
 
     def get_names_to_omit(self) -> list[str]:
         """
