@@ -109,6 +109,28 @@ class _calibrate_thread(MotorThread):
         Should be either self.device.tip or self.device.tilt
     """
     def run(self):
+        def is_calibrating(device: any):
+            """
+            Check the 2nd bit in the channel state to see if the stage is
+            currently in the calibration sequence.
+            """
+            _state_raw = device.channel_state_raw.get()
+            # use this if the IOC is > R1.0.25
+            if device.calibrating.connected:
+                return device.calibrating.get()
+            else:
+                # manually check the 2nd bit
+                return (_state_raw & (1 << 2)) > 0
+
+        def wait_on_calib(device):
+            """
+            Wait for the calibration sequence to finish.
+            Needs to initially sleep for a second to let records update.
+            """
+            sleep(1)
+            while is_calibrating(device):
+                sleep(0.2)
+
         stage = self._motor
         sequence = [stage.tip, stage.tilt, stage.tip]
         progress = 0
@@ -116,8 +138,7 @@ class _calibrate_thread(MotorThread):
         for axis in sequence:
             # Calibrate first
             self._status = axis.do_calib.put(1)
-            # Have to manually sleep :[
-            sleep(5)
+            wait_on_calib(axis)
             progress += 1
             self._progress.emit(int(100*(progress/len(2*sequence))))
             # Then home
