@@ -19,9 +19,11 @@ class _SmarActTipTiltEmbeddedUI(QtWidgets.QWidget):
     tip_forward: pydm.widgets.pushbutton.PyDMPushButton
     tip_reverse: pydm.widgets.pushbutton.PyDMPushButton
     tip_step_count: pydm.widgets.label.PyDMLabel
+    invert_tip: QtWidgets.QCheckBox
     tilt_forward: pydm.widgets.pushbutton.PyDMPushButton
     tilt_reverse: pydm.widgets.pushbutton.PyDMPushButton
     tilt_step_count: pydm.widgets.label.PyDMLabel
+    invert_tilt: QtWidgets.QCheckBox
     settings_button: pydm.widgets.pushbutton.PyDMPushButton
 
 
@@ -118,6 +120,41 @@ class SmarActTipTiltWidget(Display, utils.TyphosBase):
 
         set_open_loop(self, axis='tip')
         set_open_loop(self, axis='tilt')
+
+        self.ui.invert_tip.stateChanged.connect(self._invert_tip_axis)
+        self.ui.invert_tilt.stateChanged.connect(self._invert_tilt_axis)
+
+    def _invert_tip_axis(self):
+        """
+        Shenanigans to invert the directional buttons to reflect physical space, as determined by the user.
+        """
+        _prefix = self.device.tip.prefix
+        _axis = 'tip'
+        _forward = getattr(self.ui, f'{_axis}_forward')
+        _reverse = getattr(self.ui, f'{_axis}_reverse')
+        if getattr(self.ui, f'invert_{_axis}').isChecked():
+            _forward.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
+            _reverse.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
+        else:
+            _forward.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
+            _reverse.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
+
+        print('new forward channel:', _forward.channels())
+        print('new forward value:', _forward._pressValue)
+        print('new reverse channel:', _reverse.channels())
+        print('new reverse value:', _reverse._pressValue)
+
+    def _invert_tilt_axis(self):
+        """
+        Shenanigans to invert the directional buttons to reflect physical space, as determined by the user.
+        """
+        _prefix = self.device.tilt.prefix
+        if self.ui.invert_tilt.isChecked():
+            self.ui.tilt_forward.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
+            self.ui.tilt_reverse.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
+        else:
+            self.ui.tilt_forward.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
+            self.ui.tilt_reverse.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
 
     def get_names_to_omit(self) -> list[str]:
         """
