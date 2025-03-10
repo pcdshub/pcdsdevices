@@ -124,37 +124,56 @@ class SmarActTipTiltWidget(Display, utils.TyphosBase):
         self.ui.invert_tip.stateChanged.connect(self._invert_tip_axis)
         self.ui.invert_tilt.stateChanged.connect(self._invert_tilt_axis)
 
+    def invert_axis(self, axis: str, invert: bool = False):
+        """
+        Invert the jog pushbuttons
+
+        Parameters
+        -----------
+            axis: str
+                Name of axis
+            invert: bool
+                Whether or not to invert. Default is False.
+        """
+
+        def clear_channels():
+            """
+            You MUST explicitly clear channels before reassigning if you
+            want to avoid any duplicate callback bugs.
+            """
+            _forward.set_channel('')
+            _reverse.set_channel('')
+
+        _prefix = getattr(self.device, axis).prefix
+        _forward = getattr(self.ui, f'{axis}_forward')
+        _reverse = getattr(self.ui, f'{axis}_reverse')
+
+        if invert:
+            clear_channels()
+            _forward.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
+            _reverse.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
+        else:
+            clear_channels()
+            _forward.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
+            _reverse.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
+
     def _invert_tip_axis(self):
         """
         Shenanigans to invert the directional buttons to reflect physical space, as determined by the user.
         """
-        _prefix = self.device.tip.prefix
-        _axis = 'tip'
-        _forward = getattr(self.ui, f'{_axis}_forward')
-        _reverse = getattr(self.ui, f'{_axis}_reverse')
-        if getattr(self.ui, f'invert_{_axis}').isChecked():
-            _forward.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
-            _reverse.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
+        if self.ui.invert_tip.isChecked():
+            self.invert_axis(axis='tip', invert=True)
         else:
-            _forward.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
-            _reverse.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
-
-        print('new forward channel:', _forward.channels())
-        print('new forward value:', _forward._pressValue)
-        print('new reverse channel:', _reverse.channels())
-        print('new reverse value:', _reverse._pressValue)
+            self.invert_axis(axis='tip', invert=False)
 
     def _invert_tilt_axis(self):
         """
         Shenanigans to invert the directional buttons to reflect physical space, as determined by the user.
         """
-        _prefix = self.device.tilt.prefix
         if self.ui.invert_tilt.isChecked():
-            self.ui.tilt_forward.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
-            self.ui.tilt_reverse.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
+            self.invert_axis(axis='tilt', invert=True)
         else:
-            self.ui.tilt_forward.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
-            self.ui.tilt_reverse.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
+            self.invert_axis(axis='tilt', invert=False)
 
     def get_names_to_omit(self) -> list[str]:
         """
