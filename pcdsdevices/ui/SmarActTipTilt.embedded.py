@@ -130,10 +130,10 @@ class SmarActTipTiltWidget(Display, utils.TyphosBase):
 
         Parameters
         -----------
-            axis: str
-                Name of axis
-            invert: bool
-                Whether or not to invert. Default is False.
+        axis: str
+            Name of axis
+        invert: bool
+            Whether or not to invert. Default is False.
         """
 
         def clear_channels():
