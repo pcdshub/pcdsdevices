@@ -29,6 +29,8 @@ class _SmarActEncodedTipTiltEmbeddedUI(QtWidgets.QWidget):
     tilt_step_count: pydm.widgets.label.PyDMLabel
     tip_calibrated_led: pydm.widgets.byte.PyDMByteIndicator
     tip_homed_led: pydm.widgets.byte.PyDMByteIndicator
+    tip_invert_jog: QtWidgets.QCheckBox
+    tip_invert_tweak: QtWidgets.QCheckBox
     # Closed-loop
     dpad_closed_loop_label: QtWidgets.QLabel
     tip_tweak_fwd: pydm.widgets.pushbutton.PyDMPushButton
@@ -41,6 +43,8 @@ class _SmarActEncodedTipTiltEmbeddedUI(QtWidgets.QWidget):
     tilt_rbv: pydm.widgets.label.PyDMLabel
     tilt_calibrated_led: pydm.widgets.byte.PyDMByteIndicator
     tilt_homed_led: pydm.widgets.byte.PyDMByteIndicator
+    tilt_invert_jog: QtWidgets.QCheckBox
+    tilt_invert_tweak: QtWidgets.QCheckBox
     # General
     home_button: QtWidgets.QPushButton
     calibrate_button: QtWidgets.QPushButton
@@ -223,6 +227,9 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
                 _widget = getattr(self.ui, f'{axis}_{obj}')
                 _widget.set_channel(f'ca://{_prefix}{_suffix}')
 
+            _checkbox = getattr(self.ui, f'{axis}_invert_jog')
+            _checkbox.stateChanged.connect(getattr(self, f'_invert_{axis}_jog'))
+
         def set_closed_loop(self, axis: str):
             """
             A wrapper to set the closed-loop widget channels.
@@ -250,21 +257,55 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
         set_closed_loop(self, 'tip')
         set_closed_loop(self, 'tilt')
 
-    def _get_position(self, device: any):
+    def invert_axis(self, axis: str, invert: bool = False):
         """
-        Get the current position of the component device.
+        Invert the jog pushbuttons
+        Parameters
+        -----------
+        axis: str
+            Name of axis
+        invert: bool
+            Whether or not to invert. Default is False.
         """
-        return device.user_readback.get()
 
-    def tweak_setpoint(self, device: any, tweak_val: float):
+        def clear_channels():
+            """
+            You MUST explicitly clear channels before reassigning if you
+            want to avoid any duplicate callback bugs.
+            """
+            _forward.set_channel('')
+            _reverse.set_channel('')
+
+        _prefix = getattr(self.device, axis).prefix
+        _forward = getattr(self.ui, f'{axis}_fwd')
+        _reverse = getattr(self.ui, f'{axis}_rev')
+
+        if invert:
+            clear_channels()
+            _forward.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
+            _reverse.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
+        else:
+            clear_channels()
+            _forward.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
+            _reverse.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
+
+    def _invert_tip_jog(self):
         """
-        Tweak the setpoint for a component device.
+        Shenanigans to invert the open-loop directional buttons to reflect physical space, as determined by the user.
         """
-        try:
-            _setpoint = self._get_position(device) + tweak_val
-            device.user_setpoint.put(_setpoint)
-        except Exception:
-            logger.exception(f'Tweak on {device} failed')
+        if self.ui.tip_invert_jog.isChecked():
+            self.invert_axis(axis='tip', invert=True)
+        else:
+            self.invert_axis(axis='tip', invert=False)
+
+    def _invert_tilt_jog(self):
+        """
+        Shenanigans to invert the open-loop directional buttons to reflect physical space, as determined by the user.
+        """
+        if self.ui.tilt_invert_jog.isChecked():
+            self.invert_axis(axis='tilt', invert=True)
+        else:
+            self.invert_axis(axis='tilt', invert=False)
 
     @QtCore.Property("QStringList")
     def omitNames(self) -> list[str]:
@@ -322,45 +363,66 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
 
         self.ui.extended_signal_panel.setVisible(to_show)
 
+    def _get_position(self, device: any):
+        """
+        Get the current position of the component device.
+        """
+        return device.user_readback.get()
+
+    def tweak_setpoint(self, device: any, tweak_val: float):
+        """
+        Tweak the setpoint for a component device.
+        """
+        try:
+            _setpoint = self._get_position(device) + tweak_val
+            device.user_setpoint.put(_setpoint)
+        except Exception:
+            logger.exception(f'Tweak on {device} failed')
+
+    def _tweak_wrapper(self, axis: str, direction: str):
+        """
+        Wrapper for the tweak motor slots to minimize copypasta.
+
+        Parameters
+        -----------
+        axis: str
+            Name of axis, e.g. tip or tilt.
+        direction: str
+            Direction of the tweak button, e.g. forward or reverse.
+        """
+        invert = getattr(self.ui, f'{axis}_invert_tweak').isChecked()
+        stage = getattr(self.device, axis)
+        tweak_val = float(getattr(self.ui, f'{axis}_tweak_value').text())
+
+        if direction == 'Reverse':
+            tweak_val = - tweak_val
+
+        tweak_val = -tweak_val if invert else tweak_val
+
+        try:
+            self.tweak_setpoint(stage, tweak_val)
+        except Exception:
+            logger.exception(f'{direction} tweak on {axis} failed!')
+
     @QtCore.Slot()
     def _tip_tweak_fwd(self):
         """Tweak positive by the amount listed in ``ui.tip_tweak_set``"""
-        try:
-            self.tweak_setpoint(self.device.tip,
-                                float(self.ui.tip_tweak_value.text()))
-        except Exception:
-            logger.exception('Positive tweak failed on tip')
-            return
+        self._tweak_wrapper(axis='tip', direction='Forward')
 
     @QtCore.Slot()
     def _tip_tweak_rev(self):
         """Tweak negative by the amount listed in ``ui.tip_tweak_set``"""
-        try:
-            self.tweak_setpoint(self.device.tip,
-                                -float(self.ui.tip_tweak_value.text()))
-        except Exception:
-            logger.exception('Negative tweak failed on tip')
-            return
+        self._tweak_wrapper(axis='tip', direction='Reverse')
 
     @QtCore.Slot()
     def _tilt_tweak_fwd(self):
         """Tweak positive by the amount listed in ``ui.tilt_tweak_set``"""
-        try:
-            self.tweak_setpoint(self.device.tilt,
-                                float(self.ui.tilt_tweak_value.text()))
-        except Exception:
-            logger.exception('Positive tweak failed on tilt')
-            return
+        self._tweak_wrapper(axis='tilt', direction='Forward')
 
     @QtCore.Slot()
     def _tilt_tweak_rev(self):
         """Tweak negative by the amount listed in ``ui.tilt_tweak_set``"""
-        try:
-            self.tweak_setpoint(self.device.tilt,
-                                -float(self.ui.tilt_tweak_value.text()))
-        except Exception:
-            logger.exception('Negative tweak failed on tilt')
-            return
+        self._tweak_wrapper(axis='tilt', direction='Reverse')
 
     @QtCore.Slot()
     def confirm_home(self):
