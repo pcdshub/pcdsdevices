@@ -277,8 +277,8 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
             _reverse.set_channel('')
 
         _prefix = getattr(self.device, axis).prefix
-        _forward = getattr(self.ui, f'{axis}_fwd')
-        _reverse = getattr(self.ui, f'{axis}_rev')
+        _forward = getattr(self.ui, f'{axis}_jog_fwd')
+        _reverse = getattr(self.ui, f'{axis}_jog_rev')
 
         if invert:
             clear_channels()
