@@ -1,5 +1,6 @@
 import logging
 import time
+from enum import Enum, auto
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -120,8 +121,22 @@ class MPODApalisChannel(BaseInterface, Device):
 
     @max_voltage.sub_value
     def _new_max_voltage(self, value: float, **kwargs) -> None:
-        """Set explicit limits on voltage for better error reporting."""
-        bounds = (0, value)
+        """
+        Set explicit symmetric limits on voltage for better error reporting.
+
+        Refers to the parent module if it exists, to determine the polarity
+
+        If not, defaults to setting limits to positive definite
+        """
+        polarity = getattr(self.parent, "polarity", Polarity.POSITIVE)
+
+        if polarity is Polarity.POSITIVE:
+            bounds = (0, value)
+        elif polarity is Polarity.NEGATIVE:
+            bounds = (-abs(value), 0)
+        elif polarity is Polarity.BIPOLAR:
+            bounds = (-abs(value), abs(value))
+
         self.voltage._override_metadata(
             lower_ctrl_limit=min(bounds),
             upper_ctrl_limit=max(bounds),
@@ -160,6 +175,12 @@ def _put_clamped(signal: EpicsSignal, value: float) -> None:
         value = high_val
 
     signal.put(value)
+
+
+class Polarity(Enum):
+    POSITIVE = auto()
+    NEGATIVE = auto()
+    BIPOLAR = auto()
 
 
 class MPODApalisModule(BaseInterface, GroupDevice):
@@ -212,6 +233,9 @@ class MPODApalisModule(BaseInterface, GroupDevice):
                  kind='normal', string=True,
                  doc='Clears all MPOD module faults')
 
+    model = Cpt(EpicsSignalRO, ':Model', kind='omitted', string=True,
+                doc="Model number")
+
     tab_component_names = True
     tab_whitelist = ['clear_faults', 'set_voltage_ramp_speed',
                      'set_current_ramp_speed']
@@ -245,6 +269,18 @@ class MPODApalisModule(BaseInterface, GroupDevice):
             Current ramp speed [%/sec*Vnom].
         """
         self.current_ramp_speed.put(ramp_speed)
+
+    @property
+    def polarity(self) -> Polarity:
+        model_str = self.model.get()
+        if model_str.endswith("x"):
+            return Polarity.BIPOLAR
+        elif model_str.endswith("p"):
+            return Polarity.POSITIVE
+        elif model_str.endswith("n"):
+            return Polarity.NEGATIVE
+
+        raise ValueError(f"Unable to determine module polarity: {model_str}")
 
 
 class MPODApalisModule4Channel(MPODApalisModule):
