@@ -219,16 +219,19 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
             Ironically more lines than just hard coding it.
             """
             _prefix = getattr(self.device, axis).prefix
-            _open_loop_dict = {'jog_fwd': ':STEP_FORWARD.PROC',
-                               'jog_rev': ':STEP_REVERSE.PROC',
+            _open_loop_dict = {'jog_fwd': '_jog_fwd',
+                               'jog_rev': '_jog_rev',
                                'step_count': ':TOTAL_STEP_COUNT',
                                'jog_step_size': ':STEP_COUNT'}
+
             for obj, _suffix in _open_loop_dict.items():
                 _widget = getattr(self.ui, f'{axis}_{obj}')
-                _widget.set_channel(f'ca://{_prefix}{_suffix}')
-
-            _checkbox = getattr(self.ui, f'{axis}_invert_jog')
-            _checkbox.stateChanged.connect(getattr(self, f'_invert_{axis}_jog'))
+                if ':' in _suffix:
+                    _widget.set_channel(f'ca://{_prefix}{_suffix}')
+                elif type(_widget) is pydm.widgets.pushbutton.PyDMPushButton:
+                    # Set the slots for the jog buttons
+                    _signal = getattr(self, f'_{axis}{_suffix}')
+                    _widget.clicked.connect(_signal)
 
         def set_closed_loop(self, axis: str):
             """
@@ -256,56 +259,6 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
         set_open_loop(self, 'tilt')
         set_closed_loop(self, 'tip')
         set_closed_loop(self, 'tilt')
-
-    def invert_axis(self, axis: str, invert: bool = False):
-        """
-        Invert the jog pushbuttons
-        Parameters
-        -----------
-        axis: str
-            Name of axis
-        invert: bool
-            Whether or not to invert. Default is False.
-        """
-
-        def clear_channels():
-            """
-            You MUST explicitly clear channels before reassigning if you
-            want to avoid any duplicate callback bugs.
-            """
-            _forward.set_channel('')
-            _reverse.set_channel('')
-
-        _prefix = getattr(self.device, axis).prefix
-        _forward = getattr(self.ui, f'{axis}_jog_fwd')
-        _reverse = getattr(self.ui, f'{axis}_jog_rev')
-
-        if invert:
-            clear_channels()
-            _forward.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
-            _reverse.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
-        else:
-            clear_channels()
-            _forward.set_channel(f'ca://{_prefix}:STEP_FORWARD.PROC')
-            _reverse.set_channel(f'ca://{_prefix}:STEP_REVERSE.PROC')
-
-    def _invert_tip_jog(self):
-        """
-        Shenanigans to invert the open-loop directional buttons to reflect physical space, as determined by the user.
-        """
-        if self.ui.tip_invert_jog.isChecked():
-            self.invert_axis(axis='tip', invert=True)
-        else:
-            self.invert_axis(axis='tip', invert=False)
-
-    def _invert_tilt_jog(self):
-        """
-        Shenanigans to invert the open-loop directional buttons to reflect physical space, as determined by the user.
-        """
-        if self.ui.tilt_invert_jog.isChecked():
-            self.invert_axis(axis='tilt', invert=True)
-        else:
-            self.invert_axis(axis='tilt', invert=False)
 
     @QtCore.Property("QStringList")
     def omitNames(self) -> list[str]:
@@ -362,6 +315,50 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
             to_show = not self.ui.extended_signal_panel.isVisible()
 
         self.ui.extended_signal_panel.setVisible(to_show)
+
+    def _jog_wrapper(self, axis: str, direction: str):
+        """
+        Need to abstract the jog functions from simple channel access due to strange
+        pydm callback bugs when reassigning channels. Kind of defeats the point of
+        using pydm buttons, but whenever that bug is fixed we can use set_channel.
+        Parameters
+        -----------
+        axis: str
+            Name of the axis, i.e. 'tip' or 'tilt'
+        direction: str
+            Direction of move, i.e. 'tip' or 'tilt'
+        """
+        invert = getattr(self.ui, f'{axis}_invert_jog').isChecked()
+        stage = getattr(self.device, axis)
+        _fwd = getattr(stage, 'open_loop.jog_fwd')
+        _rev = getattr(stage, 'open_loop.jog_rev')
+
+        if direction == 'Forward':
+            _jog = _rev if invert else _fwd
+            _jog.put(1)
+        if direction == 'Reverse':
+            _jog = _fwd if invert else _rev
+            _jog.put(1)
+
+    @QtCore.Slot()
+    def _tip_jog_fwd(self):
+        """Jog tip axis forward by tip.jog_step_size"""
+        self._jog_wrapper(axis='tip', direction='Forward')
+
+    @QtCore.Slot()
+    def _tip_jog_rev(self):
+        """Jog tip axis backwards by tip.jog_step_size"""
+        self._jog_wrapper(axis='tip', direction='Reverse')
+
+    @QtCore.Slot()
+    def _tilt_jog_fwd(self):
+        """Jog tilt axis forward by tilt.jog_step_size"""
+        self._jog_wrapper(axis='tilt', direction='Forward')
+
+    @QtCore.Slot()
+    def _tilt_jog_rev(self):
+        """Jog tilt axis backwards by tilt.jog_step_size"""
+        self._jog_wrapper(axis='tilt', direction='Reverse')
 
     def _get_position(self, device: any):
         """
