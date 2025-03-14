@@ -2390,7 +2390,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>475</width>
+            <width>655</width>
             <height>250</height>
            </rect>
           </property>
@@ -3113,7 +3113,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-113</y>
+            <y>0</y>
             <width>509</width>
             <height>478</height>
            </rect>
@@ -3953,6 +3953,12 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
                </property>
                <property name="toolTip">
                 <string/>
