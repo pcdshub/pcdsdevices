@@ -2390,7 +2390,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>655</width>
+            <width>475</width>
             <height>250</height>
            </rect>
           </property>
@@ -3113,7 +3113,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-113</y>
             <width>509</width>
             <height>478</height>
            </rect>
@@ -4443,7 +4443,7 @@
                 <bool>false</bool>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}:TTZ_THRESHOLD_RBV</string>
+                <string>ca://${prefix}:TTZ_THRESHOLD</string>
                </property>
               </widget>
              </item>
