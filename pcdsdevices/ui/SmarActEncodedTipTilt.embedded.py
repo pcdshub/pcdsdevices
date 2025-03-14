@@ -226,12 +226,12 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
 
             for obj, _suffix in _open_loop_dict.items():
                 _widget = getattr(self.ui, f'{axis}_{obj}')
-                if ':' in _suffix:
-                    _widget.set_channel(f'ca://{_prefix}{_suffix}')
-                elif type(_widget) is pydm.widgets.pushbutton.PyDMPushButton:
+                if isinstance(_widget, pydm.widgets.pushbutton.PyDMPushButton):
                     # Set the slots for the jog buttons
                     _signal = getattr(self, f'_{axis}{_suffix}')
                     _widget.clicked.connect(_signal)
+                else:
+                    _widget.set_channel(f'ca://{_prefix}{_suffix}')
 
         def set_closed_loop(self, axis: str):
             """
