@@ -7,5 +7,3 @@ ipython
 sphinxcontrib-jquery
 # Required for update_api_list
 PyQt5
-# Required until xraylib works with numpy 2 on py3.9 or until we up the docs build base python version
-numpy <2
