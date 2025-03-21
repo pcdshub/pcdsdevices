@@ -12,15 +12,18 @@ from .interface import BaseInterface
 
 logger = logging.getLogger(__name__)
 
-alpha_r = 63 * np.pi/180  # rail angle
-r = 2960.0  # first rail distance from sample to rail rod at 27deg
-R = 6735.0
-alpha_cos = np.cos(27 * np.pi/180)
+
+alpha_r = 63 * np.pi/180  # rail angle 90-27 degrees
+r = 2960.0  # first rail distance from the sample at the gon interaction point to the rail rod at 27deg
+R = 6735.0 #second rail distance from the sample at the gon interaction point to the rail rod at 27 degrees
+alpha_cos = np.cos(27 * np.pi/180) #variable to claculate the distance when the IP is shifted along the beam direction
 
 
 def ThetaToMotors(theta, samz_offset=0):
     """
-    Calculates lengths x1, x2, and dz
+    Calculates lengths x1, x2, and dz from theta. Theta is the angle in radians of the LADM relative to the beamline.
+    x1 is the position of the first (shorter) rail, and x2 is the position of the second (longer) rail. 
+    dz is the relative position.
     """
     theta = theta * np.pi/180  # change to radian
     x1 = (r) * np.sin(theta)/(np.sin(alpha_r) * np.sin(alpha_r+theta))
@@ -33,7 +36,8 @@ def ThetaToMotors(theta, samz_offset=0):
 
 def y1ToGamma(y1):
     """
-    Calculates angle gamma=arctan(y1/r) in radians
+    Calculates the vertical angle gamma=arctan(y1/r) in radians, the angle measured with 0 perpendicular to the beamline.
+    y1 is the y position of the first (shorter) rail. 
     """
     gamma = np.arctan((y1)/(r))
     gamma = gamma * 180/np.pi
@@ -42,7 +46,8 @@ def y1ToGamma(y1):
 
 def y2ToGamma(y2):
     """
-    Calculates angle gamma=arctan(y2/r) in radians
+    Calculates the vertical angle gamma=arctan(y2/r) in radians, the angle measured with 0 perpendicular to the beamline.
+    y2 is the y position of the second (longer) rail. 
     """
     gamma = np.arctan((y2)/(R))
     gamma = gamma * 180/np.pi
@@ -51,7 +56,7 @@ def y2ToGamma(y2):
 
 def GammaToMotors(gamma):
     """
-    Calculates lengths 'y1', 'y2', their difference 'dy'
+    Calculates the y positions of the first and second rails, 'y1' and 'y2', and their difference 'dy'
     """
     gamma = gamma * np.pi/180
     y1 = (r) * np.tan(gamma)
@@ -62,7 +67,7 @@ def GammaToMotors(gamma):
 
 def x1ToTheta(x1, samz_offset=0):
     """
-    Calculates angle theta in radians using length x1 and samz_offset
+    Calculates angle theta in radians using rail position x1 and samz_offset
     """
     theta = np.arctan(x1 * (np.sin(alpha_r))**2 /
                       (r-samz_offset * alpha_cos-x1 * np.sin(2 * alpha_r)/2))
@@ -72,7 +77,7 @@ def x1ToTheta(x1, samz_offset=0):
 
 def x2ToTheta(x2, samz_offset=0):
     """
-    Calculates angle theta in radians using length x2 and samz_offset
+    Calculates angle theta in radians using rail position x2 and samz_offset
     """
     theta = np.arctan(x2 * (np.sin(alpha_r))**2 /
                       (R-samz_offset * alpha_cos-x2 * np.sin(2 * alpha_r)/2))
@@ -82,7 +87,7 @@ def x2ToTheta(x2, samz_offset=0):
 
 def xTox12(x):
     """
-    Calculates 'x12' from 'x' and the rail angle alpha_r
+    Calculates 'x12' , the distance between rails 1 and 2 using 'x' and the reference rail angle alpha_r (27 degrees)
     """
     x12 = x/np.sin(alpha_r)
     return x12
@@ -90,7 +95,7 @@ def xTox12(x):
 
 def xToz(x):
     """
-    Calculates 'z' from 'x' and the rail angle alpha_r
+    Calculates the rail reference position 'z' from 'x' position when the rail is at the reference angle alpha_r (27 degrees)
     """
     z = x/np.tan(alpha_r)
     return z
@@ -108,7 +113,7 @@ def MotorsTox(x1, x2, z):
 
 def ThetaToMotors_print(theta):
     """
-    Prints locations x1, x2, and z are moving to
+    Prints locations x1 (rail 1), x2 (rail 2), and z are moving to
     """
     x1, x2, z = ThetaToMotors(theta)
     print(f"Move x1 to {x1}"
@@ -122,9 +127,13 @@ class LADM(BaseInterface, GroupDevice):
     Class to control the LADM. Includes Single motors and beamstops.
     
     The LADM is the Large Angle Detector Mover in XCS.
-    It's the large device that sweeps across the instrument's floor in a wide angle.
+    It's the large device that sweeps across the instrument's floor in a wide angle, and moves along 2 linear rails.
     It can be used to position and reposition a detector at various angles relative
-    to the sample position.
+    to the sample position. The reference position to define rail distances is when the LADM is at 27 degrees, 
+    where 0 degrees is when the LADM is positioned parallel to the beamline. 
+    See the LADM Confluence page for diagrams and details: https://confluence.slac.stanford.edu/spaces/XCS/pages/288031127/2.13+Large+Angle+Detector+Mover+LADM
+
+    """
 
     Parameters
     ----------
