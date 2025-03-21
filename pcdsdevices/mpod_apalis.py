@@ -1,5 +1,6 @@
 import logging
 import time
+from enum import Enum, auto
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -15,7 +16,9 @@ logger = logging.getLogger(__name__)
 
 class MPODApalisChannel(BaseInterface, Device):
     """
-    MPODApalis Channel Object.
+    MPODApalis Channel Object.  Takes voltage limit from the parent module,
+    and as such MUST only be used as a Component of MPODApalisModule for limits
+    to make sense
 
     Parameters
     ----------
@@ -77,6 +80,10 @@ class MPODApalisChannel(BaseInterface, Device):
     tab_whitelist = ['on', 'off',
                      'set_voltage', 'set_current']
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._max_voltage = 100
+
     @property
     def voltage_setpoint(self) -> EpicsSignalRO:
         """Name alias for backwards compatibility."""
@@ -120,11 +127,34 @@ class MPODApalisChannel(BaseInterface, Device):
 
     @max_voltage.sub_value
     def _new_max_voltage(self, value: float, **kwargs) -> None:
-        """Set explicit limits on voltage for better error reporting."""
-        bounds = (0, value)
+        self._max_voltage = value
+        self._update_max_voltage_limits()
+
+    def _update_max_voltage_limits(self) -> None:
+        """
+        Set explicit symmetric limits on voltage for better error reporting.
+
+        Refers to the parent module if it exists, to determine the limit scaling
+
+        If not, defaults to setting limits to positive definite
+        """
+        polarity = getattr(self, "biological_parent.polarity", Polarity.POSITIVE)
+        limit_scales = getattr(self, "biological_parent.limit_scales", (0, 100))
+        limits = [lim * self._max_voltage / 100 for lim in limit_scales]
+
+        if polarity is Polarity.BIPOLAR:
+            if 0 in limits:
+                logger.debug(f"Bipolar limits expected, got: ({limits})")
+        elif polarity is Polarity.NEGATIVE:
+            if all(lim >= 0 for lim in limits):
+                logger.debug(f"Negative limits expected, got: ({limits})")
+        elif polarity is Polarity.POSITIVE:
+            if all(lim <= 0 for lim in limits):
+                logger.debug(f"Positive limits expected, got: ({limits})")
+
         self.voltage._override_metadata(
-            lower_ctrl_limit=min(bounds),
-            upper_ctrl_limit=max(bounds),
+            lower_ctrl_limit=min(limits),
+            upper_ctrl_limit=max(limits),
         )
 
     @max_current.sub_value
@@ -160,6 +190,12 @@ def _put_clamped(signal: EpicsSignal, value: float) -> None:
         value = high_val
 
     signal.put(value)
+
+
+class Polarity(Enum):
+    POSITIVE = auto()
+    NEGATIVE = auto()
+    BIPOLAR = auto()
 
 
 class MPODApalisModule(BaseInterface, GroupDevice):
@@ -212,9 +248,24 @@ class MPODApalisModule(BaseInterface, GroupDevice):
                  kind='normal', string=True,
                  doc='Clears all MPOD module faults')
 
+    model = Cpt(EpicsSignalRO, ':Model', kind='omitted', string=True,
+                doc="Model number")
+
+    limit_pos = Cpt(EpicsSignalRO, ':VoltageLimit', kind='omitted',
+                    doc='Positive voltage limit as a % of the max voltage')
+
+    limit_neg = Cpt(EpicsSignalRO, ':VoltageLimitNegative', kind='omitted',
+                    doc='Negative voltage limit as a % of the max voltage')
+
     tab_component_names = True
     tab_whitelist = ['clear_faults', 'set_voltage_ramp_speed',
                      'set_current_ramp_speed']
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._limit_pos = 0.0
+        self._limit_neg = 0.0
+        self._model_str = ''
 
     def clear_faults(self):
         """Clears all module faults"""
@@ -245,6 +296,54 @@ class MPODApalisModule(BaseInterface, GroupDevice):
             Current ramp speed [%/sec*Vnom].
         """
         self.current_ramp_speed.put(ramp_speed)
+
+    @model.sub_value
+    def _stash_model(self, value, **kwargs) -> None:
+        self._model_str = self.model.get()
+
+    @property
+    def polarity(self) -> Polarity:
+        if self._model_str.endswith("x"):
+            return Polarity.BIPOLAR
+        elif self._model_str.endswith("p"):
+            return Polarity.POSITIVE
+        elif self._model_str.endswith("n"):
+            return Polarity.NEGATIVE
+
+        raise ValueError(f"Unable to determine module polarity: {self._model_str}")
+
+    @property
+    def limit_scales(self) -> tuple[float, float]:
+        """
+        Returns limit scaling tuple.  When multiplied by the channel's max_voltage
+        signal (:VoltageNominal) will produce the actual limits for the channel
+
+        Returns
+        -------
+        tuple[float, float]
+            The voltage limits as a proportion of the max_voltage
+        """
+        # negative limits are displayed as positive %
+        limits = (-self._limit_neg, self._limit_pos)
+
+        return limits
+
+    def _update_channel_limits(self) -> None:
+        """Signal all the MPODApalisChannel components to update their limits"""
+        for cpt_name in self.component_names:
+            cpt = getattr(self, cpt_name)
+            if isinstance(cpt, MPODApalisChannel):
+                cpt._update_max_voltage_limits()
+
+    @limit_pos.sub_value
+    def _update_limit_pos(self, value, **kwargs):
+        self._limit_pos = value
+        self._update_channel_limits()
+
+    @limit_neg.sub_value
+    def _update_limit_neg(self, value, **kwargs):
+        self._limit_neg = value
+        self._update_channel_limits()
 
 
 class MPODApalisModule4Channel(MPODApalisModule):
