@@ -128,7 +128,6 @@ def test_set_voltage(fake_mpod_channel1, fake_mpod_channel2, fake_mpod_channel_n
 
 def test_limit_scales(fake_mpod_channel1):
     logger.debug("Test limits scaling")
-    print("start test limit scales")
     module = fake_mpod_channel1.biological_parent
     fake_mpod_channel1.max_voltage.sim_put(100)
 

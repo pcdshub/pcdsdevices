@@ -1,7 +1,6 @@
 import logging
 import time
 from enum import Enum, auto
-from typing import Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -81,6 +80,10 @@ class MPODApalisChannel(BaseInterface, Device):
     tab_whitelist = ['on', 'off',
                      'set_voltage', 'set_current']
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._max_voltage = 100
+
     @property
     def voltage_setpoint(self) -> EpicsSignalRO:
         """Name alias for backwards compatibility."""
@@ -124,9 +127,10 @@ class MPODApalisChannel(BaseInterface, Device):
 
     @max_voltage.sub_value
     def _new_max_voltage(self, value: float, **kwargs) -> None:
-        self._update_max_voltage_limits(value or 1)
+        self._max_voltage = value
+        self._update_max_voltage_limits()
 
-    def _update_max_voltage_limits(self, value: Optional[float] = None) -> None:
+    def _update_max_voltage_limits(self) -> None:
         """
         Set explicit symmetric limits on voltage for better error reporting.
 
@@ -134,14 +138,9 @@ class MPODApalisChannel(BaseInterface, Device):
 
         If not, defaults to setting limits to positive definite
         """
-        # Hacky, we need to be careful not to call this without a value from
-        # inside a callback, probably
-        if value is None:
-            value = self.max_voltage.get()
-
         polarity = getattr(self, "biological_parent.polarity", Polarity.POSITIVE)
         limit_scales = getattr(self, "biological_parent.limit_scales", (0, 100))
-        limits = [lim * value / 100 for lim in limit_scales]
+        limits = [lim * self._max_voltage / 100 for lim in limit_scales]
 
         if polarity is Polarity.BIPOLAR:
             if 0 in limits:
@@ -262,6 +261,12 @@ class MPODApalisModule(BaseInterface, GroupDevice):
     tab_whitelist = ['clear_faults', 'set_voltage_ramp_speed',
                      'set_current_ramp_speed']
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._limit_pos = 0.0
+        self._limit_neg = 0.0
+        self._model_str = ''
+
     def clear_faults(self):
         """Clears all module faults"""
         self.faults.put(1)
@@ -292,17 +297,20 @@ class MPODApalisModule(BaseInterface, GroupDevice):
         """
         self.current_ramp_speed.put(ramp_speed)
 
+    @model.sub_value
+    def _stash_model(self, value, **kwargs) -> None:
+        self._model_str = self.model.get()
+
     @property
     def polarity(self) -> Polarity:
-        model_str = self.model.get()
-        if model_str.endswith("x"):
+        if self._model_str.endswith("x"):
             return Polarity.BIPOLAR
-        elif model_str.endswith("p"):
+        elif self._model_str.endswith("p"):
             return Polarity.POSITIVE
-        elif model_str.endswith("n"):
+        elif self._model_str.endswith("n"):
             return Polarity.NEGATIVE
 
-        raise ValueError(f"Unable to determine module polarity: {model_str}")
+        raise ValueError(f"Unable to determine module polarity: {self._model_str}")
 
     @property
     def limit_scales(self) -> tuple[float, float]:
@@ -315,9 +323,8 @@ class MPODApalisModule(BaseInterface, GroupDevice):
         tuple[float, float]
             The voltage limits as a proportion of the max_voltage
         """
-        pos_limit = self.limit_pos.get()
-        neg_limit = self.limit_neg.get()  # positive % here means negative limit
-        limits = (-neg_limit, pos_limit)
+        # negative limits are displayed as positive %
+        limits = (-self._limit_neg, self._limit_pos)
 
         return limits
 
@@ -330,10 +337,12 @@ class MPODApalisModule(BaseInterface, GroupDevice):
 
     @limit_pos.sub_value
     def _update_limit_pos(self, value, **kwargs):
+        self._limit_pos = value
         self._update_channel_limits()
 
     @limit_neg.sub_value
     def _update_limit_neg(self, value, **kwargs):
+        self._limit_neg = value
         self._update_channel_limits()
 
 
