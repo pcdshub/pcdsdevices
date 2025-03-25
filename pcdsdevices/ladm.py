@@ -131,9 +131,8 @@ class LADM(BaseInterface, GroupDevice):
     It can be used to position and reposition a detector at various angles relative
     to the sample position. The reference position to define rail distances is when the LADM is at 27 degrees, 
     where 0 degrees is when the LADM is positioned parallel to the beamline. 
-    See the LADM Confluence page for diagrams and details: https://confluence.slac.stanford.edu/spaces/XCS/pages/288031127/2.13+Large+Angle+Detector+Mover+LADM
-
-    """
+    See the LADM Confluence page for diagrams and details: 
+    https://confluence.slac.stanford.edu/spaces/XCS/pages/288031127/2.13+Large+Angle+Detector+Mover+LADM
 
     Parameters
     ----------
