@@ -46,9 +46,32 @@ from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
 from .signal import NotepadLinkedSignal, UnitConversionDerivedSignal
 from .sim import FastMotor
 from .utils import convert_unit, get_status_float, get_status_value
+from pcdsdevices.sequencer import EventSequencer  # for evt sequence
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
+
+seq2 = EventSequencer('ECS:SYS0:11', name='seq_11')  # for laser drop shot
+print("seq2", seq2)
+
+def prepare_seq(lasmode=0, shot_sequence=[]):
+    #normalseq = [[88, 1, 0, 0],
+    #             [88, 1, 0, 0],
+    #             [89, 1, 0, 0],
+    #             [88, 1, 0, 0],
+    #             [88, 1, 0, 0],
+    #             [89, 1, 0, 0],
+    #             [89, 1, 0, 0]]
+    lxtmotion = [[88, 1, 0, 0]]
+    if (lasmode == 0 and shot_sequence == []):
+        print("No shot sequence defined. Please define a shot sequence.")
+        #shot_sequence = normalseq
+    elif (lasmode == 0 and shot_sequence != []):
+        pass
+    elif lasmode == 1:
+        shot_sequence = lxtmotion
+    seq2.sequence.put_seq(shot_sequence)
+
 
 
 def load_calibration_file(filename: typing.Union[pathlib.Path, str]) -> np.ndarray:
@@ -245,6 +268,11 @@ class _ScaledUnitConversionDerivedSignal(UnitConversionDerivedSignal):
             derived_value += self.user_offset
         return derived_value
 
+def lasevrstat():
+    lastrigPV = EpicsSignal("EVR:LAS:XCS:01:TRIG0:EC_RBV")
+    lastrigEVR = lastrigPV.get()
+    return lastrigEVR
+
 
 class LaserTiming(FltMvInterface, PVPositioner):
     """
@@ -262,6 +290,12 @@ class LaserTiming(FltMvInterface, PVPositioner):
                        kind='omitted',
                        doc='The internal nanosecond-expecting signal.'
                        )
+
+    _fs_ctr_time = Cpt(EpicsSignal, ':VIT:FS_CTR_TIME',
+                        kind='omitted',
+                        doc=''
+                        )
+
     setpoint = Cpt(_ScaledUnitConversionDerivedSignal,
                    derived_from='_fs_tgt_time',
                    derived_units='s',
@@ -417,7 +451,26 @@ class LaserTiming(FltMvInterface, PVPositioner):
 Virtual Motor {self.verbose_name} {self.prefix}
 Current position (user, dial): {position} [{units}] {dial_pos} [s]
 """
+        
 
+    def move(self, *args, atol=0.1, wait_ctr=True, **kwargs):  # Needed to modify for stopping drop shot during the motion
+        if (lasevrstat() == 88):  # check current laser trigger, if with EVR 40, nothing happens                                                   
+            ongoingseq = seq2.sequence.get_seq()  # check current event sequence                                                                   
+            prepare_seq(lasmode=1)  # change only 90                                                                                               
+            seq2.start()                                                                                                                           
+            time.sleep(0.01)                                                                                                                       
+        st = super().move(*args, **kwargs)                                                                                                         
+        if wait_ctr:                                                                                                                               
+            time.sleep(0.01)                                                                                                                       
+            while np.abs(self._fs_tgt_time.get()- self._fs_ctr_time.get()) > atol:                                                                                        
+                print(f'Diff: {self._fs_tgt_time.get() - self._fs_ctr_time.get()}')                                                                
+                time.sleep(0.1)                                                                                                                    
+        time.sleep(0.01)                                                                                                                           
+        if (lasevrstat() == 88):                                                                                                                   
+            prepare_seq(lasmode=0, shot_sequence = ongoingseq)  #put back to the original event sequence                                           
+            seq2.start() # start event sequence again                                                                                              
+            #st.set_finished()                                                                                                                     
+        return st
 
 class Lcls2LaserTiming(FltMvInterface, PVPositioner):
     """
