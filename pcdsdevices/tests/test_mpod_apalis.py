@@ -15,7 +15,6 @@ def fake_mpod_channel1():
     FakeMPODmodule = make_fake_device(MPODApalisModule4Channel)
     module = FakeMPODmodule("TEST:MPOD", name="TestPos1Module")
     c1 = module.c1
-    module.model.sim_put("modelp")
     module.limit_pos.sim_put(110)
     module.limit_neg.sim_put(0)
     # switch off
@@ -33,7 +32,6 @@ def fake_mpod_channel2():
     module = FakeMPODmodule("TEST:MPOD", name="TestPos2Module")
     c2 = module.c2
     # switch off
-    module.model.sim_put("modelp")
     module.limit_pos.sim_put(120)
     module.limit_neg.sim_put(0)
     # switch off
@@ -51,7 +49,6 @@ def fake_mpod_channel_neg():
     module = FakeMPODmodule("TEST:MPOD", name="TestNegativeModule")
     cn = module.c0
     # switch off
-    module.model.sim_put("modeln")
     module.limit_pos.sim_put(130)
     module.limit_neg.sim_put(0)
     cn.state.sim_put(0)
@@ -126,25 +123,30 @@ def test_set_voltage(fake_mpod_channel1, fake_mpod_channel2, fake_mpod_channel_n
     assert fake_mpod_channel_neg.voltage.get() == -130
 
 
-def test_limit_scales(fake_mpod_channel1):
+def test_limit_percents(fake_mpod_channel1):
     logger.debug("Test limits scaling")
     module = fake_mpod_channel1.biological_parent
     fake_mpod_channel1.max_voltage.sim_put(100)
 
     # starting with (0, 110)
     assert fake_mpod_channel1.voltage.limits == (0, 110)
-    assert module.limit_scales == (0, 110)
+    assert module.limit_percents == (0, 110)
 
     module.limit_pos.sim_put(0)
     module.limit_neg.sim_put(5)
     assert fake_mpod_channel1.voltage.limits == (-5, 0)
-    assert module.limit_scales == (-5, 0)
+    assert module.limit_percents == (-5, 0)
+
+    # small changes have no effect
+    module.limit_neg.sim_put(5.1)
+    assert fake_mpod_channel1.voltage.limits == (-5, 0)
+    assert module.limit_percents == (-5, 0)
 
     # Ignoring the model warning numbers
     module.limit_pos.sim_put(50)
     module.limit_neg.sim_put(50)
     assert fake_mpod_channel1.voltage.limits == (-50, 50)
-    assert module.limit_scales == (-50, 50)
+    assert module.limit_percents == (-50, 50)
 
 
 def test_set_current(fake_mpod_channel1, fake_mpod_channel2):

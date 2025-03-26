@@ -132,14 +132,12 @@ class MPODApalisChannel(BaseInterface, Device):
 
     def _update_max_voltage_limits(self) -> None:
         """
-        Set explicit symmetric limits on voltage for better error reporting.
+        Update limits on voltage, referring to the parent module if it exists
 
-        Refers to the parent module if it exists, to determine the limit scaling
-
-        If not, defaults to setting limits to positive definite
+        If parent module does not exist, defaults limits to (0, 100)
         """
-        limit_scales = getattr(self, "biological_parent.limit_scales", (0, 100))
-        limits = [lim * self._max_voltage / 100 for lim in limit_scales]
+        limit_pct = getattr(self, "biological_parent.limit_percents", (0, 100))
+        limits = [lim * self._max_voltage / 100 for lim in limit_pct]
 
         self.voltage._override_metadata(
             lower_ctrl_limit=min(limits),
@@ -281,13 +279,13 @@ class MPODApalisModule(BaseInterface, GroupDevice):
         self.current_ramp_speed.put(ramp_speed)
 
     @property
-    def limit_scales(self) -> tuple[float, float]:
+    def limit_percents(self) -> tuple[float, float]:
         """
-        Returns limit scaling tuple.  When multiplied by the channel's max_voltage
-        signal (:VoltageNominal) will produce the actual limits for the channel
+        Returns limit percentage tuple.  Represents the % of the channel's max_voltage
+        signal (:VoltageNominal) to be used as the actual limits for the channel
 
         Returns
-        -------
+        -------p
         tuple[float, float]
             The voltage limits as a proportion of the max_voltage
         """
