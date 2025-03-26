@@ -1,6 +1,5 @@
 import logging
 import time
-from enum import Enum, auto
 
 import numpy as np
 from ophyd.device import Component as Cpt
@@ -139,19 +138,8 @@ class MPODApalisChannel(BaseInterface, Device):
 
         If not, defaults to setting limits to positive definite
         """
-        polarity = getattr(self, "biological_parent.polarity", Polarity.POSITIVE)
         limit_scales = getattr(self, "biological_parent.limit_scales", (0, 100))
         limits = [lim * self._max_voltage / 100 for lim in limit_scales]
-
-        if polarity is Polarity.BIPOLAR:
-            if 0 in limits:
-                logger.debug(f"Bipolar limits expected, got: ({limits})")
-        elif polarity is Polarity.NEGATIVE:
-            if all(lim >= 0 for lim in limits):
-                logger.debug(f"Negative limits expected, got: ({limits})")
-        elif polarity is Polarity.POSITIVE:
-            if all(lim <= 0 for lim in limits):
-                logger.debug(f"Positive limits expected, got: ({limits})")
 
         self.voltage._override_metadata(
             lower_ctrl_limit=min(limits),
@@ -191,12 +179,6 @@ def _put_clamped(signal: EpicsSignal, value: float) -> None:
         value = high_val
 
     signal.put(value)
-
-
-class Polarity(Enum):
-    POSITIVE = auto()
-    NEGATIVE = auto()
-    BIPOLAR = auto()
 
 
 class MPODApalisModule(BaseInterface, GroupDevice):
@@ -248,9 +230,6 @@ class MPODApalisModule(BaseInterface, GroupDevice):
                  write_pv=':Control:doClear',
                  kind='normal', string=True,
                  doc='Clears all MPOD module faults')
-
-    model = Cpt(EpicsSignalRO, ':Model', kind='omitted', string=True,
-                doc="Model number")
 
     limit_pos = Cpt(EpicsSignalRO, ':VoltageLimit', kind='omitted',
                     doc='Positive voltage limit as a % of the max voltage')
