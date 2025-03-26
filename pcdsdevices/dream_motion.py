@@ -14,19 +14,14 @@ from .interface import BaseInterface
 class DREAM(BaseInterface, GroupDevice):
     """
     DREAM Motion Class
-    This class controls motors fixed to the DREAM Motion system for the IP1
-    endstation in TMO. It also controls LED rings for the endstation.
+    This class controls motors fixed to the DREAM Motion system for the
+    DREAM endstation in TMO.
+
     Parameters
     ----------
     prefix : str
         Base PV for the DREAM motion system
-    desc : str
-        Description field for LED.
-    pct : str
-        Illumination percentage of a particular endstation LED.
-    pwr : str
-        ON/OFF powered boolean of a particular endstation LED.
-    name : str
+    name : str, keyword-only
         Alias for the device
     """
     # UI representation
