@@ -2,6 +2,7 @@ import logging
 import time
 from enum import Enum, auto
 
+import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
@@ -265,7 +266,10 @@ class MPODApalisModule(BaseInterface, GroupDevice):
         super().__init__(*args, **kwargs)
         self._limit_pos = 0.0
         self._limit_neg = 0.0
-        self._model_str = ''
+        # tolerances for voltage limit tolerances (expected 0-100)
+        # .5% relative change (of original value), and .5% absolute
+        self._limit_rtol = 0.005
+        self._limit_atol = 0.5
 
     def clear_faults(self):
         """Clears all module faults"""
@@ -297,21 +301,6 @@ class MPODApalisModule(BaseInterface, GroupDevice):
         """
         self.current_ramp_speed.put(ramp_speed)
 
-    @model.sub_value
-    def _stash_model(self, value, **kwargs) -> None:
-        self._model_str = self.model.get()
-
-    @property
-    def polarity(self) -> Polarity:
-        if self._model_str.endswith("x"):
-            return Polarity.BIPOLAR
-        elif self._model_str.endswith("p"):
-            return Polarity.POSITIVE
-        elif self._model_str.endswith("n"):
-            return Polarity.NEGATIVE
-
-        raise ValueError(f"Unable to determine module polarity: {self._model_str}")
-
     @property
     def limit_scales(self) -> tuple[float, float]:
         """
@@ -337,11 +326,17 @@ class MPODApalisModule(BaseInterface, GroupDevice):
 
     @limit_pos.sub_value
     def _update_limit_pos(self, value, **kwargs):
+        if np.isclose(self._limit_pos, value,
+                      rtol=self._limit_rtol, atol=self._limit_atol):
+            return
         self._limit_pos = value
         self._update_channel_limits()
 
     @limit_neg.sub_value
     def _update_limit_neg(self, value, **kwargs):
+        if np.isclose(self._limit_neg, value,
+                      rtol=self._limit_rtol, atol=self._limit_atol):
+            return
         self._limit_neg = value
         self._update_channel_limits()
 
