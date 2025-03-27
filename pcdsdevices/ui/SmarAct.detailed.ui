@@ -3954,6 +3954,12 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
                <property name="toolTip">
                 <string/>
                </property>
@@ -4443,7 +4449,7 @@
                 <bool>false</bool>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}:TTZ_THRESHOLD_RBV</string>
+                <string>ca://${prefix}:TTZ_THRESHOLD</string>
                </property>
               </widget>
              </item>
