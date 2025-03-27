@@ -206,21 +206,3 @@ class DCCM(BaseInterface, GroupDevice):
     )
 
 
-def wavelength_to_theta(wavelength: float, dspacing: float) -> float:
-    """Converts wavelength (A) to theta angle (rad)."""
-    return np.arcsin(wavelength/2/dspacing)
-
-
-def theta_to_wavelength(theta: float, dspacing: float) -> float:
-    """Converts theta angle (rad) to wavelength (A)."""
-    return 2*dspacing*np.sin(theta)
-
-
-def energy_to_wavelength(energy: float) -> float:
-    """Converts photon energy (keV) to wavelength (A)."""
-    return 12.39842/energy
-
-
-def wavelength_to_energy(wavelength: float) -> float:
-    """Converts wavelength (A) to photon energy (keV)."""
-    return 12.39842/wavelength
