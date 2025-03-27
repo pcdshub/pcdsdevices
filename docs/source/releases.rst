@@ -7,56 +7,55 @@ v8.8.0 (2025-03-27)
 
 API Breaks
 ----------
-- EllBase: Calling this constructor now requires channel to be declared as a mandatory arg. It will no longer default to channel=1.
+- `EllBase`: Calling this constructor now requires channel to be declared as a mandatory arg. It will no longer default to channel=1.
 
 Library Features
 ----------------
-- Added SmarAct.detailed.ui screen
-- Accompanying SmarAct.detailed.py screen to handle closed loop and picoscale
-- Added SmarActTipTilt.embedded ui and py screens for operational support
+- Added `SmarAct`.detailed.ui screen
+- Accompanying `SmarAct`.detailed.py screen to handle closed loop and picoscale
+- Added `SmarActTipTilt`.embedded ui and py screens for operational support
 - Designed and implemented huge improvements for all the SmarAct typhos screens, a monumental win for laser folk.
 
 Device Features
 ---------------
-- SmarAct: fix TTZ_THRESHOLD setter in detailed screen
-- SmarActEncodedTipTilt: added embedded screens
-- SmarActEncodedTipTilt: bundles open-loop and closed-loop motion
-- SmarActEncodedTipTilt: wraps the home and calibrate sequence into single methods
-- SmarActEncodedTipTilt: add channel_state_raw, calibrating, and referencing signals
-- change gas needle gui name to be consistent with PLC gas jet name
-- LasBasler: Adds long_names to signals
-- LasBasler: Adds `save_setting` and `load_setting` signals for saving and loading settings
+- `SmarAct`: fix TTZ_THRESHOLD setter in detailed screen
+- `SmarActTipTilt`: Added invert_tip and invert_tilt check boxes
+- `SmarActTipTilt`: Added methods to flip which button corresponds to STEP_FORWARD and STEP_REVERSE respectively
+- `SmarActTipTilt`: added step_size to embedded screen
+- `SmarActEncodedTipTilt`: added embedded screens
+- `SmarActEncodedTipTilt`: bundles open-loop and closed-loop motion
+- `SmarActEncodedTipTilt`: wraps the home and calibrate sequence into single methods
+- `SmarActEncodedTipTilt`: add ``channel_state_raw``, ``calibrating``, and ``referencing`` signals
 - Added long_name fields to various SmarAct classes in pcsdevices.epics_motor
-- SmarActTipTilt: added step_size to embedded screen
-- Made m_pi_up_enc and g_pi_up_enc components in spectrometer.Mono kind ommitted instead of normal so they aren't on gui
-- Added m_pi_enc_rms and g_pi_enc_rms components to spectrometer.Mono
-- Added pitch_enc_rms component to mirror.XOffsetMirrorBend to override the inherited component
-  from mirror.XOffsetMirror with a different pv and docstring
+- `LasBasler`: Adds long_names to signals
+- `LasBasler`: Adds `save_setting` and `load_setting` signals for saving and loading settings
+- Change gas needle gui name to be consistent with PLC gas jet name
+- Made ``m_pi_up_enc`` and ``g_pi_up_enc`` components in `spectrometer.Mono` kind ommitted instead of normal so they aren't on gui
+- Added ``m_pi_enc_rms`` and ``g_pi_enc_rms`` components to `spectrometer.Mono`
+- Added ``pitch_enc_rms`` component to `mirror.XOffsetMirrorBend` to override the inherited component
+  from `mirror.XOffsetMirror` with a different pv and docstring
 - Add ``cvmi_bootstrap`` module for the special CVMI RP bootstrapping experiment.
   Rename the four axis names per request from scientists and remove three axes.
-- No special device features added at this time. The SP1L0:DCCM has a lakeshore controller that can be added later on as well as piezo motion for fine pitch on the two rotation axes. These devices were not apart of this pcdsdevice release. The only features of this new device is the five BeckhoffAxis stages.
-- Ell6 and Ell9: overload done_comparator to not use numpy.isclose()
-- SmarActTipTilt: Added invert_tip and invert_tilt check boxes
-- SmarActTipTilt: Added methods to flip which button corresponds to STEP_FORWARD and STEP_REVERSE respectively
+- `Ell6` and `Ell9`: overload done_comparator to not use numpy.isclose()
 
 New Devices
 -----------
-- The DCCMono is a new device to support SP1L0:DCCM installed on L0S09 in the FEE. This SP1L0 is the first of many new DCCMs that will be coming to LCLS in the future. This pcdsdevice can also be used for other DCCMs such as the L2HE DXS HHLMs (High Heat Load Monochromaters) and other Double Chanel Cut Monochromaters.
-
+- The `DCCMono` is a new device to support SP1L0:DCCM installed on L0S09 in the FEE. This SP1L0 is the first of many new Double Chanel Cut Monochromators (DCCMs) that will be coming to LCLS in the future. This device can also be used for other DCCMs such as the L2HE DXS HHLMs (High Heat Load Monochromators) and other DCCMs.
+Double Chanel Cut Monochromators
 Bugfixes
 --------
 - Improves error handling for presets when the position is unknown or uninitialized.
-- TwinCATStatePositioner.reset_cmd is now a PytmcSignal with io='io' instead of an EpicsSignal to properly display the RBV readback PV in typhos.
+- `TwinCATStatePositioner.reset_cmd` is now a ``PytmcSignal`` with io='io' instead of an ``EpicsSignal`` to properly display the RBV readback PV in typhos.
 
 Maintenance
 -----------
-- Adjusts MPODApalisChannel inform its limits based on the parent MPODApalisModule settings
+- Adjusts ``MPODApalisChannel`` to set its limits based on the parent MPODApalisModule settings
 - Adds option to defer preset path loading until needed.  Presets will
   now load when tab-completion or preset-related attributes are accessed.
 
 Contributors
 ------------
-- @tongju12
+- tongju12
 - KaushikMalapati
 - aberges-SLAC
 - mitchellc5
