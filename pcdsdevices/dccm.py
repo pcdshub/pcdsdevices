@@ -167,25 +167,12 @@ class DCCM(BaseInterface, GroupDevice):
         - 1 for chamber translation in x direction (TX)                                                                                                          
     - 2 for YAG diagnostics (TXD and TYD)                                                                                                                        
                                                                                                                                                                  
-    Parameters                                                                                                                                                   
-                                                                                                                                                                 
-    ----------                                                                                                                                                   
-                                                                                                                                                                 
-    prefix : str,optional                                                                                                                                        
-    Base PV for DCCM motors                                                                                                                                      
-    name : str                                                                                                                                              
-    
-    This requires a huge number of motor pv prefixes to be passed in.
-    Pay attention to this docstring because most of the arguments are in
-    the kwargs.
-
     Parameters
     ----------
-    prefix : str, optional
-        Devices are required to have a positional argument here,
-        but this is not used. 
-
-    
+    prefix : str
+        Base PV for DCCM motors
+    name : str, keyword-only
+        name to use in bluesky
     """
     
     tab_component_names = True
