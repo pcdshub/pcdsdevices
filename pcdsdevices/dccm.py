@@ -1,4 +1,4 @@
-#from lightpath import LightpathState
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
