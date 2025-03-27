@@ -163,7 +163,7 @@ class DCCM(BaseInterface, GroupDevice):
     energy = Cpt(
         DCCMEnergy, '', kind='hinted',
         doc=(
-            'PseudoPositioner that moves the theta motor in '
+            'PseudoPositioner that moves the theta motors in '
             'terms of the calculated DCCM energy.'
         ),
     )
