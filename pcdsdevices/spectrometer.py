@@ -521,3 +521,5 @@ class Gen1VonHamos4Crystal(BaseInterface, GroupDevice):
     cr2 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':03', yaw_axis=':07', pitch_axis=':11' , kind='normal', name='Crystal 2')
     cr3 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':04', yaw_axis=':08', pitch_axis=':12' , kind='normal', name='Crystal 3')
     cr4 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':05', yaw_axis=':09', pitch_axis=':13' , kind='normal', name='Crystal 4')
+
+
