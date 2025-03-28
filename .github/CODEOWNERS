@@ -1,0 +1,8 @@
+# default group
+* @pcdshub/software-admin
+
+# language-specific group(s)
+*.py* @pcdshub/python-reviewers @pcdshub/software-admin
+
+# github folder holds administrative files
+.github/** @pcdshub/software-admin
