@@ -65,13 +65,10 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         ),
     )
 
-    th1 = Cpt(BeckhoffAxis, "SP1L0:DCCM:MMS:TH1", doc="Bragg Upstream/TH1 Axis", kind="normal", name='th1')
-
+    th1 = Cpt(BeckhoffAxis, ":MMS:TH1", doc="Bragg Upstream/TH1 Axis", kind="normal", name='th1')
+    th2 = Cpt(BeckhoffAxis, ":MMS:TH2", doc="Bragg Upstream/TH2 Axis", kind="normal", name='th2')
 
     tab_component_names = True
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
@@ -83,7 +80,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         energy = pseudo_pos.energy
         theta = self.energyToSi111BraggAngle(energy)
-        return self.RealPosition(theta=th1)
+        return self.RealPosition(th1=theta, th2=theta)
 
     def inverse(self, real_pos: namedtuple) -> namedtuple:
         """
@@ -93,7 +90,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         """
         real_pos = self.RealPosition(*real_pos)
         theta = real_pos.th1
-        energy = self.thetaToSi111energy(th1)
+        energy = self.thetaToSi111energy(theta)
         return self.PseudoPosition(energy=energy)
 
     def energyToSi111BraggAngle(self, energy: float) -> float:
@@ -111,6 +108,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
             The angle in degrees
         """
         dspacing = 3.13560114
+        energy = energy * 1000
         bragg_angle = np.rad2deg(np.arcsin(12398.419/energy/(2*dspacing)))
         return bragg_angle
 
@@ -130,7 +128,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         """
         dspacing = 3.13560114
         energy = 12398.419/(2*dspacing*np.sin(np.deg2rad(theta)))
-        return energy
+        return energy/1000
 
 
 class DCCMEnergyWithVernier(DCCMEnergy):
@@ -164,19 +162,10 @@ class DCCMEnergyWithVernier(DCCMEnergy):
     def __init__(
         self,
         prefix: str,
-        hutch: typing.Optional[str] = None,
+        hutch = 'XCS',
         **kwargs
     ):
-        # Put some effort into filling this automatically
-
-        if hutch is not None:
-            self.hutch = hutch
-        elif 'XPP' in prefix:
-            self.hutch = 'XPP'
-        elif 'XCS' in prefix:
-            self.hutch = 'XCS'
-        else:
-            self.hutch = 'TST'
+        self.hutch=hutch
         super().__init__(prefix, **kwargs)
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
@@ -188,7 +177,7 @@ class DCCMEnergyWithVernier(DCCMEnergy):
         energy = pseudo_pos.energy
         theta = self.energyToSi111BraggAngle(energy)
         vernier = energy * 1000
-        return self.RealPosition(theta=th1, acr_energy=vernier)
+        return self.RealPosition(th1=theta,th2=theta, acr_energy=vernier)
 
     def inverse(self, real_pos: namedtuple) -> namedtuple:
         """                                                                                                                  
@@ -197,7 +186,7 @@ class DCCMEnergyWithVernier(DCCMEnergy):
         """
         real_pos = self.RealPosition(*real_pos)
         theta = real_pos.th1
-        energy = self.thetaToSi111energy(th1)
+        energy = self.thetaToSi111energy(theta)
         return self.PseudoPosition(energy=energy)
 
 
@@ -298,83 +287,15 @@ class DCCM(BaseInterface, GroupDevice):
     
     def __init__(
         self,
-        *,
-        prefix: typing.Optional[str] = None,
-        in_pos: float,
-        out_pos: float,
+        prefix:str = "SP1L0:DCCM",
         **kwargs
     ):
-        UCpt.collect_prefixes(self, kwargs)
-        self._in_pos = in_pos
-        self._out_pos = out_pos
-        prefix = prefix or self.unrelated_prefixes['alio_prefix']
+
         self.acr_status_suffix = kwargs.get('acr_status_suffix', 'AO805')
         self.acr_status_pv_index = kwargs.get('acr_status_suffix', 2)
         super().__init__(prefix, **kwargs)
 
 
-    def calc_lightpath_state(self, x_up: float) -> LightpathState:
-        """                                                                                                                                                                             
-        Update the fields used by the lightpath to determine in/out.                                                                                                                    
-                                                                                                                                                                                        
-        Compares the x position with the saved in and out values.                                                                                                                       
-        """
-        self._inserted = bool(np.isclose(x_up, self._in_pos))
-        self._removed = bool(np.isclose(x_up, self._out_pos))
-        if self._removed:
-            self._transmission = 1
-        else:
-            # Placeholder "small attenuation" value                                                                                                                                     
-            self._transmission = 0.9
 
-        return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: self._transmission}
-        )
-
-    @property
-    def inserted(self):
-        return self._inserted
-
-    @property
-    def removed(self):
-        return self._removed
-
-    def insert(self, wait: bool = False) -> MoveStatus:
-        """                                                                                                                                                                             
-        Move the x motors to the saved "in" position.                                                                                                                                   
-                                                                                                                                                                                        
-        Parameters                                                                                                                                                                      
-        ----------                                                                                                                                                                      
-        wait : bool, optional                                                                                                                                                           
-            If True, wait for the move to complete.                                                                                                                                     
-            If False, return without waiting.                                                                                                                                           
-                                                                                                                                                                                        
-        Returns                                                                                                                                                                         
-        -------                                                                                                                                                                         
-        move_status : MoveStatus                                                                                                                                                        
-            A status object that tells you information about the                                                                                                                        
-            success/failure/completion status of the move.                                                                                                                              
-        """
-        return self.x.move(self._in_pos, wait=wait)
-
-    def remove(self, wait: bool = False) -> MoveStatus:
-        """                                                                                                                                                                             
-        Move the x motors to the saved "out" position.                                                                                                                                  
-                                                                                                                                                                                        
-        Parameters                                                                                                                                                                      
-        ----------                                                                                                                                                                      
-        wait : bool, optional                                                                                                                                                           
-            If True, wait for the move to complete.                                                                                                                                     
-            If False, return without waiting.                                                                                                                                           
-                                                                                                                                                                                        
-        Returns                                                                                                                                                                         
-        -------                                                                                                                                                                         
-        move_status : MoveStatus                                                                                                                                                        
-            A status object that tells you information about the                                                                                                                        
-            success/failure/completion status of the move.                                                                                                                              
-        """
-        return self.x.move(self._out_pos, wait=wait)
 
 
