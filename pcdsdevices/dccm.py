@@ -133,68 +133,67 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         return energy
 
 
-class DCCMEnergyAcr(DCCMEnergy):                                                                                                                                                        
+class DCCMEnergyWithVernier(DCCMEnergy):
     """
-    DCCM energy motor and the ACR beam energy request.
+    DCCM energy motor and the vernier.
 
-    Moves theta based on the requested energy using the values
+    Moves the DCCM theta based on the requested energy using the values
     of the calculation constants, and reports the current energy
-    based on the DCCM theta motor position.
+    based on the alio's position.
 
-    Also moves the ACR beam energy when a move is requested to the theta angle.
+    Also moves the vernier when a move is requested to the alio.
     Note that the vernier is in units of eV, while the energy
     calculations are in units of keV.
 
     Parameters
     ----------
     prefix : str
-        The PV prefix of the DCCM motor, e.g. XPP:MON:MPZ:07A
+        The PV prefix of the theta motor, e.g. XPP:MON:MPZ:07A
     hutch : str, optional
-        The hutch we're in. This informs us as to which vernier                                                                                                                         
-        PVs to write to. If omitted, we can guess this from the                                                                                                                         
-        prefix.                                                                                                                                                                         
-    """                                                                                                                                                                                 
-    acr_energy = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',                                                                                                                      
-                      doc='Requests ACR to move the Vernier.')                                                                                                                          
-                                                                                                                                                                                        
-    # These are duplicate warnings with main energy motor                                                                                                                               
-    _enable_warn_constants: bool = False                                                                                                                                                
-    hutch: str                                                                                                                                                                          
-                                                                                                                                                                                        
-    def __init__(                                                                                                                                                                       
-        self,                                                                                                                                                                           
-        prefix: str,                                                                                                                                                                    
-        hutch: typing.Optional[str] = None,                                                                                                                                             
-        **kwargs                                                                                                                                                                        
-    ):                                                                                                                                                                                  
-        # Put some effort into filling this automatically                                                                                                                               
-        # CCM exists only in two hutches                                                                                                                                                
-        if hutch is not None:                                                                                                                                                           
-            self.hutch = hutch                                                                                                                                                          
-        elif 'XPP' in prefix:                                                                                                                                                           
-            self.hutch = 'XPP'                                                                                                                                                          
-        elif 'XCS' in prefix:                                                                                                                                                           
-            self.hutch = 'XCS'                                                                                                                                                          
-        else:                                                                                                                                                                           
-            self.hutch = 'TST'                                                                                                                                                          
+        The hutch we're in. This informs us as to which vernier
+        PVs to write to. If omitted, we can guess this from the
+        prefix.
+    """
+    acr_energy = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
+                      doc='Requests ACR to move the Vernier.')
+
+    # These are duplicate warnings with main energy motor
+    _enable_warn_constants: bool = False
+    hutch: str
+
+    def __init__(
+        self,
+        prefix: str,
+        hutch: typing.Optional[str] = None,
+        **kwargs
+    ):
+        # Put some effort into filling this automatically
+
+        if hutch is not None:
+            self.hutch = hutch
+        elif 'XPP' in prefix:
+            self.hutch = 'XPP'
+        elif 'XCS' in prefix:
+            self.hutch = 'XCS'
+        else:
+            self.hutch = 'TST'
         super().__init__(prefix, **kwargs)
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
-        """                                                                                                                                                                                   
-        PseudoPositioner interface function for calculating the setpoint.                                                                                                                     
-                                                                                                                                                                                              
-        Converts the requested energy to theta 1 and theta 2 (Bragg angle).                                                                                                                   
+        """                                                                                                                  
+        PseudoPositioner interface function for calculating the setpoint.                                                    
+        Converts the requested energy to theta 1 and theta 2 (Bragg angle).                                                  
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         energy = pseudo_pos.energy
         theta = self.energyToSi111BraggAngle(energy)
-        return self.RealPosition(theta=th1)
+        vernier = energy * 1000
+        return self.RealPosition(theta=th1, acr_energy=vernier)
 
     def inverse(self, real_pos: namedtuple) -> namedtuple:
-        """                                                                                                                                                                                   
-        PseudoPositioner interface function for calculating the readback.                                                                                                                     
-                                                                                                                                                                                              
-        Converts the real position of the DCCM theta motor to the calculated energy.                                                                                                          
+        """                                                                                                                  
+        PseudoPositioner interface function for calculating the readback.                                                   
+        Converts the real position of the DCCM theta motor to the calculated energy.                               
         """
         real_pos = self.RealPosition(*real_pos)
         theta = real_pos.th1
@@ -334,7 +333,7 @@ class DCCM(BaseInterface, GroupDevice):
             output={self.output_branches[0]: self._transmission}
         )
 
-        @property
+    @property
     def inserted(self):
         return self._inserted
 
