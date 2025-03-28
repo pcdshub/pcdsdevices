@@ -40,8 +40,8 @@ Device Features
 
 New Devices
 -----------
-- The `DCCMono` is a new device to support SP1L0:DCCM installed on L0S09 in the FEE. This SP1L0 is the first of many new Double Chanel Cut Monochromators (DCCMs) that will be coming to LCLS in the future. This device can also be used for other DCCMs such as the L2HE DXS HHLMs (High Heat Load Monochromators) and other DCCMs.
-Double Chanel Cut Monochromators
+- The `DCCMono` is a new device to support SP1L0:DCCM installed on L0S09 in the FEE. This SP1L0 is the first of many new Double Channel Cut Monochromators (DCCMs) that will be coming to LCLS in the future. This device can also be used for other DCCMs such as the L2HE DXS HHLMs (High Heat Load Monochromators) and other DCCMs.
+Double Channel Cut Monochromators
 Bugfixes
 --------
 - Improves error handling for presets when the position is unknown or uninitialized.
