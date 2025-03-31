@@ -1,0 +1,205 @@
+﻿pcdsdevices.attenuator.SXRGasAtt
+================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: SXRGasAtt
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - transmission
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRANS_RBV``
+          - Transmission
+          - hinted
+          - 
+    
+        * - arb_req
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TRANS_REQ_RBV``
+          - Requested transmission
+          - hinted
+          - 
+    
+        * - pressure
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GCM:82:PRESS_RBV``
+          - Pressure
+          - hinted
+          - 
+    
+        * - pressure_setpoint_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CNTRL:SP_RBV``
+          - Pressure setpoint
+          - omitted
+          - 
+    
+        * - mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:MODE_RBV``
+          - PMPS mode
+          - hinted
+          - 
+    
+        * - control_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CNTRL:ON_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - pressure_control_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:MODE:PressureControl_RBV``
+          - Pressure control mode
+          - hinted
+          - 
+    
+        * - gas_type
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GAS_TYPE_RBV``
+          - Selected gas
+          - hinted
+          - 
+    
+        * - at_target
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AtTarget_RBV``
+          - At target
+          - hinted
+          - 
+    
+        * - moving
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Moving_RBV``
+          - Moving
+          - hinted
+          - 
+    
+        * - gas_att_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OK_RBV``
+          - Ok
+          - hinted
+          - 
+    
+        * - transmission_setpoint_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TRANS_SP_RBV``
+          - Transmission setpoint
+          - omitted
+          - 
+    
+        * - pressure_control_valve
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VCN:70:POS_REQ_RBV``
+          - Requested position
+          - omitted
+          - 
+    
+        * - valve_n2
+          - :class:`~pcdsdevices.valve.VVC`
+          - ``:VVC:72``
+          - Valve n2
+          - hinted
+          - 
+    
+        * - valve_ar
+          - :class:`~pcdsdevices.valve.VVC`
+          - ``:VVC:71``
+          - Valve ar
+          - hinted
+          - 
+    
+        * - valve_pressure_control
+          - :class:`~pcdsdevices.valve.VCN`
+          - ``:VCN:70``
+          - Pressure control valve
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: setup_mode
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

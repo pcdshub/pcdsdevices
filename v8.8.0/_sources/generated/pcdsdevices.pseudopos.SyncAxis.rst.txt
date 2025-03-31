@@ -1,0 +1,116 @@
+﻿pcdsdevices.pseudopos.SyncAxis
+==============================
+
+.. currentmodule:: pcdsdevices.pseudopos
+
+.. autoclass:: SyncAxis
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - sync
+          - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
+          - 
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_single
+    .. automethod:: configure
+    .. automethod:: consistency_warning
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: fix_sync
+    .. automethod:: forward
+    .. automethod:: forward_single
+    .. automethod:: get
+    .. automethod:: inverse
+    .. automethod:: inverse_single
+    .. automethod:: is_synced
+    .. automethod:: move
+    .. automethod:: move_single
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: to_pseudo_tuple
+    .. automethod:: to_real_tuple
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: composite_egu
+    .. autoattribute:: concurrent
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: default_offset
+    .. autoattribute:: default_scale
+    .. autoattribute:: egu
+    .. autoattribute:: fix_sync_keep_still
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: offset_mode
+    .. autoattribute:: offsets
+    .. autoattribute:: position
+    .. autoattribute:: pseudo_positioners
+    .. autoattribute:: real_position
+    .. autoattribute:: real_positioners
+    .. autoattribute:: scales
+    .. autoattribute:: sequential
+    .. autoattribute:: settle_time
+    .. autoattribute:: subscriptions
+    .. autoattribute:: sync_limits
+    .. autoattribute:: target
+    .. autoattribute:: timeout
+    .. autoattribute:: warn_deadband
+    .. autoattribute:: warn_inconsistent
+    
+    
