@@ -37,6 +37,7 @@ Device Features
 - Add ``cvmi_bootstrap`` module for the special CVMI RP bootstrapping experiment.
   Rename the four axis names per request from scientists and remove three axes.
 - `Ell6` and `Ell9`: overload done_comparator to not use numpy.isclose()
+- Adding error_message component to `EllBase` for typhos to display error messages
 
 New Devices
 -----------
