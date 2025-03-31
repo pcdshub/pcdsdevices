@@ -53,6 +53,8 @@ class EllBase(PVPositionerIsClose):
                          kind='omitted')
     user_readback = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
                          kind='omitted')
+    error_message = FCpt(EpicsSignal, '{prefix}:M{self._channel}:STATUS',
+                         kind='omitted')
 
     def __init__(self, prefix, *, channel, port=0, **kwargs):
         self._port = port
