@@ -249,6 +249,17 @@ pcdsdevices.digitizers
     pcdsdevices.digitizers.Wave8V2XpmMini
     pcdsdevices.digitizers.Wave8V2XpmMsg
 
+pcdsdevices.dream_motion
+------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.dream_motion.DREAM_CoilMover
+    pcdsdevices.dream_motion.DREAM_GasJet
+    pcdsdevices.dream_motion.DREAM_GasNozzle
+    pcdsdevices.dream_motion.DREAM_MC_Y
+
 pcdsdevices.energy_monitor
 --------------------------
 
@@ -327,8 +338,12 @@ pcdsdevices.fms
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.fms.AmbTemp
+    pcdsdevices.fms.Floor
     pcdsdevices.fms.LCP1
     pcdsdevices.fms.LCP2
+    pcdsdevices.fms.PCWFlow
+    pcdsdevices.fms.PCWTemp
     pcdsdevices.fms.PDU_Humidity2
     pcdsdevices.fms.PDU_Humidity4
     pcdsdevices.fms.PDU_Humidity6
@@ -341,6 +356,9 @@ pcdsdevices.fms
     pcdsdevices.fms.PDU_Temp4
     pcdsdevices.fms.PDU_Temp6
     pcdsdevices.fms.PDU_Temp8
+    pcdsdevices.fms.Rack
+    pcdsdevices.fms.RaritanSensor
+    pcdsdevices.fms.SRCController
     pcdsdevices.fms.Setra5000
 
 pcdsdevices.gauge
