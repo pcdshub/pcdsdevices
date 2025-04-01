@@ -281,6 +281,7 @@
     .. automethod:: read_configuration
     .. automethod:: screen
     .. automethod:: set
+    .. automethod:: set_defaults
     .. automethod:: set_position
     .. automethod:: status
     .. automethod:: stop
@@ -304,6 +305,7 @@
     .. autoattribute:: actuate_value
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: done
     .. autoattribute:: done_value
     .. autoattribute:: egu

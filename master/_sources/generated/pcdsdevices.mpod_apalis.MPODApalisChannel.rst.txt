@@ -74,7 +74,16 @@
           - omitted
           - 
     
+        * - event_trip
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:EventTrip``
+          - Latching bit that event supply is not good.External supply exceeds lower or upper limits.
+          - normal
+          - 
+    
 
+    
+    
     
     
     
@@ -111,6 +120,7 @@
     .. automethod:: read_configuration
     .. automethod:: screen
     .. automethod:: set_current
+    .. automethod:: set_defaults
     .. automethod:: set_voltage
     .. automethod:: status
     .. automethod:: stop
@@ -126,6 +136,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: subscriptions

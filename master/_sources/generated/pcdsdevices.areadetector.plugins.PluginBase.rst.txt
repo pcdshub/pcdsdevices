@@ -504,6 +504,7 @@
     .. automethod:: missing_plugins
     .. automethod:: read
     .. automethod:: read_configuration
+    .. automethod:: set_defaults
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger
@@ -521,6 +522,7 @@
     .. autoattribute:: array_pixels
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: source_plugin

@@ -56,6 +56,7 @@
     .. automethod:: remove
     .. automethod:: screen
     .. automethod:: set
+    .. automethod:: set_defaults
     .. automethod:: status
     .. automethod:: summary
     .. automethod:: trigger
@@ -72,6 +73,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: egu
     .. autoattribute:: high_limit
     .. autoattribute:: hints

@@ -71,6 +71,7 @@
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: reset_calc_constant_defaults
+    .. automethod:: set_defaults
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger
@@ -85,6 +86,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: dspacing_val
     .. autoattribute:: gd_val
     .. autoattribute:: gr_val

@@ -65,6 +65,7 @@
     .. automethod:: read_configuration
     .. automethod:: screen
     .. automethod:: set
+    .. automethod:: set_defaults
     .. automethod:: set_reference
     .. automethod:: status
     .. automethod:: stop
@@ -80,6 +81,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: subscriptions

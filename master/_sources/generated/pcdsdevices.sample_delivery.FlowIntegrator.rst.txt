@@ -153,6 +153,7 @@
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: screen
+    .. automethod:: set_defaults
     .. automethod:: stage_group_instances
     .. automethod:: status
     .. automethod:: stop
@@ -168,6 +169,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: needs_parent

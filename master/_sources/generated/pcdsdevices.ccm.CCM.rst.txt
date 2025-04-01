@@ -167,6 +167,7 @@
     .. automethod:: remove
     .. automethod:: reset_calc_constant_defaults
     .. automethod:: screen
+    .. automethod:: set_defaults
     .. automethod:: stage_group_instances
     .. automethod:: status
     .. automethod:: stop
@@ -183,6 +184,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: dspacing_val
     .. autoattribute:: gd_val
     .. autoattribute:: gr_val

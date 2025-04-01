@@ -79,6 +79,7 @@
     .. automethod:: read_configuration
     .. automethod:: screen
     .. automethod:: set
+    .. automethod:: set_defaults
     .. automethod:: set_position
     .. automethod:: status
     .. automethod:: stop
@@ -102,6 +103,7 @@
     .. autoattribute:: calculated_dial_pos
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: egu
     .. autoattribute:: high_limit
     .. autoattribute:: hints

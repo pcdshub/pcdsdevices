@@ -293,6 +293,7 @@
     .. automethod:: screen
     .. automethod:: set
     .. automethod:: set_current_position
+    .. automethod:: set_defaults
     .. automethod:: set_high_limit
     .. automethod:: set_lim
     .. automethod:: set_low_limit
@@ -317,6 +318,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: egu
     .. autoattribute:: high_limit
     .. autoattribute:: hints

@@ -26,6 +26,7 @@
     .. automethod:: read_configuration
     .. automethod:: set
     .. automethod:: set_current_position
+    .. automethod:: set_defaults
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: to_pseudo_tuple
@@ -43,6 +44,7 @@
     .. autoattribute:: concurrent
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: egu
     .. autoattribute:: high_limit
     .. autoattribute:: hints

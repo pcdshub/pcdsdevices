@@ -97,6 +97,7 @@
     .. automethod:: set
     .. automethod:: setE
     .. automethod:: set_current_position
+    .. automethod:: set_defaults
     .. automethod:: set_position
     .. automethod:: stage_group_instances
     .. automethod:: status
@@ -123,6 +124,7 @@
     .. autoattribute:: concurrent
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: egu
     .. autoattribute:: high_limit
     .. autoattribute:: hints

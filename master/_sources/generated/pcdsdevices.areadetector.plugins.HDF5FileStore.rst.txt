@@ -1840,6 +1840,7 @@
     .. automethod:: missing_plugins
     .. automethod:: read
     .. automethod:: read_configuration
+    .. automethod:: set_defaults
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger
@@ -1858,6 +1859,7 @@
     .. autoattribute:: array_pixels
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: file_number_sync
     .. autoattribute:: file_number_write
     .. autoattribute:: fs_root

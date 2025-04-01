@@ -299,6 +299,7 @@
     .. automethod:: read_configuration
     .. automethod:: screen
     .. automethod:: set_current_ramp_speed
+    .. automethod:: set_defaults
     .. automethod:: set_voltage_ramp_speed
     .. automethod:: stage_group_instances
     .. automethod:: status
@@ -315,6 +316,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: limit_percents

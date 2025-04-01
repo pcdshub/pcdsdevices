@@ -97,6 +97,7 @@
     .. automethod:: get
     .. automethod:: read
     .. automethod:: read_configuration
+    .. automethod:: set_defaults
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger
@@ -110,6 +111,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: subscriptions

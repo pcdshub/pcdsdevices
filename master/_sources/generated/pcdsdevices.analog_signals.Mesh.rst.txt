@@ -56,6 +56,7 @@
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: screen
+    .. automethod:: set_defaults
     .. automethod:: set_mesh_voltage
     .. automethod:: set_rel_mesh_voltage
     .. automethod:: status
@@ -73,6 +74,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: subscriptions

@@ -291,6 +291,7 @@
     .. automethod:: remove
     .. automethod:: screen
     .. automethod:: set
+    .. automethod:: set_defaults
     .. automethod:: stage_group_instances
     .. automethod:: status
     .. automethod:: stop
@@ -309,6 +310,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: current_aperture
     .. autoattribute:: hints
     .. autoattribute:: kind

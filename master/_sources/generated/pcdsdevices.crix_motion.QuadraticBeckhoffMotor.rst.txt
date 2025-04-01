@@ -102,6 +102,7 @@
     .. automethod:: screen
     .. automethod:: set
     .. automethod:: set_current_position
+    .. automethod:: set_defaults
     .. automethod:: set_position
     .. automethod:: status
     .. automethod:: stop
@@ -127,6 +128,7 @@
     .. autoattribute:: concurrent
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: egu
     .. autoattribute:: high_limit
     .. autoattribute:: hints

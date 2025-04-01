@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; PCDS Devices 8.7.1.dev159+gaa642923 documentation</title>
+  <title>API &mdash; PCDS Devices 8.8.1.dev35+ga9bcb134 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/_static/theme_overrides.css" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=c6efdd39"></script>
+      <script src="_static/documentation_options.js?v=eaaf3a4c"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -231,6 +231,13 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.digitizers.Wave8V2XpmMsg.html">pcdsdevices.digitizers.Wave8V2XpmMsg</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-dream-motion">pcdsdevices.dream_motion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dream_motion.DREAM_CoilMover.html">pcdsdevices.dream_motion.DREAM_CoilMover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dream_motion.DREAM_GasJet.html">pcdsdevices.dream_motion.DREAM_GasJet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dream_motion.DREAM_GasNozzle.html">pcdsdevices.dream_motion.DREAM_GasNozzle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dream_motion.DREAM_MC_Y.html">pcdsdevices.dream_motion.DREAM_MC_Y</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-energy-monitor">pcdsdevices.energy_monitor</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.energy_monitor.GEM.html">pcdsdevices.energy_monitor.GEM</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.energy_monitor.GMD.html">pcdsdevices.energy_monitor.GMD</a></li>
@@ -284,8 +291,12 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-fms">pcdsdevices.fms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.AmbTemp.html">pcdsdevices.fms.AmbTemp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.Floor.html">pcdsdevices.fms.Floor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.LCP1.html">pcdsdevices.fms.LCP1</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.LCP2.html">pcdsdevices.fms.LCP2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.PCWFlow.html">pcdsdevices.fms.PCWFlow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.PCWTemp.html">pcdsdevices.fms.PCWTemp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.PDU_Humidity2.html">pcdsdevices.fms.PDU_Humidity2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.PDU_Humidity4.html">pcdsdevices.fms.PDU_Humidity4</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.PDU_Humidity6.html">pcdsdevices.fms.PDU_Humidity6</a></li>
@@ -298,6 +309,9 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.PDU_Temp4.html">pcdsdevices.fms.PDU_Temp4</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.PDU_Temp6.html">pcdsdevices.fms.PDU_Temp6</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.PDU_Temp8.html">pcdsdevices.fms.PDU_Temp8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.Rack.html">pcdsdevices.fms.Rack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.RaritanSensor.html">pcdsdevices.fms.RaritanSensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.SRCController.html">pcdsdevices.fms.SRCController</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.fms.Setra5000.html">pcdsdevices.fms.Setra5000</a></li>
 </ul>
 </li>
@@ -1530,6 +1544,25 @@
 </tbody>
 </table>
 </section>
+<section id="pcdsdevices-dream-motion">
+<h2>pcdsdevices.dream_motion<a class="headerlink" href="#pcdsdevices-dream-motion" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.dream_motion.DREAM_CoilMover.html#pcdsdevices.dream_motion.DREAM_CoilMover" title="pcdsdevices.dream_motion.DREAM_CoilMover"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.dream_motion.DREAM_CoilMover</span></code></a>(...)</p></td>
+<td><p>DREAM Motion Class This class controls coil motors fixed to the DREAM Motion system for the DREAM endstation in TMO.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.dream_motion.DREAM_GasJet.html#pcdsdevices.dream_motion.DREAM_GasJet" title="pcdsdevices.dream_motion.DREAM_GasJet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.dream_motion.DREAM_GasJet</span></code></a>(*args, ...)</p></td>
+<td><p>DREAM Motion Class This class controls gas jet X and Y motors fixed to the DREAM Motion system for the DREAM endstation in TMO.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.dream_motion.DREAM_GasNozzle.html#pcdsdevices.dream_motion.DREAM_GasNozzle" title="pcdsdevices.dream_motion.DREAM_GasNozzle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.dream_motion.DREAM_GasNozzle</span></code></a>(...)</p></td>
+<td><p>DREAM Motion Class This class controls gas nozzle X,Y and Z motors fixed to the DREAM Motion system for the DREAM endstation in TMO.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.dream_motion.DREAM_MC_Y.html#pcdsdevices.dream_motion.DREAM_MC_Y" title="pcdsdevices.dream_motion.DREAM_MC_Y"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.dream_motion.DREAM_MC_Y</span></code></a>(*args, ...)</p></td>
+<td><p>DREAM Main Chamber Motion Class This class controls main chamber vertical Motion system for the DREAM endstation in TMO.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="pcdsdevices-energy-monitor">
 <h2>pcdsdevices.energy_monitor<a class="headerlink" href="#pcdsdevices-energy-monitor" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
@@ -1680,11 +1713,23 @@
 <h2>pcdsdevices.fms<a class="headerlink" href="#pcdsdevices-fms" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.AmbTemp.html#pcdsdevices.fms.AmbTemp" title="pcdsdevices.fms.AmbTemp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.AmbTemp</span></code></a>([prefix, kind, ...])</p></td>
+<td><p>Ambient temperature sensor Raritan DX2-T1</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.Floor.html#pcdsdevices.fms.Floor" title="pcdsdevices.fms.Floor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.Floor</span></code></a>([prefix, kind, ...])</p></td>
+<td><p>Raritan Water/Leak Rope SmartSensor DX2-WSC-35-KIT</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.LCP1.html#pcdsdevices.fms.LCP1" title="pcdsdevices.fms.LCP1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.LCP1</span></code></a>([prefix, kind, ...])</p></td>
 <td><p>For LCPs with CMC-III PU, with Door Module off</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.LCP2.html#pcdsdevices.fms.LCP2" title="pcdsdevices.fms.LCP2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.LCP2</span></code></a>([prefix, kind, ...])</p></td>
 <td><p>For LCPs with CMC-III PU, with Door Module working</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.PCWFlow.html#pcdsdevices.fms.PCWFlow" title="pcdsdevices.fms.PCWFlow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.PCWFlow</span></code></a>([prefix, kind, ...])</p></td>
+<td><p>Two Keyence flow meters intalled one on PCW supply and one PCW outlet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.PCWTemp.html#pcdsdevices.fms.PCWTemp" title="pcdsdevices.fms.PCWTemp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.PCWTemp</span></code></a>([prefix, kind, ...])</p></td>
+<td><p>3 Wire RTDs surface mount on cooling hoses or pipes.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.PDU_Humidity2.html#pcdsdevices.fms.PDU_Humidity2" title="pcdsdevices.fms.PDU_Humidity2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.PDU_Humidity2</span></code></a>(*args[, ...])</p></td>
 <td><p>Will be for portable racks or Racks that have a single PDU, with a total of 2 sensors for monitoring</p></td>
@@ -1722,7 +1767,16 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.PDU_Temp8.html#pcdsdevices.fms.PDU_Temp8" title="pcdsdevices.fms.PDU_Temp8"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.PDU_Temp8</span></code></a>(*args[, elevations])</p></td>
 <td><p>Will be for PDUs that are linked, 1=Master, 2=Child (4 Sensors) plus 2 single PDUs (4 Sensors), 8 sensors total</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.Setra5000.html#pcdsdevices.fms.Setra5000" title="pcdsdevices.fms.Setra5000"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.Setra5000</span></code></a>([prefix, kind, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.Rack.html#pcdsdevices.fms.Rack" title="pcdsdevices.fms.Rack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.Rack</span></code></a>([prefix, kind, ...])</p></td>
+<td><p>Racks equipped with a Raritan DX2-T1H1 sensor.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.RaritanSensor.html#pcdsdevices.fms.RaritanSensor" title="pcdsdevices.fms.RaritanSensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.RaritanSensor</span></code></a>([prefix, ...])</p></td>
+<td><p>Raritan Sensor meta data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.SRCController.html#pcdsdevices.fms.SRCController" title="pcdsdevices.fms.SRCController"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.SRCController</span></code></a>([prefix, ...])</p></td>
+<td><p>A Raritan SRC 800 controller.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.fms.Setra5000.html#pcdsdevices.fms.Setra5000" title="pcdsdevices.fms.Setra5000"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.fms.Setra5000</span></code></a>([prefix, kind, ...])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>

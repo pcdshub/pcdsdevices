@@ -58,6 +58,7 @@
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: screen
+    .. automethod:: set_defaults
     .. automethod:: set_trigger_inhibit
     .. automethod:: set_trigger_source
     .. automethod:: status
@@ -74,6 +75,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: subscriptions

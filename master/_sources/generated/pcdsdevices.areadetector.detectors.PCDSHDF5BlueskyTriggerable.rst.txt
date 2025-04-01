@@ -73,6 +73,7 @@
     .. automethod:: read_configuration
     .. automethod:: save_images
     .. automethod:: screen
+    .. automethod:: set_defaults
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger
@@ -89,6 +90,7 @@
     .. autoattribute:: ad_root
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: num_images_per_point

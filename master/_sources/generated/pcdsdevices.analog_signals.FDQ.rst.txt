@@ -63,6 +63,7 @@
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: screen
+    .. automethod:: set_defaults
     .. automethod:: set_flow_offset
     .. automethod:: status
     .. automethod:: stop
@@ -78,6 +79,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: get_flow_offset
     .. autoattribute:: get_flow_rate
     .. autoattribute:: hints

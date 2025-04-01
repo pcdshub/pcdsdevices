@@ -147,6 +147,7 @@
     .. automethod:: read_configuration
     .. automethod:: screen
     .. automethod:: set
+    .. automethod:: set_defaults
     .. automethod:: set_nominal_to_current
     .. automethod:: set_with_movestatus
     .. automethod:: status
@@ -163,6 +164,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: subscriptions

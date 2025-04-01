@@ -82,6 +82,7 @@
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: set
+    .. automethod:: set_defaults
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger
@@ -97,6 +98,7 @@
     .. autoattribute:: atol
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: done_value
     .. autoattribute:: egu
     .. autoattribute:: high_limit

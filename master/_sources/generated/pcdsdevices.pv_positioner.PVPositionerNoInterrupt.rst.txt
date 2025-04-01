@@ -21,6 +21,7 @@
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: set
+    .. automethod:: set_defaults
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger
@@ -36,6 +37,7 @@
     .. autoattribute:: actuate_value
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: done
     .. autoattribute:: done_value
     .. autoattribute:: egu

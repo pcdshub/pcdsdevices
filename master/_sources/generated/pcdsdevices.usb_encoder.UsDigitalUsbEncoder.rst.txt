@@ -72,6 +72,7 @@
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: screen
+    .. automethod:: set_defaults
     .. automethod:: set_zero
     .. automethod:: set_zero_with_axis
     .. automethod:: status
@@ -88,6 +89,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: subscriptions

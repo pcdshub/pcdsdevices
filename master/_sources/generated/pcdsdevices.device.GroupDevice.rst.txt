@@ -19,6 +19,7 @@
     .. automethod:: get
     .. automethod:: read
     .. automethod:: read_configuration
+    .. automethod:: set_defaults
     .. automethod:: stage_group_instances
     .. automethod:: stop
     .. automethod:: summary
@@ -33,6 +34,7 @@
     
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: needs_parent

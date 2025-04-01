@@ -54,6 +54,7 @@
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: screen
+    .. automethod:: set_defaults
     .. automethod:: status
     .. automethod:: stop
     .. automethod:: summary
@@ -70,6 +71,7 @@
     .. autoattribute:: bypassed
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
     .. autoattribute:: faulted
     .. autoattribute:: hints
     .. autoattribute:: kind
