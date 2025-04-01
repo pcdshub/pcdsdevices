@@ -26,7 +26,7 @@
           - 
     
         * - gas_needle_y
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
           - ``:MMS:02``
           - 
           - normal
