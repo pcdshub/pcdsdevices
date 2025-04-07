@@ -2035,39 +2035,29 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         def form(left_str, center_str, right_str):
             return f'{left_str:<16}{center_str:>26}{right_str:>26}'
 
-        return f"""\
-{hutch}LODCM Motor Status Positions
-{state}
-Current Configuration: {configuration} ({ref})
-Photon Energy: {energy} [keV]
------------------------------------------------------------------
-{form(' ', 'Crystal Tower 1', 'Crystal Tower 2')}
-{form(f'z [{z_units}]', f'{z_user} ({z_dial})',
-      f'{z2_user} ({z2_dial})')}
-{form(f'x [{x_units}]', f'{x_user} ({x_dial})',
-      f'{x2_user} ({x2_dial})')}
-{form(f'th [{th_units}]', f'{th_user} ({th_dial})',
-      f'{th2_user} ({th2_dial})')}
-{form(f'chi [{chi_units}]', f'{chi_user} ({chi_dial})',
-      f'{chi2_user} ({chi2_dial})')}
-{form(f'y [{y_units}]', f'{y_user} ({y_dial})',
-      f'{y2_user} ({y2_dial})')}
-{form(f'hn [{hn_units}]', f'{hn_user} ({hn_dial})',
-      f'{hn2_user} ({hn2_dial})')}
-{form(f'hp [{hp_units}]', f'{hp_user} ({hp_dial})',
-      f'{hp2_user} ({hp2_dial})')}
-{form(f'diode [{diode_units}]', f'{diode_user} ({diode_dial})',
-      f'{diode2_user} ({diode2_dial})')}
------------------------------------------------------------------
-{form(' ', 'Diagnostic Tower', ' ')}
-{form(f'diag r [{dr_units}]', f'{dr_user} ({dr_dial})', '')}
-{form(f'diag h [{dh_units}]', f'{dh_user} ({dh_dial})', '')}
-{form(f'diag v [{dv_units}]', f'{dv_user} ({dv_dial})', '')}
-{form(f'filter [{df_units}]', f'{df_user} ({df_dial})', '')}
-{form(f'diode [{dd_units}]', f'{dd_user} ({dd_dial})', '')}
-{form(f'navitar zoom [{yag_zoom_units}]',
-      f'{yag_zoom_user} ({yag_zoom_dial})', '')}
-"""
+        return f"""{hutch}LODCM Motor Status Positions
+        {state}
+        Current Configuration: {configuration} ({ref})
+        Photon Energy: {energy} [keV]
+        -----------------------------------------------------------------
+        {form(' ', 'Crystal Tower 1', 'Crystal Tower 2')}
+        {form(f'z [{z_units}]', f'{z_user} ({z_dial})', f'{z2_user} ({z2_dial})')}
+        {form(f'x [{x_units}]', f'{x_user} ({x_dial})', f'{x2_user} ({x2_dial})')}
+        {form(f'th [{th_units}]', f'{th_user} ({th_dial})', f'{th2_user} ({th2_dial})')}
+        {form(f'chi [{chi_units}]', f'{chi_user} ({chi_dial})', f'{chi2_user} ({chi2_dial})')}
+        {form(f'y [{y_units}]', f'{y_user} ({y_dial})', f'{y2_user} ({y2_dial})')}
+        {form(f'hn [{hn_units}]', f'{hn_user} ({hn_dial})', f'{hn2_user} ({hn2_dial})')}
+        {form(f'hp [{hp_units}]', f'{hp_user} ({hp_dial})', f'{hp2_user} ({hp2_dial})')}
+        {form(f'diode [{diode_units}]', f'{diode_user} ({diode_dial})', f'{diode2_user} ({diode2_dial})')}
+        -----------------------------------------------------------------
+        {form(' ', 'Diagnostic Tower', ' ')}
+        {form(f'diag r [{dr_units}]', f'{dr_user} ({dr_dial})', '')}
+        {form(f'diag h [{dh_units}]', f'{dh_user} ({dh_dial})', '')}
+        {form(f'diag v [{dv_units}]', f'{dv_user} ({dv_dial})', '')}
+        {form(f'filter [{df_units}]', f'{df_user} ({df_dial})', '')}
+        {form(f'diode [{dd_units}]', f'{dd_user} ({dd_dial})', '')}
+        {form(f'navitar zoom [{yag_zoom_units}]',
+              f'{yag_zoom_user} ({yag_zoom_dial})', '')}"""
 
 
 class XCSLODCM(LODCM):

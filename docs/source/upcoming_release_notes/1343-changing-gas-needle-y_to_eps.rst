@@ -1,4 +1,4 @@
-1331 SmarActTipTilt_invert_axes
+1343 changing-gas-needle-y to eps
 #################
 
 API Breaks
@@ -11,8 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- SmarActTipTilt: Added invert_tip and invert_tilt check boxes
-- SmarActTipTilt: Added methods to flip which button corresponds to STEP_FORWARD and STEP_REVERSE respectively
+- change gas needle y to beckhoffais eps class instead of regular beckhoff axis
 
 New Devices
 -----------
@@ -28,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- aberges-SLAC
+-@tongju
