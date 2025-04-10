@@ -746,6 +746,7 @@ class DelayBase(FltMvInterface, PseudoPositioner):
     user_offset = Cpt(NotepadLinkedSignal, ':OphydOffset',
                       notepad_metadata={'record': 'ao', 'default_value': 0.0})
     motor = None
+    limits = None
 
     def __init__(self, *args, egu='s', n_bounces=2, invert=False, **kwargs):
         if self.__class__ is DelayBase:
@@ -755,10 +756,15 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         self.n_bounces = n_bounces
         if invert:
             self.n_bounces *= -1
+
         super().__init__(*args, egu=egu, **kwargs)
 
-    @pseudo_position_argument   # TODO: upstream this fix
+        self.limits = kwargs['limits']
+
+    @pseudo_position_argument
     def check_value(self, value):
+        if not (self.limits[0] < value[0] < self.limits[1]):
+            raise ValueError(f'Out of Limits: {self.limits[0]} < {value[0]} < {self.limits[1]}')
         return super().check_value(value)
 
     @user_offset.sub_value
@@ -791,6 +797,7 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         For delay motors, these internal variables are not used and are safe to
         skip at startup.
         """
+
         try:
             super()._real_pos_update(*args, **kwargs)
         except TimeoutError:
