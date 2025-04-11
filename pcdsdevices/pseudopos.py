@@ -759,11 +759,14 @@ class DelayBase(FltMvInterface, PseudoPositioner):
 
         super().__init__(*args, egu=egu, **kwargs)
 
-        self.limits = kwargs['limits']
+        if 'limits' in kwargs:
+            self.limits = kwargs['limits']
+        else:
+            self.limits = None
 
     @pseudo_position_argument
     def check_value(self, value):
-        if not (self.limits[0] < value[0] < self.limits[1]):
+        if (self.limits is not None and not (self.limits[0] < value[0] < self.limits[1])):
             raise ValueError(f'Out of Limits: {self.limits[0]} < {value[0]} < {self.limits[1]}')
         return super().check_value(value)
 

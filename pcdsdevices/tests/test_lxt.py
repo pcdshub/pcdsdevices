@@ -1,8 +1,9 @@
 import pytest
+from ophyd.sim import make_fake_device
 
 from ..device import ObjectComponent as OCpt
 from ..lxe import Lcls2LaserTiming
-from ..pseudopos import SimDelayStage, SyncAxis, make_fake_device
+from ..pseudopos import SimDelayStage, SyncAxis
 from .test_lxe import wrap_pv_positioner_move
 
 
