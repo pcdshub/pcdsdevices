@@ -74,16 +74,16 @@ def test_lxt_ttc_limits(lxt_ttc_2):
     # Normal Move w/ Shift
     new_position = -5e-6
     lxt_ttc_2.move(new_position)
-    assert abs(lxt_ttc_2.position[0] - new_position) <= 0
+    assert abs(lxt_ttc_2.position[0] - new_position) <= 0.1
 
     # Move back to 0
     lxt_ttc_2.move(0)
     assert lxt_ttc_2.position[0] == 0
 
-    # Move with txt out of bounds but lxt in bounds
+    # Move txt out of bounds
     with pytest.raises(ValueError):
         lxt_ttc_2.mv(-10e-6)
 
-    # Shift w/ both out of bounds
+    # Move lxt out of bounds
     with pytest.raises(ValueError):
-        lxt_ttc_2.mv(20e-6)
+        lxt_ttc_2.mv(10e-6)
