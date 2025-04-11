@@ -1,5 +1,5 @@
-1319 bug_preset_error
-#####################
+1343 changing-gas-needle-y to eps
+#################
 
 API Breaks
 ----------
@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- N/A
+- change gas needle y to beckhoffais eps class instead of regular beckhoff axis
 
 New Devices
 -----------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- Improves error handling for presets when the position is unknown or uninitialized.
+- N/A
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tangkong
+-@tongju
