@@ -20,7 +20,6 @@ jobs:
       # Extras to be installed only for conda-based testing:
       conda-testing-extras: ""
       # Extras to be installed only for pip-based testing:
-      # Set numpy<2 for now, remove when xraylib updates
-      pip-testing-extras: "PyQt5 numpy<2"
+      pip-testing-extras: "PyQt5"
       # Set if using setuptools-scm for the conda-build workflow
       use-setuptools-scm: true

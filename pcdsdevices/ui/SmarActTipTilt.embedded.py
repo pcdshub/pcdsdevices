@@ -19,9 +19,11 @@ class _SmarActTipTiltEmbeddedUI(QtWidgets.QWidget):
     tip_forward: pydm.widgets.pushbutton.PyDMPushButton
     tip_reverse: pydm.widgets.pushbutton.PyDMPushButton
     tip_step_count: pydm.widgets.label.PyDMLabel
+    invert_tip: QtWidgets.QCheckBox
     tilt_forward: pydm.widgets.pushbutton.PyDMPushButton
     tilt_reverse: pydm.widgets.pushbutton.PyDMPushButton
     tilt_step_count: pydm.widgets.label.PyDMLabel
+    invert_tilt: QtWidgets.QCheckBox
     settings_button: pydm.widgets.pushbutton.PyDMPushButton
 
 
@@ -98,17 +100,76 @@ class SmarActTipTiltWidget(Display, utils.TyphosBase):
         Once we have the tip-tilt device, set the TIP and TILT channels to
         the buttons and labels.
         """
+        def set_open_loop(self, axis: str):
+            """
+            A wrapper to set the open-loop widget channels.
+            Ironically more lines than just hard coding it.
+            """
+            _prefix = getattr(self.device, axis).prefix
+            _open_loop_dict = {'forward': '_jog_fwd',
+                               'reverse': '_jog_rev',
+                               'step_count': ':TOTAL_STEP_COUNT',
+                               'step_size': ':STEP_COUNT'}
+            for obj, _suffix in _open_loop_dict.items():
+                _widget = getattr(self.ui, f'{axis}_{obj}')
+                if isinstance(_widget, pydm.widgets.pushbutton.PyDMPushButton):
+                    # Set the slots for the jog buttons
+                    _signal = getattr(self, f'_{axis}{_suffix}')
+                    _widget.clicked.connect(_signal)
+                else:
+                    _widget.set_channel(f'ca://{_prefix}{_suffix}')
 
         if self.device is None:
             print('No device set!')
             return
 
-        self.ui.tip_forward.set_channel(f'ca://{self.device.tip.prefix}:STEP_FORWARD.PROC')
-        self.ui.tip_reverse.set_channel(f'ca://{self.device.tip.prefix}:STEP_REVERSE.PROC')
-        self.ui.tip_step_count.set_channel(f'ca://{self.device.tip.prefix}:TOTAL_STEP_COUNT')
-        self.ui.tilt_forward.set_channel(f'ca://{self.device.tilt.prefix}:STEP_FORWARD.PROC')
-        self.ui.tilt_reverse.set_channel(f'ca://{self.device.tilt.prefix}:STEP_REVERSE.PROC')
-        self.ui.tilt_step_count.set_channel(f'ca://{self.device.tilt.prefix}:TOTAL_STEP_COUNT')
+        set_open_loop(self, axis='tip')
+        set_open_loop(self, axis='tilt')
+
+    def _jog_wrapper(self, axis: str, direction: str):
+        """
+        Need to abstract the jog functions from simple channel access due to strange
+        pydm callback bugs when reassigning channels. Kind of defeats the point of
+        using pydm buttons, but whenever that bug is fixed we can use set_channel.
+
+        Parameters
+        -----------
+        axis: str
+            Name of the axis, i.e. 'tip' or 'tilt'
+        direction: str
+            Direction of move, i.e. 'tip' or 'tilt'
+        """
+        invert = getattr(self.ui, f'invert_{axis}').isChecked()
+        stage = getattr(self.device, axis)
+        _fwd = getattr(stage, 'jog_fwd')
+        _rev = getattr(stage, 'jog_rev')
+
+        if direction == 'Forward':
+            _jog = _rev if invert else _fwd
+            _jog.put(1)
+        if direction == 'Reverse':
+            _jog = _fwd if invert else _rev
+            _jog.put(1)
+
+    @QtCore.Slot()
+    def _tip_jog_fwd(self):
+        """Jog tip axis forward by tip.jog_step_size"""
+        self._jog_wrapper(axis='tip', direction='Forward')
+
+    @QtCore.Slot()
+    def _tip_jog_rev(self):
+        """Jog tip axis backwards by tip.jog_step_size"""
+        self._jog_wrapper(axis='tip', direction='Reverse')
+
+    @QtCore.Slot()
+    def _tilt_jog_fwd(self):
+        """Jog tilt axis forward by tilt.jog_step_size"""
+        self._jog_wrapper(axis='tilt', direction='Forward')
+
+    @QtCore.Slot()
+    def _tilt_jog_rev(self):
+        """Jog tilt axis backwards by tilt.jog_step_size"""
+        self._jog_wrapper(axis='tilt', direction='Reverse')
 
     def get_names_to_omit(self) -> list[str]:
         """

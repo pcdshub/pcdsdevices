@@ -53,8 +53,10 @@ class EllBase(PVPositionerIsClose):
                          kind='omitted')
     user_readback = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
                          kind='omitted')
+    error_message = FCpt(EpicsSignal, '{prefix}:M{self._channel}:STATUS',
+                         kind='omitted')
 
-    def __init__(self, prefix, port=0, channel=1, **kwargs):
+    def __init__(self, prefix, *, channel, port=0, **kwargs):
         self._port = port
         self._channel = channel
         super().__init__(prefix, **kwargs)
@@ -77,6 +79,11 @@ class Ell6(EllBase):
     --------
     ell6 = Ell6('LM1K4:COM_DP1_TF1_SL1:ELL', port=0, channel=1, name='ell6')
     """
+    # Since the record for 2 and 4-position sliders are stored as an enum,
+    # we need a "str comparator" overload.
+    def done_comparator(self, readback, setpoint):
+        return readback == setpoint
+
     # Names for slider positions
     name_0 = FCpt(EpicsSignal, '{prefix}:M{self._channel}:NAME0',
                   kind='config')
