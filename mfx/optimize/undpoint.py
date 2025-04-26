@@ -36,8 +36,24 @@ from pcdsdevices.type_hints import SignalToValue
 from .devices import YagCamera
 
 
-class UndPointBase(Device, PVPositioner):
-    """Base class for undulator pointing devices. Does nothing on its own."""
+def _get_2d_delta(mds: MultiDerivedSignal, items: SignalToValue) -> tuple[float, float]:
+    return tuple(items.values())
+
+
+def _put_2d_delta(mds: MultiDerivedSignal, value: tuple[float, float]) -> SignalToValue:
+    return {mds.signals[0]: value[0], mds.signals[1]: value[1]}
+
+
+class UndPoint2D(PVPositioner):
+    """Undulator pointing variant: move by (x, y)"""
+    setpoint = Cpt(
+        MultiDerivedSignal,
+        attrs=["delta_x", "delta_y"],
+        calculate_on_get=_get_2d_delta,
+        calculate_on_put=_put_2d_delta,
+    )
+    delta_x = Cpt(EpicsSignal, ":DELTA_X")
+    delta_y = Cpt(EpicsSignal, ":DELTA_Y")
     actuate = Cpt(EpicsSignal, ":GO")
     done = FCpt(EpicsSignalRO, "{done_pvname}")
 
@@ -48,40 +64,22 @@ class UndPointBase(Device, PVPositioner):
         self.done_pvname = done_pvname
         super().__init__(prefix, name=name, **kwargs)
 
-    def _setup_move(self, position):
+    def _setup_move(self, position: tuple[float, float]):
         # Also reset the actuate PV before we actuate
         self.actuate.put(1 - self.actuate_value)
         super()._setup_move(position)
 
 
-class UndPoint1DX(UndPointBase):
+class UndPoint1DX(UndPoint2D):
     """Undulator pointing variant: move in x only."""
-    setpoint = Cpt(EpicsSignal, ":DELTA_X")
+    def _setup_move(self, position: float):
+        super()._setup_move((position, 0))
 
 
-class UndPoint1DY(UndPointBase):
+class UndPoint1DY(UndPoint2D):
     """Undulator pointing variant: move in y only."""
-    setpoint = Cpt(EpicsSignal, ":DELTA_Y")
-
-
-def _get_2d_delta(_: MultiDerivedSignal, items: SignalToValue) -> tuple[float, float]:
-    return tuple(items.values())
-
-
-def _put_2d_delta(mds: MultiDerivedSignal, value: tuple[float, float]) -> SignalToValue:
-    return {mds.signals[0]: value[0], mds.signals[1]: value[1]}
-
-
-class UndPoint2D(UndPointBase):
-    """Undulator pointing variant: move by (x, y)"""
-    setpoint = Cpt(
-        MultiDerivedSignal,
-        attrs=["delta_x", "delta_y"],
-        calculate_on_get=_get_2d_delta,
-        calculate_on_put=_put_2d_delta,
-    )
-    delta_x = Cpt(EpicsSignal, ":DELTA_X")
-    delta_y = Cpt(EpicsSignal, ":DELTA_Y")
+    def _setup_move(self, position: float):
+        super()._setup_move((0, position))
 
 
 class UndulatorPointingRequest(Device):
@@ -90,7 +88,7 @@ class UndulatorPointingRequest(Device):
 
     You'd use this like:
 
-    undp = UndulatorPointingRequest("MFX:USER:MCC:UND", done_pvname="SIOC:SYS0:ML07:AO215", name="undp")
+    undp = UndulatorPointingRequest("MFX:USER:MCC:UND", done_pvname="SIOC:SYS0:ML07:AO216", name="undp")
     undp.dxy.move((50, 30), wait=True)
     undp.dy.move(-100, wait=False)
     """
@@ -113,9 +111,27 @@ class UndulatorPointingMFX(UndulatorPointingRequest):
     def __init__(
         self,
         prefix: str = "MFX:USER:MCC:UND",
-        done_pvname: str = "SIOC:SYS0:ML07:AO215",
+        done_pvname: str = "SIOC:SYS0:ML07:AO216",
         *,
         name: str = "mfx_undp",
+        **kwargs,
+    ):
+        super().__init__(prefix, name=name, done_pvname=done_pvname, **kwargs)
+
+
+class UndulatorPointingMFXTest(UndulatorPointingRequest):
+    """
+    Use the test busy PV instead of the ACR busy PV.
+
+    You'll need to manually flip the busy PV from 1 to 0 to signal
+    that the move is done.
+    """
+    def __init__(
+        self,
+        prefix: str = "MFX:USER:MCC:UND",
+        done_pvname: str = "MFX:USER:MCC:UND:TEST_BUSY",
+        *,
+        name: str = "test_mfx_undp",
         **kwargs,
     ):
         super().__init__(prefix, name=name, done_pvname=done_pvname, **kwargs)
