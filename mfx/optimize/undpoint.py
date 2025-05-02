@@ -26,14 +26,21 @@ The alignment is something like:
 - request the move
 - recalibrate? (maybe?)
 """
-from lcls_tools.common.image.fit import ImageProjectionFit
-from ophyd.device import Component as Cpt, FormattedComponent as FCpt, Device
-from ophyd.signal import EpicsSignal, EpicsSignalRO
-from ophyd.pv_positioner import PVPositioner
-from pcdsdevices.signal import MultiDerivedSignal
-from pcdsdevices.type_hints import SignalToValue
 
-from .devices import YagCamera
+from typing import Callable, Optional
+
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
+from ophyd.positioner import PositionerBase
+from ophyd.pv_positioner import PVPositioner
+from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
+from pcdsdevices.interface import MvInterface
+from pcdsdevices.signal import MultiDerivedSignal, UnitConversionDerivedSignal
+from pcdsdevices.type_hints import SignalToValue
+from pydantic import validate_call
+
+DEFAULT_DONE_MOVE_PV = "SIOC:SYS0:ML07:AO216"
 
 
 def _get_2d_delta(mds: MultiDerivedSignal, items: SignalToValue) -> tuple[float, float]:
@@ -44,8 +51,14 @@ def _put_2d_delta(mds: MultiDerivedSignal, value: tuple[float, float]) -> Signal
     return {mds.signals[0]: value[0], mds.signals[1]: value[1]}
 
 
-class UndPoint2D(PVPositioner):
-    """Undulator pointing variant: move by (x, y)"""
+class UndPointDelta2D(PVPositioner):
+    """
+    Undulator pointing variant: delta move by (x, y).
+
+    This is the raw interface provided by ACR.
+    All other variants re-use these definitions.
+    """
+
     setpoint = Cpt(
         MultiDerivedSignal,
         attrs=["delta_x", "delta_y"],
@@ -60,7 +73,14 @@ class UndPoint2D(PVPositioner):
     actuate_value = 1
     done_value = 0
 
-    def __init__(self, prefix: str, done_pvname: str, *, name: str, **kwargs):
+    def __init__(
+        self,
+        prefix: str,
+        *,
+        done_pvname: str = DEFAULT_DONE_MOVE_PV,
+        name: str,
+        **kwargs,
+    ):
         self.done_pvname = done_pvname
         super().__init__(prefix, name=name, **kwargs)
 
@@ -70,93 +90,156 @@ class UndPoint2D(PVPositioner):
         super()._setup_move(position)
 
 
-class UndPoint1DX(UndPoint2D):
-    """Undulator pointing variant: move in x only."""
-    def _setup_move(self, position: float):
-        super()._setup_move((position, 0))
-
-
-class UndPoint1DY(UndPoint2D):
-    """Undulator pointing variant: move in y only."""
-    def _setup_move(self, position: float):
-        super()._setup_move((0, position))
-
-
-class UndulatorPointingRequest(Device):
+class UndPointAbs2D(MvInterface, Device, PositionerBase):
     """
-    Device for interfacing with the undulator repointing PVs.
-
-    You'd use this like:
-
-    undp = UndulatorPointingRequest("MFX:USER:MCC:UND", done_pvname="SIOC:SYS0:ML07:AO216", name="undp")
-    undp.dxy.move((50, 30), wait=True)
-    undp.dy.move(-100, wait=False)
+    Undulator pointing variant: absolute move by (x, y)
     """
-    dxy = FCpt(UndPoint2D, "{prefix}", done_pvname="{done_pvname}", add_prefix=("suffix", "done_pvname"))
-    dx = FCpt(UndPoint1DX, "{prefix}", done_pvname="{done_pvname}", add_prefix=("suffix", "done_pvname"))
-    dy = FCpt(UndPoint1DY, "{prefix}", done_pvname="{done_pvname}", add_prefix=("suffix", "done_pvname"))
 
-    def __init__(self, prefix: str, done_pvname: str, *, name: str, **kwargs):
+    xpos = Cpt(
+        UnitConversionDerivedSignal,
+        "x_raw_rbv",
+        derived_units="um",
+        original_units="mm",
+        kind="hinted",
+    )
+    ypos = Cpt(
+        UnitConversionDerivedSignal,
+        "y_raw_rbv",
+        derived_units="um",
+        original_units="mm",
+        kind="hinted",
+    )
+
+    x_raw_rbv = FCpt(EpicsSignalRO, "{x_abs_pvname}", kind="omitted")
+    y_raw_rbv = FCpt(EpicsSignalRO, "{y_abs_pvname}", kind="omitted")
+    delta_xy = FCpt(
+        UndPointDelta2D,
+        "{prefix}",
+        done_pvname="{done_pvname}",
+        add_prefix=("suffix", "done_pvname"),
+    )
+
+    def __init__(
+        self,
+        prefix: str,
+        *,
+        name: str,
+        done_pvname: str = DEFAULT_DONE_MOVE_PV,
+        x_abs_pvname: str = "BPMS:UNDH:4690:XOFF.D",
+        y_abs_pvname: str = "BPMS:UNDH:4690:YOFF.D",
+        **kwargs,
+    ):
         self.done_pvname = done_pvname
+        self.x_abs_pvname = x_abs_pvname
+        self.y_abs_pvname = y_abs_pvname
+        self._xpos_cache = None
+        self._ypos_cache = None
         super().__init__(prefix, name=name, **kwargs)
 
+    @validate_call
+    def move(
+        self,
+        position: tuple[float, float],
+        wait: bool = True,
+        moved_cb: Optional[Callable] = None,
+        timeout: Optional[float] = None,
+    ):
+        # Convert to the raw delta move
+        delta_move = (position[0] - self.position[0], position[1] - self.position[1])
+        return self.delta_xy.move(
+            delta_move, wait=wait, moved_cb=moved_cb, timeout=timeout
+        )
 
-class UndulatorPointingMFX(UndulatorPointingRequest):
+    @xpos.sub_value
+    def _new_xpos(self, value: float, **kwargs):
+        self._xpos_cache = value
+        self._update_pos(**kwargs)
+
+    @ypos.sub_value
+    def _new_ypos(self, value: float, **kwargs):
+        self._ypos_cache = value
+        self._update_pos(**kwargs)
+
+    def _update_pos(self, **kwargs):
+        if None not in self.position:
+            kwargs.pop("sub_type")
+            self._run_subs(
+                sub_type=self.SUB_READBACK,
+                timestamp=kwargs.pop("timestamp"),
+                value=self.position,
+                **kwargs,
+            )
+
+    @property
+    def position(self) -> tuple[float, float]:
+        return (self._xpos_cache, self._ypos_cache)
+
+
+class UndPointAbs2DMFX(UndPointAbs2D):
     """
     Undulator pointing with MFX PV defaults.
-    
+
     You can do:
-    undp = UndulatorPointingMFX()
+    undp = UndPointAbs2DMFX()
     """
+
     def __init__(
         self,
         prefix: str = "MFX:USER:MCC:UND",
-        done_pvname: str = "SIOC:SYS0:ML07:AO216",
         *,
         name: str = "mfx_undp",
         **kwargs,
     ):
-        super().__init__(prefix, name=name, done_pvname=done_pvname, **kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
-class UndulatorPointingMFXTest(UndulatorPointingRequest):
+class UndPointDelta2DSim(UndPointDelta2D):
     """
-    Use the test busy PV instead of the ACR busy PV.
-
-    You'll need to manually flip the busy PV from 1 to 0 to signal
-    that the move is done.
+    Test version of the raw delta und pointing logic using no PVs.
     """
-    def __init__(
-        self,
-        prefix: str = "MFX:USER:MCC:UND",
-        done_pvname: str = "MFX:USER:MCC:UND:TEST_BUSY",
-        *,
-        name: str = "test_mfx_undp",
-        **kwargs,
-    ):
-        super().__init__(prefix, name=name, done_pvname=done_pvname, **kwargs)
+
+    delta_x = Cpt(Signal)
+    delta_y = Cpt(Signal)
+    actuate = Cpt(Signal)
+    done = FCpt(Signal)
+
+    # Extra signals: keep track of how much we've moved
+    _raw_x = Cpt(Signal)
+    _raw_y = Cpt(Signal)
+
+    @actuate.sub_value
+    def _sim_new_move(self, value: int, **_):
+        """
+        Simulate what ACR does when we ask for a move
+        """
+        if value != self.actuate_value:
+            return
+        self.done.put(1 - self.done_value)
+        self._raw_x.put(self._raw_x.get() + (self.delta_x.get() / 1000))
+        self._raw_y.put(self._raw_y.get() + (self.delta_y.get() / 1000))
+        self.actuate.put(1 - self.actuate_value)
+        self.done.put(self.done_value)
 
 
-def get_pixel_diff(imager: YagCamera, marker: int = 1) -> tuple[int, int]:
+class UndPointAbs2DSim(UndPointAbs2D):
     """
-    Return the difference in pixels between the yag's centroid and the chosen marker.
-
-    Parameters
-    ----------
-    imager : YagCamera
-        The imager object to use.
-    marker : int
-        The index of the marker to compare against.
-
-    Returns
-    -------
-    pixel_diff : tuple[int, int]
-        The difference in pixels between the centroid and the marker.
+    Test version of the abs und pointing logic using no PVs.
     """
-    fit = ImageProjectionFit()
-    fit_result = fit.fit_image(imager.image1.image)
-    marker_pos = imager.coords.specific_marker_target(marker)
-    return (
-        marker_pos[0] - fit_result.centroid[0],
-        marker_pos[1] - fit_result.centroid[1], 
-    )
+
+    x_raw_rbv = Cpt(Signal)
+    y_raw_rbv = Cpt(Signal)
+    delta_xy = Cpt(UndPointDelta2DSim, "")
+
+    def __init__(self, prefix="", *, name="sim_2d_abs", **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
+        self.delta_xy._raw_x.subscribe(self._new_raw_x)
+        self.delta_xy._raw_y.subscribe(self._new_raw_y)
+        # Using the real positions at the moment in time I made this class
+        self.delta_xy._raw_x.put(0.123402)
+        self.delta_xy._raw_y.put(-0.393441)
+
+    def _new_raw_x(self, value: float, **_):
+        self.x_raw_rbv.put(value)
+
+    def _new_raw_y(self, value: float, **_):
+        self.y_raw_rbv.put(value)
