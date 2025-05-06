@@ -101,6 +101,7 @@ class UndPointAbs2D(MvInterface, Device, PositionerBase):
         derived_units="um",
         original_units="mm",
         kind="hinted",
+        add_prefix=(),
     )
     ypos = Cpt(
         UnitConversionDerivedSignal,
@@ -108,6 +109,7 @@ class UndPointAbs2D(MvInterface, Device, PositionerBase):
         derived_units="um",
         original_units="mm",
         kind="hinted",
+        add_prefix=(),
     )
 
     x_raw_rbv = FCpt(EpicsSignalRO, "{x_abs_pvname}", kind="omitted")
