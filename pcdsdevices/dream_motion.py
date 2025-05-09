@@ -31,6 +31,7 @@ class DREAM_MC_Y(BaseInterface, GroupDevice):
     # Motor components
     chamber_y = Cpt(BeckhoffAxis, ':MMS:Y', kind='normal')
 
+
 class DREAM_CoilMover(BaseInterface, GroupDevice):
     """
     DREAM Motion Class
@@ -51,7 +52,8 @@ class DREAM_CoilMover(BaseInterface, GroupDevice):
     # Motor components
     coil_roll = Cpt(BeckhoffAxis, ':MMS:ROLL', kind='normal')
     coil_yaw = Cpt(BeckhoffAxis, ':MMS:YAW', kind='normal')
-  
+
+
 class DREAM_GasJet(BaseInterface, GroupDevice):
     """
     DREAM Motion Class
@@ -72,6 +74,7 @@ class DREAM_GasJet(BaseInterface, GroupDevice):
     # Motor components
     gas_jet_x = Cpt(BeckhoffAxis, ':MMS:X', kind='normal')
     gas_jet_z = Cpt(BeckhoffAxis, ':MMS:Z', kind='normal')
+
 
 class DREAM_GasNozzle(BaseInterface, GroupDevice):
     """
@@ -94,5 +97,3 @@ class DREAM_GasNozzle(BaseInterface, GroupDevice):
     gas_nozzle_x = Cpt(BeckhoffAxis, ':MMS:X', kind='normal')
     gas_nozzle_y = Cpt(BeckhoffAxis, ':MMS:Y', kind='normal')
     gas_nozzle_z = Cpt(BeckhoffAxis, ':MMS:Z', kind='normal')
-
-

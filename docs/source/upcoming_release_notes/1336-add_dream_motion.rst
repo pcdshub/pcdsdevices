@@ -15,7 +15,7 @@ Device Features
 
 New Devices
 -----------
-new devices for dream motion
+- New devices for dream motion
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- jyin999
