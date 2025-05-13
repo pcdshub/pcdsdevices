@@ -1,5 +1,5 @@
-1319 bug_preset_error
-#####################
+1336 add dream motion
+#################
 
 API Breaks
 ----------
@@ -15,11 +15,11 @@ Device Features
 
 New Devices
 -----------
-- N/A
+- New devices for dream motion
 
 Bugfixes
 --------
-- Improves error handling for presets when the position is unknown or uninitialized.
+- N/A
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tangkong
+- jyin999

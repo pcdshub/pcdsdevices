@@ -1,4 +1,4 @@
-1321 cvmi-bootstrap
+1348 fms-devices
 #################
 
 API Breaks
@@ -7,16 +7,21 @@ API Breaks
 
 Library Features
 ----------------
-- N/A
+- `fms.py` now supports Raritan sensors.
 
 Device Features
 ---------------
-- Add ``cvmi_bootstrap`` module for the special CVMI RP bootstrapping experiment.
-  Rename the four axis names per request from scientists and remove three axes.
+- N/A
 
 New Devices
 -----------
-- N/A
+- `SRCController`
+- `RaritanSensor`
+- `Floor`
+- `PCWFlow`
+- `PCWTemp`
+- `AMBTemp`
+- `Rack`
 
 Bugfixes
 --------
@@ -28,4 +33,4 @@ Maintenance
 
 Contributors
 ------------
-- @tongju12
+- nrwslac

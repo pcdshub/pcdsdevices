@@ -1,4 +1,4 @@
-1324 edit gas needle axes names
+1343 changing-gas-needle-y to eps
 #################
 
 API Breaks
@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- change gas needle gui name to be consistent with PLC gas jet name
+- change gas needle y to beckhoffais eps class instead of regular beckhoff axis
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- @tongju12
+-@tongju
