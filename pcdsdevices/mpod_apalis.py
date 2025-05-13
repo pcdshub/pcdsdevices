@@ -76,6 +76,14 @@ class MPODApalisChannel(BaseInterface, Device):
     is_trip = Cpt(EpicsSignalRO, ':isTrip', kind='omitted',
                   doc='True if MPOD channel is tripped.')
 
+    event_trip = Cpt(
+        EpicsSignalRO, ':EventTrip', kind='normal',
+        doc=(
+            'Latching bit that event supply is not good.'
+            'External supply exceeds lower or upper limits.'
+        )
+    )
+
     tab_component_names = True
     tab_whitelist = ['on', 'off',
                      'set_voltage', 'set_current']
