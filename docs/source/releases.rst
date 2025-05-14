@@ -2,6 +2,40 @@ Release History
 ###############
 
 
+v8.8.1 (2025-05-13)
+===================
+
+Library Features
+----------------
+- `fms.py` now supports Raritan sensors.
+
+Device Features
+---------------
+- change gas needle y to beckhoffais eps class instead of regular beckhoff axis
+- Added new component event_trip to MPODApalisChannel
+- adding new targets number into tm2k4
+
+New Devices
+-----------
+- New devices for dream motion
+- `SRCController`
+- `RaritanSensor`
+- `Floor`
+- `PCWFlow`
+- `PCWTemp`
+- `AMBTemp`
+- `Rack`
+
+Contributors
+------------
+- KaushikMalapati
+- jyin999
+- nrwslac
+- tongju
+-@tongju
+
+
+
 v8.8.0 (2025-03-27)
 ===================
 
