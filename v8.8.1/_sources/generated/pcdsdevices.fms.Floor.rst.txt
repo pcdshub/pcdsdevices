@@ -1,0 +1,101 @@
+﻿pcdsdevices.fms.Floor
+=====================
+
+.. currentmodule:: pcdsdevices.fms
+
+.. autoclass:: Floor
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - sensor_name
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NAME_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.fms.RaritanSensor`
+    
+        * - leak_detection
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SEVR_RBV``
+          - Detects fluid leak, 0 dry, 2 wet
+          - normal
+          - 
+    
+        * - chain_position
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:POSITION_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.fms.RaritanSensor`
+    
+        * - sensor_serial
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SERIAL_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.fms.RaritanSensor`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.fms.RaritanSensor`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

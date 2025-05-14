@@ -1,0 +1,80 @@
+﻿pcdsdevices.dream\_motion.DREAM\_CoilMover
+==========================================
+
+.. currentmodule:: pcdsdevices.dream_motion
+
+.. autoclass:: DREAM_CoilMover
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - coil_roll
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:ROLL``
+          - 
+          - normal
+          - 
+    
+        * - coil_yaw
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:YAW``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    
