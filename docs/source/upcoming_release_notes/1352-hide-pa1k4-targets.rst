@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
--  for "PA1K4"('CalibrationAxis'),change target count from 7 to 5 to  hide 6 and 7
+- For ``PA1K4`` (`CalibrationAxis`), change target count from 7 to 5 to hide targets 6 and 7
 
 New Devices
 -----------
