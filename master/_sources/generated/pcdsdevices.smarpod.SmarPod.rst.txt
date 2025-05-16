@@ -144,55 +144,6 @@
           - normal
           - 
     
-        * - cmd_move
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``:CMD:MOVE``
-          - 
-          - normal
-          - 
-    
-        * - cmd_x
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``:CMD:X``
-          - 
-          - normal
-          - 
-    
-        * - cmd_y
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``:CMD:Y``
-          - 
-          - normal
-          - 
-    
-        * - cmd_z
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``:CMD:Z``
-          - 
-          - normal
-          - 
-    
-        * - cmd_rx
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``:CMD:RX``
-          - 
-          - normal
-          - 
-    
-        * - cmd_ry
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``:CMD:RY``
-          - 
-          - normal
-          - 
-    
-        * - cmd_rz
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``:CMD:RZ``
-          - 
-          - normal
-          - 
-    
         * - cmd_stop
           - :class:`~ophyd.signal.EpicsSignal`
           - ``:CMD:STOP``
@@ -242,44 +193,9 @@
           - normal
           - 
     
-        * - x
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:X``
-          - 
-          - normal
-          - 
-    
-        * - y
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:Y``
-          - 
-          - normal
-          - 
-    
-        * - z
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:Z``
-          - 
-          - normal
-          - 
-    
-        * - rx
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:RX``
-          - 
-          - normal
-          - 
-    
-        * - ry
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:RY``
-          - 
-          - normal
-          - 
-    
-        * - rz
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:RZ``
+        * - cmd_move
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:MOVE``
           - 
           - normal
           - 
@@ -410,6 +326,48 @@
           - normal
           - 
     
+        * - x
+          - :class:`~pcdsdevices.smarpod.SmarPodAxis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - y
+          - :class:`~pcdsdevices.smarpod.SmarPodAxis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - z
+          - :class:`~pcdsdevices.smarpod.SmarPodAxis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - rx
+          - :class:`~pcdsdevices.smarpod.SmarPodAxis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ry
+          - :class:`~pcdsdevices.smarpod.SmarPodAxis`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - rz
+          - :class:`~pcdsdevices.smarpod.SmarPodAxis`
+          - 
+          - 
+          - normal
+          - 
+    
         * - cmd_sensor_mode
           - :class:`~ophyd.signal.EpicsSignal`
           - ``:CMD:SENSOR_MODE``
@@ -529,15 +487,21 @@
           - omitted
           - 
     
+        * - csy_set
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CSY:SET``
+          - set csy offset
+          - normal
+          - 
+    
+        * - csy_zero
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:SPZ``
+          - set csy to zero
+          - normal
+          - 
+    
 
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -689,6 +653,7 @@
     .. automethod:: configure
     .. automethod:: describe
     .. automethod:: get
+    .. automethod:: multi_axis_move
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: set_defaults

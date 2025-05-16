@@ -105,6 +105,7 @@
     .. automethod:: describe
     .. automethod:: get
     .. automethod:: multi_axis_move
+    .. automethod:: preset_list
     .. automethod:: read
     .. automethod:: read_configuration
     .. automethod:: set_defaults
