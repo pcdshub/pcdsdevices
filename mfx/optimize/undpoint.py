@@ -27,7 +27,7 @@ The alignment is something like:
 - recalibrate? (maybe?)
 """
 
-from typing import Callable, Optional
+from typing import Callable, Optional, Union
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -35,6 +35,7 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.positioner import PositionerBase
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
+from ophyd.status import MoveStatus
 from pcdsdevices.interface import MvInterface
 from pcdsdevices.signal import MultiDerivedSignal, UnitConversionDerivedSignal
 from pcdsdevices.type_hints import SignalToValue
@@ -53,6 +54,20 @@ def _put_2d_delta(mds: MultiDerivedSignal, value: tuple[float, float]) -> Signal
     # Setting 50 to the delta PV causes the real value to move by -50
     # So, when you ask for 50 we'll put -50 to the delta PV instead, to move the real value by 50
     return {mds.signals[0]: -value[0], mds.signals[1]: -value[1]}
+
+
+@validate_call
+def coerce_input_to_tuple(position: Union[tuple[float, float], float], ypos: Optional[float]) -> tuple[float, float]:
+    """
+    Utility to coerce user input like move(3, 4) to move((3, 4))
+    """
+    if isinstance(position, tuple):
+        if len(position) == 2:
+            return position
+        raise ValueError(f"Expected tuple of length 2, got {position}")
+    elif ypos is None:
+        raise TypeError(f"Expected position to be a tuple, got {position}")
+    return (position, ypos)
 
 
 class UndPointDelta2D(PVPositioner):
@@ -87,6 +102,37 @@ class UndPointDelta2D(PVPositioner):
     ):
         self.done_pvname = done_pvname
         super().__init__(prefix, name=name, **kwargs)
+
+    @validate_call
+    def move(
+        self,
+        position: Union[tuple[float, float], float],
+        y_delta: Optional[float] = None,
+        wait: bool = True,
+        timeout: Optional[float] = None,
+        moved_cb: Optional[Callable] = None,
+    ) -> MoveStatus:
+        """
+        Do a relative move of the undulator.
+
+        Parameters
+        ----------
+        position : tuple[float, float] or float
+            If a tuple, this is the x, y delta to move by.
+            If a float, this is the x delta to move by, and y_delta should be given as the second argument.
+        y_delta : float, optional
+            If position is given as as float x value, this is the accompanying y value.
+        wait : bool, optional
+            Whether to wait for the move to complete, or not. Defaults to True.
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used.
+        moved_cb : callable
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance.
+        """
+        return super().move(coerce_input_to_tuple(position, y_delta), wait=wait, timeout=timeout, moved_cb=moved_cb)
 
     def _setup_move(self, position: tuple[float, float]):
         # Also reset the actuate PV before we actuate
@@ -147,16 +193,37 @@ class UndPointAbs2D(MvInterface, Device, PositionerBase):
     @validate_call
     def move(
         self,
-        position: tuple[float, float],
+        position: Union[tuple[float, float], float],
+        y_abs: Optional[float] = None,
         wait: bool = True,
-        moved_cb: Optional[Callable] = None,
         timeout: Optional[float] = None,
+        moved_cb: Optional[Callable] = None,
     ):
+        """
+        Do an absolute move of the undulator.
+
+        Parameters
+        ----------
+        position : tuple[float, float] or float
+            If a tuple, this is the x, y position to move to.
+            If a float, this is the x position to move to, and y_abs should be given as the second argument.
+        y_abs : float, optional
+            If position is given as as float x value, this is the accompanying y value.
+        wait : bool, optional
+            Whether to wait for the move to complete, or not. Defaults to True.
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used.
+        moved_cb : callable
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance.
+        """
         return self.delta_xy.move(
-            self.get_delta_from_abs(position),
+            self.get_delta_from_abs(coerce_input_to_tuple(position, y_abs)),
             wait=wait,
-            moved_cb=moved_cb,
             timeout=timeout,
+            moved_cb=moved_cb,
         )
 
     def get_delta_from_abs(self, position: tuple[float, float]) -> tuple[float, float]:
