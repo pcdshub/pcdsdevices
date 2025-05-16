@@ -89,6 +89,7 @@ pcdsdevices.attenuator
     pcdsdevices.attenuator.AT1K4
     pcdsdevices.attenuator.AT2K2
     pcdsdevices.attenuator.AT2L0
+    pcdsdevices.attenuator.AT3K2
     pcdsdevices.attenuator.AttBase
     pcdsdevices.attenuator.AttBaseWith3rdHarmonic
     pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP
