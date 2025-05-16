@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.atm.TM1K4Target &mdash; PCDS Devices 8.8.1.dev35+ga9bcb134 documentation</title>
+  <title>pcdsdevices.atm.TM1K4Target &mdash; PCDS Devices 8.8.2.dev147+gcea2b898 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,8 +14,8 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=eaaf3a4c"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/documentation_options.js?v=0581115c"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
@@ -73,6 +73,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-bootstrap">pcdsdevices.cvmi_bootstrap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-motion">pcdsdevices.cvmi_motion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dc-devices">pcdsdevices.dc_devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dccm">pcdsdevices.dccm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-delay-generator">pcdsdevices.delay_generator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-device">pcdsdevices.device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-digital-signals">pcdsdevices.digital_signals</a></li>
@@ -85,6 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-example">pcdsdevices.example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-fms">pcdsdevices.fms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gbs">pcdsdevices.gbs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-inout">pcdsdevices.inout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-interface">pcdsdevices.interface</a></li>
@@ -117,6 +119,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mps">pcdsdevices.mps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mrco-motion">pcdsdevices.mrco_motion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pc">pcdsdevices.pc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pdu">pcdsdevices.pdu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-piezo">pcdsdevices.piezo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pim">pcdsdevices.pim</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pmps">pcdsdevices.pmps</a></li>
@@ -201,7 +204,7 @@
 <h1>pcdsdevices.atm.TM1K4Target<a class="headerlink" href="#pcdsdevices-atm-tm1k4target" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pcdsdevices.atm.TM1K4Target">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.atm.</span></span><span class="sig-name descname"><span class="pre">TM1K4Target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.atm.TM1K4Target" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.atm.</span></span><span class="sig-name descname"><span class="pre">TM1K4Target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.atm.TM1K4Target" title="Link to this definition"></a></dt>
 <dd><p>Controls TM1K4’s states, and ATM in TMO.</p>
 <p>Defines the state count as 9 (OUT and 8 targets), three more than the
 standard ATM.</p>
@@ -412,7 +415,7 @@ instance.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>moved_status</strong> (<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.Status.html#ophyd.status.Status" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Status</span></code></a>) – Status that will be marked as done when the motion is complete.</p>
+<dd class="field-even"><p><strong>moved_status</strong> (<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.Status.html#ophyd.status.Status" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Status</span></code></a>) – Status that will be marked as done when the motion is complete.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -509,7 +512,7 @@ instance.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>moved_status</strong> (<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.Status.html#ophyd.status.Status" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Status</span></code></a>) – Status that will be marked as done when the motion is complete.</p>
+<dd class="field-even"><p><strong>moved_status</strong> (<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.Status.html#ophyd.status.Status" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Status</span></code></a>) – Status that will be marked as done when the motion is complete.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -547,7 +550,7 @@ will be called when move is complete.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.atm.TM1K4Target.set_defaults">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.atm.TM1K4Target.set_defaults" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.atm.TM1K4Target.set_defaults" title="Link to this definition"></a></dt>
 <dd><p>Set class-wide defaults for device communications</p>
 <p>This may be called only before any instances of Device are
 made.</p>
@@ -582,7 +585,7 @@ IOC.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.atm.TM1K4Target.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.atm.TM1K4Target.trigger" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.atm.TM1K4Target.trigger" title="Link to this definition"></a></dt>
 <dd><p>Trigger the device and return status object.</p>
 <p>This method is responsible for implementing ‘trigger’ or
 ‘acquire’ functionality of this device.</p>
@@ -590,14 +593,14 @@ IOC.</p>
 and it being able to be read (via the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
 also responsible for arranging that the
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
 is notified when the device is ready to be read.</p>
 <p>If there is no delay between triggering and being readable,
-then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
 object which is already completed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
 as complete when the device is ready to be read.</p>
 </dd>
 </dl>

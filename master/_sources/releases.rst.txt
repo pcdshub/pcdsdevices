@@ -2,6 +2,59 @@ Release History
 ###############
 
 
+v9.0.0 (2025-08-05)
+===================
+
+API Breaks
+----------
+- `EllBase` now requires 'port' as a mandatory arg on initialization.
+- Removed brackets for in PVs for `Wave8V2ADCSamples`.
+
+Device Features
+---------------
+- Added `hla_enabled` component to `Lcls2LaserTiming`.
+- Added `hla_check` decorator, used by `_setup_move`, to raise an exception if hla is disabled.
+- Add typhos template for `DCCMEnergy` to make sure the DCCM screen is usable.
+- `SmarPod`:
+
+    - use `PVPositionerIsClose` instead of raw records
+    - add mutli axis move
+    - add reachability checks
+
+- Added SL3K4 motors to `dream_motion` (`DREAM_SL3K4`)
+- Added `integral_signed` component to `Wave8V2ADCDelayLanes`
+
+New Devices
+-----------
+- `AT3K2`: Custom Solid Attenuator w/ 2 blades and 8 filters on each blade.
+- `DCCM`: Double Channel Cut Monochrometer from XCS.
+- `GratingBeamSplitterStates`: Grating Beam Splitter target state controls.
+- `BeckhoffIntensityProfileTarget`: Intensity Profile Monitor (beckhoff version).
+- `SL2K4Slits`: is a BeckhoffSlits device with new PVA based camera viewer.
+- `lasers.ek9000.SimpleShutter`: A repurposed LSS shutter, not used in safety applications.
+
+    - `pcdsdevices.happi.containers.SimpleShutter`: its corresponding happi container.
+
+- Added generic `PDU` (Leviton, Sentry4) and `TripplitePDU` device classes, along with detailed device screens.
+
+Maintenance
+-----------
+- Adds warning to docstring in `EllBase` on port defaults based on common IOC
+- Sync presets when Presets.positions is accessed.
+
+Contributors
+------------
+- KaushikMalapati
+- aberges-SLAC
+- baljamal
+- jozamudi
+- tangkong
+- tongju12
+- TrumanPar
+- zllentz
+
+
+
 v8.8.1 (2025-05-13)
 ===================
 

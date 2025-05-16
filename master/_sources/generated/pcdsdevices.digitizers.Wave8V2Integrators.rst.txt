@@ -25,6 +25,13 @@
           - config
           - 
     
+        * - integral_signed
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:IntegralSigned_RBV``
+          - 
+          - config
+          - 
+    
         * - baseline_size
           - :class:`~ophyd.signal.EpicsSignal`
           - ``:BaselineSize_RBV``
@@ -159,6 +166,8 @@
           - 
     
 
+    
+    
     
     
     

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.areadetector.plugins.HDF5FileStore &mdash; PCDS Devices 8.8.1.dev35+ga9bcb134 documentation</title>
+  <title>pcdsdevices.areadetector.plugins.HDF5FileStore &mdash; PCDS Devices 8.8.2.dev147+gcea2b898 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,8 +14,8 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=eaaf3a4c"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/documentation_options.js?v=0581115c"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
@@ -81,6 +81,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-bootstrap">pcdsdevices.cvmi_bootstrap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-motion">pcdsdevices.cvmi_motion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dc-devices">pcdsdevices.dc_devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dccm">pcdsdevices.dccm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-delay-generator">pcdsdevices.delay_generator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-device">pcdsdevices.device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-digital-signals">pcdsdevices.digital_signals</a></li>
@@ -93,6 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-example">pcdsdevices.example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-fms">pcdsdevices.fms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gbs">pcdsdevices.gbs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-inout">pcdsdevices.inout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-interface">pcdsdevices.interface</a></li>
@@ -125,6 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mps">pcdsdevices.mps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mrco-motion">pcdsdevices.mrco_motion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pc">pcdsdevices.pc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pdu">pcdsdevices.pdu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-piezo">pcdsdevices.piezo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pim">pcdsdevices.pim</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pmps">pcdsdevices.pmps</a></li>
@@ -209,7 +212,7 @@
 <h1>pcdsdevices.areadetector.plugins.HDF5FileStore<a class="headerlink" href="#pcdsdevices-areadetector-plugins-hdf5filestore" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pcdsdevices.areadetector.plugins.HDF5FileStore">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.areadetector.plugins.</span></span><span class="sig-name descname"><span class="pre">HDF5FileStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.plugins.HDF5FileStore" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.areadetector.plugins.</span></span><span class="sig-name descname"><span class="pre">HDF5FileStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.plugins.HDF5FileStore" title="Link to this definition"></a></dt>
 <dd><p>HDF5 Plugin to use for interactive/in-scan saving at LCLS.</p>
 <p>Includes some mangling of the filename selection to keep
 the names human-readable because we don’t actually use
@@ -227,49 +230,49 @@ filestore/databroker at LCLS.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>auto_increment (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AutoIncrement</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>auto_save (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AutoSave</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>capture (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Capture</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>delete_driver_file (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">DeleteDriverFile</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>file_format (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FileFormat</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>file_name (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FileName</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>file_number (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FileNumber</span></code></p></td>
 <td><p>[FileNumber r/w longout] File number</p></td>
 <td><p>normal</p></td>
@@ -290,14 +293,14 @@ filestore/databroker at LCLS.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>file_template (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FileTemplate</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>file_write_mode (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FileWriteMode</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
@@ -311,7 +314,7 @@ filestore/databroker at LCLS.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>num_capture (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NumCapture</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
@@ -325,14 +328,14 @@ filestore/databroker at LCLS.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>read_file (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ReadFile</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>write_file (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">WriteFile</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
@@ -360,7 +363,7 @@ filestore/databroker at LCLS.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>array_counter (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArrayCounter</span></code></p></td>
 <td><p>[ArrayCounter r/w longout] Counter that increments by 1 each time an NDArray callback is processed</p></td>
 <td><p>normal</p></td>
@@ -490,7 +493,7 @@ PoolAllocBuffers and PoolFreeBuffers.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>blocking_callbacks (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">BlockingCallbacks</span></code></p></td>
 <td><dl>
 <dt>[BlockingCallbacks r/w bo]</dt><dd><p>0 = callbacks from the driver do not block; the NDArray data is put on a queue and
@@ -504,14 +507,14 @@ thread.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>color_mode (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ColorMode</span></code></p></td>
 <td><p>0=Mono 1=Bayer 2=RGB1 3=RGB2 4=RGB3 5=YUV444 6=YUV422 7=YUV421</p></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>data_type (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">DataType</span></code></p></td>
 <td><p>0=Int8 1=UInt8 2=Int16 3=UInt16 4=Int32 5=UInt32 6=Float32 7=Float64</p></td>
 <td><p>normal</p></td>
@@ -546,14 +549,14 @@ thread.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>dimensions (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dimensions</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>dropped_arrays (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">DroppedArrays</span></code></p></td>
 <td><dl class="simple">
 <dt>[DroppedArrays r/w longout]</dt><dd><p>Counter that increments by 1 each time an NDArray callback occurs when NDPluginDriverBlockingCallbacks=0
@@ -565,7 +568,7 @@ and the plugin driver queue is full, so the callback cannot be processed.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>enable (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">EnableCallbacks</span></code></p></td>
 <td><dl class="simple">
 <dt>[EnableCallbacks r/w bo]</dt><dd><p>Enable (1) or disable (0) callbacks from the driver to this plugin. If callbacks
@@ -577,7 +580,7 @@ are disabled then the plugin will normally be idle and consume no CPU resources.
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>min_callback_time (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">MinCallbackTime</span></code></p></td>
 <td><dl class="simple">
 <dt>[MinCallbackTime r/w ao]</dt><dd><p>The minimum time in seconds between calls to processCallbacks. Any callbacks occuring
@@ -590,7 +593,7 @@ process all callbacks.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>nd_array_address (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NDArrayAddress</span></code></p></td>
 <td><dl class="simple">
 <dt>[NDArrayAddress r/w longout]</dt><dd><p>asyn port address for NDArray driver that will make callbacks to this plugin. This
@@ -603,7 +606,7 @@ in the NDArray driver.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>nd_array_port (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NDArrayPort</span></code></p></td>
 <td><dl class="simple">
 <dt>[NDArrayPort r/w stringout]</dt><dd><p>asyn port name for NDArray driver that will make callbacks to this plugin. This
@@ -615,7 +618,7 @@ port can be changed at run time, connecting the plugin to a different NDArray dr
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>ndimensions (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NDimensions</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
@@ -643,7 +646,7 @@ port can be changed at run time, connecting the plugin to a different NDArray dr
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>queue_size (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">QueueSize</span></code></p></td>
 <td><p>[QueueSize r/o longin] The total queue size for callbacks when BlockingCallbacks=0.</p></td>
 <td><p>normal</p></td>
@@ -685,7 +688,7 @@ port can be changed at run time, connecting the plugin to a different NDArray dr
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>boundary_align (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">BoundaryAlign</span></code></p></td>
 <td><dl>
 <dt>[BoundaryAlign r/w longout]</dt><dd><p>Set the disk boundary alignment in bytes. This parameter can be used to optimise
@@ -704,7 +707,7 @@ where the it is optimal to align data to the ‘stripe size’ (default 1MB).</p
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>boundary_threshold (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">BoundaryThreshold</span></code></p></td>
 <td><dl>
 <dt>[BoundaryThreshold r/w longout]</dt><dd><p>Set a minimum size (bytes) of chunk or dataset where boundary alignment is to be
@@ -718,14 +721,14 @@ boundary alignment as it could blow up the file size.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>compression (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Compression</span></code></p></td>
 <td><p>[Compression r/w mbbo] Select or switch off compression filter</p></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>data_bits_offset (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">DataBitsOffset</span></code></p></td>
 <td><p>[DataBitsOffset r/w longout] N-bit compression filter: dataword bit-offset in pixel</p></td>
 <td><p>config</p></td>
@@ -753,7 +756,7 @@ boundary alignment as it could blow up the file size.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>num_col_chunks (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NumColChunks</span></code></p></td>
 <td><dl class="simple">
 <dt>[NumColChunks r/w longout]</dt><dd><p>Configure HDF5 “chunking” to approriate size for the filesystem: sets
@@ -765,21 +768,21 @@ number of columns to use per chunk</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>num_data_bits (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NumDataBits</span></code></p></td>
 <td><p>[NumDataBits r/w longout] N-bit compression filter: number of data bits per pixel</p></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>num_extra_dims (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NumExtraDims</span></code></p></td>
 <td><p>[NumExtraDims r/w mbbo] Number of extra dimensions [0..2]</p></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>num_frames_chunks (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NumFramesChunks</span></code></p></td>
 <td><dl class="simple">
 <dt>[NumFramesChunks r/w longout]</dt><dd><p>Configure HDF5 “chunking” to approriate size for the filesystem: sets
@@ -792,7 +795,7 @@ implies using in-memory cache as HDF5 only writes full chunks to disk.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>num_frames_flush (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NumFramesFlush</span></code></p></td>
 <td><dl class="simple">
 <dt>[NumFramesFlush r/w longout]</dt><dd><p>Flush the file metadata to disk every N’th frame. Image data is written to disk
@@ -805,7 +808,7 @@ and indices is normally only written at close time.</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>num_row_chunks (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NumRowChunks</span></code></p></td>
 <td><dl class="simple">
 <dt>[NumRowChunks r/w longout]</dt><dd><p>Configure HDF5 “chunking” to approriate size for the filesystem: sets
@@ -824,28 +827,28 @@ number of rows to use per chunk</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>szip_num_pixels (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SZipNumPixels</span></code></p></td>
 <td><p>[SZipNumPixels r/w longout] szip compression filter: number of pixels in filter [1..32]</p></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>store_attr (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">StoreAttr</span></code></p></td>
 <td><p>0=’No’ 1=’Yes’</p></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>store_perform (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">StorePerform</span></code></p></td>
 <td><p>0=’No’ 1=’Yes’</p></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>zlevel (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ZLevel</span></code></p></td>
 <td><p>[ZLevel r/w longout] zlib compression filter: compression level [1..9]</p></td>
 <td><p>config</p></td>
@@ -866,7 +869,7 @@ number of rows to use per chunk</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>lazy_open (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">LazyOpen</span></code></p></td>
 <td><p>0=’No’ 1=’Yes’</p></td>
 <td><p>normal</p></td>
@@ -880,7 +883,7 @@ number of rows to use per chunk</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>xml_file_name (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">XMLFileName</span></code></p></td>
 <td><dl class="simple">
 <dt>[XMLFileName r/w waveform]</dt><dd><p>XML filename, pointing to an XML HDF5 Layout Definition
@@ -907,7 +910,7 @@ long (NELM=1MB)</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>array_callbacks (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArrayCallbacks</span></code></p></td>
 <td><p>0=’Disable’ 1=’Enable’</p></td>
 <td><p>normal</p></td>
@@ -928,42 +931,42 @@ long (NELM=1MB)</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>create_directory (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">CreateDirectory</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>temp_suffix (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">TempSuffix</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>nd_attribute_chunk (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NDAttributeChunk</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>dim_att_datasets (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">DimAttDatasets</span></code></p></td>
 <td><p>0=’No’ 1=’Yes’</p></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>fill_value (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FillValue</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>position_mode (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PositionMode</span></code></p></td>
 <td><p>0=’Off’ 1=’On’</p></td>
 <td><p>normal</p></td>
@@ -984,7 +987,7 @@ long (NELM=1MB)</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>swmr_mode (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SWMRMode</span></code></p></td>
 <td><p>0=’Off’ 1=’On’</p></td>
 <td><p>normal</p></td>
@@ -1040,14 +1043,14 @@ long (NELM=1MB)</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>disordered_arrays (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">DisorderedArrays</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>dropped_output_arrays (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">DroppedOutputArrays</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
@@ -1075,7 +1078,7 @@ long (NELM=1MB)</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>num_threads (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NumThreads</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
@@ -1103,21 +1106,21 @@ long (NELM=1MB)</p>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>sort_mode (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SortMode</span></code></p></td>
 <td><p>0=Unsorted 1=Sorted</p></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>sort_size (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SortSize</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>sort_time (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SortTime</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
@@ -1173,70 +1176,70 @@ long (NELM=1MB)</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>dim0_sa</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dim0SA</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>dim1_sa</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dim1SA</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>dim2_sa</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dim2SA</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td><p>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">HDF5Plugin_V31</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>dim3_sa</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dim3SA</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim4_sa</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dim4SA</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim5_sa</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dim5SA</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim6_sa</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dim6SA</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim7_sa</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dim7SA</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim8_sa</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dim8SA</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim9_sa</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dim9SA</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
@@ -1341,70 +1344,70 @@ long (NELM=1MB)</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>size_3</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimSize3</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>size_4</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimSize4</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>size_5</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimSize5</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>size_6</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimSize6</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>size_7</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimSize7</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>size_8</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimSize8</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>size_9</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimSize9</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>size_x</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimSizeX</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>size_y</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimSizeY</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>size_n</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimSizeN</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
@@ -1460,63 +1463,63 @@ long (NELM=1MB)</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>chunk_3</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimChunk3</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>chunk_4</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimChunk4</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>chunk_5</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimChunk5</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>chunk_6</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimChunk6</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>chunk_7</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimChunk7</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>chunk_8</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimChunk8</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>chunk_9</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimChunk9</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>chunk_x</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimChunkX</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>chunk_y</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ExtraDimChunkY</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
@@ -1537,70 +1540,70 @@ long (NELM=1MB)</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>dim_3</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosIndexDim3</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim_4</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosIndexDim4</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim_5</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosIndexDim5</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim_6</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosIndexDim6</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim_7</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosIndexDim7</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim_8</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosIndexDim8</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim_9</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosIndexDim9</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim_x</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosIndexDimX</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim_y</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosIndexDimY</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim_n</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosIndexDimN</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
@@ -1621,70 +1624,70 @@ long (NELM=1MB)</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>dim_3</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosNameDim3</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim_4</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosNameDim4</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim_5</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosNameDim5</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim_6</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosNameDim6</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim_7</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosNameDim7</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim_8</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosNameDim8</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim_9</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosNameDim9</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim_x</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosNameDimX</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dim_y</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosNameDimY</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>dim_n</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">PosNameDimN</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
@@ -1705,70 +1708,70 @@ long (NELM=1MB)</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>array_size0</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArraySize0</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>array_size1</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArraySize1</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>array_size2</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArraySize2</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>array_size3</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArraySize3</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>array_size4</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArraySize4</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>array_size5</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArraySize5</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>array_size6</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArraySize6</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>array_size7</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArraySize7</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>array_size8</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArraySize8</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>array_size9</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ArraySize9</span></code></p></td>
 <td></td>
 <td><p>config</p></td>
@@ -1973,7 +1976,7 @@ device, or modify the <code class="docutils literal notranslate"><span class="pr
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.areadetector.plugins.HDF5FileStore.set_defaults">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.plugins.HDF5FileStore.set_defaults" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.plugins.HDF5FileStore.set_defaults" title="Link to this definition"></a></dt>
 <dd><p>Set class-wide defaults for device communications</p>
 <p>This may be called only before any instances of Device are
 made.</p>
@@ -1997,7 +2000,7 @@ IOC.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.areadetector.plugins.HDF5FileStore.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.plugins.HDF5FileStore.stop" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.plugins.HDF5FileStore.stop" title="Link to this definition"></a></dt>
 <dd><p>Stop the Device and all (instantiated) subdevices</p>
 </dd></dl>
 
@@ -2008,7 +2011,7 @@ IOC.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.areadetector.plugins.HDF5FileStore.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.areadetector.plugins.HDF5FileStore.trigger" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.areadetector.plugins.HDF5FileStore.trigger" title="Link to this definition"></a></dt>
 <dd><p>Trigger the device and return status object.</p>
 <p>This method is responsible for implementing ‘trigger’ or
 ‘acquire’ functionality of this device.</p>
@@ -2016,14 +2019,14 @@ IOC.</p>
 and it being able to be read (via the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
 also responsible for arranging that the
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
 is notified when the device is ready to be read.</p>
 <p>If there is no delay between triggering and being readable,
-then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
 object which is already completed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
 as complete when the device is ready to be read.</p>
 </dd>
 </dl>

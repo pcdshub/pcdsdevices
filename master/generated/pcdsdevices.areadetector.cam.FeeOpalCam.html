@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.areadetector.cam.FeeOpalCam &mdash; PCDS Devices 8.8.1.dev35+ga9bcb134 documentation</title>
+  <title>pcdsdevices.areadetector.cam.FeeOpalCam &mdash; PCDS Devices 8.8.2.dev147+gcea2b898 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,8 +14,8 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=eaaf3a4c"></script>
-      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/documentation_options.js?v=0581115c"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
@@ -65,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-bootstrap">pcdsdevices.cvmi_bootstrap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-motion">pcdsdevices.cvmi_motion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dc-devices">pcdsdevices.dc_devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dccm">pcdsdevices.dccm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-delay-generator">pcdsdevices.delay_generator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-device">pcdsdevices.device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-digital-signals">pcdsdevices.digital_signals</a></li>
@@ -77,6 +78,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-example">pcdsdevices.example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-fms">pcdsdevices.fms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gbs">pcdsdevices.gbs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-inout">pcdsdevices.inout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-interface">pcdsdevices.interface</a></li>
@@ -109,6 +111,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mps">pcdsdevices.mps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mrco-motion">pcdsdevices.mrco_motion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pc">pcdsdevices.pc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pdu">pcdsdevices.pdu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-piezo">pcdsdevices.piezo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pim">pcdsdevices.pim</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pmps">pcdsdevices.pmps</a></li>
@@ -193,7 +196,7 @@
 <h1>pcdsdevices.areadetector.cam.FeeOpalCam<a class="headerlink" href="#pcdsdevices-areadetector-cam-feeopalcam" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pcdsdevices.areadetector.cam.FeeOpalCam">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.areadetector.cam.</span></span><span class="sig-name descname"><span class="pre">FeeOpalCam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_attrs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_attrs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">child_name_separator='_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.cam.FeeOpalCam" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.areadetector.cam.</span></span><span class="sig-name descname"><span class="pre">FeeOpalCam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_attrs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_attrs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">child_name_separator='_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.cam.FeeOpalCam" title="Link to this definition"></a></dt>
 <dd><p>Opal camera used in the FEE for the PIMs.</p>
 <table class="docutils align-default" id="id2">
 <caption><span class="caption-text">Ophyd Device Components</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
@@ -212,199 +215,199 @@
 <td></td>
 <td></td>
 <td><p>config</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>array_counter</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>array_rate</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FrameRate</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>asyn_io (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AsynIO</span></code></p></td>
 <td><p>[AsynIO N/A asyn] asyn record to control debugging (asynTrace)</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>nd_attributes_file</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>pool_alloc_buffers</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>pool_free_buffers</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>pool_max_buffers</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>pool_max_mem</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>pool_used_buffers</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>pool_used_mem</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>port_name</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>acquire</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Acquire</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>acquire_period (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AcquirePeriod</span></code></p></td>
 <td><p>[AcquirePeriod r/w ao] Acquisition period between images</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>acquire_time (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AcquireTime</span></code></p></td>
 <td><p>[AcquireTime r/w ao] Acquisition time per image</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>array_callbacks</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>array_size</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>array_size_bytes</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>bin_x (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">BinX</span></code></p></td>
 <td><p>[BinX r/w longout] Binning in the X direction</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>bin_y (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">BinY</span></code></p></td>
 <td><p>[BinY r/w longout] Binning in the Y direction</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>color_mode</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>data_type</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SynSignal</span></code></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>detector_state (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">DetectorState_RBV</span></code></p></td>
 <td><p>[DetectorState_RBV r/o mbbi] Acquisition status (ADStatus_t)</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>frame_type (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FrameType</span></code></p></td>
 <td><p>[FrameType r/w mbbo] Frame type (ADFrameType_t).</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>gain (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Gain</span></code></p></td>
 <td><p>[Gain r/w ao] Detector gain</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>image_mode (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ImageMode</span></code></p></td>
 <td><p>[ImageMode r/w mbbo] Image mode (ADImageMode_t).</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>manufacturer (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Manufacturer_RBV</span></code></p></td>
 <td><p>[Manufacturer_RBV r/o stringin] Detector manufacturer name</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>max_size (DDC)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MaxSize</span></code></p></td>
 <td><p>(See below)</p></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>min_x (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">MinX</span></code></p></td>
 <td><dl>
 <dt>[MinX r/w longout]</dt><dd><p>First pixel to read in the X direction.</p>
@@ -413,10 +416,10 @@
 </dl>
 </td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>min_y (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">MinY</span></code></p></td>
 <td><dl class="simple">
 <dt>[MinY r/w longout]</dt><dd><p>First pixel to read in the Y direction.
@@ -425,21 +428,21 @@
 </dl>
 </td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>model (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Model_RBV</span></code></p></td>
 <td><p>[Model_RBV r/o stringin] Detector model name</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>num_exposures (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NumExposures</span></code></p></td>
 <td><p>[NumExposures r/w longout] Number of exposures per image to acquire</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>num_exposures_counter (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
@@ -451,14 +454,14 @@ Driver resets to 0 when acquisition is started.</p>
 </dl>
 </td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>num_images (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NumImages</span></code></p></td>
 <td><p>[NumImages r/w longout] Number of images to acquire in one acquisition sequence</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>num_images_counter (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
@@ -471,7 +474,7 @@ the loop counter when ADImageMode=ADImageMultiple.</p>
 </dl>
 </td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>read_status (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
@@ -484,21 +487,21 @@ may be some circumstances under which forcing a status read may be needed.</p>
 </dl>
 </td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>reverse (DDC)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Reverse</span></code></p></td>
 <td><p>(See below)</p></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>shutter_close_delay (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ShutterCloseDelay</span></code></p></td>
 <td><p>[ShutterCloseDelay r/w ao] Time required for the shutter to actually close (ADShutterStatus_t)</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>shutter_close_epics (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
@@ -511,14 +514,14 @@ EPICS-controllable shutter can be used.</p>
 </dl>
 </td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>shutter_control (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ShutterControl</span></code></p></td>
 <td><p>[ShutterControl r/w bo] Shutter control for the selected (detector or EPICS) shutter (ADShutterStatus_t)</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>shutter_control_epics (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
@@ -531,28 +534,28 @@ shutter.</p>
 </dl>
 </td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>shutter_fanout (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ShutterFanout</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>shutter_mode (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ShutterMode</span></code></p></td>
 <td><p>[ShutterMode r/w mbbo] Shutter mode (None, detector-controlled or EPICS-controlled) (ADShutterMode_t)</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>shutter_open_delay (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ShutterOpenDelay</span></code></p></td>
 <td><p>[ShutterOpenDelay r/w ao] Time required for the shutter to actually open (ADShutterStatus_t)</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>shutter_open_epics (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
@@ -565,7 +568,7 @@ EPICS-controllable shutter can be used.</p>
 </dl>
 </td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>shutter_status_epics (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
@@ -581,56 +584,56 @@ the shutter is open.</p>
 </dl>
 </td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>shutter_status (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ShutterStatus_RBV</span></code></p></td>
 <td><p>[ShutterStatus_RBV r/o bi] Status of the detector-controlled shutter (ADShutterStatus_t)</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>size (DDC)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Size</span></code></p></td>
 <td><p>(See below)</p></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>status_message (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">StatusMessage_RBV</span></code></p></td>
 <td><p>[StatusMessage_RBV r/o waveform] Status message string</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>string_from_server (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">StringFromServer_RBV</span></code></p></td>
 <td><p>[StringFromServer_RBV r/o waveform] String from string-based vendor server to driver</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>string_to_server (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">StringToServer_RBV</span></code></p></td>
 <td><p>[StringToServer_RBV r/o waveform] String from driver to string-based vendor server</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>temperature (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Temperature</span></code></p></td>
 <td><p>[Temperature r/w ao] Detector temperature</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>temperature_actual (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">TemperatureActual</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>time_remaining (ADComponent)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
@@ -642,59 +645,59 @@ the exposure timing internally, rather than in the detector hardware.</p>
 </dl>
 </td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>trigger_mode (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">TriggerMode</span></code></p></td>
 <td><p>[TriggerMode r/w mbbo] Trigger mode (ADTriggerMode_t).</p></td>
 <td><p>normal</p></td>
-<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p>Inherited from <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>min_callback_time (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">MinCallbackTime</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>blocking_callbacks (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">BlockingCallbacks</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>enable_callbacks (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">EnableCallbacks</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>dropped_arrays (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">DroppedArrays</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>nd_array_address (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NDArrayAddress</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>queue_size (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">QueueSize</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>nd_array_port (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NDArrayPort</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
@@ -1093,14 +1096,14 @@ the exposure timing internally, rather than in the detector hardware.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>reverse_x</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ReverseX</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>reverse_y</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ReverseY</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
@@ -1121,14 +1124,14 @@ the exposure timing internally, rather than in the detector hardware.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>size_x</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SizeX</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>size_y</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.base.EpicsSignalWithRBV.html#ophyd.areadetector.base.EpicsSignalWithRBV" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalWithRBV</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SizeY</span></code></p></td>
 <td></td>
 <td><p>normal</p></td>
@@ -1281,7 +1284,7 @@ device, or modify the <code class="docutils literal notranslate"><span class="pr
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.areadetector.cam.FeeOpalCam.set_defaults">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.cam.FeeOpalCam.set_defaults" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.cam.FeeOpalCam.set_defaults" title="Link to this definition"></a></dt>
 <dd><p>Set class-wide defaults for device communications</p>
 <p>This may be called only before any instances of Device are
 made.</p>
@@ -1305,7 +1308,7 @@ IOC.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.areadetector.cam.FeeOpalCam.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.cam.FeeOpalCam.stop" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.cam.FeeOpalCam.stop" title="Link to this definition"></a></dt>
 <dd><p>Stop the Device and all (instantiated) subdevices</p>
 </dd></dl>
 
@@ -1316,7 +1319,7 @@ IOC.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.areadetector.cam.FeeOpalCam.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.areadetector.cam.FeeOpalCam.trigger" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.areadetector.cam.FeeOpalCam.trigger" title="Link to this definition"></a></dt>
 <dd><p>Trigger the device and return status object.</p>
 <p>This method is responsible for implementing ‘trigger’ or
 ‘acquire’ functionality of this device.</p>
@@ -1324,14 +1327,14 @@ IOC.</p>
 and it being able to be read (via the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
 also responsible for arranging that the
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
 is notified when the device is ready to be read.</p>
 <p>If there is no delay between triggering and being readable,
-then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
 object which is already completed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.6.dev12+g85e8d50f)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
 as complete when the device is ready to be read.</p>
 </dd>
 </dl>
