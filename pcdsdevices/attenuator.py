@@ -1387,6 +1387,31 @@ class AT2K2(AttenuatorSXR_Ladder):
     """
 
 
+class AT3K2(AttenuatorSXR_LadderTwoBladeLBD):
+    """
+    AT1K2 solid attenuator variant from the LCLS-II L2SI project.
+
+    This has 2 blades, each with up to 8 filters each.
+    This class includes a calculator to aid in determining which filters to
+    insert for a given attenuation at a specific energy.
+    This class also includes control for the Kurt J. Lesker LBD system,
+    allowing IN/OUT state for mirror mount.
+
+    Parameters
+    ----------
+    prefix : str
+        Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+
+    calculator_prefix : str
+        The prefix for the calculator PVs.
+    """
+    flow_meter = None
+    blade_03 = None
+
+
 class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
     """
     AT2L0 solid attenuator variant from the LCLS-II XTES project.
