@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; PCDS Devices 8.8.1.dev35+ga9bcb134 documentation</title>
+  <title>API &mdash; PCDS Devices 8.8.2.dev60+ge21acce2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/_static/theme_overrides.css" />
@@ -14,8 +14,8 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=eaaf3a4c"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/documentation_options.js?v=c91e6215"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="_static/js/theme.js"></script>
@@ -110,6 +110,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.AT1K4.html">pcdsdevices.attenuator.AT1K4</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.AT2K2.html">pcdsdevices.attenuator.AT2K2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.AT2L0.html">pcdsdevices.attenuator.AT2L0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.AT3K2.html">pcdsdevices.attenuator.AT3K2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBase.html">pcdsdevices.attenuator.AttBase</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBaseWith3rdHarmonic.html">pcdsdevices.attenuator.AttBaseWith3rdHarmonic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP.html">pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP</a></li>
@@ -188,6 +189,13 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dc_devices.ICT.html">pcdsdevices.dc_devices.ICT</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dc_devices.ICTBus.html">pcdsdevices.dc_devices.ICTBus</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dc_devices.ICTChannel.html">pcdsdevices.dc_devices.ICTChannel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-dccm">pcdsdevices.dccm</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dccm.DCCM.html">pcdsdevices.dccm.DCCM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dccm.DCCMEnergy.html">pcdsdevices.dccm.DCCMEnergy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dccm.DCCMEnergyWithACRStatus.html">pcdsdevices.dccm.DCCMEnergyWithACRStatus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.dccm.DCCMEnergyWithVernier.html">pcdsdevices.dccm.DCCMEnergyWithVernier</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-delay-generator">pcdsdevices.delay_generator</a><ul>
@@ -1204,79 +1212,82 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AT2L0.html#pcdsdevices.attenuator.AT2L0" title="pcdsdevices.attenuator.AT2L0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AT2L0</span></code></a>(*args[, ...])</p></td>
 <td><p>AT2L0 solid attenuator variant from the LCLS-II XTES project.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttBase</span></code></a>(prefix, *, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AT3K2.html#pcdsdevices.attenuator.AT3K2" title="pcdsdevices.attenuator.AT3K2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AT3K2</span></code></a>(*args[, limits])</p></td>
+<td><p>AT1K2 solid attenuator variant from the LCLS-II L2SI project.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttBase</span></code></a>(prefix, *, ...)</p></td>
 <td><p>Base class for pre-L2SI beam power attenuators.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBaseWith3rdHarmonic.html#pcdsdevices.attenuator.AttBaseWith3rdHarmonic" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttBaseWith3rdHarmonic</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBaseWith3rdHarmonic.html#pcdsdevices.attenuator.AttBaseWith3rdHarmonic" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttBaseWith3rdHarmonic</span></code></a>(...)</p></td>
 <td><p>Base class for attenuators with 3rd harmonic frequency.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP.html#pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP.html#pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP</span></code></a>(...)</p></td>
 <td><p>Base class for Lightpath-compatible attenuators with 3rd harmonic frequency.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.Attenuator.html#pcdsdevices.attenuator.Attenuator" title="pcdsdevices.attenuator.Attenuator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.Attenuator</span></code></a>(prefix, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.Attenuator.html#pcdsdevices.attenuator.Attenuator" title="pcdsdevices.attenuator.Attenuator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.Attenuator</span></code></a>(prefix, ...)</p></td>
 <td><p>A series of filters that attenuates the beam.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorBase.html#pcdsdevices.attenuator.AttenuatorCalculatorBase" title="pcdsdevices.attenuator.AttenuatorCalculatorBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculatorBase</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorBase.html#pcdsdevices.attenuator.AttenuatorCalculatorBase" title="pcdsdevices.attenuator.AttenuatorCalculatorBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculatorBase</span></code></a>(...)</p></td>
 <td><p>Base class for new-style caproto IOC attenuator calculator devices.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorFilter.html#pcdsdevices.attenuator.AttenuatorCalculatorFilter" title="pcdsdevices.attenuator.AttenuatorCalculatorFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculatorFilter</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorFilter.html#pcdsdevices.attenuator.AttenuatorCalculatorFilter" title="pcdsdevices.attenuator.AttenuatorCalculatorFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculatorFilter</span></code></a>(...)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade.html#pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade" title="pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade.html#pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade" title="pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade</span></code></a>(...)</p></td>
 <td><p>A single blade, holding up to 8 filters.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade.html#pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade" title="pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade.html#pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade" title="pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade</span></code></a>(...)</p></td>
 <td><p>4 blade x 8 filter solid attenuator variant from the L2SI project.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorSXR_TwoBlade.html#pcdsdevices.attenuator.AttenuatorCalculatorSXR_TwoBlade" title="pcdsdevices.attenuator.AttenuatorCalculatorSXR_TwoBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculatorSXR_TwoBlade</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorSXR_TwoBlade.html#pcdsdevices.attenuator.AttenuatorCalculatorSXR_TwoBlade" title="pcdsdevices.attenuator.AttenuatorCalculatorSXR_TwoBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculatorSXR_TwoBlade</span></code></a>(...)</p></td>
 <td><p>2 blade x 8 filter solid attenuator variant from the L2SI project.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculator_AT2L0.html#pcdsdevices.attenuator.AttenuatorCalculator_AT2L0" title="pcdsdevices.attenuator.AttenuatorCalculator_AT2L0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculator_AT2L0</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculator_AT2L0.html#pcdsdevices.attenuator.AttenuatorCalculator_AT2L0" title="pcdsdevices.attenuator.AttenuatorCalculator_AT2L0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorCalculator_AT2L0</span></code></a>(...)</p></td>
 <td><p>Solid attenuator variant from the LCLS-II XTES project.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorSXR_Ladder.html#pcdsdevices.attenuator.AttenuatorSXR_Ladder" title="pcdsdevices.attenuator.AttenuatorSXR_Ladder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorSXR_Ladder</span></code></a>(*args)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorSXR_Ladder.html#pcdsdevices.attenuator.AttenuatorSXR_Ladder" title="pcdsdevices.attenuator.AttenuatorSXR_Ladder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorSXR_Ladder</span></code></a>(*args)</p></td>
 <td><p>Ladder-style solid attenuator variant from the LCLS-II L2SI project.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorSXR_LadderTwoBladeLBD.html#pcdsdevices.attenuator.AttenuatorSXR_LadderTwoBladeLBD" title="pcdsdevices.attenuator.AttenuatorSXR_LadderTwoBladeLBD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorSXR_LadderTwoBladeLBD</span></code></a>(*args)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorSXR_LadderTwoBladeLBD.html#pcdsdevices.attenuator.AttenuatorSXR_LadderTwoBladeLBD" title="pcdsdevices.attenuator.AttenuatorSXR_LadderTwoBladeLBD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttenuatorSXR_LadderTwoBladeLBD</span></code></a>(*args)</p></td>
 <td><p>Ladder-style solid attenuator variant from the LCLS-II L2SI project.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.FEESolidAttenuatorBlade.html#pcdsdevices.attenuator.FEESolidAttenuatorBlade" title="pcdsdevices.attenuator.FEESolidAttenuatorBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.FEESolidAttenuatorBlade</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.FEESolidAttenuatorBlade.html#pcdsdevices.attenuator.FEESolidAttenuatorBlade" title="pcdsdevices.attenuator.FEESolidAttenuatorBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.FEESolidAttenuatorBlade</span></code></a>(...)</p></td>
 <td><p>Represents one basic solid attenuator blade.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.FEESolidAttenuatorStates.html#pcdsdevices.attenuator.FEESolidAttenuatorStates" title="pcdsdevices.attenuator.FEESolidAttenuatorStates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.FEESolidAttenuatorStates</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.FEESolidAttenuatorStates.html#pcdsdevices.attenuator.FEESolidAttenuatorStates" title="pcdsdevices.attenuator.FEESolidAttenuatorStates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.FEESolidAttenuatorStates</span></code></a>(...)</p></td>
 <td><p>The states class for a standard in/out attenuator blade.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.FeeAtt.html#pcdsdevices.attenuator.FeeAtt" title="pcdsdevices.attenuator.FeeAtt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.FeeAtt</span></code></a>([prefix, name])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.FeeAtt.html#pcdsdevices.attenuator.FeeAtt" title="pcdsdevices.attenuator.FeeAtt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.FeeAtt</span></code></a>([prefix, name])</p></td>
 <td><p>Old attenuator IOC in the FEE.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.FeeFilter.html#pcdsdevices.attenuator.FeeFilter" title="pcdsdevices.attenuator.FeeFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.FeeFilter</span></code></a>(prefix, *, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.FeeFilter.html#pcdsdevices.attenuator.FeeFilter" title="pcdsdevices.attenuator.FeeFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.FeeFilter</span></code></a>(prefix, *, ...)</p></td>
 <td><p>A single attenuation blade, as implemented in the FEE.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.Filter.html#pcdsdevices.attenuator.Filter" title="pcdsdevices.attenuator.Filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.Filter</span></code></a>(prefix, *, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.Filter.html#pcdsdevices.attenuator.Filter" title="pcdsdevices.attenuator.Filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.Filter</span></code></a>(prefix, *, ...)</p></td>
 <td><p>A single attenuation blade.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.GasAttenuator.html#pcdsdevices.attenuator.GasAttenuator" title="pcdsdevices.attenuator.GasAttenuator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.GasAttenuator</span></code></a>(*args, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.GasAttenuator.html#pcdsdevices.attenuator.GasAttenuator" title="pcdsdevices.attenuator.GasAttenuator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.GasAttenuator</span></code></a>(*args, ...)</p></td>
 <td><p>AT*:GAS, Base class for an LCLS-II XTES gas attenuator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.GattApertureX.html#pcdsdevices.attenuator.GattApertureX" title="pcdsdevices.attenuator.GattApertureX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.GattApertureX</span></code></a>(prefix, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.GattApertureX.html#pcdsdevices.attenuator.GattApertureX" title="pcdsdevices.attenuator.GattApertureX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.GattApertureX</span></code></a>(prefix, ...)</p></td>
 <td><p>AT1K0 is a gas attenuator containing 4 discrete aperture arrays, each with 4 discrete aperture sizes to attenuate the intensity of the beam.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.GattApertureY.html#pcdsdevices.attenuator.GattApertureY" title="pcdsdevices.attenuator.GattApertureY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.GattApertureY</span></code></a>(prefix, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.GattApertureY.html#pcdsdevices.attenuator.GattApertureY" title="pcdsdevices.attenuator.GattApertureY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.GattApertureY</span></code></a>(prefix, ...)</p></td>
 <td><p>AT1K0 is a gas attenuator containing 4 discrete aperture arrays, each with 4 discrete aperture sizes to attenuate the intensity of the beam.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRGasAtt.html#pcdsdevices.attenuator.SXRGasAtt" title="pcdsdevices.attenuator.SXRGasAtt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRGasAtt</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRGasAtt.html#pcdsdevices.attenuator.SXRGasAtt" title="pcdsdevices.attenuator.SXRGasAtt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRGasAtt</span></code></a>(*args, **kwargs)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorBlade.html#pcdsdevices.attenuator.SXRLadderAttenuatorBlade" title="pcdsdevices.attenuator.SXRLadderAttenuatorBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorBlade</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorBlade.html#pcdsdevices.attenuator.SXRLadderAttenuatorBlade" title="pcdsdevices.attenuator.SXRLadderAttenuatorBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorBlade</span></code></a>(...)</p></td>
 <td><p>Represents one ladder solid attenuator blade.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorStates.html#pcdsdevices.attenuator.SXRLadderAttenuatorStates" title="pcdsdevices.attenuator.SXRLadderAttenuatorStates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorStates</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorStates.html#pcdsdevices.attenuator.SXRLadderAttenuatorStates" title="pcdsdevices.attenuator.SXRLadderAttenuatorStates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorStates</span></code></a>(...)</p></td>
 <td><p>The states class for the SXR Ladder-style attenuators.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.get_blade_enum.html#pcdsdevices.attenuator.get_blade_enum" title="pcdsdevices.attenuator.get_blade_enum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.get_blade_enum</span></code></a>(value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.get_blade_enum.html#pcdsdevices.attenuator.get_blade_enum" title="pcdsdevices.attenuator.get_blade_enum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.get_blade_enum</span></code></a>(value)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.render_ascii_att.html#pcdsdevices.attenuator.render_ascii_att" title="pcdsdevices.attenuator.render_ascii_att"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.render_ascii_att</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.render_ascii_att.html#pcdsdevices.attenuator.render_ascii_att" title="pcdsdevices.attenuator.render_ascii_att"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.render_ascii_att</span></code></a>(...)</p></td>
 <td><p>Creates the attenuator ascii art.</p></td>
 </tr>
 </tbody>
@@ -1425,6 +1436,25 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.dc_devices.ICTChannel.html#pcdsdevices.dc_devices.ICTChannel" title="pcdsdevices.dc_devices.ICTChannel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.dc_devices.ICTChannel</span></code></a>(prefix, ...)</p></td>
 <td><p>Class to define a particular channel of the ICT.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="pcdsdevices-dccm">
+<h2>pcdsdevices.dccm<a class="headerlink" href="#pcdsdevices-dccm" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.dccm.DCCM.html#pcdsdevices.dccm.DCCM" title="pcdsdevices.dccm.DCCM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.dccm.DCCM</span></code></a>([prefix])</p></td>
+<td><p>The full DCCM assembly.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.dccm.DCCMEnergy.html#pcdsdevices.dccm.DCCMEnergy" title="pcdsdevices.dccm.DCCMEnergy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.dccm.DCCMEnergy</span></code></a>(*args, **kwargs)</p></td>
+<td><p>DCCM energy motor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.dccm.DCCMEnergyWithACRStatus.html#pcdsdevices.dccm.DCCMEnergyWithACRStatus" title="pcdsdevices.dccm.DCCMEnergyWithACRStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.dccm.DCCMEnergyWithACRStatus</span></code></a>(prefix)</p></td>
+<td><p>CCM energy motor and ACR beam energy request with status.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.dccm.DCCMEnergyWithVernier.html#pcdsdevices.dccm.DCCMEnergyWithVernier" title="pcdsdevices.dccm.DCCMEnergyWithVernier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.dccm.DCCMEnergyWithVernier</span></code></a>(prefix)</p></td>
+<td><p>DCCM energy motor and the vernier.</p></td>
 </tr>
 </tbody>
 </table>

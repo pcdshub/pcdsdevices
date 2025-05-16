@@ -74,18 +74,33 @@
     .. rubric:: Methods
 
     
+    .. automethod:: camonitor
     .. automethod:: configure
     .. automethod:: describe
     .. automethod:: done_comparator
+    .. automethod:: end_monitor_thread
     .. automethod:: get
     .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
     .. automethod:: read
     .. automethod:: read_configuration
+    .. automethod:: screen
     .. automethod:: set
     .. automethod:: set_defaults
+    .. automethod:: set_position
+    .. automethod:: status
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
     
     
 
