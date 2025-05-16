@@ -53,6 +53,13 @@
           - normal
           - 
     
+        * - hla_enabled
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PHASCTL:HLA_ENABLED``
+          - HLA status
+          - omitted
+          - 
+    
         * - done
           - :class:`~ophyd.signal.EpicsSignal`
           - ``:PHASCTL:DELAY_MOVING``
@@ -61,6 +68,8 @@
           - 
     
 
+    
+    
     
     
     
@@ -84,6 +93,7 @@
 
     
     .. automethod:: camonitor
+    .. automethod:: check_hla
     .. automethod:: configure
     .. automethod:: describe
     .. automethod:: end_monitor_thread
