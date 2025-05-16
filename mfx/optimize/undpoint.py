@@ -44,11 +44,15 @@ DEFAULT_DONE_MOVE_PV = "SIOC:SYS0:ML07:AO216"
 
 
 def _get_2d_delta(mds: MultiDerivedSignal, items: SignalToValue) -> tuple[float, float]:
-    return tuple(items.values())
+    # See polarity note below
+    return tuple(-val for val in items.values())
 
 
 def _put_2d_delta(mds: MultiDerivedSignal, value: tuple[float, float]) -> SignalToValue:
-    return {mds.signals[0]: value[0], mds.signals[1]: value[1]}
+    # Note on the polarity:
+    # Setting 50 to the delta PV causes the real value to move by -50
+    # So, when you ask for 50 we'll put -50 to the delta PV instead, to move the real value by 50
+    return {mds.signals[0]: -value[0], mds.signals[1]: -value[1]}
 
 
 class UndPointDelta2D(PVPositioner):
@@ -229,8 +233,8 @@ class UndPointDelta2DSim(UndPointDelta2D):
         if value != self.actuate_value:
             return
         self.done.put(1 - self.done_value)
-        self._raw_x.put(self._raw_x.get() + (self.delta_x.get() / 1000))
-        self._raw_y.put(self._raw_y.get() + (self.delta_y.get() / 1000))
+        self._raw_x.put(self._raw_x.get() + (-self.delta_x.get() / 1000))
+        self._raw_y.put(self._raw_y.get() + (-self.delta_y.get() / 1000))
         self.actuate.put(1 - self.actuate_value)
         self.done.put(self.done_value)
 
