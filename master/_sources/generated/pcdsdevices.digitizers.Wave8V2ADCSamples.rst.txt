@@ -19,57 +19,57 @@
           - Notes
     
         * - sample0
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``Sample[0]``
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample0_RBV``
           - 
           - config
           - 
     
         * - sample1
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``Sample[1]``
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample1_RBV``
           - 
           - config
           - 
     
         * - sample2
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``Sample[2]``
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample2_RBV``
           - 
           - config
           - 
     
         * - sample3
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``Sample[3]``
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample3_RBV``
           - 
           - config
           - 
     
         * - sample4
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``Sample[4]``
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample4_RBV``
           - 
           - config
           - 
     
         * - sample5
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``Sample[5]``
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample5_RBV``
           - 
           - config
           - 
     
         * - sample6
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``Sample[6]``
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample6_RBV``
           - 
           - config
           - 
     
         * - sample7
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``Sample[7]``
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample7_RBV``
           - 
           - config
           - 
