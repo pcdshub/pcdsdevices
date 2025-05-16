@@ -137,6 +137,8 @@ class UndPointAbs2D(MvInterface, Device, PositionerBase):
         self._xpos_cache = None
         self._ypos_cache = None
         super().__init__(prefix, name=name, **kwargs)
+        # Alias
+        self.dxy = self.delta_xy
 
     @validate_call
     def move(
@@ -146,11 +148,21 @@ class UndPointAbs2D(MvInterface, Device, PositionerBase):
         moved_cb: Optional[Callable] = None,
         timeout: Optional[float] = None,
     ):
-        # Convert to the raw delta move
-        delta_move = (position[0] - self.position[0], position[1] - self.position[1])
         return self.delta_xy.move(
-            delta_move, wait=wait, moved_cb=moved_cb, timeout=timeout
+            self.get_delta_from_abs(position),
+            wait=wait,
+            moved_cb=moved_cb,
+            timeout=timeout,
         )
+
+    def get_delta_from_abs(self, position: tuple[float, float]) -> tuple[float, float]:
+        """
+        Convert the absolute position request to a delta move.
+
+        This is needed because our raw moves are deltas and we
+        need absolute positions for the optimizer.
+        """
+        return (position[0] - self.position[0], position[1] - self.position[1])
 
     @xpos.sub_value
     def _new_xpos(self, value: float, **kwargs):
