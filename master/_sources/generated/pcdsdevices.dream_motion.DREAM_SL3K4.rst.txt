@@ -1,0 +1,98 @@
+﻿pcdsdevices.dream\_motion.DREAM\_SL3K4
+======================================
+
+.. currentmodule:: pcdsdevices.dream_motion
+
+.. autoclass:: DREAM_SL3K4
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - top
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - ``:m7``
+          - 
+          - normal
+          - 
+    
+        * - bottom
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - ``:m12``
+          - 
+          - normal
+          - 
+    
+        * - north
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - ``:m9``
+          - 
+          - normal
+          - 
+    
+        * - south
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - ``:m8``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

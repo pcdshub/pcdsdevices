@@ -89,6 +89,7 @@ pcdsdevices.attenuator
     pcdsdevices.attenuator.AT1K4
     pcdsdevices.attenuator.AT2K2
     pcdsdevices.attenuator.AT2L0
+    pcdsdevices.attenuator.AT3K2
     pcdsdevices.attenuator.AttBase
     pcdsdevices.attenuator.AttBaseWith3rdHarmonic
     pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP
@@ -192,6 +193,17 @@ pcdsdevices.dc_devices
     pcdsdevices.dc_devices.ICTBus
     pcdsdevices.dc_devices.ICTChannel
 
+pcdsdevices.dccm
+----------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.dccm.DCCM
+    pcdsdevices.dccm.DCCMEnergy
+    pcdsdevices.dccm.DCCMEnergyWithACRStatus
+    pcdsdevices.dccm.DCCMEnergyWithVernier
+
 pcdsdevices.delay_generator
 ---------------------------
 
@@ -259,6 +271,7 @@ pcdsdevices.dream_motion
     pcdsdevices.dream_motion.DREAM_GasJet
     pcdsdevices.dream_motion.DREAM_GasNozzle
     pcdsdevices.dream_motion.DREAM_MC_Y
+    pcdsdevices.dream_motion.DREAM_SL3K4
 
 pcdsdevices.energy_monitor
 --------------------------
@@ -1085,6 +1098,7 @@ pcdsdevices.slits
     pcdsdevices.slits.LusiSlitPositioner
     pcdsdevices.slits.LusiSlits
     pcdsdevices.slits.PowerSlits
+    pcdsdevices.slits.SL2K4Slits
     pcdsdevices.slits.SimLusiSlits
     pcdsdevices.slits.SlitPositioner
     pcdsdevices.slits.Slits
