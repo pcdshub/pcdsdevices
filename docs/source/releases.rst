@@ -2,6 +2,40 @@ Release History
 ###############
 
 
+v8.8.1 (2025-05-13)
+===================
+
+Device Features
+---------------
+- Changes gas needle y to BeckhoffAxisEps class instead of regular BeckhoffAxis
+- Adds new component event_trip to MPODApalisChannel
+- Updates the target number for tm2k4
+
+New Devices
+-----------
+- Adds new devices for dream motion
+    - `DREAM_MC_Y`: main chamber motion class
+    - `DREAM_CoilMover`: coil motor control
+    - `DREAM_GasJet`: gas jet X, Y motors
+    - `DREAM_GasNozzle`: gas nozzle X, Y, Z motors
+- Adds FMS related devices, focusing on Raritan sensors
+    - `SRCController`
+    - `RaritanSensor`
+    - `Floor`
+    - `PCWFlow`
+    - `PCWTemp`
+    - `AMBTemp`
+    - `Rack`
+
+Contributors
+------------
+- KaushikMalapati
+- jyin999
+- nrwslac
+- tongju
+
+
+
 v8.8.0 (2025-03-27)
 ===================
 

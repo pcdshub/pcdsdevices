@@ -15,7 +15,7 @@ class CalibrationAxis(TwinCATStatePMPS):
     Here, we specify 7 states, and 1 motor, for Y
     axe.Add OUT states IN, total is 8
     """
-    config = UpCpt(state_count=8, motor_count=1)
+    config = UpCpt(state_count=6, motor_count=1)
 
 
 class SCaFoil(BaseInterface, GroupDevice, LightpathMixin):
