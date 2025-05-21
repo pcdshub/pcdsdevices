@@ -1,4 +1,4 @@
-IssueNumber Title
+1255 add preset support for SQR1
 #################
 
 API Breaks

@@ -351,7 +351,7 @@ class SQR1(Device):
 
         if preset_pos is not None:
             axis_list = [self.x, self.y, self.z, self.rz, self.ry, self.rz]
-            if any(hasattr(a.presets.positions, preset_pos) for a in axis_list):
+            if all(hasattr(a.presets.positions, preset_pos) for a in axis_list):
                 x_sp = (getattr(self.x.presets.positions, preset_pos)).pos
                 y_sp = (getattr(self.y.presets.positions, preset_pos)).pos
                 z_sp = (getattr(self.z.presets.positions, preset_pos)).pos
@@ -359,7 +359,8 @@ class SQR1(Device):
                 ry_sp = (getattr(self.ry.presets.positions, preset_pos)).pos
                 rz_sp = (getattr(self.rz.presets.positions, preset_pos)).pos
             else:
-                logger.error('One of the axes is missing the desired state.')
+                raise ValueError('One of the axes is missing the desired'
+                                 'state.')
 
         x_sp = self.x.readback.get() if x_sp is None else x_sp
         y_sp = self.y.readback.get() if y_sp is None else y_sp
