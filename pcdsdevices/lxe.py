@@ -302,7 +302,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
                    original_units='ns',
                    kind='hinted',
                    doc='Setpoint which handles the timing conversion.',
-                   limits=(-2e-3, 2e-3),
+                   limits=(-100e-6, 100e-6),
                    )
     notepad_setpoint = Cpt(NotepadLinkedSignal, ':lxt:OphydSetpoint',
                            notepad_metadata={'record': 'ao',
