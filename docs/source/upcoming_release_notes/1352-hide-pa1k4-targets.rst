@@ -1,4 +1,4 @@
-1347 adding targets into tm2k4
+1352 hide-pa1k4-targets
 #################
 
 API Breaks
@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- adding new targets number into tm2k4
+- For ``PA1K4`` (`CalibrationAxis`), change target count from 7 to 5 to hide targets 6 and 7
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tongju
+- tongju12
