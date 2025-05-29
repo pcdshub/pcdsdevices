@@ -15,7 +15,7 @@ Device Features
 
 New Devices
 -----------
-- AT3K2
+- AT3K2 Custom Solid Attenuator w/ 2 blades and 8 filters on each blade.
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- Josue Zamudio (jozamudi)
+- jozamudi
