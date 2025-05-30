@@ -1406,7 +1406,7 @@ class AT3K2(AttenuatorSXR_LadderTwoBladeLBD):
     calculator_prefix : str
         The prefix for the calculator PVs.
     """
-    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 2)]
+    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 3)]
     flow_meter = None
     blade_03 = None
 
