@@ -455,6 +455,10 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
                       kind='normal',
                       doc='A Python-level user offset.'
                       )
+    hla_enabled = Cpt(EpicsSignal, ':PHASCTL:HLA_ENABLED',
+                      kind='omitted',
+                      doc='HLA status',
+                      )
 
     # The phase shifter will be moved after the above record is touched, so
     # use its done status:
@@ -482,6 +486,15 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
         """
         self.setpoint.user_offset = value
 
+    def check_hla(func):
+        def wrapper(self, *args, **kwargs):
+            if self.hla_enabled.get() == 1:
+                func(self, *args, **kwargs)
+            else:
+                raise Exception("HLA is not enabled.")
+        return wrapper
+
+    @check_hla
     def _setup_move(self, position):
         """Update the notepad setpoint, move, and do not wait."""
         try:
