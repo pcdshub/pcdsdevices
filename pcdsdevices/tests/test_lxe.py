@@ -241,8 +241,8 @@ def test_laser_timing_notepad(lxt):
 def test_laser_timing_init_configurables():
     logger.debug("test_laser_timing_init_configurables")
 
-    lcls1_lxt = LaserTiming("notarealpvplease", name="lcls1_lxt", invert=False, limits=(-1, 1))
-    lcls2_lxt = Lcls2LaserTiming("notarealpvplease", name="lcls1_lxt", invert=False, limits=(-1, 1))
+    lcls1_lxt = make_fake_device(LaserTiming)("notarealpvplease", name="lcls1_lxt", invert=False, limits=(-1, 1))
+    lcls2_lxt = make_fake_device(Lcls2LaserTiming)("notarealpvplease", name="lcls1_lxt", invert=False, limits=(-1, 1))
 
     # The limits we put in should read back
     assert lcls1_lxt.limits == (-1, 1)
@@ -259,6 +259,15 @@ def test_laser_timing_init_configurables():
     assert lcls2_lxt.setpoint.forward(10) > 0
     assert lcls1_lxt.setpoint.inverse(10) > 0
     assert lcls2_lxt.setpoint.inverse(10) > 0
+
+    # testing
+    lcls2_lxt.hla_enabled.put(1)
+    lcls2_lxt._setup_move(10)
+    assert lcls2_lxt.position == 10
+    lcls2_lxt.hla_enabled.put(0)
+    with pytest.raises(Exception):
+        lcls2_lxt._setup_move(0)
+    assert lcls2_lxt.position == 10
 
 
 @pytest.fixture
