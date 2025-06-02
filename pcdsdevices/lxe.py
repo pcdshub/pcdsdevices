@@ -31,6 +31,7 @@ import pathlib
 import time
 import types
 import typing
+from functools import wraps
 
 import numpy as np
 from ophyd import Component as Cpt
@@ -487,6 +488,7 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
         self.setpoint.user_offset = value
 
     def check_hla(func):
+        @wraps(func)
         def wrapper(self, *args, **kwargs):
             if self.hla_enabled.get() == 1:
                 func(self, *args, **kwargs)
