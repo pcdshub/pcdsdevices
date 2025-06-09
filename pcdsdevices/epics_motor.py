@@ -1562,6 +1562,20 @@ class SmarActOpenLoop(Device):
     module_temp = Cpt(EpicsSignalRO, ':MODTEMP', kind='normal',
                       doc='Temperature of the MCS2 Module in the rack')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Long name shenanigans
+        self.step_voltage.long_name = 'Step Voltage'
+        self.step_freq.long_name = 'Step Frequency'
+        self.jog_step_size.long_name = 'Jog Step Size'
+        self.jog_fwd.long_name = 'Jog Forward'
+        self.jog_rev.long_name = 'Jog Backward'
+        self.total_step_count.long_name = 'Total Step Count'
+        self.step_clear_cmd.long_name = 'Clear Step Count'
+        self.scan_move.long_name = 'Scan Voltage'
+        self.channel_temp.long_name = 'Channel Temp. (°C)'
+        self.module_temp.long_name = 'Module Temp. (°C)'
+
 
 class SmarActTipTilt(Device):
     """
@@ -1647,10 +1661,48 @@ class SmarAct(EpicsMotorInterface):
                        doc="Temperature at the channel's amplifier")
     module_temp = Cpt(EpicsSignalRO, ':MODTEMP', kind='normal',
                       doc='Temperature of the MCS2 Module in the rack')
+    channel_state_raw = Cpt(EpicsSignalRO, ':STATE_RBV', kind='omitted',
+                            doc='Channel state bitmask represented as raw int')
 
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
     open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Long name shenanigans
+        # Motor Record long name overrides
+        self.velocity.long_name = 'Velocity'
+        self.velocity_base.long_name = 'Velocity Min'
+        self.velocity_max.long_name = 'Velocity Max'
+        self.acceleration.long_name = 'Acceleration'
+        self.motor_stop.long_name = 'Stop Motor'
+        self.motor_is_moving.long_name = 'Actively Moving'
+        self.dial_position.long_name = 'Dial Position'
+        self.direction_of_travel.long_name = 'Direction of Travel'
+        self.home_forward.long_name = 'Home Forward'
+        self.home_reverse.long_name = 'Home Backward'
+        self.low_limit_switch.long_name = 'Low Limit Switch'
+        self.high_limit_switch.long_name = 'High Limit Switch'
+        self.high_limit_travel.long_name = 'High Limit Travel'
+        self.low_limit_travel.long_name = 'Low Limit Travel'
+        self.user_setpoint.long_name = 'Setpoint'
+        self.user_offset.long_name = 'User Offset'
+        self.user_offset_dir.long_name = 'User Offset Direction'
+        self.motor_egu.long_name = 'EGU'
+        self.description.long_name = 'Description'
+        # SmarAct specific long names
+        self.pos_type.long_name = 'Positioner Type'
+        self.needs_calib.long_name = 'Needs Calibration?'
+        self.do_calib.long_name = 'Calibrate'
+        self.log_scale_offset.long_name = 'Logical Scale Offset'
+        self.def_range_min.long_name = 'Default Range Min.'
+        self.def_range_max.long_name = 'Default Range Max'
+        self.log_scale_inv.long_name = 'Logical Scale Inversion'
+        self.dist_code_inv.long_name = 'Distance Code Inversion'
+        self.channel_temp.long_name = 'Channel Temp. (°C)'
+        self.module_temp.long_name = 'Module Temp. (°C)'
+        self.channel_state_raw.long_name = 'Channel State'
 
 
 class SmarActEncodedTipTilt(Device):
@@ -1718,6 +1770,18 @@ class SmarActPicoscale(SmarAct):
     def __init__(self, prefix, *, ioc_base, **kwargs):
         self._ioc_base = ioc_base
         super().__init__(prefix, **kwargs)
+        self.pico_adj_done.long_name = 'Auto Adjustment Done?'
+        self.pico_adj_state.long_name = 'Auto Adjustment State'
+        self.pico_curr_adj_prog.long_name = 'Auto Adjustment Progress'
+        self.pico_enable.long_name = 'PicoScale Enabled?'
+        self.pico_exists.long_name = 'PicoScale Exists?'
+        self.pico_name.long_name = 'PicoScale Name'
+        self.pico_present.long_name = 'PicoScale Present?'
+        self.pico_sig_qual.long_name = 'Signal Quality'
+        self.pico_valid.long_name = 'PicoScale Valid?'
+        self.pico_stable.long_name = 'PicoScale Stable?'
+        self.pico_wmax.long_name = 'Working distance (max)'
+        self.pico_wmin.long_name = 'Working distance (min)'
 
 
 class PI_M824(PVPositionerIsClose):
