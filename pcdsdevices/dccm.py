@@ -307,8 +307,3 @@ class DCCM(BaseInterface, GroupDevice):
         self.acr_status_suffix = kwargs.get('acr_status_suffix', 'AO805')
         self.acr_status_pv_index = kwargs.get('acr_status_suffix', 2)
         super().__init__(prefix, **kwargs)
-
-
-
-
-
