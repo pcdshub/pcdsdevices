@@ -1,34 +1,17 @@
-from lightpath import LightpathState
+import logging
+import typing
+from collections import namedtuple
+from typing import Optional
+
+import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
-from .analog_signals import FDQ
-from .device import GroupDevice
-from .device import UpdateComponent as UpCpt
-from .epics_motor import (IMS, BeckhoffAxis, BeckhoffAxisNoOffset,
-                          EpicsMotorInterface)
-
-import enum
-import logging
-import time
-import typing
-from typing import Optional
-from collections import namedtuple
-
-import numpy as np
-from ophyd.device import Device
-from ophyd.device import FormattedComponent as FCpt
-from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
-from ophyd.status import MoveStatus
-
 from .beam_stats import BeamEnergyRequest
-from .epics_motor import IMS, EpicsMotorInterface
-from .interface import BaseInterface, FltMvInterface#, LightpathMixin
-from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
-                        SyncAxisOffsetMode)
-from .pv_positioner import PVPositionerIsClose
-from .signal import InternalSignal
-from .utils import doc_format_decorator, get_status_float
+from .device import GroupDevice
+from .epics_motor import BeckhoffAxis
+from .interface import BaseInterface, FltMvInterface
+from .pseudopos import PseudoPositioner, PseudoSingleInterface
 
 logger = logging.getLogger(__name__)
 
@@ -71,11 +54,9 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
 
     tab_component_names = True
 
-
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
         """
         PseudoPositioner interface function for calculating the setpoint.
-
         Converts the requested energy to theta 1 and theta 2 (Bragg angle).
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
@@ -98,9 +79,9 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         """
         Converts energy to Bragg angle theta
 
-        Parameters                                                                                                                                             
-        ----------                                                                                                                                              
-        energy : float                                                                                                                                          
+        Parameters
+        ----------
+        energy : float
             The photon energy (color) in keV.
 
         Returns
@@ -117,8 +98,8 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         """
         Converts dccm theta angle to energy.
 
-        Parameters                                                                                                                                              
-        ----------                                                                                                                                              
+        Parameters
+        ----------
         energy : float
             The Bragg angle theta in degrees
 
@@ -182,20 +163,20 @@ class DCCMEnergyWithVernier(DCCMEnergy):
         super().__init__(prefix, **kwargs)
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
-        """                                                                                                                  
-        PseudoPositioner interface function for calculating the setpoint.                                                    
-        Converts the requested energy to theta 1 and theta 2 (Bragg angle).                                                  
+        """
+        PseudoPositioner interface function for calculating the setpoint.
+        Converts the requested energy to theta 1 and theta 2 (Bragg angle).
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         energy = pseudo_pos.energy
         theta = self.energyToSi111BraggAngle(energy)
         vernier = energy * 1000
-        return self.RealPosition(th1=theta,th2=theta, acr_energy=vernier)
+        return self.RealPosition(th1=theta, th2=theta, acr_energy=vernier)
 
     def inverse(self, real_pos: namedtuple) -> namedtuple:
-        """                                                                                                                  
-        PseudoPositioner interface function for calculating the readback.                                                   
-        Converts the real position of the DCCM theta motor to the calculated energy.                               
+        """
+        PseudoPositioner interface function for calculating the readback.
+        Converts the real position of the DCCM theta motor to the calculated energy.
         """
         real_pos = self.RealPosition(*real_pos)
         theta = real_pos.th1
@@ -203,43 +184,43 @@ class DCCMEnergyWithVernier(DCCMEnergy):
         return self.PseudoPosition(energy=energy)
 
 
-class DCCMEnergyWithACRStatus(DCCMEnergyWithVernier):                                                                                                                                   
-    """                                                                                                                                                                                 
-    CCM energy motor and ACR beam energy request with status.                                                                                                                           
-    Note that in this case vernier indicates any ways that ACR will act on the                                                                                                          
-    photon energy request. This includes the Vernier, but can also lead to                                                                                                              
-    motion of the undulators or the K.                                                                                                                                                  
-                                                                                                                                                                                        
-    Parameters                                                                                                                                                                          
-    ----------                                                                                                                                                                          
-    prefix : str                                                                                                                                                                        
-        The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A                                                                                                                           
-    hutch : str, optional                                                                                                                                                               
+class DCCMEnergyWithACRStatus(DCCMEnergyWithVernier):
+    """
+    CCM energy motor and ACR beam energy request with status.
+    Note that in this case vernier indicates any ways that ACR will act on the
+    photon energy request. This includes the Vernier, but can also lead to
+    motion of the undulators or the K.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
+    hutch : str, optional
         The hutch we're in. This informs us as to which vernier
         PVs to write to. If omitted, we can guess this from the
         prefix.
     acr_status_sufix : str
         Prefix to the SIOC PV that ACR uses to report the move status.
         For HXR this usually is 'AO805'.
-    """                                                                                                                                                                                 
-    acr_energy = FCpt(BeamEnergyRequest, '{hutch}',                                                                                                                                     
-                      pv_index='{pv_index}',                                                                                                                                            
-                      acr_status_suffix='{acr_status_suffix}',                                                                                                                          
-                      add_prefix=('suffix', 'write_pv', 'pv_index',                                                                                                                     
-                                  'acr_status_suffix'),                                                                                                                                 
-                      kind='normal',                                                                                                                                                    
-                      doc='Requests ACR to move the energy.')                                                                                                                           
-                                                                                                                                                                                        
-    def __init__(                                                                                                                                                                       
-        self,                                                                                                                                                                           
-        prefix: str,                                                                                                                                                                    
-        hutch: typing.Optional[str] = None,                                                                                                                                             
-        acr_status_suffix='AO805',                                                                                                                                                      
-        pv_index=2,                                                                                                                                                                     
-        **kwargs                                                                                                                                                                        
-    ):                                                                                                                                                                                  
-        self.acr_status_suffix = acr_status_suffix                                                                                                                                      
-        self.pv_index = pv_index                                                                                                                                                        
+    """
+    acr_energy = FCpt(BeamEnergyRequest, '{hutch}',
+                      pv_index='{pv_index}',
+                      acr_status_suffix='{acr_status_suffix}',
+                      add_prefix=('suffix', 'write_pv', 'pv_index',
+                                  'acr_status_suffix'),
+                      kind='normal',
+                      doc='Requests ACR to move the energy.')
+
+    def __init__(
+        self,
+        prefix: str,
+        hutch: typing.Optional[str] = None,
+        acr_status_suffix='AO805',
+        pv_index=2,
+        **kwargs
+    ):
+        self.acr_status_suffix = acr_status_suffix
+        self.pv_index = pv_index
         super().__init__(prefix, **kwargs)
 
 
@@ -247,12 +228,12 @@ class DCCM(BaseInterface, GroupDevice):
     """
     The full DCCM assembly.
 
-    Double Channel Cut Monochrometer controlled with a Beckhoff PLC.                                                                                             
-    This includes five axes in total:                                                                                                                            
-        - 2 for crystal manipulation (TH1/Upstream and TH2/Downstream)                                                                                           
-        - 1 for chamber translation in x direction (TX)                                                                                                          
-    - 2 for YAG diagnostics (TXD and TYD)                                                                                                                        
-                                                                                                                                                                 
+    Double Channel Cut Monochrometer controlled with a Beckhoff PLC.
+    This includes five axes in total:
+        - 2 for crystal manipulation (TH1/Upstream and TH2/Downstream)
+        - 1 for chamber translation in x direction (TX)
+    - 2 for YAG diagnostics (TXD and TYD)
+
     Parameters
     ----------
     prefix : str
@@ -260,7 +241,7 @@ class DCCM(BaseInterface, GroupDevice):
     name : str, keyword-only
         name to use in bluesky
     """
-    
+
     tab_component_names = True
 
     th1 = Cpt(BeckhoffAxis, ":MMS:TH1", doc="Bragg Upstream/TH1 Axis", kind="normal")
@@ -268,7 +249,6 @@ class DCCM(BaseInterface, GroupDevice):
     tx = Cpt(BeckhoffAxis, ":MMS:TX", doc="Translation X Axis", kind="normal")
     txd = Cpt(BeckhoffAxis, ":MMS:TXD", doc="YAG Diagnostic X Axis", kind="normal")
     tyd = Cpt(BeckhoffAxis, ":MMS:TYD", doc="YAG Diagnostic Y Axis", kind="normal")
-
 
     energy = Cpt(
         DCCMEnergy, '', kind='hinted',
@@ -297,10 +277,10 @@ class DCCM(BaseInterface, GroupDevice):
             'This will wait on ACR to complete the move.'
         ),
     )
-    
+
     def __init__(
         self,
-        prefix:str = "SP1L0:DCCM",
+        prefix: str = "SP1L0:DCCM",
         **kwargs
     ):
 
