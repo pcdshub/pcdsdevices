@@ -9,6 +9,7 @@ on:
 
 jobs:
   standard:
+    # Revert this
     uses: zllentz/pcds-ci-helpers/.github/workflows/python-standard.yml@mnt_pyepics_ophyd_break
     secrets: inherit
     with:
