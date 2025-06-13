@@ -1128,7 +1128,6 @@ class Presets:
     @property
     def positions(self) -> 'PresetPosition':
         if self.sync_needed():
-            print('syncing from positions call')
             self.sync()
 
         return self._positions
