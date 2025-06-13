@@ -1125,6 +1125,13 @@ class Presets:
                       'File may be being edited by another user.'), self.name)
         logger.debug('', exc_info=True)
 
+    @property
+    def positions(self) -> 'PresetPosition':
+        if self.sync_needed():
+            self.sync()
+
+        return self._positions
+
     def _create_methods(self):
         """
         Create the dynamic methods based on the configured paths.
@@ -1148,7 +1155,7 @@ class Presets:
                     self._register_method(self._device, 'mv_' + name, mv)
                     self._register_method(self._device, 'umv_' + name, umv)
                     self._register_method(self._device, 'wm_' + name, wm)
-                    setattr(self.positions, name,
+                    setattr(self._positions, name,
                             PresetPosition(self, preset_type, name))
 
     def _register_method(self, obj, method_name, method):
@@ -1308,7 +1315,7 @@ class Presets:
             if hasattr(obj, '_tab'):
                 obj._tab.remove(method_name)
         self._methods = []
-        self.positions = SimpleNamespace()
+        self._positions = SimpleNamespace()
 
     @property
     def has_presets(self):
