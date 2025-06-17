@@ -107,7 +107,7 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
     Parameters
     ----------
     prefix : str
-        DREAM:GSJN
+        TMO:DREAM:MCS2:01
     name : str, keyword-only
         Alias for the device
     """
