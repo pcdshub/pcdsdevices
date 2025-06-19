@@ -602,6 +602,18 @@ class BeckhoffSlits(SlitsBase):
                                             ywidth=ywidth_readback)
 
 
+class SL2K4Slits(BeckhoffSlits):
+    def __init__(self, prefix, cam, data_source, *, name, **kwargs):
+        self._started_move = False
+        self._top_done = False
+        self._bottom_done = False
+        self._north_done = False
+        self._south_done = False
+        self._cam = cam
+        self._data_source = data_source
+        super().__init__(prefix, name=name, **kwargs)
+
+
 def _rtd_fields(cls, attr_base, range_, **kwargs):
     padding = max(range_)//10 + 2
     defn = OrderedDict()
