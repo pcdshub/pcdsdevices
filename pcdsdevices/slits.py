@@ -602,6 +602,35 @@ class BeckhoffSlits(SlitsBase):
                                             ywidth=ywidth_readback)
 
 
+class SL2K4Slits(BeckhoffSlits):
+    """
+    A subclass of BeckhoffSlits for the SL2K4 slit system with camera viewer
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base PV for the slit device.
+    cam : str
+        camera pv name prefix. e.g: IM6K4:PPM:CAM.
+    data_source : str
+        Area detector stream name. e.g. IMAGE2.
+    name : str
+        The device name.
+    **kwargs : dict, optional
+        Additional keyword arguments passed to the base class.
+
+    Attributes
+    ----------
+    _cam : str
+        camera pv name prefix. e.g: IM6K4:PPM:CAM
+    _data_source : str
+        Area detector stream name. e.g. IMAGE2
+    """
+    def __init__(self, prefix, cam, data_source, *, name, **kwargs):
+        self._cam = cam
+        self._data_source = data_source
+        super().__init__(prefix, name=name, **kwargs)
+
+
 def _rtd_fields(cls, attr_base, range_, **kwargs):
     padding = max(range_)//10 + 2
     defn = OrderedDict()
