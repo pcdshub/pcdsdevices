@@ -679,3 +679,17 @@ class Leviton(LCLSItem):
     kwargs.default['elevations'] = "{{elevations}}"
     elevations = EntryInfo(doc='List of elevation numbers for rack',
                            optional=False, enforce=list)
+
+class PDU(LCLSItem):
+    """
+    Container for non-Tripplite PDUs
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.pdu.PDU'
+
+class TripplitePDU(LCLSItem):
+    """
+    Container for Tripplite PDUs
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.pdu.TripplitePDU'
