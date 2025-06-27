@@ -11,7 +11,7 @@ from .epics_motor import BeckhoffAxis, SmarAct
 from .interface import BaseInterface
 
 
-class tmo_dream(BaseInterface, GroupDevice):
+class TMODream(BaseInterface, GroupDevice):
 
     gas_nozzle_x = Cpt(BeckhoffAxis, ":GSJN:MMS:X", doc="dream gas noozle x axis", kind="normal")
     gas_nozzle_y = Cpt(BeckhoffAxis, ":GSJN:MMS:Y", doc="dream gas nozzle y axis", kind="normal")
