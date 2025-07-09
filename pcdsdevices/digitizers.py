@@ -180,14 +180,14 @@ class Wave8V2ADCSamples(BaseInterface, Device):
     Class for the LCLS-II Wave8 ADC sample readout registers.
     """
 
-    sample0 = Cpt(EpicsSignal, 'Sample0', kind='config')
-    sample1 = Cpt(EpicsSignal, 'Sample1', kind='config')
-    sample2 = Cpt(EpicsSignal, 'Sample2', kind='config')
-    sample3 = Cpt(EpicsSignal, 'Sample3', kind='config')
-    sample4 = Cpt(EpicsSignal, 'Sample4', kind='config')
-    sample5 = Cpt(EpicsSignal, 'Sample5', kind='config')
-    sample6 = Cpt(EpicsSignal, 'Sample6', kind='config')
-    sample7 = Cpt(EpicsSignal, 'Sample7', kind='config')
+    sample0 = Cpt(EpicsSignalRO, 'Sample0_RBV', kind='config')
+    sample1 = Cpt(EpicsSignalRO, 'Sample1_RBV', kind='config')
+    sample2 = Cpt(EpicsSignalRO, 'Sample2_RBV', kind='config')
+    sample3 = Cpt(EpicsSignalRO, 'Sample3_RBV', kind='config')
+    sample4 = Cpt(EpicsSignalRO, 'Sample4_RBV', kind='config')
+    sample5 = Cpt(EpicsSignalRO, 'Sample5_RBV', kind='config')
+    sample6 = Cpt(EpicsSignalRO, 'Sample6_RBV', kind='config')
+    sample7 = Cpt(EpicsSignalRO, 'Sample7_RBV', kind='config')
 
 
 class Wave8V2ADCDelayLanes(BaseInterface, Device):
