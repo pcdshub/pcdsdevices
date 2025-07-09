@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import enum
 import logging
-import time
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -28,7 +27,7 @@ from pcdsdevices.pv_positioner import PVPositionerIsClose
 logger = logging.getLogger(__name__)
 
 
-class Axis(str, enum.Enum):
+class SmarPodAxisEnum(str, enum.Enum):
     """
     An enumeration representing axes available in tri-sphere table stage.
 
@@ -98,9 +97,9 @@ class SmarPodAxis(PVPositionerIsClose):
     atol = 1E-5  # 10 nm
     csy_cmd = Cpt(EpicsSignal, ':CSY:CMD:{axis}', kind='normal')
     csy_rb = Cpt(EpicsSignalRO, ':CSY:{axis}', kind='normal')
-    group_motion : bool = False
+    defer_motion : bool = False
 
-    def __init__(self, prefix, axis: Axis, **kwargs):
+    def __init__(self, prefix, axis: SmarPodAxisEnum, **kwargs):
         self.axis = axis.value
         return super().__init__(prefix, **kwargs)
 
@@ -109,16 +108,14 @@ class SmarPodAxis(PVPositionerIsClose):
         Before moving check the position is reachable.'''
 
         logger.info('Checking if position is reachable')
-        self.setpoint.put(position)
-        self.cmd_reachable.put(1)
-        time.sleep(0.1)
+        self.setpoint.put(position, wait=True)
         is_reachable = self.reachable.get()
 
         logger.info(f"is_reachable : {is_reachable}")
         if not is_reachable:
             raise ValueError('Position is unreachable !!!')
         self.setpoint.put(position, wait=True)
-        if self.actuate and not self.group_motion:
+        if self.actuate and not self.defer_motion:
             logger.debug('%s.actuate=%s', self.name, self.actuate_value)
             self.actuate.put(self.actuate_value, wait=False)
 
@@ -155,7 +152,11 @@ class SmarPod(Device):
     # Pose reachable?
     cmd_reachable = Cpt(EpicsSignal, ':CMD:REACHABLE', kind='normal')
     reachable = Cpt(EpicsSignalRO, ':REACHABLE', kind='normal', doc='Test if the SP can reach a pose. Does not move the SP')
-
+    # Positions - Readback
+    cmd_pos_rbv = Cpt(EpicsSignal, ':CMD:POS_RBV', kind='normal', doc='Readback current pose position')
+    x_m = Cpt(EpicsSignalRO, ':X_M', kind='normal')
+    y_m = Cpt(EpicsSignalRO, ':Y_M', kind='normal')
+    z_m = Cpt(EpicsSignalRO, ':Z_M', kind='normal')
     # Movement - Readback
     cmd_move = Cpt(EpicsSignal, ':CMD:MOVE', kind='normal')
     moving = Cpt(EpicsSignal, ':MOVING', kind='normal', doc='Movement status')
@@ -181,12 +182,12 @@ class SmarPod(Device):
     cmd_py = Cpt(EpicsSignal, ':CMD:PY', kind='normal')
     cmd_pz = Cpt(EpicsSignal, ':CMD:PZ', kind='normal')
     # axes
-    x = Cpt(SmarPodAxis, '', axis=Axis.Y, egu='mm', kind='normal')
-    y = Cpt(SmarPodAxis, '', axis=Axis.Z, egu='mm', kind='normal')
-    z = Cpt(SmarPodAxis, '', axis=Axis.X, egu='mm', kind='normal')
-    rx = Cpt(SmarPodAxis, '', axis=Axis.RY, egu='deg', kind='normal')
-    ry = Cpt(SmarPodAxis, '', axis=Axis.RZ, egu='deg', kind='normal')
-    rz = Cpt(SmarPodAxis, '', axis=Axis.RX, egu='deg', kind='normal')
+    x = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.Y, egu='mm', kind='normal')
+    y = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.Z, egu='mm', kind='normal')
+    z = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.X, egu='mm', kind='normal')
+    rx = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.RY, egu='deg', kind='normal')
+    ry = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.RZ, egu='deg', kind='normal')
+    rz = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.RX, egu='deg', kind='normal')
     # Sensor mode
     cmd_sensor_mode = Cpt(EpicsSignal, ':CMD:SENSOR_MODE', kind='normal')
     sensor_mode = Cpt(EpicsSignal, ':SENSOR_MODE', kind='normal', doc='Sensor mode')
@@ -234,12 +235,12 @@ class SmarPod(Device):
         ry_sp = self.ry.readback.get() if ry_sp is None else ry_sp
         rz_sp = self.rz.readback.get() if rz_sp is None else rz_sp
 
-        self.x.group_motion = True
-        self.y.group_motion = True
-        self.z.group_motion = True
-        self.rx.group_motion = True
-        self.ry.group_motion = True
-        self.rz.group_motion = True
+        self.x.defer_motion = True
+        self.y.defer_motion = True
+        self.z.defer_motion = True
+        self.rx.defer_motion = True
+        self.ry.defer_motion = True
+        self.rz.defer_motion = True
 
         self.x.setpoint.put(x_sp)
         self.y.setpoint.put(y_sp)
@@ -262,11 +263,11 @@ class SmarPod(Device):
         if wait:
             status_wait(status)
 
-        self.x.group_motion = False
-        self.y.group_motion = False
-        self.z.group_motion = False
-        self.rx.group_motion = False
-        self.ry.group_motion = False
-        self.rz.group_motion = False
+        self.x.defer_motion = False
+        self.y.defer_motion = False
+        self.z.defer_motion = False
+        self.rx.defer_motion = False
+        self.ry.defer_motion = False
+        self.rz.defer_motion = False
 
         return status
