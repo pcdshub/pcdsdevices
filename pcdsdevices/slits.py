@@ -602,6 +602,119 @@ class BeckhoffSlits(SlitsBase):
                                             ywidth=ywidth_readback)
 
 
+class MetaDataDict(dict):
+    """
+    Dictionary subclass that supports attribute-style access.
+
+    This class allows dictionary keys to be accessed as attributes,
+    in addition to standard item access. It behaves like a regular `dict`,
+    but also supports getting, setting, and deleting items using dot notation.
+
+    Examples
+    --------
+    >>> d = MetaDataDict(a=1, b=2)
+    >>> d['a']
+    1
+    >>> d.a
+    1
+    >>> d.c = 3
+    >>> d['c']
+    3
+    >>> del d.b
+    >>> 'b' in d
+    False
+    """
+
+    def __getattr__(self, item):
+        """
+        Get attribute-style access to dictionary keys.
+
+        Parameters
+        ----------
+        item : str
+            The key to retrieve from the dictionary.
+
+        Returns
+        -------
+        value : any
+            The value associated with the key.
+
+        Raises
+        ------
+        AttributeError
+            If the key is not found in the dictionary.
+        """
+        try:
+            return self[item]
+        except KeyError:
+            raise AttributeError(f"No attribute named '{item}'")
+
+    def __setattr__(self, key, value):
+        """
+        Set a key-value pair using attribute-style assignment.
+
+        Parameters
+        ----------
+        key : str
+            The key to set in the dictionary.
+        value : any
+            The value to associate with the key.
+        """
+        self[key] = value
+
+    def __delattr__(self, key):
+        """
+        Delete a key using attribute-style deletion.
+
+        Parameters
+        ----------
+        key : str
+            The key to delete from the dictionary.
+
+        Raises
+        ------
+        AttributeError
+            If the key is not found in the dictionary.
+        """
+        try:
+            del self[key]
+        except KeyError:
+            raise AttributeError(f"No attribute named '{key}'")
+
+
+class SL2K4Slits(BeckhoffSlits):
+    """
+    A subclass of BeckhoffSlits for the SL2K4 slit system with camera viewer
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base PV for the slit device.
+    cam : str
+        camera pv name prefix. e.g: IM6K4:PPM:CAM.
+    data_source : str
+        Area detector stream name. e.g. IMAGE2.
+    name : str
+        The device name.
+    **kwargs : dict, optional
+        Additional keyword arguments passed to the base class.
+
+    Attributes
+    ----------
+    _cam : str
+        camera pv name prefix. e.g: IM6K4:PPM:CAM
+    _data_source : str
+        Area detector stream name. e.g. IMAGE2
+    """
+    def __init__(self, prefix, cam, data_source, *, name, **kwargs):
+        self._cam = cam
+        self._data_source = data_source
+        super().__init__(prefix, name=name, **kwargs)
+        self.md = MetaDataDict({"cam": cam,
+                                "data_source": data_source,
+                                "input_branches": None,
+                                "output_branches": None})
+
+
 def _rtd_fields(cls, attr_base, range_, **kwargs):
     padding = max(range_)//10 + 2
     defn = OrderedDict()
