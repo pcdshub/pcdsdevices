@@ -5,7 +5,7 @@ from pydm import Display
 
 from qtpy import QtCore, QtWidgets
 from typhos import utils
-from epics import camonitor
+from epics import PV, camonitor, caget
 
 class PDUDetailedWidget(Display, utils.TyphosBase):
     """
@@ -138,6 +138,10 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         if output_c_max:
             self.monitor_pv_to_label(output_c_max, self.device.pdu_output_c_max.pvname, scale=0.1)
 
+        # PVs that need color to update with alarms
+        if status_widget:
+            self.update_color(status_widget, self.device.pdu_status.pvname)
+
 
     def add_channels(self):
         """
@@ -206,6 +210,9 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             cmd.channel = f"ca://{ch_info['ch_ctrl_command']}"
             row_layout.addWidget(cmd, 2)
 
+            # Alarm color callback
+            self.update_color(ctrl_state, ch_info['ch_status'])
+
             row_widget = QtWidgets.QWidget()
             row_widget.setLayout(row_layout)
             layout.addWidget(row_widget)
@@ -250,9 +257,56 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         # Register the monitor
         camonitor(pvname, callback=on_change)
 
+    def update_color(self, label, pvname):
+        """
+        Subscribe the PV to update a widget whenever an alarm is active
+
+        label: str
+            The widget you want to have update its color
+        pvname: str
+            The alarm PV that should trigger a color change
+        """
+        def on_change(pvname=None, value=None, **kwargs):
+            field = pvname + ".SV"
+            severity = caget(field)
+            if severity == "MAJOR":
+                label.setStylesheet(f"color: red")
+            elif severity == "MINOR":
+                label.setStylesheet(f"color: yellow")
+            else:
+                label.setStylesheet(f"color: green")
+
+        # Register the monitor
+        camonitor(pvname, callback=on_change)
+
     def extract_outlet_number(self, pvname):
         """
         Helper function for sorting the channel dictionaries
         """
         match = re.search(r':Outlet:(\d+):', pvname)
         return int(match.group(1)) if match else float('inf')
+
+    def update_color(self, label, pvname):
+        """
+        Monitor PV severity to update a widget whenever an alarm is active. I use PV instead of
+        camonitor because I noticed issues where the color wouldn't update. I believe camonitor
+        grabs from chached metadata despite updating the PV value, resulting in the incorrect color
+        being applied. Using PV updates the metadata, not just the PV's value (from what I can tell)
+
+        label: str
+            The widget you want to have update its color
+        pvname: str
+            The alarm PV that should trigger a color change
+        """
+        def on_change(value=None, **kwargs):
+            severity = kwargs.get("severity")
+            if severity == 2:
+                label.setStyleSheet(f"background-color: red; color: black")
+            elif severity == 1:
+                label.setStyleSheet(f"background-color: yellow; color: black")
+            else:
+                label.setStyleSheet(f"background-color: #0b3ae8; color: white")
+
+        # Set the call back
+        pv = PV(pvname)
+        pv.add_callback(on_change)

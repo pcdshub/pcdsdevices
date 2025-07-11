@@ -14,6 +14,9 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,5,1,10">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetDefaultConstraint</enum>
+   </property>
    <item>
     <widget class="TyphosDisplayTitle" name="TyphosDisplayTitle">
      <property name="sizePolicy">
@@ -113,7 +116,7 @@
         <bool>true</bool>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="alarmSensitiveBorder" stdset="0">
         <bool>true</bool>
@@ -146,6 +149,9 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="4,0,2,0,4,0,2,1">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
      <item row="1" column="6">
       <layout class="QVBoxLayout" name="Control_Layout" stretch="0,1,1,1,0">
        <item>

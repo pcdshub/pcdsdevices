@@ -7,6 +7,7 @@ from os import path
 from pydm.widgets import PyDMEmbeddedDisplay
 from qtpy import QtCore, QtWidgets
 from typhos import utils
+from epics import PV, camonitor, caget
 
 class PDUDetailedWidget(Display, utils.TyphosBase):
     """
@@ -114,6 +115,10 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         if output_p:
             output_p.channel = f"ca://{self.device.pdu_output_p.pvname}"
 
+        # Alarm color callback
+        if status_widget:
+            self.update_color(status_widget, self.device.pdu_status.pvname)
+
 
     def add_channels(self):
         """
@@ -175,6 +180,10 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             ctrl_state.setAlignment(QtCore.Qt.AlignCenter)
             row_layout.addWidget(ctrl_state, 2)
 
+            # Alarm color callback
+            self.update_color(ctrl_state, ch_info['ch_status'])
+            self.update_color(status, ch_info['ch_status'])
+
             """
             Command combo box
             This would be a pydm enum combo box but the Epics record is not a mbbo. I need to
@@ -231,3 +240,28 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """
         match = re.search(r':Outlet:(\d+):', pvname)
         return int(match.group(1)) if match else float('inf')
+
+    def update_color(self, label, pvname):
+        """
+        Monitor PV severity to update a widget whenever an alarm is active. I use PV instead of
+        camonitor because I noticed issues where the color wouldn't update. I believe camonitor
+        grabs from chached metadata despite updating the PV value, resulting in the incorrect color
+        being applied. Using PV updates the metadata, not just the PV's value (from what I can tell)
+
+        label: str
+            The widget you want to have update its color
+        pvname: str
+            The alarm PV that should trigger a color change
+        """
+        def on_change(value=None, **kwargs):
+            severity = kwargs.get("severity")
+            if severity == 2:
+                label.setStyleSheet(f"background-color: red; color: black")
+            elif severity == 1:
+                label.setStyleSheet(f"background-color: yellow; color: black")
+            else:
+                label.setStyleSheet(f"background-color: #0b3ae8; color: white")
+
+        # Set the call back
+        pv = PV(pvname)
+        pv.add_callback(on_change)
