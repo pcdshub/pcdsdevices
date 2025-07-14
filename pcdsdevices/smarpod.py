@@ -114,7 +114,6 @@ class SmarPodAxis(PVPositionerIsClose):
         logger.info(f"is_reachable : {is_reachable}")
         if not is_reachable:
             raise ValueError('Position is unreachable !!!')
-        self.setpoint.put(position, wait=True)
         if self.actuate and not self.defer_motion:
             logger.debug('%s.actuate=%s', self.name, self.actuate_value)
             self.actuate.put(self.actuate_value, wait=False)
