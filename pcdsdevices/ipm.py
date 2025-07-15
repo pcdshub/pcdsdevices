@@ -19,7 +19,6 @@ from .evr import Trigger
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutCptMixin, LightpathMixin
 from .pmps import TwinCATStatePMPS
-from .sensors import TwinCATTempSensor
 from .utils import get_status_float, get_status_value, ipm_screen
 
 logger = logging.getLogger(__name__)
@@ -625,8 +624,3 @@ class IntensityProfileMonitor(BaseInterface, GroupDevice,
                   doc='Direct control of the diagnostic stack motor.')
     x_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:X', kind='normal',
                   doc='X position of target stack.')
-
-    thermocouple1 = Cpt(TwinCATTempSensor, ':STC:01', kind='normal',
-                        doc='First thermocouple.')
-    thermocouple2 = Cpt(TwinCATTempSensor, ':STC:02', kind='normal',
-                        doc='Second thermocouple.')
