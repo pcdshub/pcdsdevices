@@ -13,6 +13,9 @@ from pcdsdevices.variety import set_metadata
 class EllBase(PVPositionerIsClose):
     """
     Base class for Elliptec stages.
+
+    NOTE: For ioc_release >= R1.0.0, 'port' should default to 15,
+    else it should default to 'port' = 0.
     """
     set_position = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
                         write_pv='{prefix}:M{self._channel}:MOVE',
@@ -56,7 +59,7 @@ class EllBase(PVPositionerIsClose):
     error_message = FCpt(EpicsSignal, '{prefix}:M{self._channel}:STATUS',
                          kind='omitted')
 
-    def __init__(self, prefix, *, channel, port=0, **kwargs):
+    def __init__(self, prefix, *, channel, port, **kwargs):
         self._port = port
         self._channel = channel
         super().__init__(prefix, **kwargs)
