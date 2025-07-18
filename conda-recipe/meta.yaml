@@ -31,7 +31,7 @@ requirements:
     - pcdscalc >=0.2.0
     - pcdsutils >=0.4.0
     - prettytable
-    - pyepics >=3.4.2
+    - pyepics >=3.4.2,<3.5.8
     - pytmc >=2.7.0
     - pyyaml
     - schema

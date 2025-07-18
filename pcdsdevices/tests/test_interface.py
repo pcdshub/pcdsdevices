@@ -214,16 +214,12 @@ def test_presets_desync(presets, fast_motor: FastMotor):
     fast_motor2.mv(5, wait=True)
     fast_motor2.presets.positions.four.update_pos()
 
-    # in-memory python objects have different preset positions
-    assert fast_motor.presets.positions.four.pos == 4
-    assert fast_motor2.presets.positions.four.pos == 5
-
-    # but point to the same file
+    # both point to the same file
     assert fast_motor.presets._path("hutch") == fast_motor2.presets._path("hutch")
 
-    # original object needs a sync, but second does not
-    assert fast_motor.presets.sync_needed()
-    assert not fast_motor2.presets.sync_needed()
+    # assessing positions will check if sync is needed
+    assert fast_motor.presets.positions.four.pos == 5
+    assert fast_motor2.presets.positions.four.pos == 5
 
 
 def test_presets_tab_init(fast_motor: FastMotor, deferred_fast_motor_presets):
