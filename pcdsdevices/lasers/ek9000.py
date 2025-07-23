@@ -4,7 +4,10 @@ Classes for cards attached to EK9000 bus couplers.
 
 from ophyd import Component as Cpt
 from ophyd import Device
+from ophyd import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
+
+from pcdsdevices.variety import set_metadata
 
 
 class El3174AiCh(Device):
@@ -39,3 +42,17 @@ class EnvironmentalMonitor(Device):
     pressure = Cpt(El3174AiCh, ':1')
     humidity = Cpt(El3174AiCh, ':2')
     temperature = Cpt(El3174AiCh, ':3')
+
+
+class SimpleShutter(Device):
+    """
+    Class for simple 24 VDC shutters controlled by a DC relay card.
+    """
+
+    actuate = FCpt(EpicsSignal, '{prefix}', kind='normal', doc='Actuate shutter')
+
+    set_metadata(actuate, dict(variety='command-enum'))
+
+    def __init__(self, prefix='', **kwargs):
+        super().__init__(prefix, **kwargs)
+        self.actuate.long_name = 'Actuate State'
