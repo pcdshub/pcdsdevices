@@ -76,6 +76,19 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         output_c_status = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Infeed_Status")
         output_p = self.ui.findChild(pydm.widgets.label.PyDMLabel, "PDU_Power")
 
+        # Get control buttons
+        on_btn = self.ui.findChild(pydm.widgets.pushbutton.PyDMPushButton, 'All_On_Button')
+        off_btn = self.ui.findChild(pydm.widgets.pushbutton.PyDMPushButton, 'All_Off_Button')
+        reboot_btn = self.ui.findChild(pydm.widgets.pushbutton.PyDMPushButton, 'Reboot_All_Button')
+
+        # Set control button
+        if on_btn:
+            on_btn.clicked.connect(lambda: self.device.channel_ctrl.put(1))
+        if off_btn:
+            off_btn.clicked.connect(lambda: self.device.channel_ctrl.put(2))
+        if reboot_btn:
+            reboot_btn.clicked.connect(lambda: self.device.channel_ctrl.put(3))
+
         if name_widget:
             name_widget.channel = f"ca://{self.device.pdu_name.pvname}"
         if status_widget:

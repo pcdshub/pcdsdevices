@@ -95,7 +95,7 @@ class TripplitePDUChannel(Device):
 
 class PDU(Device):
     """
-    Class to define a non-Tripplite PDU.
+    Class to define a non-Tripplite PDU with one tower defined in its IOC
 
     Parameters
     ---------
@@ -140,7 +140,10 @@ class PDU(Device):
 
         if pdu_type.lower() == 'sentry4':
             self._tower = ":1"
-            self._ctrl = ":Outlet:G1"
+            if num_channels == 8:
+                self._ctrl = ":Outlet:G1"
+            else:
+                self._ctrl = ":Outlet:All"
         else:
             self._tower = ":"
             self._ctrl = ":Outlet:All"
