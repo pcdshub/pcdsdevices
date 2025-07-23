@@ -13,6 +13,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
+from .digitizers import Wave8V2
 from .doc_stubs import IPM_base, basic_positioner_init, insert_remove
 from .epics_motor import IMS, BeckhoffAxisNoOffset
 from .evr import Trigger
@@ -608,10 +609,11 @@ class IntensityProfileMonitorStates(TwinCATStatePMPS):
     config = UpCpt(state_count=5)
 
 
-class IntensityProfileMonitor(BaseInterface, GroupDevice,
-                              LightpathInOutCptMixin):
+class BeckhoffIntensityProfileTarget(BaseInterface, GroupDevice,
+                                     LightpathInOutCptMixin):
     """
-    Description
+    Diagnostic device to measure relative pulse intensity and provide
+    a signal for data normalization. Has a wave8 V3 and is PLC controlled.
     """
     tab_component_names = True
 
@@ -624,3 +626,4 @@ class IntensityProfileMonitor(BaseInterface, GroupDevice,
                   doc='Direct control of the diagnostic stack motor.')
     x_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:X', kind='normal',
                   doc='X position of target stack.')
+    wave8 = Cpt(Wave8V2, '', kind='hinted')

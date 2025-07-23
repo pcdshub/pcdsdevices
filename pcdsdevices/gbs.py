@@ -21,7 +21,12 @@ class GratingBeamSplitterStates(TwinCATStatePMPS):
 class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
                                 LightpathInOutCptMixin):
     """
-    Description
+    An array of targets used to determine the beam's wavefront. Similar to
+    the WFS with a unique substrate.
+
+    Each target is a waveplate that results in a characteristic pattern
+    on a downstream imager (PPM or XTES Imager) that can be used to determine
+    information about the wavefront.
     """
     tab_component_names = True
 
