@@ -5,8 +5,8 @@ from .atm import ArrivalTimeMonitor
 from .attenuator import Attenuator
 from .beam_stats import BeamStats
 from .ccm import CCM
-from .dccm import DCCM
 from .dc_devices import ICT
+from .dccm import DCCM
 from .epics_motor import (IMS, PMC100, BeckhoffAxis, DelayNewport, EpicsMotor,
                           Motor, Newport)
 from .evr import Trigger
