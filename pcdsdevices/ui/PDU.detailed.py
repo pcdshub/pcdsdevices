@@ -39,7 +39,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         self.fix_pvs()
         self.add_channels()
 
-
     def fix_pvs(self):
         """
         Reconnect PyDM widgets to the actual PVs from the device object.
@@ -246,6 +245,15 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         for ch, ch_info in right_half:
             ch_obj = getattr(self.device, ch)
             add_channel_row(right_layout, ch_info, ch_obj)
+
+        # I need to resize the window after the scroll widget is populated, or else the screen will cuttoff all the channels
+        # I Encapsulate in a function so I can add a delay, Qt needs time to draw everything to screen before I resize
+        def delayed_resize():
+            current_width = self.width()
+            top_window = self.window()
+            top_window.resize(current_width, 1000)
+
+        QtCore.QTimer.singleShot(100, delayed_resize)
 
     def order_channels(self, pvname):
         """
