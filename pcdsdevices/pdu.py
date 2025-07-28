@@ -23,10 +23,7 @@ class PDUChannel(Device):
         The base PV of the relevant PDU.
 
     channel : str
-        The output channel on the pPDU, e.g. '1', '2', etc.
-
-    pdu_type : str
-        The pdu type, e.g TrippLite, Leviton, or Sentry
+        The output channel on the PDU, e.g. '1', '2', etc.
     """
 
     ch_index = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_index}',
@@ -66,10 +63,8 @@ class TripplitePDUChannel(Device):
         The base PV of the relevant PDU.
 
     channel : str
-        The output channel on the pPDU, e.g. '1', '2', etc.
+        The output channel on the PDU, e.g. '1', '2', etc.
 
-    pdu_type : str
-        The pdu type, e.g TrippLite, Leviton, or Sentry
     """
     ch_index = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_index}',
                     kind='hinted', string=True)
@@ -105,6 +100,8 @@ class PDU(Device):
     num_channels : int
         The output channels for the PDU.
 
+    pdu_type : str
+        The pdu type, e.g Leviton, or Sentry4
     """
 
     pdu_name = FCpt(EpicsSignal, '{prefix}{self._tower}:SetTowerName', kind='hinted')
