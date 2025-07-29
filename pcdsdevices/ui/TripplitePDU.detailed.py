@@ -1,11 +1,11 @@
-import pydm
 import re
 
+import pydm
+from epics import PV, caget, camonitor
 from pydm import Display
-
 from qtpy import QtCore, QtWidgets
 from typhos import utils
-from epics import PV, camonitor, caget
+
 
 class PDUDetailedWidget(Display, utils.TyphosBase):
     """
