@@ -19,7 +19,7 @@ Device Features
 
     - use `PVPositionerIsClose` instead of raw records
     - add mutli axis move
-    - add checking reachability
+    - add reachability checks
 
 - dream_motion: add SL3K4 motors to `dream_motion` (`DREAM_SL3K4`)
 - Adding `integral_signed` component to `Wave8V2ADCDelayLanes`
