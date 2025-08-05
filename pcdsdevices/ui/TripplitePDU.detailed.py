@@ -3,6 +3,8 @@ import re
 import pydm
 from epics import PV, caget, camonitor
 from pydm import Display
+from pydm.utilities import parse_value_for_display
+from pydm.widgets.display_format import DisplayFormat
 from qtpy import QtCore, QtWidgets
 from typhos import utils
 
@@ -26,59 +28,11 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
     def add_device(self, device):
         """Typhos hook for adding a new device."""
         super().add_device(device)
-        self.post_typhos_init()
-
-    def post_typhos_init(self):
-        """
-        Once typhos has relinked the device and parent widget, we need to clean
-        up some of the signals and maybe add new widgets to the display.
-        Add any other init-esque shenanigans you need here.
-        """
-        self.fix_pvs()
-        self.add_channels()
-
-
-    def fix_pvs(self):
-        """
-        Reconnect PyDM widgets to the actual PVs from the device object.
-        This is necessary because the macros aren't expanded during UI parsing.
-        """
-
-        # Get high-level overview widgets
-        name_widget = self.ui.findChild(pydm.widgets.line_edit.PyDMLineEdit, "Channel_Name")
-        name_widget.setReadOnly(False)
-        status_widget = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Status_Label")
-        location_widget = self.ui.findChild(pydm.widgets.line_edit.PyDMLineEdit, "Location_Label")
-        location_widget.setReadOnly(False)
-
-        # Get PDU details
-        num_inputs = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Num_Input")
-        num_outputs = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Num_Output")
-        num_outlets = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Num_Outlet")
-        num_groups = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Num_Group")
-        num_phases = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Num_Phase")
-        num_circuits = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Num_Circuit")
-        num_breakers = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Num_Breaker")
-        num_heatsinks = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Num_Heatsink")
-
-        # Get input details
-        input_f = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Input_F")
-        input_v = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Input_V")
-        input_v_min = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Input_V_Min")
-        input_v_max = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Input_V_Max")
-
-        # Get output details
-        output_f = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Output_F")
-        output_v = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Output_V")
-        output_p = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Output_P")
-        output_c = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Output_C")
-        output_c_min = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Output_C_Min")
-        output_c_max = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Output_C_Max")
 
         # Get control buttons
-        on_btn = self.ui.findChild(pydm.widgets.pushbutton.PyDMPushButton, 'All_On_Button')
-        off_btn = self.ui.findChild(pydm.widgets.pushbutton.PyDMPushButton, 'All_Off_Button')
-        reboot_btn = self.ui.findChild(pydm.widgets.pushbutton.PyDMPushButton, 'Reboot_All_Button')
+        on_btn = self.ui.All_On_Button
+        off_btn = self.ui.All_Off_Button
+        reboot_btn = self.ui.Reboot_All_Button
 
         # Set control button
         if on_btn:
@@ -91,32 +45,18 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             reboot_btn.channel = f"ca://{self.device.channels_reboot.pvname}"
             reboot_btn.pressValue = 1
 
+        # Widgets that need scaling
+        input_f = self.ui.Input_F
+        input_v = self.ui.Input_V
+        input_v_min = self.ui.Input_V_Min
+        input_v_max = self.ui.Input_V_Max
+        output_f = self.ui.Output_F
+        output_v = self.ui.Output_V
+        output_p = self.ui.Output_P
+        output_c = self.ui.Output_C
+        output_c_min = self.ui.Output_C_Min
+        output_c_max = self.ui.Output_C_Max
 
-        # Set PDU data
-        if name_widget:
-            name_widget.channel = f"ca://{self.device.pdu_name.pvname}"
-        if status_widget:
-            status_widget.channel = f"ca://{self.device.pdu_status.pvname}"
-        if location_widget:
-            location_widget.channel = f"ca://{self.device.pdu_location.pvname}"
-        if num_inputs:
-            num_inputs.channel = f"ca://{self.device.pdu_num_inputs.pvname}"
-        if num_outputs:
-            num_outputs.channel = f"ca://{self.device.pdu_num_outputs.pvname}"
-        if num_outlets:
-            num_outlets.channel = f"ca://{self.device.pdu_num_outlets.pvname}"
-        if num_groups:
-            num_groups.channel = f"ca://{self.device.pdu_num_groups.pvname}"
-        if num_phases:
-            num_phases.channel = f"ca://{self.device.pdu_num_phases.pvname}"
-        if num_circuits:
-            num_circuits.channel = f"ca://{self.device.pdu_num_circuits.pvname}"
-        if num_breakers:
-            num_breakers.channel = f"ca://{self.device.pdu_num_breakers.pvname}"
-        if num_heatsinks:
-            num_heatsinks.channel = f"ca://{self.device.pdu_num_heatsinks.pvname}"
-
-        # PVs that need scalling
         if input_f:
             self.monitor_pv_to_label(input_f, self.device.pdu_input_f.pvname, scale=0.1)
         if input_v:
@@ -138,9 +78,12 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         if output_c_max:
             self.monitor_pv_to_label(output_c_max, self.device.pdu_output_c_max.pvname, scale=0.1)
 
-        # PVs that need color to update with alarms
+        # Alarm color callbacks
+        status_widget = self.ui.Status_Label
         if status_widget:
             self.update_color(status_widget, self.device.pdu_status.pvname)
+
+        self.add_channels()
 
 
     def add_channels(self):
@@ -257,27 +200,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         # Register the monitor
         camonitor(pvname, callback=on_change)
 
-    def update_color(self, label, pvname):
-        """
-        Subscribe the PV to update a widget whenever an alarm is active
-
-        label: str
-            The widget you want to have update its color
-        pvname: str
-            The alarm PV that should trigger a color change
-        """
-        def on_change(pvname=None, value=None, **kwargs):
-            field = pvname + ".SV"
-            severity = caget(field)
-            if severity == "MAJOR":
-                label.setStylesheet(f"color: red")
-            elif severity == "MINOR":
-                label.setStylesheet(f"color: yellow")
-            else:
-                label.setStylesheet(f"color: green")
-
-        # Register the monitor
-        camonitor(pvname, callback=on_change)
 
     def extract_outlet_number(self, pvname):
         """

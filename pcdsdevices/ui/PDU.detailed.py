@@ -29,8 +29,8 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """Typhos hook for adding a new device."""
         super().add_device(device)
 
+        # Manually register signals because I don't inherit from typhos.Display
         for component_walk in device.walk_signals():
-            print(f'registering... {component_walk.item}')
             register_signal(component_walk.item)
 
         # Get control buttons
@@ -46,109 +46,12 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         if reboot_btn:
             reboot_btn.clicked.connect(lambda: self.device.channel_ctrl.put(3))
 
-        self.add_channels()
-
-    def post_typhos_init(self):
-        """
-        Once typhos has relinked the device and parent widget, we need to clean
-        Up some of the signals and maybe add new widgets to the display.
-        Add any other init-esque shenanigans you need here.
-        """
-        self.fix_pvs()
-        self.add_channels()
-
-    def fix_pvs(self):
-        """
-        Reconnect PyDM widgets to the actual PVs from the device object.
-        This is necessary because the macros aren't expanded during UI parsing.
-        I'm doing this manually for now, as this screen expands with more signals,
-        I will make use of find_pydm_names()
-        """
-
-        # High-level overview data
-        name_widget = self.ui.Channel_Name
-        name_widget.setReadOnly(False)
+        # Alarm color callbacks
         status_widget = self.ui.Status_Label
-        location_widget = self.ui.Location_Label
-        name_widget.setReadOnly(False)
-
-        # Sensor data and threshholds
-        sensor1_id = self.ui.S1_ID
-        sensor1_name = self.ui.S1_Status
-        sensor1_temp = self.ui.S1_Temp
-        sensor1_humid = self.ui.S1_Hum
-        sensor2_id = self.ui.S2_ID
-        sensor2_name = self.ui.S2_Status
-        sensor2_temp = self.ui.S2_Temp
-        sensor2_humid = self.ui.S2_Hum
-
-        temp_lo = self.ui.Temp_Lo
-        temp_hi = self.ui.Temp_Hi
-        humid_lo = self.ui.Hum_Lo
-        humid_hi = self.ui.Hum_Hi
-
-        # Input/output details:
-        output_c = self.ui.Infeed_Load
-        output_c_max = self.ui.Infeed_Load_Threshhold
-        output_c_status = self.ui.Infeed_Status
-        output_p = self.ui.PDU_Power
-
-        # Get control buttons
-        on_btn = self.ui.All_On_Button
-        off_btn = self.ui.All_Off_Button
-        reboot_btn = self.ui.Reboot_All_Button
-
-        # Set control button
-        if on_btn:
-            on_btn.clicked.connect(lambda: self.device.channel_ctrl.put(1))
-        if off_btn:
-            off_btn.clicked.connect(lambda: self.device.channel_ctrl.put(2))
-        if reboot_btn:
-            reboot_btn.clicked.connect(lambda: self.device.channel_ctrl.put(3))
-
-        if name_widget:
-            name_widget.channel = f"ca://{self.device.tower_name.pvname}"
-        if status_widget:
-            status_widget.channel = f"ca://{self.device.status.pvname}"
-        if location_widget:
-            location_widget.channel = f"ca://{self.device.location.pvname}"
-        if sensor1_id:
-            sensor1_id.channel = f"ca://{self.device.sensor1_id.pvname}"
-        if sensor1_name:
-            sensor1_name.channel = f"ca://{self.device.sensor1_status.pvname}"
-        if sensor1_temp:
-            sensor1_temp.channel = f"ca://{self.device.sensor1_temperature.pvname}"
-        if sensor1_humid:
-            sensor1_humid.channel = f"ca://{self.device.sensor1_humidity.pvname}"
-        if sensor2_id:
-            sensor2_id.channel = f"ca://{self.device.sensor2_id.pvname}"
-        if sensor2_name:
-            sensor2_name.channel = f"ca://{self.device.sensor2_status.pvname}"
-        if sensor2_temp:
-            sensor2_temp.channel = f"ca://{self.device.sensor2_temperature.pvname}"
-        if sensor2_humid:
-            sensor2_humid.channel = f"ca://{self.device.sensor2_humidity.pvname}"
-        if temp_lo:
-            temp_lo.channel = f"ca://{self.device.temperature_lo.pvname}"
-        if temp_hi:
-            temp_hi.channel = f"ca://{self.device.temperature_hi.pvname}"
-        if humid_lo:
-            humid_lo.channel = f"ca://{self.device.humidity_lo.pvname}"
-        if humid_hi:
-            humid_hi.channel = f"ca://{self.device.humidity_hi.pvname}"
-        if output_c:
-            output_c.channel = f"ca://{self.device.output_c.pvname}"
-        if output_c_max:
-            output_c_max.channel = f"ca://{self.device.output_c_max.pvname}"
-        if output_c_status:
-            output_c_status.channel = f"ca://{self.device.output_c_status.pvname}"
-        if output_p:
-            output_p.channel = f"ca://{self.device.output_p.pvname}"
-
-        # Alarm color callback
         if status_widget:
             self.update_color(status_widget, self.device.status.pvname)
 
+        self.add_channels()
 
     def add_channels(self):
         """

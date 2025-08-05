@@ -73,7 +73,7 @@
      <item>
       <widget class="PyDMLineEdit" name="Channel_Name">
        <property name="enabled">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -92,6 +92,9 @@
        </property>
        <property name="clearButtonEnabled">
         <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>sig://{name}.tower_name</string>
        </property>
       </widget>
      </item>
@@ -121,6 +124,9 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+       <property name="channel" stdset="0">
+        <string>sig://{name}.status</string>
        </property>
       </widget>
      </item>
@@ -182,7 +188,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:${template_status}</string>
+        <string>sig://{name}.location</string>
        </property>
        <property name="enableRichText" stdset="0">
         <bool>false</bool>
@@ -285,6 +291,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.num_inputs</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -319,6 +328,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.num_phases</string>
            </property>
           </widget>
          </item>
@@ -359,6 +371,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.num_outputs</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -393,6 +408,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.num_circuits</string>
            </property>
           </widget>
          </item>
@@ -433,6 +451,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.num_outlets</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -467,6 +488,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.num_breakers</string>
            </property>
           </widget>
          </item>
@@ -507,6 +531,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.num_groups</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -541,6 +568,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.num_heatsinks</string>
            </property>
           </widget>
          </item>
@@ -637,6 +667,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.output_f</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -671,6 +704,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.output_c</string>
            </property>
           </widget>
          </item>
@@ -711,6 +747,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.output_v</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -745,6 +784,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.output_c_min</string>
            </property>
           </widget>
          </item>
@@ -785,6 +827,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.output_p</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -819,6 +864,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.output_c_max</string>
            </property>
           </widget>
          </item>
@@ -1081,6 +1129,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.input_f</string>
+           </property>
           </widget>
          </item>
         </layout>
@@ -1119,6 +1170,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.input_v</string>
            </property>
           </widget>
          </item>
@@ -1159,6 +1213,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.input_v_min</string>
+           </property>
           </widget>
          </item>
         </layout>
@@ -1197,6 +1254,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://{name}.input_v_max</string>
            </property>
           </widget>
          </item>
@@ -1384,7 +1444,7 @@
         <x>0</x>
         <y>0</y>
         <width>958</width>
-        <height>250</height>
+        <height>196</height>
        </rect>
       </property>
       <property name="sizePolicy">

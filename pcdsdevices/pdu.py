@@ -35,11 +35,11 @@ class PDUChannel(Device):
     ch_ctrl_state = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_ctrl_state}',
                     kind='hinted', string=True)
     ch_ctrl_command_on = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command_on}',
-                    kind='hinted', string=True)
+                    kind='omitted', string=True)
     ch_ctrl_command_off = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command_off}',
-                    kind='hinted', string=True)
+                    kind='omitted', string=True)
     ch_ctrl_command_reboot = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command_reboot}',
-                    kind='hinted', string=True)
+                    kind='omitted', string=True)
 
     def __init__(self, prefix, *, name=None, parent=None, channel=None, **kwargs):
         self._ch = f'{channel}'
@@ -90,7 +90,7 @@ class TripplitePDUChannel(Device):
 
 class PDU(Device):
     """
-    Class to define a non-Tripplite PDU with one tower defined in its IOC
+    Class to define a non-Tripplite PDU
 
     Parameters
     ---------
@@ -133,7 +133,7 @@ class PDU(Device):
 
     tab_component_names = True
 
-    def __init__(self, prefix, num_channels, pdu_type=None, name='PDU', **kwargs):
+    def __init__(self, prefix, num_channels, pdu_type=None, name=None, **kwargs):
 
         if pdu_type.lower() == 'sentry4':
             self._tower = ":1"
@@ -161,7 +161,7 @@ class PDU8(PDU):
     channel7 = Cpt(PDUChannel, '', channel=7, kind='normal')
     channel8 = Cpt(PDUChannel, '', channel=8, kind='normal')
 
-    def __init__(self, prefix, pdu_type=None, name='PDU8', **kwargs):
+    def __init__(self, prefix, pdu_type=None, name=None, **kwargs):
         super().__init__(prefix, num_channels=8, pdu_type=pdu_type, name=name, **kwargs)
 
 
@@ -185,7 +185,7 @@ class PDU16(PDU):
     channel15 = Cpt(PDUChannel, '', channel=15, kind='normal')
     channel16 = Cpt(PDUChannel, '', channel=16, kind='normal')
 
-    def __init__(self, prefix, pdu_type=None, name='PDU16', **kwargs):
+    def __init__(self, prefix, pdu_type=None, name=None, **kwargs):
         super().__init__(prefix, num_channels=16, pdu_type=pdu_type, name=name, **kwargs)
 
 
@@ -217,7 +217,7 @@ class PDU24(PDU):
     channel23 = Cpt(PDUChannel, '', channel=23, kind='normal')
     channel24 = Cpt(PDUChannel, '', channel=24, kind='normal')
 
-    def __init__(self, prefix, pdu_type=None, name='PDU24', **kwargs):
+    def __init__(self, prefix, pdu_type=None, name=None, **kwargs):
         super().__init__(prefix, num_channels=24, pdu_type=pdu_type, name=name, **kwargs)
 
 
@@ -266,7 +266,7 @@ class TripplitePDU(Device):
 
     tab_component_names = True
 
-    def __init__(self, prefix, num_channels, name='PDU', **kwargs):
+    def __init__(self, prefix, num_channels, name=None, **kwargs):
 
         self.num_channels = num_channels
 
@@ -284,7 +284,7 @@ class TripplitePDU8(TripplitePDU):
     channel7 = Cpt(TripplitePDUChannel, '', channel=7, kind='normal')
     channel8 = Cpt(TripplitePDUChannel, '', channel=8, kind='normal')
 
-    def __init__(self, prefix, name='TripplitePDU8', **kwargs):
+    def __init__(self, prefix, name=None, **kwargs):
         super().__init__(prefix, num_channels=8, name=name, **kwargs)
 
 
@@ -308,7 +308,7 @@ class TripplitePDU16(TripplitePDU):
     channel15 = Cpt(TripplitePDUChannel, '', channel=15, kind='normal')
     channel16 = Cpt(TripplitePDUChannel, '', channel=16, kind='normal')
 
-    def __init__(self, prefix, name='TripplitePDU16', **kwargs):
+    def __init__(self, prefix, name=None, **kwargs):
         super().__init__(prefix, num_channels=16, name=name, **kwargs)
 
 
@@ -340,5 +340,5 @@ class TripplitePDU24(TripplitePDU):
     channel23 = Cpt(TripplitePDUChannel, '', channel=23, kind='normal')
     channel24 = Cpt(TripplitePDUChannel, '', channel=24, kind='normal')
 
-    def __init__(self, prefix, name='TripplitePDU24', **kwargs):
+    def __init__(self, prefix, name=None, **kwargs):
         super().__init__(prefix, num_channels=24, name=name, **kwargs)
