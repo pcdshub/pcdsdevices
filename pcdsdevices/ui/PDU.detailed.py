@@ -6,7 +6,7 @@ from epics import PV, caget, camonitor
 from pydm import Display
 from pydm.widgets import PyDMEmbeddedDisplay
 from qtpy import QtCore, QtWidgets
-from typhos import utils
+from typhos import utils, register_signal
 
 
 class PDUDetailedWidget(Display, utils.TyphosBase):
@@ -28,6 +28,10 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
     def add_device(self, device):
         """Typhos hook for adding a new device."""
         super().add_device(device)
+
+        for component_walk in device.walk_signals():
+            print(f'registering... {component_walk.item}')
+            register_signal(component_walk.item)
 
         # Get control buttons
         on_btn = self.ui.All_On_Button
@@ -200,7 +204,7 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             status.setAlignment(QtCore.Qt.AlignCenter)
             row_layout.addWidget(status, 2)
 
-            # Ctrl atate
+            # Ctrl state
             ctrl_state = pydm.widgets.label.PyDMLabel()
             ctrl_state.channel = f"ca://{ch_info['ch_ctrl_state']}"
             ctrl_state.setAlignment(QtCore.Qt.AlignCenter)
