@@ -14,8 +14,8 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
     Custom widget for managing the pdu detailed screen
     """
 
-    def __init__(self, parent=None, ui_filename='PDU.detailed.ui', **kwargs):
-        super().__init__(parent=parent, ui_filename=ui_filename)
+    def __init__(self, parent=None, ui_filename='PDU.detailed.ui', macros=None, **kwargs):
+        super().__init__(parent=parent, ui_filename=ui_filename, macros=macros, **kwargs)
 
     @property
     def device(self):
@@ -28,7 +28,21 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
     def add_device(self, device):
         """Typhos hook for adding a new device."""
         super().add_device(device)
-        self.post_typhos_init()
+
+        # Get control buttons
+        on_btn = self.ui.All_On_Button
+        off_btn = self.ui.All_Off_Button
+        reboot_btn = self.ui.Reboot_All_Button
+
+        # Set control button
+        if on_btn:
+            on_btn.clicked.connect(lambda: self.device.channel_ctrl.put(1))
+        if off_btn:
+            off_btn.clicked.connect(lambda: self.device.channel_ctrl.put(2))
+        if reboot_btn:
+            reboot_btn.clicked.connect(lambda: self.device.channel_ctrl.put(3))
+
+        self.add_channels()
 
     def post_typhos_init(self):
         """
@@ -48,37 +62,37 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """
 
         # High-level overview data
-        name_widget = self.ui.findChild(pydm.widgets.line_edit.PyDMLineEdit, "Channel_Name")
+        name_widget = self.ui.Channel_Name
         name_widget.setReadOnly(False)
-        status_widget = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Status_Label")
-        location_widget = self.ui.findChild(pydm.widgets.line_edit.PyDMLineEdit, "Location_Label")
+        status_widget = self.ui.Status_Label
+        location_widget = self.ui.Location_Label
         name_widget.setReadOnly(False)
 
         # Sensor data and threshholds
-        sensor1_id = self.ui.findChild(pydm.widgets.label.PyDMLabel, "S1_ID")
-        sensor1_name = self.ui.findChild(pydm.widgets.label.PyDMLabel, "S1_Status")
-        sensor1_temp = self.ui.findChild(pydm.widgets.label.PyDMLabel, "S1_Temp")
-        sensor1_humid = self.ui.findChild(pydm.widgets.label.PyDMLabel, "S1_Hum")
-        sensor2_id = self.ui.findChild(pydm.widgets.label.PyDMLabel, "S2_ID")
-        sensor2_name = self.ui.findChild(pydm.widgets.label.PyDMLabel, "S2_Status")
-        sensor2_temp = self.ui.findChild(pydm.widgets.label.PyDMLabel, "S2_Temp")
-        sensor2_humid = self.ui.findChild(pydm.widgets.label.PyDMLabel, "S2_Hum")
+        sensor1_id = self.ui.S1_ID
+        sensor1_name = self.ui.S1_Status
+        sensor1_temp = self.ui.S1_Temp
+        sensor1_humid = self.ui.S1_Hum
+        sensor2_id = self.ui.S2_ID
+        sensor2_name = self.ui.S2_Status
+        sensor2_temp = self.ui.S2_Temp
+        sensor2_humid = self.ui.S2_Hum
 
-        temp_lo = self.ui.findChild(pydm.widgets.line_edit.PyDMLineEdit, "Temp_Lo")
-        temp_hi = self.ui.findChild(pydm.widgets.line_edit.PyDMLineEdit, "Temp_Hi")
-        humid_lo = self.ui.findChild(pydm.widgets.line_edit.PyDMLineEdit, "Hum_Lo")
-        humid_hi = self.ui.findChild(pydm.widgets.line_edit.PyDMLineEdit, "Hum_Hi")
+        temp_lo = self.ui.Temp_Lo
+        temp_hi = self.ui.Temp_Hi
+        humid_lo = self.ui.Hum_Lo
+        humid_hi = self.ui.Hum_Hi
 
         # Input/output details:
-        output_c = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Infeed_Load")
-        output_c_max = self.ui.findChild(pydm.widgets.line_edit.PyDMLineEdit, "Infeed_Load_Threshhold")
-        output_c_status = self.ui.findChild(pydm.widgets.label.PyDMLabel, "Infeed_Status")
-        output_p = self.ui.findChild(pydm.widgets.label.PyDMLabel, "PDU_Power")
+        output_c = self.ui.Infeed_Load
+        output_c_max = self.ui.Infeed_Load_Threshhold
+        output_c_status = self.ui.Infeed_Status
+        output_p = self.ui.PDU_Power
 
         # Get control buttons
-        on_btn = self.ui.findChild(pydm.widgets.pushbutton.PyDMPushButton, 'All_On_Button')
-        off_btn = self.ui.findChild(pydm.widgets.pushbutton.PyDMPushButton, 'All_Off_Button')
-        reboot_btn = self.ui.findChild(pydm.widgets.pushbutton.PyDMPushButton, 'Reboot_All_Button')
+        on_btn = self.ui.All_On_Button
+        off_btn = self.ui.All_Off_Button
+        reboot_btn = self.ui.Reboot_All_Button
 
         # Set control button
         if on_btn:
@@ -89,47 +103,47 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             reboot_btn.clicked.connect(lambda: self.device.channel_ctrl.put(3))
 
         if name_widget:
-            name_widget.channel = f"ca://{self.device.pdu_name.pvname}"
+            name_widget.channel = f"ca://{self.device.tower_name.pvname}"
         if status_widget:
-            status_widget.channel = f"ca://{self.device.pdu_status.pvname}"
+            status_widget.channel = f"ca://{self.device.status.pvname}"
         if location_widget:
-            location_widget.channel = f"ca://{self.device.pdu_location.pvname}"
+            location_widget.channel = f"ca://{self.device.location.pvname}"
         if sensor1_id:
-            sensor1_id.channel = f"ca://{self.device.pdu_sensor1_id.pvname}"
+            sensor1_id.channel = f"ca://{self.device.sensor1_id.pvname}"
         if sensor1_name:
-            sensor1_name.channel = f"ca://{self.device.pdu_sensor1_status.pvname}"
+            sensor1_name.channel = f"ca://{self.device.sensor1_status.pvname}"
         if sensor1_temp:
-            sensor1_temp.channel = f"ca://{self.device.pdu_sensor1_temperature.pvname}"
+            sensor1_temp.channel = f"ca://{self.device.sensor1_temperature.pvname}"
         if sensor1_humid:
-            sensor1_humid.channel = f"ca://{self.device.pdu_sensor1_humidity.pvname}"
+            sensor1_humid.channel = f"ca://{self.device.sensor1_humidity.pvname}"
         if sensor2_id:
-            sensor2_id.channel = f"ca://{self.device.pdu_sensor2_id.pvname}"
+            sensor2_id.channel = f"ca://{self.device.sensor2_id.pvname}"
         if sensor2_name:
-            sensor2_name.channel = f"ca://{self.device.pdu_sensor2_status.pvname}"
+            sensor2_name.channel = f"ca://{self.device.sensor2_status.pvname}"
         if sensor2_temp:
-            sensor2_temp.channel = f"ca://{self.device.pdu_sensor2_temperature.pvname}"
+            sensor2_temp.channel = f"ca://{self.device.sensor2_temperature.pvname}"
         if sensor2_humid:
-            sensor2_humid.channel = f"ca://{self.device.pdu_sensor2_humidity.pvname}"
+            sensor2_humid.channel = f"ca://{self.device.sensor2_humidity.pvname}"
         if temp_lo:
-            temp_lo.channel = f"ca://{self.device.pdu_temperature_lo.pvname}"
+            temp_lo.channel = f"ca://{self.device.temperature_lo.pvname}"
         if temp_hi:
-            temp_hi.channel = f"ca://{self.device.pdu_temperature_hi.pvname}"
+            temp_hi.channel = f"ca://{self.device.temperature_hi.pvname}"
         if humid_lo:
-            humid_lo.channel = f"ca://{self.device.pdu_humidity_lo.pvname}"
+            humid_lo.channel = f"ca://{self.device.humidity_lo.pvname}"
         if humid_hi:
-            humid_hi.channel = f"ca://{self.device.pdu_humidity_hi.pvname}"
+            humid_hi.channel = f"ca://{self.device.humidity_hi.pvname}"
         if output_c:
-            output_c.channel = f"ca://{self.device.pdu_output_c.pvname}"
+            output_c.channel = f"ca://{self.device.output_c.pvname}"
         if output_c_max:
-            output_c_max.channel = f"ca://{self.device.pdu_output_c_max.pvname}"
+            output_c_max.channel = f"ca://{self.device.output_c_max.pvname}"
         if output_c_status:
-            output_c_status.channel = f"ca://{self.device.pdu_output_c_status.pvname}"
+            output_c_status.channel = f"ca://{self.device.output_c_status.pvname}"
         if output_p:
-            output_p.channel = f"ca://{self.device.pdu_output_p.pvname}"
+            output_p.channel = f"ca://{self.device.output_p.pvname}"
 
         # Alarm color callback
         if status_widget:
-            self.update_color(status_widget, self.device.pdu_status.pvname)
+            self.update_color(status_widget, self.device.status.pvname)
 
 
     def add_channels(self):

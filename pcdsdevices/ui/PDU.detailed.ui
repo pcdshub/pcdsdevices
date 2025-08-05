@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>920</width>
-    <height>552</height>
+    <height>639</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -87,6 +87,9 @@
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
+       <property name="channel" stdset="0">
+        <string>sig://${name}.tower_name</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -103,6 +106,9 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+       <property name="channel" stdset="0">
+        <string>sig://${name}.location</string>
        </property>
       </widget>
      </item>
@@ -132,6 +138,9 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+       <property name="channel" stdset="0">
+        <string>sig://${name}.status</string>
        </property>
       </widget>
      </item>
@@ -405,7 +414,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>sig://${name}.output_c_status</string>
            </property>
           </widget>
          </item>
@@ -470,6 +479,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.output_p</string>
            </property>
           </widget>
          </item>
@@ -541,6 +553,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="PyDMToolTip" stdset="0">
+            <string>sig://${name}.output_c_max</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -609,7 +624,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>sig://${name}.output_c</string>
            </property>
           </widget>
          </item>
@@ -765,6 +780,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor1_id</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -802,6 +820,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor2_id</string>
            </property>
           </widget>
          </item>
@@ -873,6 +894,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor1_status</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -910,6 +934,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor2_status</string>
            </property>
           </widget>
          </item>
@@ -981,6 +1008,9 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor1_temperature</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -1018,6 +1048,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor2_temperature</string>
            </property>
           </widget>
          </item>
@@ -1065,7 +1098,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Humidity (%);</string>
+            <string>Humidity (%):</string>
            </property>
           </widget>
          </item>
@@ -1088,6 +1121,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor1_humidity</string>
            </property>
           </widget>
          </item>
@@ -1126,6 +1162,9 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor2_humidity</string>
            </property>
           </widget>
          </item>
@@ -1352,7 +1391,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="channel" stdset="0">
-              <string>ca://{prefix}:{template_t_lo}</string>
+              <string>sig://${name}.temperature_lo</string>
              </property>
             </widget>
            </item>
@@ -1399,7 +1438,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="channel" stdset="0">
-              <string>ca://{prefix}:{template_t_hi}</string>
+              <string>sig://${name}.temperature_hi</string>
              </property>
             </widget>
            </item>
@@ -1494,7 +1533,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="channel" stdset="0">
-              <string>ca://{prefix}:{template_h_lo}</string>
+              <string>sig://${name}.humidity_lo</string>
              </property>
             </widget>
            </item>
@@ -1541,7 +1580,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="channel" stdset="0">
-              <string>ca://{prefix}:{template_h_hi}</string>
+              <string>sig://${name}.humidity_hi</string>
              </property>
             </widget>
            </item>
@@ -1665,7 +1704,7 @@
         <x>0</x>
         <y>0</y>
         <width>900</width>
-        <height>166</height>
+        <height>253</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -1688,14 +1727,14 @@
         <number>0</number>
        </property>
        <item>
-        <layout class="QVBoxLayout" name="Left_Channels" stretch="">
+        <layout class="QVBoxLayout" name="Left_Channels">
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="Right_Channels" stretch="">
+        <layout class="QVBoxLayout" name="Right_Channels">
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
