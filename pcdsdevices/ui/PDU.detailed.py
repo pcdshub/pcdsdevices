@@ -31,19 +31,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         for component_walk in device.walk_signals():
             register_signal(component_walk.item)
 
-        # Get control buttons
-        on_btn = self.ui.All_On_Button
-        off_btn = self.ui.All_Off_Button
-        reboot_btn = self.ui.Reboot_All_Button
-
-        # Set control button
-        if on_btn:
-            on_btn.clicked.connect(lambda: self.device.channel_ctrl.put(1))
-        if off_btn:
-            off_btn.clicked.connect(lambda: self.device.channel_ctrl.put(2))
-        if reboot_btn:
-            reboot_btn.clicked.connect(lambda: self.device.channel_ctrl.put(3))
-
         # Alarm color callbacks
         status_widget = self.ui.Status_Label
         if status_widget:
@@ -169,7 +156,7 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         def delayed_resize():
             current_width = self.width()
             top_window = self.window()
-            top_window.resize(current_width, 1000)
+            top_window.resize(current_width, 700)
 
         QtCore.QTimer.singleShot(100, delayed_resize)
 

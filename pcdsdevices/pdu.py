@@ -93,7 +93,7 @@ class PDU(Device):
     tower_name = FCpt(EpicsSignal, '{prefix}{self._tower}:SetTowerName', kind='hinted')
     location = Cpt(EpicsSignal, ':SetSystemLocation', kind='hinted')
     status = FCpt(EpicsSignalRO, '{prefix}{self._tower}:GetTowerStatus', kind='hinted')
-    output_c_max = FCpt(EpicsSignalRO, '{prefix}{self._tower}:SetInfeedLoadHighThresh', kind='hinted')
+    output_c_max = FCpt(EpicsSignal, '{prefix}{self._tower}:SetInfeedLoadHighThresh', kind='hinted')
     output_c = FCpt(EpicsSignalRO, '{prefix}{self._tower}:GetInfeedLoadValue', kind='hinted')
     output_c_status = FCpt(EpicsSignalRO, '{prefix}{self._tower}:GetInfeedLoadStatus', kind='hinted')
     output_p = FCpt(EpicsSignalRO, '{prefix}{self._tower}:GetTowerActivePower', kind='hinted')

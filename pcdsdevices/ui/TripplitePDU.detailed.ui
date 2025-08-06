@@ -971,6 +971,9 @@
        </item>
        <item>
         <widget class="PyDMPushButton" name="All_On_Button">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -988,6 +991,12 @@
          </property>
          <property name="text">
           <string>All On</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>sig://${name}.channels_on</string>
+         </property>
+         <property name="pressValue" stdset="0">
+          <string>1</string>
          </property>
         </widget>
        </item>
@@ -1011,8 +1020,14 @@
          <property name="text">
           <string>All Off</string>
          </property>
+         <property name="monitorDisp" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="channel" stdset="0">
+          <string>sig://${name}.channels_off</string>
+         </property>
          <property name="pressValue" stdset="0">
-          <string>None</string>
+          <string>1</string>
          </property>
         </widget>
        </item>
@@ -1035,6 +1050,12 @@
          </property>
          <property name="text">
           <string>Reboot All</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>sig://${name}.channels_reboot</string>
+         </property>
+         <property name="pressValue" stdset="0">
+          <string>1</string>
          </property>
         </widget>
        </item>

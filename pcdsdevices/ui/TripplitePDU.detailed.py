@@ -27,22 +27,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """Typhos hook for adding a new device."""
         super().add_device(device)
 
-        # Get control buttons
-        on_btn = self.ui.All_On_Button
-        off_btn = self.ui.All_Off_Button
-        reboot_btn = self.ui.Reboot_All_Button
-
-        # Set control button
-        if on_btn:
-            on_btn.channel = f"ca://{self.device.channels_on.pvname}"
-            on_btn.pressValue = 1
-        if off_btn:
-            off_btn.channel = f"ca://{self.device.channels_off.pvname}"
-            off_btn.pressValue = 1
-        if reboot_btn:
-            reboot_btn.channel = f"ca://{self.device.channels_reboot.pvname}"
-            reboot_btn.pressValue = 1
-
         # Widgets that need scaling
         input_f = self.ui.Input_F
         input_v = self.ui.Input_V
