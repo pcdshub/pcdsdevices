@@ -1,10 +1,8 @@
 import re
 
 import pydm
-from epics import PV, caget, camonitor
+from epics import PV, camonitor
 from pydm import Display
-from pydm.utilities import parse_value_for_display
-from pydm.widgets.display_format import DisplayFormat
 from qtpy import QtCore, QtWidgets
 from typhos import utils
 
@@ -85,7 +83,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
 
         self.add_channels()
 
-
     def add_channels(self):
         """
         Find all attributes of the PDU that start with the name 'channel'
@@ -113,7 +110,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """
         self.channel_signal_dict_sorted = dict(sorted(self.channel_signal_dict.items(), key=lambda item: self.extract_outlet_number(item[1]['ch_index'])))
         self.generate_rows()
-
 
     def generate_rows(self):
         """
@@ -182,7 +178,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         for ch in right_half:
             add_channel_row(right_layout, ch)
 
-
     def monitor_pv_to_label(self, label, pvname, scale=1.0, precision=1):
         """
         Subscribe the PV, as saved in the ophyd component, to an EPICS
@@ -199,7 +194,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
 
         # Register the monitor
         camonitor(pvname, callback=on_change)
-
 
     def extract_outlet_number(self, pvname):
         """
@@ -223,11 +217,11 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         def on_change(value=None, **kwargs):
             severity = kwargs.get("severity")
             if severity == 2:
-                label.setStyleSheet(f"background-color: red; color: black")
+                label.setStyleSheet("background-color: red; color: black")
             elif severity == 1:
-                label.setStyleSheet(f"background-color: yellow; color: black")
+                label.setStyleSheet("background-color: yellow; color: black")
             else:
-                label.setStyleSheet(f"background-color: #0b3ae8; color: white")
+                label.setStyleSheet("background-color: #0b3ae8; color: white")
 
         # Set the call back
         pv = PV(pvname)

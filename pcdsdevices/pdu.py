@@ -7,9 +7,6 @@ from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
-from .device import GroupDevice
-from .interface import BaseInterface
-
 logger = logging.getLogger(__name__)
 
 
@@ -26,20 +23,13 @@ class PDUChannel(Device):
         The output channel on the PDU, e.g. '1', '2', etc.
     """
 
-    ch_index = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_index}',
-                    kind='hinted', string=True)
-    ch_name = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_name}',
-                    kind='hinted', string=True)
-    ch_status = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_status}',
-                    kind='hinted', string=True)
-    ch_ctrl_state = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_ctrl_state}',
-                    kind='hinted', string=True)
-    ch_ctrl_command_on = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command_on}',
-                    kind='omitted', string=True)
-    ch_ctrl_command_off = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command_off}',
-                    kind='omitted', string=True)
-    ch_ctrl_command_reboot = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command_reboot}',
-                    kind='omitted', string=True)
+    ch_index = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_index}', kind='hinted', string=True)
+    ch_name = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_name}', kind='hinted', string=True)
+    ch_status = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_status}', kind='hinted', string=True)
+    ch_ctrl_state = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_ctrl_state}', kind='hinted', string=True)
+    ch_ctrl_command_on = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command_on}', kind='omitted', string=True)
+    ch_ctrl_command_off = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command_off}', kind='omitted', string=True)
+    ch_ctrl_command_reboot = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command_reboot}', kind='omitted', string=True)
 
     def __init__(self, prefix, *, name=None, parent=None, channel=None, **kwargs):
         self._ch = f'{channel}'
@@ -52,6 +42,7 @@ class PDUChannel(Device):
         self._ch_command_reboot = 'CycleOffOn'
 
         super().__init__(prefix, name=name, **kwargs)
+
 
 class TripplitePDUChannel(Device):
     """
@@ -66,16 +57,11 @@ class TripplitePDUChannel(Device):
         The output channel on the PDU, e.g. '1', '2', etc.
 
     """
-    ch_index = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_index}',
-                    kind='hinted', string=True)
-    ch_name = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_name}',
-                    kind='hinted', string=True)
-    ch_status = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_status}',
-                    kind='hinted', string=True)
-    ch_ctrl_state = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_ctrl_state}',
-                    kind='hinted', string=True)
-    ch_ctrl_command = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command}',
-                    kind='hinted', string=True)
+    ch_index = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_index}', kind='hinted', string=True)
+    ch_name = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_name}', kind='hinted', string=True)
+    ch_status = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_status}', kind='hinted', string=True)
+    ch_ctrl_state = FCpt(EpicsSignalRO, '{self.prefix}:Outlet:{self._ch}:{self._ch_ctrl_state}', kind='hinted', string=True)
+    ch_ctrl_command = FCpt(EpicsSignal, '{self.prefix}:Outlet:{self._ch}:{self._ch_command}', kind='hinted', string=True)
 
     def __init__(self, prefix, *, name=None, parent=None, channel=None, **kwargs):
         self._ch = f'{channel}'
@@ -112,7 +98,6 @@ class PDU(Device):
     output_c_status = FCpt(EpicsSignalRO, '{prefix}{self._tower}:GetInfeedLoadStatus', kind='hinted')
     output_p = FCpt(EpicsSignalRO, '{prefix}{self._tower}:GetTowerActivePower', kind='hinted')
 
-
     temperature_lo = FCpt(EpicsSignal, '{prefix}{self._tower}:Sensor:All:SetTempLowThresh', kind='hinted')
     humidity_lo = FCpt(EpicsSignal, '{prefix}{self._tower}:Sensor:All:SetHumidLowThresh', kind='hinted')
     temperature_hi = FCpt(EpicsSignal, '{prefix}{self._tower}:Sensor:All:SetTempHighThresh', kind='hinted')
@@ -129,7 +114,6 @@ class PDU(Device):
     sensor2_humidity = Cpt(EpicsSignal, ':Sensor:2:GetHumidStatus', kind='hinted')
 
     channel_ctrl = FCpt(EpicsSignal, '{prefix}{self._ctrl}:SetControlAction', kind='hinted')
-
 
     tab_component_names = True
 
@@ -148,6 +132,7 @@ class PDU(Device):
         self.num_channels = num_channels
 
         super().__init__(prefix, name=name, **kwargs)
+
 
 class PDU8(PDU):
     """8-channel PDU with static channel definitions for Typhos"""
@@ -271,6 +256,7 @@ class TripplitePDU(Device):
         self.num_channels = num_channels
 
         super().__init__(prefix, name=name, **kwargs)
+
 
 class TripplitePDU8(TripplitePDU):
     """8-channel Tripplite PDU with static channel definitions for Typhos"""

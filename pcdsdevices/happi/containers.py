@@ -701,4 +701,3 @@ class Leviton(LCLSItem):
     kwargs.default['elevations'] = "{{elevations}}"
     elevations = EntryInfo(doc='List of elevation numbers for rack',
                            optional=False, enforce=list)
-

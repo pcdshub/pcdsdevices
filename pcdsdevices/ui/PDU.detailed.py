@@ -1,12 +1,10 @@
 import re
-from os import path
 
 import pydm
-from epics import PV, caget, camonitor
+from epics import PV
 from pydm import Display
-from pydm.widgets import PyDMEmbeddedDisplay
 from qtpy import QtCore, QtWidgets
-from typhos import utils, register_signal
+from typhos import register_signal, utils
 
 
 class PDUDetailedWidget(Display, utils.TyphosBase):
@@ -78,7 +76,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """
         self.channel_signal_dict_sorted = dict(sorted(self.channel_signal_dict.items(), key=lambda item: self.order_channels(item[1]['ch_index'])))
         self.generate_rows()
-
 
     def generate_rows(self):
         """
@@ -198,11 +195,11 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         def on_change(value=None, **kwargs):
             severity = kwargs.get("severity")
             if severity == 2:
-                label.setStyleSheet(f"background-color: red; color: black")
+                label.setStyleSheet("background-color: red; color: black")
             elif severity == 1:
-                label.setStyleSheet(f"background-color: yellow; color: black")
+                label.setStyleSheet("background-color: yellow; color: black")
             else:
-                label.setStyleSheet(f"background-color: #0b3ae8; color: white")
+                label.setStyleSheet("background-color: #0b3ae8; color: white")
 
         # Set the call back
         pv = PV(pvname)
