@@ -5,6 +5,7 @@ from epics import PV
 from pydm import Display
 from qtpy import QtCore, QtWidgets
 from typhos import utils
+
 from pcdsdevices.pdu import PDUChannel
 
 
@@ -96,7 +97,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             # Alarm color callback
             self.update_color(ctrl_state, ch_info['ch_status'])
             self.update_color(status, ch_info['ch_status'])
-
 
             # Command combo box
             # This would be a pydm enum combo box but the Epics record is not a mbbo. I need to
