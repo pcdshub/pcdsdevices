@@ -29,39 +29,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """Typhos hook for adding a new device."""
         super().add_device(device)
 
-        # Widgets that need scaling
-        input_f = self.ui.Input_F
-        input_v = self.ui.Input_V
-        input_v_min = self.ui.Input_V_Min
-        input_v_max = self.ui.Input_V_Max
-        output_f = self.ui.Output_F
-        output_v = self.ui.Output_V
-        output_p = self.ui.Output_P
-        output_c = self.ui.Output_C
-        output_c_min = self.ui.Output_C_Min
-        output_c_max = self.ui.Output_C_Max
-
-        if input_f:
-            self.monitor_pv_to_label(input_f, self.device.input_f.pvname, scale=0.1)
-        if input_v:
-            self.monitor_pv_to_label(input_v, self.device.input_v.pvname, scale=0.1)
-        if input_v_min:
-            self.monitor_pv_to_label(input_v_min, self.device.input_v_min.pvname, scale=0.1)
-        if input_v_max:
-            self.monitor_pv_to_label(input_v_max, self.device.input_v_max.pvname, scale=0.1)
-        if output_f:
-            self.monitor_pv_to_label(output_f, self.device.output_f.pvname, scale=0.1)
-        if output_v:
-            self.monitor_pv_to_label(output_v, self.device.output_v.pvname, scale=0.1)
-        if output_p:
-            self.monitor_pv_to_label(output_p, self.device.output_p.pvname, scale=1.0)
-        if output_c:
-            self.monitor_pv_to_label(output_c, self.device.output_c.pvname, scale=0.1)
-        if output_c_min:
-            self.monitor_pv_to_label(output_c_min, self.device.output_c_min.pvname, scale=0.1)
-        if output_c_max:
-            self.monitor_pv_to_label(output_c_max, self.device.output_c_max.pvname, scale=0.1)
-
         # Alarm color callbacks
         status_widget = self.ui.Status_Label
         if status_widget:
@@ -156,23 +123,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             add_channel_row(left_layout, ch)
         for ch in right_half:
             add_channel_row(right_layout, ch)
-
-    def monitor_pv_to_label(self, label, pvname, scale=1.0, precision=1):
-        """
-        Subscribe the PV, as saved in the ophyd component, to an EPICS
-        monitor that executes a function to scale its value and assign
-        it to the cooresponding widget's text. This works around using
-        the channel property in these widgets, which to the best of
-        my knowledge does not support scalling.
-        """
-        def on_change(pvname=None, value=None, **kwargs):
-            if value is not None:
-                label.setText(f"{value * scale:.{precision}f}")
-            else:
-                label.setText("--")
-
-        # Register the monitor
-        camonitor(pvname, callback=on_change)
 
     def extract_outlet_number(self, pvname):
         """Helper function for sorting the channel dictionaries"""

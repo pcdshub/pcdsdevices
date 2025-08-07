@@ -668,7 +668,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>calc://my_var?var=sig://${name}.output_f&amp;expr=var*0.1</string>
            </property>
           </widget>
          </item>
@@ -706,7 +706,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>calc://my_var?var=sig://${name}.output_c&amp;expr=var*0.1</string>
            </property>
           </widget>
          </item>
@@ -748,7 +748,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>calc://my_var?var=sig://${name}.output_v&amp;expr=var*0.1</string>
            </property>
           </widget>
          </item>
@@ -786,7 +786,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>calc://my_var?var=sig://${name}.output_c_min&amp;expr=var*0.1</string>
            </property>
           </widget>
          </item>
@@ -828,7 +828,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>sig://${name}.output_p</string>
            </property>
           </widget>
          </item>
@@ -866,7 +866,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>calc://my_var?var=sig://${name}.output_c_max&amp;expr=var*0.1</string>
            </property>
           </widget>
          </item>
@@ -1151,7 +1151,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>calc://my_var?var=sig://${name}.input_f&amp;expr=var*0.1</string>
            </property>
           </widget>
          </item>
@@ -1193,7 +1193,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>calc://my_var?var=sig://${name}.input_v&amp;expr=var*0.1</string>
            </property>
           </widget>
          </item>
@@ -1235,7 +1235,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>calc://my_var?var=sig://${name}.input_v_min&amp;expr=var*0.1</string>
            </property>
           </widget>
          </item>
@@ -1277,7 +1277,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string/>
+            <string>calc://my_var?var=sig://${name}.input_v_max&amp;expr=var*0.1</string>
            </property>
           </widget>
          </item>
