@@ -1,7 +1,7 @@
 import re
 
 import pydm
-from epics import PV, camonitor
+from epics import PV
 from pydm import Display
 from qtpy import QtCore, QtWidgets
 from typhos import utils
