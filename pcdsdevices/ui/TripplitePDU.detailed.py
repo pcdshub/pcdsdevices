@@ -4,7 +4,7 @@ import pydm
 from epics import PV, camonitor
 from pydm import Display
 from qtpy import QtCore, QtWidgets
-from typhos import utils
+from typhos import register_signal, utils
 
 
 class PDUDetailedWidget(Display, utils.TyphosBase):
@@ -12,8 +12,8 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
     Custom widget for managing the pdu detailed screen
     """
 
-    def __init__(self, parent=None, ui_filename='TripplitePDU.detailed.ui', **kwargs):
-        super().__init__(parent=parent, ui_filename=ui_filename)
+    def __init__(self, parent=None, ui_filename='TripplitePDU.detailed.ui', macros=None, **kwargs):
+        super().__init__(parent=parent, ui_filename=ui_filename, macros=macros, **kwargs)
 
     @property
     def device(self):
@@ -26,6 +26,10 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
     def add_device(self, device):
         """Typhos hook for adding a new device."""
         super().add_device(device)
+
+        # Manually register signals because I don't inherit from typhos.Display
+        for component_walk in device.walk_signals():
+            register_signal(component_walk.item)
 
         # Widgets that need scaling
         input_f = self.ui.Input_F
@@ -40,30 +44,30 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         output_c_max = self.ui.Output_C_Max
 
         if input_f:
-            self.monitor_pv_to_label(input_f, self.device.pdu_input_f.pvname, scale=0.1)
+            self.monitor_pv_to_label(input_f, self.device.input_f.pvname, scale=0.1)
         if input_v:
-            self.monitor_pv_to_label(input_v, self.device.pdu_input_v.pvname, scale=0.1)
+            self.monitor_pv_to_label(input_v, self.device.input_v.pvname, scale=0.1)
         if input_v_min:
-            self.monitor_pv_to_label(input_v_min, self.device.pdu_input_v_min.pvname, scale=0.1)
+            self.monitor_pv_to_label(input_v_min, self.device.input_v_min.pvname, scale=0.1)
         if input_v_max:
-            self.monitor_pv_to_label(input_v_max, self.device.pdu_input_v_max.pvname, scale=0.1)
+            self.monitor_pv_to_label(input_v_max, self.device.input_v_max.pvname, scale=0.1)
         if output_f:
-            self.monitor_pv_to_label(output_f, self.device.pdu_output_f.pvname, scale=0.1)
+            self.monitor_pv_to_label(output_f, self.device.output_f.pvname, scale=0.1)
         if output_v:
-            self.monitor_pv_to_label(output_v, self.device.pdu_output_v.pvname, scale=0.1)
+            self.monitor_pv_to_label(output_v, self.device.output_v.pvname, scale=0.1)
         if output_p:
-            self.monitor_pv_to_label(output_p, self.device.pdu_output_p.pvname, scale=1.0)
+            self.monitor_pv_to_label(output_p, self.device.output_p.pvname, scale=1.0)
         if output_c:
-            self.monitor_pv_to_label(output_c, self.device.pdu_output_c.pvname, scale=0.1)
+            self.monitor_pv_to_label(output_c, self.device.output_c.pvname, scale=0.1)
         if output_c_min:
-            self.monitor_pv_to_label(output_c_min, self.device.pdu_output_c_min.pvname, scale=0.1)
+            self.monitor_pv_to_label(output_c_min, self.device.output_c_min.pvname, scale=0.1)
         if output_c_max:
-            self.monitor_pv_to_label(output_c_max, self.device.pdu_output_c_max.pvname, scale=0.1)
+            self.monitor_pv_to_label(output_c_max, self.device.output_c_max.pvname, scale=0.1)
 
         # Alarm color callbacks
         status_widget = self.ui.Status_Label
         if status_widget:
-            self.update_color(status_widget, self.device.pdu_status.pvname)
+            self.update_color(status_widget, self.device.status.pvname)
 
         self.add_channels()
 
@@ -122,7 +126,7 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             status.setAlignment(QtCore.Qt.AlignCenter)
             row_layout.addWidget(status, 2)
 
-            # Ctrl atate
+            # Ctrl state
             ctrl_state = pydm.widgets.label.PyDMLabel()
             ctrl_state.channel = f"ca://{ch_info['ch_ctrl_state']}"
             ctrl_state.setAlignment(QtCore.Qt.AlignCenter)
@@ -131,10 +135,13 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             # Command enum
             cmd = pydm.widgets.enum_combo_box.PyDMEnumComboBox()
             cmd.channel = f"ca://{ch_info['ch_ctrl_command']}"
+            # Forcing stylesheet because border is yellow by default
+            cmd.setStyleSheet("background-color: white; border-color: white")
             row_layout.addWidget(cmd, 2)
 
             # Alarm color callback
             self.update_color(ctrl_state, ch_info['ch_status'])
+            self.update_color(status, ch_info['ch_status'])
 
             row_widget = QtWidgets.QWidget()
             row_widget.setLayout(row_layout)

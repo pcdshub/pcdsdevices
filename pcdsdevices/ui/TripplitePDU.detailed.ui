@@ -73,7 +73,7 @@
      <item>
       <widget class="PyDMLineEdit" name="Channel_Name">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -94,7 +94,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>sig://{name}.tower_name</string>
+        <string>sig://${name}.tower_name</string>
        </property>
       </widget>
      </item>
@@ -126,7 +126,7 @@
         <set>Qt::AlignCenter</set>
        </property>
        <property name="channel" stdset="0">
-        <string>sig://{name}.status</string>
+        <string>sig://${name}.location</string>
        </property>
       </widget>
      </item>
@@ -188,7 +188,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>sig://{name}.location</string>
+        <string>sig://${name}.status</string>
        </property>
        <property name="enableRichText" stdset="0">
         <bool>false</bool>
@@ -292,7 +292,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.num_inputs</string>
+            <string>sig://${name}.num_inputs</string>
            </property>
           </widget>
          </item>
@@ -330,7 +330,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.num_phases</string>
+            <string>sig://${name}.num_phases</string>
            </property>
           </widget>
          </item>
@@ -372,7 +372,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.num_outputs</string>
+            <string>sig://${name}.num_outputs</string>
            </property>
           </widget>
          </item>
@@ -410,7 +410,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.num_circuits</string>
+            <string>sig://${name}.num_circuits</string>
            </property>
           </widget>
          </item>
@@ -452,7 +452,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.num_outlets</string>
+            <string>sig://${name}.num_outlets</string>
            </property>
           </widget>
          </item>
@@ -490,7 +490,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.num_breakers</string>
+            <string>sig://${name}.num_breakers</string>
            </property>
           </widget>
          </item>
@@ -532,7 +532,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.num_groups</string>
+            <string>sig://${name}.num_groups</string>
            </property>
           </widget>
          </item>
@@ -570,7 +570,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.num_heatsinks</string>
+            <string>sig://${name}.num_heatsinks</string>
            </property>
           </widget>
          </item>
@@ -668,7 +668,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.output_f</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -706,7 +706,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.output_c</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -748,7 +748,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.output_v</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -786,7 +786,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.output_c_min</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -828,7 +828,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.output_p</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -866,7 +866,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.output_c_max</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -1151,7 +1151,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.input_f</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -1193,7 +1193,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.input_v</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -1235,7 +1235,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.input_v_min</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -1277,7 +1277,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="channel" stdset="0">
-            <string>sig://{name}.input_v_max</string>
+            <string/>
            </property>
           </widget>
          </item>
