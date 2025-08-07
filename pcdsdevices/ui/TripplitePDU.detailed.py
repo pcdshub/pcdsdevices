@@ -4,7 +4,8 @@ import pydm
 from epics import PV, camonitor
 from pydm import Display
 from qtpy import QtCore, QtWidgets
-from typhos import register_signal, utils
+from typhos import utils
+from pcdsdevices.pdu import TripplitePDUChannel
 
 
 class PDUDetailedWidget(Display, utils.TyphosBase):
@@ -26,10 +27,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
     def add_device(self, device):
         """Typhos hook for adding a new device."""
         super().add_device(device)
-
-        # Manually register signals because I don't inherit from typhos.Display
-        for component_walk in device.walk_signals():
-            register_signal(component_walk.item)
 
         # Widgets that need scaling
         input_f = self.ui.Input_F
@@ -79,23 +76,21 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """
         self.channel_signal_dict = {}
 
-        for attr in dir(self.device):
-            if attr.startswith("channel"):
-                ch_obj = getattr(self.device, attr, None)
-                if ch_obj is None or not all(hasattr(ch_obj, k) for k in ('ch_index', 'ch_name', 'ch_status', 'ch_ctrl_state', 'ch_ctrl_command')):
-                    continue
-
-                self.channel_signal_dict[attr] = {
+        for cpt in self.device.walk_components():
+            # Get top level channel components
+            if cpt.item.cls is TripplitePDUChannel and len(cpt.ancestors) == 1:
+                # Get the actual device instance using the dotted name
+                ch_obj = getattr(self.device, cpt.dotted_name)
+                # add to the dictionary
+                self.channel_signal_dict[cpt.dotted_name] = {
                     'ch_index': ch_obj.ch_index.pvname,
                     'ch_name': ch_obj.ch_name.pvname,
                     'ch_status': ch_obj.ch_status.pvname,
                     'ch_ctrl_state': ch_obj.ch_ctrl_state.pvname,
                     'ch_ctrl_command': ch_obj.ch_ctrl_command.pvname,
                 }
-        """
-        If we have a PDU with more than 8 channels, the rows will sort lexigraphically
-        by channel (i.e 10 comes before 1). Force it to conform with some shenanigans
-        """
+        # If we have a PDU with more than 8 channels, the rows will sort lexigraphically
+        # by channel (i.e 10 comes before 1). Force it to conform with some shenanigans
         self.channel_signal_dict_sorted = dict(sorted(self.channel_signal_dict.items(), key=lambda item: self.extract_outlet_number(item[1]['ch_index'])))
         self.generate_rows()
 
@@ -150,14 +145,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         left_layout = self.ui.Left_Channels
         right_layout = self.ui.Right_Channels
 
-        # Clear layouts
-        for layout in (left_layout, right_layout):
-            while layout.count():
-                item = layout.takeAt(0)
-                widget = item.widget()
-                if widget:
-                    widget.deleteLater()
-
         # Split channels
         ch_list = list(self.channel_signal_dict.values())
         midpoint = len(ch_list) // 2
@@ -187,9 +174,8 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         camonitor(pvname, callback=on_change)
 
     def extract_outlet_number(self, pvname):
-        """
-        Helper function for sorting the channel dictionaries
-        """
+        """Helper function for sorting the channel dictionaries"""
+
         match = re.search(r':Outlet:(\d+):', pvname)
         return int(match.group(1)) if match else float('inf')
 

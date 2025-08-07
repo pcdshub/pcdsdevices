@@ -4,7 +4,8 @@ import pydm
 from epics import PV
 from pydm import Display
 from qtpy import QtCore, QtWidgets
-from typhos import register_signal, utils
+from typhos import utils
+from pcdsdevices.pdu import PDUChannel
 
 
 class PDUDetailedWidget(Display, utils.TyphosBase):
@@ -27,10 +28,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """Typhos hook for adding a new device."""
         super().add_device(device)
 
-        # Manually register signals because I don't inherit from typhos.Display
-        for component_walk in device.walk_signals():
-            register_signal(component_walk.item)
-
         # Alarm color callbacks
         status_widget = self.ui.Status_Label
         if status_widget:
@@ -46,21 +43,20 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """
         self.channel_signal_dict = {}
 
-        for attr in dir(self.device):
-            if attr.startswith("channel"):
-                ch_obj = getattr(self.device, attr, None)
-                if ch_obj is None or not all(hasattr(ch_obj, k) for k in ('ch_index', 'ch_name', 'ch_status', 'ch_ctrl_state')):
-                    continue
-                self.channel_signal_dict[attr] = {
+        for cpt in self.device.walk_components():
+            # Get top level channel components
+            if cpt.item.cls is PDUChannel and len(cpt.ancestors) == 1:
+                # Get the actual device instance using the dotted name
+                ch_obj = getattr(self.device, cpt.dotted_name)
+                # add to the dictionary
+                self.channel_signal_dict[cpt.dotted_name] = {
                     'ch_index': ch_obj.ch_index.pvname,
                     'ch_name': ch_obj.ch_name.pvname,
                     'ch_status': ch_obj.ch_status.pvname,
                     'ch_ctrl_state': ch_obj.ch_ctrl_state.pvname
                 }
-        """
-        If we have a PDU with more than 8 channels, the rows will sort lexigraphically
-        by channel (ex: 10 comes before 1). Force it to conform with some shenanigans
-        """
+        # If we have a PDU with more than 8 channels, the rows will sort lexigraphically
+        # by channel (ex: 10 comes before 1). Force it to conform with some shenanigans
         self.channel_signal_dict_sorted = dict(sorted(self.channel_signal_dict.items(), key=lambda item: self.order_channels(item[1]['ch_index'])))
         self.generate_rows()
 
@@ -101,12 +97,12 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             self.update_color(ctrl_state, ch_info['ch_status'])
             self.update_color(status, ch_info['ch_status'])
 
-            """
-            Command combo box
-            This would be a pydm enum combo box but the Epics record is not a mbbo. I need to
-            do more schenanigans to wrap this in one widget. I connect it to a helper function for
-            setting the appropriate command component on the pdu channel
-            """
+
+            # Command combo box
+            # This would be a pydm enum combo box but the Epics record is not a mbbo. I need to
+            # do more schenanigans to wrap this in one widget. I connect it to a helper function for
+            # setting the appropriate command component on the pdu channel
+
             cmd = QtWidgets.QComboBox()
             cmd.wheelEvent = lambda event: None  # This disables scrolling on the widget to stop people from accidentally turning channels off
             cmd.addItems(["Idle", "Turn On", "Turn Off", "Cycle"])
@@ -128,14 +124,6 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
 
         left_layout = self.ui.Left_Channels
         right_layout = self.ui.Right_Channels
-
-        # Clear layouts
-        for layout in (left_layout, right_layout):
-            while layout.count():
-                item = layout.takeAt(0)
-                widget = item.widget()
-                if widget:
-                    widget.deleteLater()
 
         # Split channels
         ch_list = list(self.channel_signal_dict_sorted.items())
