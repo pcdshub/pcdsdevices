@@ -21,19 +21,21 @@ Device Features
     - add mutli axis move
     - add reachability checks
 
-- dream_motion: add SL3K4 motors to `dream_motion` (`DREAM_SL3K4`)
-- Adding `integral_signed` component to `Wave8V2ADCDelayLanes`
+- Added SL3K4 motors to `dream_motion` (`DREAM_SL3K4`)
+- Added `integral_signed` component to `Wave8V2ADCDelayLanes`
 
 New Devices
 -----------
 - `AT3K2`: Custom Solid Attenuator w/ 2 blades and 8 filters on each blade.
-- `DCCM`: Double Channel Cut Monochrometer from XCS
-- `GratingBeamSplitterStates`: Grating Beam Splitter target state controls
-- `BeckhoffIntensityProfileTarget`: Intensity Profile Monitor (beckhoff version)
-- `SL2K4Slits`: is a BeckhoffSlits device with new PVA based camera viewer
-- `lasers.ek9000.SimpleShutter`: A repurposed LSS shutter, not used in safety applications
+- `DCCM`: Double Channel Cut Monochrometer from XCS.
+- `GratingBeamSplitterStates`: Grating Beam Splitter target state controls.
+- `BeckhoffIntensityProfileTarget`: Intensity Profile Monitor (beckhoff version).
+- `SL2K4Slits`: is a BeckhoffSlits device with new PVA based camera viewer.
+- `lasers.ek9000.SimpleShutter`: A repurposed LSS shutter, not used in safety applications.
 
-    - `pcdsdevices.happi.containers.SimpleShutter`: its corresponding happi container
+    - `pcdsdevices.happi.containers.SimpleShutter`: its corresponding happi container.
+
+- Added generic PDU (Leviton, Sentry4) and Tripplite PDU device classes, along with detailed device screens.
 
 Maintenance
 -----------
@@ -48,6 +50,7 @@ Contributors
 - jozamudi
 - tangkong
 - tongju12
+- TrumanPar
 - zllentz
 
 
