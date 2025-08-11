@@ -35,7 +35,7 @@ New Devices
 
     - `pcdsdevices.happi.containers.SimpleShutter`: its corresponding happi container.
 
-- Added generic PDU (Leviton, Sentry4) and Tripplite PDU device classes, along with detailed device screens.
+- Added generic `PDU` (Leviton, Sentry4) and `TripplitePDU` device classes, along with detailed device screens.
 
 Maintenance
 -----------

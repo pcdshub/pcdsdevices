@@ -840,6 +840,23 @@ pcdsdevices.pc
     pcdsdevices.pc.PhotonCollimator
     pcdsdevices.pc.PhotonCollimatorFDQ
 
+pcdsdevices.pdu
+---------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.pdu.PDU
+    pcdsdevices.pdu.PDU16
+    pcdsdevices.pdu.PDU24
+    pcdsdevices.pdu.PDU8
+    pcdsdevices.pdu.PDUChannel
+    pcdsdevices.pdu.TripplitePDU
+    pcdsdevices.pdu.TripplitePDU16
+    pcdsdevices.pdu.TripplitePDU24
+    pcdsdevices.pdu.TripplitePDU8
+    pcdsdevices.pdu.TripplitePDUChannel
+
 pcdsdevices.piezo
 -----------------
 
