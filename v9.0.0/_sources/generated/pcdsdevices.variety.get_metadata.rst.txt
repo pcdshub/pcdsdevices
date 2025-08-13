@@ -1,0 +1,6 @@
+﻿pcdsdevices.variety.get\_metadata
+=================================
+
+.. currentmodule:: pcdsdevices.variety
+
+.. autofunction:: get_metadata

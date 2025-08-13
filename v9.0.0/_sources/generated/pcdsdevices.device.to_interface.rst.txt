@@ -1,0 +1,6 @@
+﻿pcdsdevices.device.to\_interface
+================================
+
+.. currentmodule:: pcdsdevices.device
+
+.. autofunction:: to_interface
