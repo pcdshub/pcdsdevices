@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.pseudopos.delay_instance_factory &mdash; PCDS Devices 8.8.2.dev147+gcea2b898 documentation</title>
+  <title>pcdsdevices.pseudopos.delay_instance_factory &mdash; PCDS Devices 9.0.1.dev46+g3a498798a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=0581115c"></script>
+      <script src="../_static/documentation_options.js?v=b97ac0bb"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -219,7 +219,7 @@ simple multiplier based on the speed of light.</p>
 <dd><p>The fake axis. It has configurable units and number of bounces.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/reference/positioners.html#ophyd.pseudopos.PseudoSingle" title="(in ophyd v1.10.8.dev3+g578a24ce)"><em>PseudoSingle</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/reference/positioners.html#ophyd.pseudopos.PseudoSingle" title="(in ophyd v1.11.1.dev7+g715964357)"><em>PseudoSingle</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -232,7 +232,7 @@ class, but it must have a valid <code class="docutils literal notranslate"><span
 the time axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/reference/positioners.html#ophyd.positioner.PositionerBase" title="(in ophyd v1.10.8.dev3+g578a24ce)"><em>PositionerBase</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/reference/positioners.html#ophyd.positioner.PositionerBase" title="(in ophyd v1.11.1.dev7+g715964357)"><em>PositionerBase</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -252,14 +252,14 @@ the time axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The EPICS prefix of the real motor.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A name to assign to this delay stage.</p></li>
-<li><p><strong>egu</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – The units to use for the delay axis. The default is seconds. Any
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The EPICS prefix of the real motor.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A name to assign to this delay stage.</p></li>
+<li><p><strong>egu</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – The units to use for the delay axis. The default is seconds. Any
 time unit is acceptable.</p></li>
-<li><p><strong>n_bounces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The number of times the laser bounces on the delay stage, e.g. the
+<li><p><strong>n_bounces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – The number of times the laser bounces on the delay stage, e.g. the
 number of mirrors that this stage moves. The default is 2, a delay
 branch that bounces the laser back along the axis it enters.</p></li>
-<li><p><strong>invert</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, increasing the real motor will decrease the delay.
+<li><p><strong>invert</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, increasing the real motor will decrease the delay.
 If False (default), increasing the real motor will increase the delay.</p></li>
 </ul>
 </dd>

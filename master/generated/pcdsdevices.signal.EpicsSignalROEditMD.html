@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.signal.EpicsSignalROEditMD &mdash; PCDS Devices 8.8.2.dev147+gcea2b898 documentation</title>
+  <title>pcdsdevices.signal.EpicsSignalROEditMD &mdash; PCDS Devices 9.0.1.dev46+g3a498798a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=0581115c"></script>
+      <script src="../_static/documentation_options.js?v=b97ac0bb"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -226,9 +226,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>enum_strings</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – List of enum strings to replace the EPICS originals.  May not be
+<li><p><strong>enum_strings</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – List of enum strings to replace the EPICS originals.  May not be
 used in conjunction with the dynamic <code class="docutils literal notranslate"><span class="pre">enum_attrs</span></code>.</p></li>
-<li><p><strong>enum_attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – List of signal attribute names, relative to the parent device.  That is
+<li><p><strong>enum_attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – List of signal attribute names, relative to the parent device.  That is
 to say a given attribute is assumed to be a sibling of this signal
 instance.  Attribute names may be <code class="docutils literal notranslate"><span class="pre">None</span></code> in the case where the
 original enum string should be passed through.</p></li>
@@ -237,23 +237,23 @@ original enum string should be passed through.</p></li>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">A</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">one</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Keyword</span></code></p>
+<p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">A</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">one</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Keyword</span></code></p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>read_pv</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The PV to read from</p></li>
-<li><p><strong>limits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Check limits prior to writing value</p></li>
-<li><p><strong>auto_monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Use automonitor with epics.PV</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Name of signal.  If not given defaults to read_pv</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – <p>The timeout for serving a read request on a connected channel. This is
+<li><p><strong>read_pv</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The PV to read from</p></li>
+<li><p><strong>limits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Check limits prior to writing value</p></li>
+<li><p><strong>auto_monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Use automonitor with epics.PV</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Name of signal.  If not given defaults to read_pv</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – <p>The timeout for serving a read request on a connected channel. This is
 only applied if the PV is connected within connection_timeout (below).</p>
 <p>The default value DEFAULT_TIMEOUT means, “Fall back to class-wide
 default.” See EpicsSignalBase.set_defaults to configure class
 defaults.</p>
 <p>Explicitly passing None means, “Wait forever.”</p>
 </p></li>
-<li><p><strong>write_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – <p>The timeout for a reply when put completion is used. This is
+<li><p><strong>write_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – <p>The timeout for a reply when put completion is used. This is
 only applied if the PV is connected within connection_timeout (below).</p>
 <p>This is very different than the connection and read timeouts
 above. It relates to how long an action takes to complete, such motor
@@ -264,7 +264,7 @@ failure. A finite value can be injected here or, perhaps more usefully,
 via <a class="reference internal" href="#pcdsdevices.signal.EpicsSignalROEditMD.set" title="pcdsdevices.signal.EpicsSignalROEditMD.set"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">set</span></code></a> at the Device level, where a context-appropriate value can be
 chosen.</p>
 </p></li>
-<li><p><strong>connection_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – <p>Timeout for connection. This includes the time to search and establish
+<li><p><strong>connection_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – <p>Timeout for connection. This includes the time to search and establish
 a channel.</p>
 <p>The default value DEFAULT_CONNECTION_TIMEOUT means, “Fall back to
 class-wide default.” See EpicsSignalBase.set_defaults to
@@ -294,15 +294,15 @@ configure class defaults.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Explicitly limit count for array data</p></li>
-<li><p><strong>as_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Get a string representation of the value, defaults to as_string
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Explicitly limit count for array data</p></li>
+<li><p><strong>as_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Get a string representation of the value, defaults to as_string
 from this signal, optional</p></li>
-<li><p><strong>as_numpy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Use numpy array as the return type for array data.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – maximum time to wait for value to be received.
+<li><p><strong>as_numpy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Use numpy array as the return type for array data.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – maximum time to wait for value to be received.
 (default = 0.5 + log10(count) seconds)</p></li>
-<li><p><strong>use_monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – to use value from latest monitor callback or to make an
+<li><p><strong>use_monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – to use value from latest monitor callback or to make an
 explicit CA call for the value. (default: True)</p></li>
-<li><p><strong>connection_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – If not already connected, allow up to <a class="reference internal" href="#pcdsdevices.signal.EpicsSignalROEditMD.connection_timeout" title="pcdsdevices.signal.EpicsSignalROEditMD.connection_timeout"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">connection_timeout</span></code></a> seconds
+<li><p><strong>connection_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – If not already connected, allow up to <a class="reference internal" href="#pcdsdevices.signal.EpicsSignalROEditMD.connection_timeout" title="pcdsdevices.signal.EpicsSignalROEditMD.connection_timeout"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">connection_timeout</span></code></a> seconds
 for the connection to complete.</p></li>
 <li><p><strong>form</strong> (<em>{'time'</em><em>, </em><em>'ctrl'}</em>) – PV form to request</p></li>
 </ul>
@@ -360,12 +360,12 @@ subclasses of <code class="docutils literal notranslate"><span class="pre">Epics
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auto_monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, update cached value from EPICS CA monitor callbacks.
+<li><p><strong>auto_monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, update cached value from EPICS CA monitor callbacks.
 If <code class="docutils literal notranslate"><span class="pre">False</span></code>, request new value from EPICS each time get() is called.</p></li>
-<li><p><strong>connection_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Time (seconds) allocated for establishing a connection with the
+<li><p><strong>connection_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Time (seconds) allocated for establishing a connection with the
 IOC.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Total time budget (seconds) for reading, not including connection time.</p></li>
-<li><p><strong>write_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Time (seconds) allocated for writing, not including connection time.
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Total time budget (seconds) for reading, not including connection time.</p></li>
+<li><p><strong>write_timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Time (seconds) allocated for writing, not including connection time.
 The write_timeout is very different than the connection and read timeouts
 above. It relates to how long an action takes to complete. Any
 default value we choose here is likely to cause problems—either
@@ -375,7 +375,7 @@ None, waits forever.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.13)"><strong>RuntimeError</strong></a> – If called after <code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalBase</span></code> has been instantiated for
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If called after <code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalBase</span></code> has been instantiated for
     the first time.</p>
 </dd>
 </dl>
@@ -509,7 +509,7 @@ None, waits forever.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.signal.EpicsSignalROEditMD.subscriptions">
-<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'meta',</span> <span class="pre">'value'})</span></em><a class="headerlink" href="#pcdsdevices.signal.EpicsSignalROEditMD.subscriptions" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'meta',</span> <span class="pre">'value'})</span></em><a class="headerlink" href="#pcdsdevices.signal.EpicsSignalROEditMD.subscriptions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

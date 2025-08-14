@@ -1,9 +1,9 @@
-﻿pcdsdevices.dream\_motion.DREAM\_GasJet
-=======================================
+﻿pcdsdevices.dream\_motion.DREAM\_Sample\_Paddle
+===============================================
 
 .. currentmodule:: pcdsdevices.dream_motion
 
-.. autoclass:: DREAM_GasJet
+.. autoclass:: DREAM_Sample_Paddle
 
     
     
@@ -18,21 +18,39 @@
           - Kind
           - Notes
     
-        * - gas_jet_x
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:X``
+        * - x
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - ``:m2``
           - 
           - normal
           - 
     
-        * - gas_jet_z
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:Z``
+        * - y
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - ``:m1``
+          - 
+          - normal
+          - 
+    
+        * - z
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - ``:m4``
+          - 
+          - normal
+          - 
+    
+        * - ret
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - ``:m3``
           - 
           - normal
           - 
     
 
+    
+    
+    
+    
     
     
     

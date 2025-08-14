@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.lasers.tuttifrutti.TuttiFrutti &mdash; PCDS Devices 8.8.2.dev147+gcea2b898 documentation</title>
+  <title>pcdsdevices.lasers.tuttifrutti.TuttiFrutti &mdash; PCDS Devices 9.0.1.dev46+g3a498798a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=0581115c"></script>
+      <script src="../_static/documentation_options.js?v=b97ac0bb"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -204,9 +204,9 @@ based on the specified components.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The PV base of the tuttifrutti diagnostic stack. All consituent
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The PV base of the tuttifrutti diagnostic stack. All consituent
 diagnostics have regimented PV suffixes based on this prefix.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the TuttiFrutti device.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The name of the TuttiFrutti device.</p></li>
 <li><p><strong>nf</strong> (<em>bool &lt;False&gt;</em>) – Flag indicating if a near-field camera is installed.</p></li>
 <li><p><strong>ff</strong> (<em>bool &lt;False&gt;</em>) – Flag indicating if a far-field camera is installed.</p></li>
 <li><p><strong>spec</strong> (<em>bool &lt;False&gt;</em>) – Flag indicating if a spectrometer is installed.</p></li>
@@ -220,7 +220,7 @@ diagnostics have regimented PV suffixes based on this prefix.</p></li>
 installed.</p></li>
 <li><p><strong>ellch</strong> (<em>int &lt;0x1&gt;</em>) – The integer channel that the slider is assigned to on the controller.
 Typically between 0x1 and 0x3, up to 0xF.</p></li>
-<li><p><strong>misc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> of </em><em>ophyd.Component</em><em> or </em><em>ophyd.FormattedComponent &lt;empty&gt;</em>) – <p>Dictionary of Cpt and/or FCpt for providing miscellaneous Ophyd
+<li><p><strong>misc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em> of </em><em>ophyd.Component</em><em> or </em><em>ophyd.FormattedComponent &lt;empty&gt;</em>) – <p>Dictionary of Cpt and/or FCpt for providing miscellaneous Ophyd
 Component objects to the TuttiFrutti. Used for non-standard devices or
 when you need to hack in a component that hasn’t made it into a
 released version of TuttiFrutti object yet (can you say

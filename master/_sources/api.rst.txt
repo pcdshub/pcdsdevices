@@ -267,11 +267,9 @@ pcdsdevices.dream_motion
 .. autosummary::
     :toctree: generated
 
-    pcdsdevices.dream_motion.DREAM_CoilMover
-    pcdsdevices.dream_motion.DREAM_GasJet
-    pcdsdevices.dream_motion.DREAM_GasNozzle
-    pcdsdevices.dream_motion.DREAM_MC_Y
     pcdsdevices.dream_motion.DREAM_SL3K4
+    pcdsdevices.dream_motion.DREAM_Sample_Paddle
+    pcdsdevices.dream_motion.TMODream
 
 pcdsdevices.energy_monitor
 --------------------------

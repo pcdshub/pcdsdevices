@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.signal.NotepadLinkedSignal &mdash; PCDS Devices 8.8.2.dev147+gcea2b898 documentation</title>
+  <title>pcdsdevices.signal.NotepadLinkedSignal &mdash; PCDS Devices 9.0.1.dev46+g3a498798a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=0581115c"></script>
+      <script src="../_static/documentation_options.js?v=b97ac0bb"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -227,9 +227,9 @@ For further information, see <a class="reference internal" href="#pcdsdevices.si
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>read_pv</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The PV to read from.</p></li>
-<li><p><strong>write_pv</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – The PV to write to if different from the read PV.</p></li>
-<li><p><strong>notepad_metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Base metadata for the notepad IOC.  This is a required keyword-only
+<li><p><strong>read_pv</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The PV to read from.</p></li>
+<li><p><strong>write_pv</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – The PV to write to if different from the read PV.</p></li>
+<li><p><strong>notepad_metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Base metadata for the notepad IOC.  This is a required keyword-only
 argument.  May include keys <code class="docutils literal notranslate"><span class="pre">{&quot;record_type&quot;,</span> <span class="pre">&quot;default_value&quot;}</span></code>.</p></li>
 </ul>
 </dd>
@@ -306,7 +306,7 @@ case of basic soft Signals</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.signal.NotepadLinkedSignal.should_use_epics_signal">
-<span class="sig-name descname"><span class="pre">should_use_epics_signal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#pcdsdevices.signal.NotepadLinkedSignal.should_use_epics_signal" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">should_use_epics_signal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#pcdsdevices.signal.NotepadLinkedSignal.should_use_epics_signal" title="Link to this definition"></a></dt>
 <dd><p>Tell <a class="reference internal" href="pcdsdevices.signal._OptionalEpicsSignal.html#pcdsdevices.signal._OptionalEpicsSignal" title="pcdsdevices.signal._OptionalEpicsSignal"><code class="xref any py py-class docutils literal notranslate"><span class="pre">_OptionalEpicsSignal</span></code></a> whether or not to use the <code class="xref any docutils literal notranslate"><span class="pre">EpicsSignal</span></code>.</p>
 <p>By default, the <code class="xref any docutils literal notranslate"><span class="pre">EpicsSignal</span></code> will be used if the PV has connected.</p>
 <div class="admonition note">
@@ -399,7 +399,7 @@ case of basic soft Signals</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.signal.NotepadLinkedSignal.subscriptions">
-<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'meta',</span> <span class="pre">'value'})</span></em><a class="headerlink" href="#pcdsdevices.signal.NotepadLinkedSignal.subscriptions" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'meta',</span> <span class="pre">'value'})</span></em><a class="headerlink" href="#pcdsdevices.signal.NotepadLinkedSignal.subscriptions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

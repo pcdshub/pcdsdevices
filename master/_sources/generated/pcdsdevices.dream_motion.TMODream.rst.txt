@@ -1,9 +1,9 @@
-﻿pcdsdevices.dream\_motion.DREAM\_GasNozzle
-==========================================
+﻿pcdsdevices.dream\_motion.TMODream
+==================================
 
 .. currentmodule:: pcdsdevices.dream_motion
 
-.. autoclass:: DREAM_GasNozzle
+.. autoclass:: TMODream
 
     
     
@@ -20,26 +20,71 @@
     
         * - gas_nozzle_x
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:X``
-          - 
+          - ``:GSJN:MMS:X``
+          - dream gas nozzle x axis
           - normal
           - 
     
         * - gas_nozzle_y
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:Y``
-          - 
+          - ``:GSJN:MMS:Y``
+          - dream gas nozzle y axis
           - normal
           - 
     
         * - gas_nozzle_z
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:Z``
+          - ``:GSJN:MMS:Z``
+          - dream gas nozzle z axis
+          - normal
           - 
+    
+        * - gas_jet_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:GSJP:MMS:X``
+          - dream gas jet x axis
+          - normal
+          - 
+    
+        * - gas_jet_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:GSJP:MMS:Z``
+          - dream gas jet z axis
+          - normal
+          - 
+    
+        * - coil_roll
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:COIL:MMS:ROLL``
+          - dream coil roll axis
+          - normal
+          - 
+    
+        * - coil_yaw
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:COIL:MMS:YAW``
+          - dream coil yaw axis
+          - normal
+          - 
+    
+        * - chamber_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MC:MMS:Y``
+          - dream main chamber Y axis
           - normal
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

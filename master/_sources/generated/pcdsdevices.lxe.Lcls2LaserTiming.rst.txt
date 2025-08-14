@@ -46,9 +46,9 @@
           - omitted
           - 
     
-        * - user_offset
+        * - user_offset (FCpt)
           - :class:`~pcdsdevices.signal.NotepadLinkedSignal`
-          - ``:lxt:OphydOffset``
+          - ``{self.prefix}:lxt:OphydOffset{self.instrument}``
           - A Python-level user offset.
           - normal
           - 

@@ -81,6 +81,13 @@
           - normal
           - 
     
+        * - fzp_piranha_rot
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:10``
+          - 
+          - normal
+          - 
+    
         * - yag_x
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:MMS:06``
@@ -131,6 +138,8 @@
           - 
     
 
+    
+    
     
     
     
