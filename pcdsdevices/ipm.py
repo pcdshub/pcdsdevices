@@ -626,4 +626,4 @@ class BeckhoffIntensityProfileTarget(BaseInterface, GroupDevice,
                   doc='Direct control of the diagnostic stack motor.')
     x_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:X', kind='normal',
                   doc='X position of target stack.')
-    wave8 = Cpt(Wave8V2, '', kind='hinted')
+    wave8 = Cpt(Wave8V2, ':W8:01', kind='hinted')
