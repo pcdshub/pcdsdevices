@@ -48,7 +48,7 @@
     
         * - wave8
           - :class:`~pcdsdevices.digitizers.Wave8V2`
-          - 
+          - ``:W8:01``
           - 
           - hinted
           - 
