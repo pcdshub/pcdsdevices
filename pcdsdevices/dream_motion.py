@@ -13,9 +13,9 @@ from .interface import BaseInterface
 
 class TMODream(BaseInterface, GroupDevice):
 
-    gas_nozzle_x = Cpt(BeckhoffAxis, ":GSJN:MMS:X", doc="dream gas noozle x axis", kind="normal")
-    gas_nozzle_y = Cpt(BeckhoffAxis, ":GSJN:MMS:Y", doc="dream gas noozle y axis", kind="normal")
-    gas_nozzle_z = Cpt(BeckhoffAxis, ":GSJN:MMS:Z", doc="dream gas noozle z axis", kind="normal")
+    gas_nozzle_x = Cpt(BeckhoffAxis, ":GSJN:MMS:X", doc="dream gas nozzle x axis", kind="normal")
+    gas_nozzle_y = Cpt(BeckhoffAxis, ":GSJN:MMS:Y", doc="dream gas nozzle y axis", kind="normal")
+    gas_nozzle_z = Cpt(BeckhoffAxis, ":GSJN:MMS:Z", doc="dream gas nozzle z axis", kind="normal")
     gas_jet_rx = Cpt(BeckhoffAxis, ":GSJP:MMS:X", doc="dream gas jet x axis", kind="normal")
     gas_jet_rz = Cpt(BeckhoffAxis, ":GSJP:MMS:Z", doc="dream gas jet z axis", kind="normal")
     coil_roll = Cpt(BeckhoffAxis, ":COIL:MMS:ROLL", doc="dream coil roll axis", kind="normal")
