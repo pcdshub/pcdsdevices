@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- change targets from 5 to 9
+- change 'TMOSpectrometerSOLIDATTStates'target count from 5 to 9
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
--@tongju12
+-tongju12
