@@ -61,7 +61,7 @@ class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
     _icon = 'fa.minus-square'
     tab_component_names = True
     # Motor components
-    sample_paddle_x = Cpt(SmarAct, ':m2', kind='normal')
-    sample_paddle_y = Cpt(SmarAct, ':m1', kind='normal')
-    sample_paddle_z = Cpt(SmarAct, ':m4', kind='normal')
-    sample_paddle_ret = Cpt(SmarAct, ':m3', kind='normal')
+    x = Cpt(SmarAct, ':m2', kind='normal')
+    y = Cpt(SmarAct, ':m1', kind='normal')
+    z = Cpt(SmarAct, ':m4', kind='normal')
+    ret = Cpt(SmarAct, ':m3', kind='normal')
