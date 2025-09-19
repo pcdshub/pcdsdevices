@@ -1,17 +1,17 @@
-1255 add preset support for SQR1
+1376 add new targets
 #################
 
 API Breaks
 ----------
 - N/A
 
-Features
---------
+Library Features
+----------------
 - N/A
 
-Device Updates
---------------
-- `sqr1` add preset support
+Device Features
+---------------
+- change 'TMOSpectrometerSOLIDATTStates'target count from 5 to 9
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- baljamal
+-tongju12

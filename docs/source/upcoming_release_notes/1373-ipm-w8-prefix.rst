@@ -1,4 +1,4 @@
-1360 add SL2K4 device class
+1373 ipm-w8-prefix
 #################
 
 API Breaks
@@ -15,11 +15,11 @@ Device Features
 
 New Devices
 -----------
-- SL2K4Slits: is a BeckhoffSlits device with new PVA based camera viewer
+- N/A
 
 Bugfixes
 --------
-- N/A
+- Added prefix for wave8 component of BeckhoffIntensityProfileTarget so PVs connect
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- baljamal
+- KaushikMalapati

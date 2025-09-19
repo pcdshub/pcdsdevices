@@ -1,4 +1,4 @@
-1353 lxt_hla
+1363 update-dream-motion-gui
 #################
 
 API Breaks
@@ -11,8 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- New hla_enabled component for Lcls2LaserTiming
-- Added hla_check decorator, used by _setup_move, to raise an exception if hla is disabled
+- Group all dream air motions into one class-one gui
 
 New Devices
 -----------
@@ -28,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- KaushikMalapati
+- tongju12

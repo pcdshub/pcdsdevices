@@ -1,9 +1,9 @@
-1367 fix_EllBase_doc
+1375 sl2k4-colors
 #################
 
 API Breaks
 ----------
-- EllBase now requires 'port' as a mandatory arg on initialization
+- N/A
 
 Library Features
 ----------------
@@ -19,12 +19,12 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Swapped indicator and background colors for slits in SL2K4Slits.ui
 
 Maintenance
 -----------
-- Adds warning to docstring in EllBase on port defaults based on common IOC
+- N/A
 
 Contributors
 ------------
-- aberges-SLAC
+- KaushikMalapati
