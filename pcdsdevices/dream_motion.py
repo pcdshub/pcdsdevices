@@ -45,6 +45,7 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
     north = Cpt(SmarAct, ':m9', kind='normal')
     south = Cpt(SmarAct, ':m8', kind='normal')
 
+
 class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
     """
     DREAM Motion Class
