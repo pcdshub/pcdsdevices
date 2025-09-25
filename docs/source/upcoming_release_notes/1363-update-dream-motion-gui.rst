@@ -1,4 +1,4 @@
-1364 improve smarpod class
+1363 update-dream-motion-gui
 #################
 
 API Breaks
@@ -11,9 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- SmarPod: use PVPositionerIsClose instead of raw records
-           add mutli axis move
-           add checking reachability
+- Group all dream air motions into one class-one gui
 
 New Devices
 -----------
@@ -29,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- baljamal
+- tongju12

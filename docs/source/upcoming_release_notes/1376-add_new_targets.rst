@@ -1,4 +1,4 @@
-1353 lxt_hla
+1376 add new targets
 #################
 
 API Breaks
@@ -11,8 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- New hla_enabled component for Lcls2LaserTiming
-- Added hla_check decorator, used by _setup_move, to raise an exception if hla is disabled
+- change 'TMOSpectrometerSOLIDATTStates'target count from 5 to 9
 
 New Devices
 -----------
@@ -28,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- KaushikMalapati
+-tongju12
