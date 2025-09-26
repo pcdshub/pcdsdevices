@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- add back an old motor as a new name-fzp_piranha_rot
+- TMOSpectrometer: add back an old motor as a new name-fzp_piranha_rot
 
 New Devices
 -----------
