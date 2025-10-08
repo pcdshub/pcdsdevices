@@ -12,12 +12,29 @@ from .interface import BaseInterface
 
 
 class TMODream(BaseInterface, GroupDevice):
+    """
+    Dream Motion Class
+
+    This class controls motors fixed to the dream in-air Motion system for the Dream
+    endstation in TMO with the Gas Nozzle, Gas jet, Coil and Main Chamber Y.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the DREAM motion system
+        DREAM:
+    name : str
+        Alias for the device
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+    tab_component_names = True
 
     gas_nozzle_x = Cpt(BeckhoffAxis, ":GSJN:MMS:X", doc="dream gas nozzle x axis", kind="normal")
     gas_nozzle_y = Cpt(BeckhoffAxis, ":GSJN:MMS:Y", doc="dream gas nozzle y axis", kind="normal")
     gas_nozzle_z = Cpt(BeckhoffAxis, ":GSJN:MMS:Z", doc="dream gas nozzle z axis", kind="normal")
-    gas_jet_rx = Cpt(BeckhoffAxis, ":GSJP:MMS:X", doc="dream gas jet x axis", kind="normal")
-    gas_jet_rz = Cpt(BeckhoffAxis, ":GSJP:MMS:Z", doc="dream gas jet z axis", kind="normal")
+    gas_jet_x = Cpt(BeckhoffAxis, ":GSJP:MMS:X", doc="dream gas jet x axis", kind="normal")
+    gas_jet_z = Cpt(BeckhoffAxis, ":GSJP:MMS:Z", doc="dream gas jet z axis", kind="normal")
     coil_roll = Cpt(BeckhoffAxis, ":COIL:MMS:ROLL", doc="dream coil roll axis", kind="normal")
     coil_yaw = Cpt(BeckhoffAxis, ":COIL:MMS:YAW", doc="dream coil yaw axis", kind="normal")
     chamber_y = Cpt(BeckhoffAxis, ":MC:MMS:Y", doc="dream main chamber Y axis", kind="normal")

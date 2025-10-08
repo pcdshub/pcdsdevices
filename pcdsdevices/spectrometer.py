@@ -525,7 +525,7 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
         doc="axis to move spectrometer intensifier",
         kind="normal",
     )
-    # lens_pitch_up_down = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
+    fzp_piranha_rot = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
     # lens_yaw_left_right = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
     yag_x = Cpt(
         BeckhoffAxis, ":MMS:06", doc="x-axis of spectrometer detector", kind="normal"
