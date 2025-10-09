@@ -61,3 +61,25 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
     bottom = Cpt(SmarAct, ':m12', kind='normal')
     north = Cpt(SmarAct, ':m9', kind='normal')
     south = Cpt(SmarAct, ':m8', kind='normal')
+
+
+class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
+    """
+    DREAM Motion Class
+    This class controls sample paddle X,Y, Z, and Ret motors fixed to the DREAM Motion system for the
+    DREAM endstation in TMO.
+    Parameters
+    ----------
+    prefix : str
+        TMO:DREAM:MCS2:01
+    name : str, keyword-only
+        Alias for the device
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+    tab_component_names = True
+    # Motor components
+    x = Cpt(SmarAct, ':m2', kind='normal')
+    y = Cpt(SmarAct, ':m1', kind='normal')
+    z = Cpt(SmarAct, ':m4', kind='normal')
+    ret = Cpt(SmarAct, ':m3', kind='normal')
