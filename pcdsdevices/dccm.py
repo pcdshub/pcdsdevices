@@ -1,4 +1,5 @@
 import logging
+import time
 import typing
 from collections import namedtuple
 from typing import Optional
@@ -6,20 +7,23 @@ from typing import Optional
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.signal import AttributeSignal
 
 from .beam_stats import BeamEnergyRequest
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface, FltMvInterface
+from .pmps import TwinCATStatePMPS
 from .pseudopos import PseudoPositioner, PseudoSingleInterface
+from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
 
-# Constants
-si_111_dspacing = 3.1356011499587773
-
-# Defaults
-default_dspacing = si_111_dspacing
+crystal_to_dspacing = {
+    'Si111' : 3.1356011499587773,
+    'Si333' : 1.0452003825497919,
+}
 
 
 class DCCMEnergy(FltMvInterface, PseudoPositioner):
@@ -52,6 +56,44 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
     th1 = Cpt(BeckhoffAxis, ":MMS:TH1", doc="Bragg Upstream/TH1 Axis", kind="normal", name='th1')
     th2 = Cpt(BeckhoffAxis, ":MMS:TH2", doc="Bragg Upstream/TH2 Axis", kind="normal", name='th2')
 
+    _crystal = 'Si111'
+    crystal = Cpt(AttributeSignal, attr='_crystal', kind='omitted', write_access=False)
+
+    def update_crystal(self, crystal):
+        if crystal not in crystal_to_dspacing.keys():
+            return
+        self.crystal._metadata.update(write_access=True)
+        self.crystal.put(crystal)
+        self.crystal._metadata.update(write_access=False)
+        old_value = self.energy.readback.get()
+        self._my_move = True
+        self._update_position()
+        self.energy.readback._run_subs(sub_type=self.energy.readback.SUB_VALUE, old_value=old_value, value=self.energy.readback.get(), timestamp=time.time())
+
+    def set_Si111(self):
+        self.update_crystal('Si111')
+
+    def set_Si333(self):
+        self.update_crystal('Si333')
+
+    switch_crystal = Cpt(AttributeSignal, attr='_switch_crystal')
+    set_metadata(switch_crystal, dict(variety='command', value=0))
+
+    @property
+    def _switch_crystal(self):
+        return 0
+
+    @_switch_crystal.setter
+    def _switch_crystal(self, value):
+        if self._crystal == 'Si111':
+            self.set_Si333()
+        elif self._crystal == 'Si333':
+            self.set_Si111()
+
+    @property
+    def dspacing(self):
+        return crystal_to_dspacing[self._crystal]
+
     tab_component_names = True
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
@@ -61,7 +103,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         energy = pseudo_pos.energy
-        theta = self.energyToSi111BraggAngle(energy)
+        theta = self.energyToBraggAngle(energy)
         return self.RealPosition(th1=theta, th2=theta)
 
     def inverse(self, real_pos: namedtuple) -> namedtuple:
@@ -72,10 +114,10 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         """
         real_pos = self.RealPosition(*real_pos)
         theta = real_pos.th1
-        energy = self.thetaToSi111energy(theta)
+        energy = self.thetaToEnergy(theta)
         return self.PseudoPosition(energy=energy)
 
-    def energyToSi111BraggAngle(self, energy: float) -> float:
+    def energyToBraggAngle(self, energy: float) -> float:
         """
         Converts energy to Bragg angle theta
 
@@ -89,12 +131,11 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         Bragg angle: float
             The angle in degrees
         """
-        dspacing = 3.13560114
         energy = energy * 1000
-        bragg_angle = np.rad2deg(np.arcsin(12398.419/energy/(2*dspacing)))
+        bragg_angle = np.rad2deg(np.arcsin(12398.419/energy/(2*self.dspacing)))
         return bragg_angle
 
-    def thetaToSi111energy(self, theta):
+    def thetaToEnergy(self, theta):
         """
         Converts dccm theta angle to energy.
 
@@ -108,8 +149,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         energy: float
              The photon energy (color) in keV.
         """
-        dspacing = 3.13560114
-        energy = 12398.419/(2*dspacing*np.sin(np.deg2rad(theta)))
+        energy = 12398.419/(2*self.dspacing*np.sin(np.deg2rad(theta)))
         return energy/1000
 
 
@@ -169,7 +209,7 @@ class DCCMEnergyWithVernier(DCCMEnergy):
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         energy = pseudo_pos.energy
-        theta = self.energyToSi111BraggAngle(energy)
+        theta = self.energyToBraggAngle(energy)
         vernier = energy * 1000
         return self.RealPosition(th1=theta, th2=theta, acr_energy=vernier)
 
@@ -180,7 +220,7 @@ class DCCMEnergyWithVernier(DCCMEnergy):
         """
         real_pos = self.RealPosition(*real_pos)
         theta = real_pos.th1
-        energy = self.thetaToSi111energy(theta)
+        energy = self.thetaToEnergy(theta)
         return self.PseudoPosition(energy=energy)
 
 
@@ -221,7 +261,12 @@ class DCCMEnergyWithACRStatus(DCCMEnergyWithVernier):
     ):
         self.acr_status_suffix = acr_status_suffix
         self.pv_index = pv_index
-        super().__init__(prefix, **kwargs)
+        super().__init__(prefix, hutch=hutch, **kwargs)
+
+
+class DCCMTarget(TwinCATStatePMPS):
+    config = UpCpt(state_count=2)
+    _in_if_not_out = True
 
 
 class DCCM(BaseInterface, GroupDevice):
@@ -244,11 +289,7 @@ class DCCM(BaseInterface, GroupDevice):
 
     tab_component_names = True
 
-    th1 = Cpt(BeckhoffAxis, ":MMS:TH1", doc="Bragg Upstream/TH1 Axis", kind="normal")
-    th2 = Cpt(BeckhoffAxis, ":MMS:TH2", doc="Bragg Downstream/TH2 Axis", kind="normal")
-    tx = Cpt(BeckhoffAxis, ":MMS:TX", doc="Translation X Axis", kind="normal")
-    txd = Cpt(BeckhoffAxis, ":MMS:TXD", doc="YAG Diagnostic X Axis", kind="normal")
-    tyd = Cpt(BeckhoffAxis, ":MMS:TYD", doc="YAG Diagnostic Y Axis", kind="normal")
+    tx_state = Cpt(DCCMTarget, ':MMS:STATE', kind='hinted', doc='Control of TX axis via saved positions.')
 
     energy = Cpt(
         DCCMEnergy, '', kind='hinted',
@@ -258,8 +299,10 @@ class DCCM(BaseInterface, GroupDevice):
         ),
     )
 
-    energy_with_vernier = Cpt(
-        DCCMEnergyWithVernier, '', kind='normal',
+    energy_with_vernier = FCpt(
+        DCCMEnergyWithVernier, '{self.prefix}', kind='normal',
+        hutch='{hutch}',
+        add_prefix=('suffix', 'write_pv', 'hutch'),
         doc=(
             'PseudoPositioner that moves the theta motor in '
             'terms of the calculated DCCM energy while '
@@ -267,9 +310,11 @@ class DCCM(BaseInterface, GroupDevice):
         ),
     )
     energy_with_acr_status = FCpt(
-        DCCMEnergyWithACRStatus, '{prefix}', kind='normal',
+        DCCMEnergyWithACRStatus, '{self.prefix}', kind='normal',
+        hutch='{hutch}',
+        pv_index='{acr_status_pv_index}',
         acr_status_suffix='{acr_status_suffix}',
-        add_prefix=('suffix', 'write_pv', 'acr_status_suffix'),
+        add_prefix=('suffix', 'write_pv', 'acr_status_suffix', 'pv_index', 'hutch'),
         doc=(
             'PseudoPositioner that moves the alio in '
             'terms of the calculated CCM energy while '
@@ -278,12 +323,21 @@ class DCCM(BaseInterface, GroupDevice):
         ),
     )
 
-    def __init__(
-        self,
-        prefix: str = "SP1L0:DCCM",
-        **kwargs
-    ):
+    th1 = Cpt(BeckhoffAxis, ":MMS:TH1", doc="Bragg Upstream/TH1 Axis", kind="normal")
+    th2 = Cpt(BeckhoffAxis, ":MMS:TH2", doc="Bragg Downstream/TH2 Axis", kind="normal")
+    tx = Cpt(BeckhoffAxis, ":MMS:TX", doc="Translation X Axis", kind="normal")
+    txd = Cpt(BeckhoffAxis, ":MMS:TXD", doc="YAG Diagnostic X Axis", kind="normal")
+    tyd = Cpt(BeckhoffAxis, ":MMS:TYD", doc="YAG Diagnostic Y Axis", kind="normal")
 
-        self.acr_status_suffix = kwargs.get('acr_status_suffix', 'AO805')
-        self.acr_status_pv_index = kwargs.get('acr_status_suffix', 2)
+    def __init__(
+            self,
+            prefix: str = "SP1L0:DCCM",
+            hutch: str = '',
+            acr_status_suffix: str = 'AO805',
+            acr_status_pv_index: int = 2,
+            **kwargs
+    ):
+        self.hutch = hutch
+        self.acr_status_suffix = acr_status_suffix
+        self.acr_status_pv_index = acr_status_pv_index
         super().__init__(prefix, **kwargs)
