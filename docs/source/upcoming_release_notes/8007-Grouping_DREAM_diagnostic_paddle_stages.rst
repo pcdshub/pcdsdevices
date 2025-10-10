@@ -1,4 +1,4 @@
-1360 add SL2K4 device class
+8007 Grouping DREAM diagnostic paddle stages
 #################
 
 API Breaks
@@ -11,11 +11,11 @@ Library Features
 
 Device Features
 ---------------
-- N/A
+- Groups 4 stages into one GUI
 
 New Devices
 -----------
-- SL2K4Slits: is a BeckhoffSlits device with new PVA based camera viewer
+- DREAM_Sample_Paddle
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- baljamal
+- tparas

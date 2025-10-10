@@ -1,4 +1,4 @@
-1365 add_SimpleShutters
+1380 adding a thorlab motor back to sp1k4
 #################
 
 API Breaks
@@ -11,12 +11,11 @@ Library Features
 
 Device Features
 ---------------
-- N/A
+- TMOSpectrometer: add back an old motor as a new name-fzp_piranha_rot
 
 New Devices
 -----------
-- lasers.ek9000.SimpleShutter
-- pcdsdevices.happi.containers.SimpleShutter
+- N/A
 
 Bugfixes
 --------
@@ -24,8 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- tongju12
 
 Contributors
 ------------
-- aberges-SLAC
+- N/A

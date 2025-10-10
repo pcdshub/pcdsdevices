@@ -1,4 +1,4 @@
-1352 hide-pa1k4-targets
+1379 more-lxt-offsets
 #################
 
 API Breaks
@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- For ``PA1K4`` (`CalibrationAxis`), change target count from 7 to 5 to hide targets 6 and 7
+- Added instrument argument to Lcls2LaserTiming which is added to user_offset PV if defined
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tongju12
+- KaushikMalapati

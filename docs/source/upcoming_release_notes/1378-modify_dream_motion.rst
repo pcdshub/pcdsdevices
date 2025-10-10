@@ -1,17 +1,17 @@
-1255 add preset support for SQR1
+1378 modify dream_motion
 #################
 
 API Breaks
 ----------
 - N/A
 
-Features
---------
+Library Features
+----------------
 - N/A
 
-Device Updates
---------------
-- `sqr1` add preset support
+Device Features
+---------------
+- add tab component name and modify gas jet x and z name
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- baljamal
+- tongju12

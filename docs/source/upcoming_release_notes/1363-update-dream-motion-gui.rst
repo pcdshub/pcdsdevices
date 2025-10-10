@@ -1,9 +1,9 @@
-1361 IntegralSigned-Addition-AdcSample-BracketRemoval
+1363 update-dream-motion-gui
 #################
 
 API Breaks
 ----------
-- Changing PVs for sample components in Wave8V2ADCSamples by removing brackets
+- N/A
 
 Library Features
 ----------------
@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- Adding integral_signed component to Wave8V2ADCDelayLanes
+- Group all dream air motions into one class-one gui
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- KaushikMalapati
+- tongju12

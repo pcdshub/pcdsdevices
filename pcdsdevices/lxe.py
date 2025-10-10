@@ -35,7 +35,9 @@ from functools import wraps
 
 import numpy as np
 from ophyd import Component as Cpt
-from ophyd import EpicsSignal, PVPositioner
+from ophyd import EpicsSignal
+from ophyd import FormattedComponent as FCpt
+from ophyd import PVPositioner
 from scipy.constants import speed_of_light
 
 from .device import UnrelatedComponent as UCpt
@@ -451,11 +453,11 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
                                              'default_value': 0.0},
                            kind='omitted'
                            )
-    user_offset = Cpt(NotepadLinkedSignal, ':lxt:OphydOffset',
-                      notepad_metadata={'record': 'ao', 'default_value': 0.0},
-                      kind='normal',
-                      doc='A Python-level user offset.'
-                      )
+    user_offset = FCpt(NotepadLinkedSignal, '{self.prefix}:lxt:OphydOffset{self.instrument}',
+                       notepad_metadata={'record': 'ao', 'default_value': 0.0},
+                       kind='normal',
+                       doc='A Python-level user offset.'
+                       )
     hla_enabled = Cpt(EpicsSignal, ':PHASCTL:HLA_ENABLED',
                       kind='omitted',
                       doc='HLA status',
@@ -466,12 +468,16 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
     done = Cpt(EpicsSignal, ':PHASCTL:DELAY_MOVING', auto_monitor=True, kind='omitted')
     done_value = 0
 
-    def __init__(self, prefix='', *, egu=None, invert=True, limits=None, **kwargs):
+    def __init__(self, prefix='', *, egu=None, invert=True, limits=None, instrument=None, **kwargs):
         if egu not in (None, 's'):
             raise ValueError(
                 f'{self.__class__.__name__} is pre-configured to work in units'
                 f' of seconds.'
             )
+        if instrument is not None:
+            self.instrument = ':' + instrument
+        else:
+            self.instrument = ''
         super().__init__(prefix, egu='s', **kwargs)
         if invert:
             self.setpoint.scale = -1

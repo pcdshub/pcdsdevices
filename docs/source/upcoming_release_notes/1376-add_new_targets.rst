@@ -1,5 +1,5 @@
-1357 mnt_presets_sync_2
-#######################
+1376 add new targets
+#################
 
 API Breaks
 ----------
@@ -11,7 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- N/A
+- change 'TMOSpectrometerSOLIDATTStates'target count from 5 to 9
 
 New Devices
 -----------
@@ -23,8 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- Sync presets when Presets.positions is accessed.
+- N/A
 
 Contributors
 ------------
-- tangkong
+-tongju12
