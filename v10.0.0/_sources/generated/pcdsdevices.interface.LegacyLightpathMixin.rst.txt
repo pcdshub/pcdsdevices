@@ -1,0 +1,27 @@
+﻿pcdsdevices.interface.LegacyLightpathMixin
+==========================================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autoclass:: LegacyLightpathMixin
+
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: connected
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: subscriptions
+    .. autoattribute:: transmission
+    
+    

@@ -1,0 +1,212 @@
+﻿pcdsdevices.lakeshore.Lakeshore336
+==================================
+
+.. currentmodule:: pcdsdevices.lakeshore
+
+.. autoclass:: Lakeshore336
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - set_temp_loop_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_SOLL_1``
+          - 
+          - normal
+          - 
+    
+        * - set_temp_loop_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_SOLL_2``
+          - 
+          - normal
+          - 
+    
+        * - man_loop_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_MOUT_1``
+          - 
+          - normal
+          - 
+    
+        * - man_loop_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_MOUT_2``
+          - 
+          - normal
+          - 
+    
+        * - an_loop_3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_AOUT_3``
+          - 
+          - normal
+          - 
+    
+        * - an_loop_4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_AOUT_4``
+          - 
+          - normal
+          - 
+    
+        * - set_heater_1
+          - :class:`~pcdsdevices.lakeshore.Heater`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - set_heater_2
+          - :class:`~pcdsdevices.lakeshore.Heater`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - temp_A
+          - :class:`~pcdsdevices.lakeshore.TemperatureSensor`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - temp_B
+          - :class:`~pcdsdevices.lakeshore.TemperatureSensor`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - temp_C
+          - :class:`~pcdsdevices.lakeshore.TemperatureSensor`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - temp_D
+          - :class:`~pcdsdevices.lakeshore.TemperatureSensor`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``GET_MODE``
+          - control mode
+          - normal
+          - 
+    
+        * - loop_ramp_1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GET_RAMP_1``
+          - 
+          - normal
+          - 
+    
+        * - loop_ramp_2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GET_RAMP_2``
+          - 
+          - normal
+          - 
+    
+        * - htr_out_1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GET_HTR_1``
+          - 
+          - normal
+          - 
+    
+        * - htr_out_2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GET_HTR_2``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
