@@ -8,12 +8,12 @@ v10.0.0 (2025-10-16)
 API Breaks
 ----------
 - Group all dream air motions into one class and one gui: `TMODream`
-    - removes `DREAM_MC_Y`, `DREAM_CoilMover`, `DREAM_GasJet`, `DREAM_GasNozzle`
+    - Removes `DREAM_MC_Y`, `DREAM_CoilMover`, `DREAM_GasJet`, `DREAM_GasNozzle`
 
 Device Features
 ---------------
 - Added `instrument` argument to `Lcls2LaserTiming` which is added to user_offset PV if defined
-- change `TMOSpectrometerSOLIDATTStates` target count from 5 to 9
+- Change `TMOSpectrometerSOLIDATTStates` target count from 5 to 9
 - `TMOSpectrometer`: add back an old motor under the new name "fzp_piranha_rot"
 
 New Devices
