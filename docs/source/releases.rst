@@ -2,6 +2,38 @@ Release History
 ###############
 
 
+v10.0.0 (2025-10-16)
+===================
+
+API Breaks
+----------
+- Group all dream air motions into one class and one gui: `TMODream`
+    - Removes `DREAM_MC_Y`, `DREAM_CoilMover`, `DREAM_GasJet`, `DREAM_GasNozzle`
+
+Device Features
+---------------
+- Added `instrument` argument to `Lcls2LaserTiming` which is added to user_offset PV if defined
+- Change `TMOSpectrometerSOLIDATTStates` target count from 5 to 9
+- `TMOSpectrometer`: add back an old motor under the new name "fzp_piranha_rot"
+
+New Devices
+-----------
+- `DREAM_Sample_Paddle`: Controls sample paddle X, Y, Z, and Ret motors
+- `TMODream`: Combines previous DREAM motion classes
+
+Bugfixes
+--------
+- Swapped indicator and background colors for slits in SL2K4Slits.ui
+- Added prefix for wave8 component of `BeckhoffIntensityProfileTarget` so PVs connect
+
+Contributors
+------------
+- KaushikMalapati
+- tongju12
+- TrumanPar
+
+
+
 v9.0.0 (2025-08-05)
 ===================
 
