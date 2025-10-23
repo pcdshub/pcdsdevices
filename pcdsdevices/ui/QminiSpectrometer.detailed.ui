@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>557</width>
-    <height>654</height>
+    <width>555</width>
+    <height>656</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -43,7 +43,7 @@
      </widget>
     </item>
     <item>
-     <widget class="PyDMWaveformPlot" name="spectrum_plot">
+     <widget class="PyDMWaveformPlot" name="plot">
       <property name="toolTip">
        <string/>
       </property>
@@ -59,15 +59,31 @@
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContents</enum>
       </property>
+      <property name="backgroundBrush">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+       </brush>
+      </property>
       <property name="showXGrid">
        <bool>true</bool>
       </property>
       <property name="showYGrid">
        <bool>true</bool>
       </property>
+      <property name="axisColor">
+       <color>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </property>
       <property name="yAxes">
        <stringlist>
-        <string>{&quot;name&quot;: &quot;Intensity&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Intensity&quot;, &quot;minRange&quot;: -1.7316764476028033, &quot;maxRange&quot;: 1.7316764476028033, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
+        <string>{&quot;name&quot;: &quot;Intensity&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Intensity&quot;, &quot;minRange&quot;: -2.369918791504946, &quot;maxRange&quot;: 2.369918791504946, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
        </stringlist>
       </property>
       <property name="xLabels">
@@ -76,9 +92,7 @@
        </stringlist>
       </property>
       <property name="curves">
-       <stringlist>
-        <string>{&quot;y_channel&quot;: &quot;ca://$prefix:SPECTRUM&quot;, &quot;x_channel&quot;: &quot;ca://$prefix:WAVELENGTHS&quot;, &quot;plot_style&quot;: &quot;Line&quot;, &quot;name&quot;: &quot;Intensity&quot;, &quot;color&quot;: &quot;#0055ff&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 1, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;yAxisName&quot;: &quot;Intensity&quot;, &quot;barWidth&quot;: null, &quot;upperThreshold&quot;: null, &quot;lowerThreshold&quot;: null, &quot;thresholdColor&quot;: &quot;white&quot;, &quot;redraw_mode&quot;: 2}</string>
-       </stringlist>
+       <stringlist/>
       </property>
      </widget>
     </item>
@@ -189,266 +203,6 @@
               <property name="sizeConstraint">
                <enum>QLayout::SetDefaultConstraint</enum>
               </property>
-              <item row="5" column="1">
-               <widget class="PyDMLabel" name="get_exposures_avg">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="textFormat">
-                 <enum>Qt::PlainText</enum>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="precision" stdset="0">
-                 <number>0</number>
-                </property>
-                <property name="showUnits" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="precisionFromPV" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="alarmSensitiveContent" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="alarmSensitiveBorder" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="PyDMToolTip" stdset="0">
-                 <string/>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:SET_AVG_CNT</string>
-                </property>
-                <property name="enableRichText" stdset="0">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="2">
-               <widget class="PyDMLineEdit" name="set_exposures_avg">
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="precision" stdset="0">
-                 <number>0</number>
-                </property>
-                <property name="showUnits" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="precisionFromPV" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="alarmSensitiveContent" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="alarmSensitiveBorder" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="PyDMToolTip" stdset="0">
-                 <string/>
-                </property>
-                <property name="monitorDisp" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:SET_AVG_CNT</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="file_dest_label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>File dest</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="PyDMLabel" name="scan_rate">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string>ca://$prefix:SOFT_TRIGGER_MODE</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="precision" stdset="0">
-                 <number>0</number>
-                </property>
-                <property name="showUnits" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="precisionFromPV" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="alarmSensitiveContent" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="alarmSensitiveBorder" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="PyDMToolTip" stdset="0">
-                 <string/>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:SOFT_TRIGGER_MODE</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="PyDMPushButton" name="force_trigger_button">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string>Force single exposure</string>
-                </property>
-                <property name="alarmSensitiveContent" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="alarmSensitiveBorder" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="PyDMToolTip" stdset="0">
-                 <string/>
-                </property>
-                <property name="monitorDisp" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:START_EXPOSURE.PROC</string>
-                </property>
-                <property name="PyDMIcon" stdset="0">
-                 <string/>
-                </property>
-                <property name="passwordProtected" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="password" stdset="0">
-                 <string/>
-                </property>
-                <property name="protectedPassword" stdset="0">
-                 <string/>
-                </property>
-                <property name="showConfirmDialog" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="confirmMessage" stdset="0">
-                 <string>Are you sure you want to proceed?</string>
-                </property>
-                <property name="pressValue" stdset="0">
-                 <string>1</string>
-                </property>
-                <property name="releaseValue" stdset="0">
-                 <string>None</string>
-                </property>
-                <property name="relativeChange" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="writeWhenRelease" stdset="0">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="temperature_label">
-                <property name="text">
-                 <string>Temperature</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="exposures_avg_label">
-                <property name="text">
-                 <string>Exposures to average</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="PyDMLineEdit" name="file_dest">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="precision" stdset="0">
-                 <number>0</number>
-                </property>
-                <property name="showUnits" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="precisionFromPV" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="alarmSensitiveContent" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="alarmSensitiveBorder" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="PyDMToolTip" stdset="0">
-                 <string>Full file destination for spectra output. Default: $PWD/$name_&lt;timestamp&gt;.txt</string>
-                </property>
-                <property name="monitorDisp" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>sig://${name}_file_dest</string>
-                </property>
-                <property name="displayFormat" stdset="0">
-                 <enum>PyDMLineEdit::String</enum>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="2">
                <widget class="PyDMPushButton" name="reinit_button">
                 <property name="toolTip">
@@ -470,7 +224,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:CLEAR_SPECTROMETER.PROC</string>
+                 <string>ca://${prefix}:CLEAR_SPECTROMETER.PROC</string>
                 </property>
                 <property name="PyDMIcon" stdset="0">
                  <string>recycle</string>
@@ -511,116 +265,8 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="status_label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Status</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="PyDMLabel" name="temperature">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string>ca://$prefix:TEMP</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="precision" stdset="0">
-                 <number>0</number>
-                </property>
-                <property name="showUnits" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="precisionFromPV" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="alarmSensitiveContent" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="alarmSensitiveBorder" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="PyDMToolTip" stdset="0">
-                 <string/>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:TEMP</string>
-                </property>
-                <property name="enableRichText" stdset="0">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="PyDMLabel" name="status">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="baseSize">
-                 <size>
-                  <width>0</width>
-                  <height>18</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string>ca://$prefix:STATUS</string>
-                </property>
-                <property name="textFormat">
-                 <enum>Qt::PlainText</enum>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="precision" stdset="0">
-                 <number>0</number>
-                </property>
-                <property name="showUnits" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="precisionFromPV" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="alarmSensitiveContent" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="alarmSensitiveBorder" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="PyDMToolTip" stdset="0">
-                 <string/>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:STATUS</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="2">
-               <widget class="PyDMLineEdit" name="set_exposure_time">
+              <item row="3" column="2">
+               <widget class="PyDMLineEdit" name="exposure_time_set">
                 <property name="toolTip">
                  <string/>
                 </property>
@@ -649,12 +295,133 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SET_EXPOSURE_TIME</string>
+                 <string>ca://${prefix}:SET_EXPOSURE_TIME</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="PyDMPushButton" name="force_trigger_button">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>Force single exposure</string>
+                </property>
+                <property name="alarmSensitiveContent" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="alarmSensitiveBorder" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="PyDMToolTip" stdset="0">
+                 <string/>
+                </property>
+                <property name="monitorDisp" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:START_EXPOSURE.PROC</string>
+                </property>
+                <property name="PyDMIcon" stdset="0">
+                 <string/>
+                </property>
+                <property name="passwordProtected" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="password" stdset="0">
+                 <string/>
+                </property>
+                <property name="protectedPassword" stdset="0">
+                 <string/>
+                </property>
+                <property name="showConfirmDialog" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="confirmMessage" stdset="0">
+                 <string>Are you sure you want to proceed?</string>
+                </property>
+                <property name="pressValue" stdset="0">
+                 <string>1</string>
+                </property>
+                <property name="releaseValue" stdset="0">
+                 <string>None</string>
+                </property>
+                <property name="relativeChange" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="writeWhenRelease" stdset="0">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="exposure_time_label">
+                <property name="text">
+                 <string>Exposure Time</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="PyDMLabel" name="scan_rate_get">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>ca://${prefix}:SOFT_TRIGGER_MODE</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="precision" stdset="0">
+                 <number>0</number>
+                </property>
+                <property name="showUnits" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="precisionFromPV" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="alarmSensitiveContent" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="alarmSensitiveBorder" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="PyDMToolTip" stdset="0">
+                 <string/>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:SOFT_TRIGGER_MODE</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="temperature_label">
+                <property name="text">
+                 <string>Temperature</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
               <item row="0" column="2">
-               <widget class="PyDMPushButton" name="save_spectrum">
+               <widget class="PyDMPushButton" name="save_spectra_button">
                 <property name="toolTip">
                  <string/>
                 </property>
@@ -674,7 +441,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>sig://${name}_save_spectrum</string>
+                 <string/>
                 </property>
                 <property name="PyDMIcon" stdset="0">
                  <string>save</string>
@@ -702,10 +469,10 @@
                  <string/>
                 </property>
                 <property name="pressValue" stdset="0">
-                 <string>1</string>
+                 <string/>
                 </property>
                 <property name="releaseValue" stdset="0">
-                 <string>0</string>
+                 <string/>
                 </property>
                 <property name="relativeChange" stdset="0">
                  <bool>false</bool>
@@ -715,33 +482,18 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="2">
-               <widget class="PyDMEnumComboBox" name="scan_rate_combo">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
+              <item row="4" column="0">
+               <widget class="QLabel" name="exposures_avg_label">
+                <property name="text">
+                 <string>Exposures to average</string>
                 </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="alarmSensitiveContent" stdset="0">
-                 <bool>false</bool>
-                </property>
-                <property name="alarmSensitiveBorder" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="PyDMToolTip" stdset="0">
-                 <string/>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:SOFT_TRIGGER_MODE</string>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
-               <widget class="PyDMLabel" name="get_exposure_time">
+              <item row="3" column="1">
+               <widget class="PyDMLabel" name="exposure_time_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -776,37 +528,33 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:GET_EXPOSURE_TIME</string>
+                 <string>ca://${prefix}:GET_EXPOSURE_TIME</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="scan_rate_label">
-                <property name="text">
-                 <string>Scan Rate</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="exposure_time_label">
-                <property name="text">
-                 <string>Exposure Time</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="PyDMLabel" name="get_file_dest">
+              <item row="1" column="0">
+               <widget class="QLabel" name="status_label">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Status</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="PyDMLabel" name="exposures_avg_get">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -814,8 +562,11 @@
                 <property name="toolTip">
                  <string/>
                 </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
+                <property name="textFormat">
+                 <enum>Qt::PlainText</enum>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                 <property name="precision" stdset="0">
                  <number>0</number>
@@ -836,10 +587,181 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>sig://${name}_file_dest</string>
+                 <string>ca://${prefix}:SET_AVG_CNT</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="PyDMEnumComboBox" name="scan_rate_combo">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="alarmSensitiveContent" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="alarmSensitiveBorder" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="PyDMToolTip" stdset="0">
+                 <string/>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:SOFT_TRIGGER_MODE</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="PyDMLabel" name="status">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="baseSize">
+                 <size>
+                  <width>0</width>
+                  <height>18</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>ca://${prefix}:STATUS</string>
+                </property>
+                <property name="textFormat">
+                 <enum>Qt::PlainText</enum>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="precision" stdset="0">
+                 <number>0</number>
+                </property>
+                <property name="showUnits" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="precisionFromPV" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="alarmSensitiveContent" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="alarmSensitiveBorder" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="PyDMToolTip" stdset="0">
+                 <string/>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:STATUS</string>
+                </property>
+                <property name="enableRichText" stdset="0">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="scan_rate_label">
+                <property name="text">
+                 <string>Scan Rate</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="PyDMLineEdit" name="exposures_avg_set">
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="precision" stdset="0">
+                 <number>0</number>
+                </property>
+                <property name="showUnits" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="precisionFromPV" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="alarmSensitiveContent" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="alarmSensitiveBorder" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="PyDMToolTip" stdset="0">
+                 <string/>
+                </property>
+                <property name="monitorDisp" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:SET_AVG_CNT</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="PyDMLabel" name="temperature">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>ca://${prefix}:TEMP</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="precision" stdset="0">
+                 <number>0</number>
+                </property>
+                <property name="showUnits" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="precisionFromPV" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="alarmSensitiveContent" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="alarmSensitiveBorder" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="PyDMToolTip" stdset="0">
+                 <string/>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:TEMP</string>
+                </property>
+                <property name="enableRichText" stdset="0">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QPushButton" name="recolor_graph_button">
+                <property name="text">
+                 <string>Recolor graph</string>
                 </property>
                </widget>
               </item>
@@ -890,7 +812,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>513</width>
+              <width>84</width>
               <height>230</height>
              </rect>
             </property>
@@ -906,11 +828,55 @@
                <x>10</x>
                <y>-3</y>
                <width>501</width>
-               <height>228</height>
+               <height>249</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="tab_2_grid">
-              <item row="10" column="1">
+              <item row="6" column="0">
+               <widget class="QLabel" name="w0_fit_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>λ Fit</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="PyDMLabel" name="w0_fit_get">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="baseSize">
+                 <size>
+                  <width>0</width>
+                  <height>18</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>ca://${prefix}:W0_FIT</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:W0_FIT</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="1">
                <widget class="PyDMLabel" name="chisq">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -922,39 +888,17 @@
                  <string/>
                 </property>
                 <property name="text">
-                 <string>ca://$prefix:CHISQ</string>
+                 <string>ca://${prefix}:CHISQ</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:CHISQ</string>
+                 <string>ca://${prefix}:CHISQ</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
-               <widget class="PyDMLabel" name="fit_on">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string>ca://$prefix:FIT_ON</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:FIT_ON</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
+              <item row="5" column="0">
                <widget class="QLabel" name="width_label">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -970,8 +914,8 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="2">
-               <widget class="PyDMEnumComboBox" name="set_fit_on">
+              <item row="10" column="1">
+               <widget class="PyDMLabel" name="st_dev_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -981,25 +925,19 @@
                 <property name="toolTip">
                  <string/>
                 </property>
-                <property name="alarmSensitiveContent" stdset="0">
-                 <bool>false</bool>
+                <property name="text">
+                 <string>ca://${prefix}:STDEV</string>
                 </property>
-                <property name="alarmSensitiveBorder" stdset="0">
-                 <bool>true</bool>
-                </property>
-                <property name="PyDMToolTip" stdset="0">
-                 <string/>
-                </property>
-                <property name="monitorDisp" stdset="0">
-                 <bool>false</bool>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:FIT_ON</string>
+                 <string>ca://${prefix}:STDEV</string>
                 </property>
                </widget>
               </item>
-              <item row="6" column="2">
-               <widget class="PyDMLineEdit" name="set_width">
+              <item row="5" column="2">
+               <widget class="PyDMLineEdit" name="width_set">
                 <property name="toolTip">
                  <string/>
                 </property>
@@ -1025,60 +963,12 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:WIDTH</string>
+                 <string>ca://${prefix}:WIDTH</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="w0_fit_label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>λ Fit</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
-               <widget class="QLabel" name="amplitude_label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Amplitude</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="w0_guess_label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>λ Guess</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="1">
-               <widget class="PyDMLabel" name="st_dev">
+              <item row="3" column="1">
+               <widget class="PyDMLabel" name="fit_on_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1089,13 +979,13 @@
                  <string/>
                 </property>
                 <property name="text">
-                 <string>ca://$prefix:STDEV</string>
+                 <string>ca://${prefix}:FIT_ON</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:STDEV</string>
+                 <string>ca://${prefix}:FIT_ON</string>
                 </property>
                </widget>
               </item>
@@ -1115,58 +1005,40 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
-               <widget class="PyDMLabel" name="fwhm">
+              <item row="8" column="0">
+               <widget class="QLabel" name="amplitude_label">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
                 <property name="text">
-                 <string>ca://$prefix:FWHM</string>
+                 <string>Amplitude</string>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:FWHM</string>
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
-              <item row="5" column="1">
-               <widget class="PyDMLabel" name="w0_fit">
+              <item row="9" column="0">
+               <widget class="QLabel" name="fwhm_label">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="baseSize">
-                 <size>
-                  <width>0</width>
-                  <height>18</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
                 <property name="text">
-                 <string>ca://$prefix:W0_FIT</string>
+                 <string>FWHM</string>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:W0_FIT</string>
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
               <item row="4" column="2">
-               <widget class="PyDMLineEdit" name="set_w0_guess">
+               <widget class="PyDMLineEdit" name="w0_guess_set">
                 <property name="toolTip">
                  <string/>
                 </property>
@@ -1192,11 +1064,55 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:W0_GUESS</string>
+                 <string>ca://${prefix}:W0_GUESS</string>
                 </property>
                </widget>
               </item>
-              <item row="9" column="0">
+              <item row="9" column="1">
+               <widget class="PyDMLabel" name="fwhm_get">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>ca://${prefix}:FWHM</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:FWHM</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="PyDMLabel" name="width_get">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>ca://${prefix}:WIDTH</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:WIDTH</string>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="0">
                <widget class="QLabel" name="st_dev_label">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1212,51 +1128,7 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
-               <widget class="PyDMLabel" name="get_w0_guess">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string>ca://$prefix:W0_GUESS</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:W0_GUESS</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="PyDMLabel" name="get_width">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string>ca://$prefix:WIDTH</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="channel" stdset="0">
-                 <string>ca://$prefix:WIDTH</string>
-                </property>
-               </widget>
-              </item>
-              <item row="10" column="0">
+              <item row="11" column="0">
                <widget class="QLabel" name="chisq_label">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1272,8 +1144,36 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="0">
-               <widget class="QLabel" name="fwhm_label">
+              <item row="3" column="2">
+               <widget class="PyDMEnumComboBox" name="fit_on_set">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="alarmSensitiveContent" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="alarmSensitiveBorder" stdset="0">
+                 <bool>true</bool>
+                </property>
+                <property name="PyDMToolTip" stdset="0">
+                 <string/>
+                </property>
+                <property name="monitorDisp" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:FIT_ON</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="w0_guess_label">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1281,14 +1181,36 @@
                  </sizepolicy>
                 </property>
                 <property name="text">
-                 <string>FWHM</string>
+                 <string>λ Guess</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
-              <item row="7" column="1">
+              <item row="4" column="1">
+               <widget class="PyDMLabel" name="w0_guess_get">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>ca://${prefix}:W0_GUESS</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="channel" stdset="0">
+                 <string>ca://${prefix}:W0_GUESS</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
                <widget class="PyDMLabel" name="amplitude">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1300,13 +1222,13 @@
                  <string/>
                 </property>
                 <property name="text">
-                 <string>ca://$prefix:AMPLITUDE</string>
+                 <string>ca://${prefix}:AMPLITUDE</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:AMPLITUDE</string>
+                 <string>ca://${prefix}:AMPLITUDE</string>
                 </property>
                </widget>
               </item>
@@ -1364,7 +1286,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>513</width>
+              <width>84</width>
               <height>330</height>
              </rect>
             </property>
@@ -1385,7 +1307,7 @@
              </property>
              <layout class="QGridLayout" name="tab_3_grid">
               <item row="5" column="1">
-               <widget class="PyDMLabel" name="get_corr_nonlin">
+               <widget class="PyDMLabel" name="corr_nonlin_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1417,7 +1339,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:CORRECT_NONLINEARITY</string>
+                 <string>ca://${prefix}:CORRECT_NONLINEARITY</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -1425,7 +1347,7 @@
                </widget>
               </item>
               <item row="6" column="2">
-               <widget class="PyDMEnumComboBox" name="set_remove_bad_px">
+               <widget class="PyDMEnumComboBox" name="remove_bad_px_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
@@ -1448,12 +1370,12 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:REMOVE_BAD_PIXELS</string>
+                 <string>ca://${prefix}:REMOVE_BAD_PIXELS</string>
                 </property>
                </widget>
               </item>
               <item row="13" column="1">
-               <widget class="PyDMLabel" name="get_scale_to_16bit">
+               <widget class="PyDMLabel" name="scale_to_16bit_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1482,7 +1404,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SCALE_TO_16BIT</string>
+                 <string>ca://${prefix}:SCALE_TO_16BIT</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -1490,7 +1412,7 @@
                </widget>
               </item>
               <item row="6" column="1">
-               <widget class="PyDMLabel" name="get_remove_bad_px">
+               <widget class="PyDMLabel" name="remove_bad_px_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1522,7 +1444,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:REMOVE_BAD_PIXELS</string>
+                 <string>ca://${prefix}:REMOVE_BAD_PIXELS</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -1530,7 +1452,7 @@
                </widget>
               </item>
               <item row="7" column="2">
-               <widget class="PyDMEnumComboBox" name="set_subdark_px">
+               <widget class="PyDMEnumComboBox" name="subdark_px_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
@@ -1553,7 +1475,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SUBTRACT_DARK</string>
+                 <string>ca://${prefix}:SUBTRACT_DARK</string>
                 </property>
                </widget>
               </item>
@@ -1571,7 +1493,7 @@
                </widget>
               </item>
               <item row="11" column="2">
-               <widget class="PyDMEnumComboBox" name="set_corr_PRNU">
+               <widget class="PyDMEnumComboBox" name="corr_PRNU_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
@@ -1594,7 +1516,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:CORRECT_PRNU</string>
+                 <string>ca://${prefix}:CORRECT_PRNU</string>
                 </property>
                </widget>
               </item>
@@ -1612,7 +1534,7 @@
                </widget>
               </item>
               <item row="9" column="1">
-               <widget class="PyDMLabel" name="get_norm_exposure">
+               <widget class="PyDMLabel" name="norm_exposure_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1644,7 +1566,7 @@
                  <string>Normalize spectrum to 1 sec exposure time</string>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:NORMALIZE_EXPOSURE</string>
+                 <string>ca://${prefix}:NORMALIZE_EXPOSURE</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -1652,7 +1574,7 @@
                </widget>
               </item>
               <item row="13" column="2">
-               <widget class="PyDMEnumComboBox" name="set_scale_to_16bit">
+               <widget class="PyDMEnumComboBox" name="scale_to_16bit_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
@@ -1675,12 +1597,12 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SCALE_TO_16BIT</string>
+                 <string>ca://${prefix}:SCALE_TO_16BIT</string>
                 </property>
                </widget>
               </item>
               <item row="8" column="2">
-               <widget class="PyDMEnumComboBox" name="set_remove_temp_bad_px">
+               <widget class="PyDMEnumComboBox" name="remove_temp_bad_px_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
@@ -1703,7 +1625,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:REMOVE_TEMP_BAD_PIXELS</string>
+                 <string>ca://${prefix}:REMOVE_TEMP_BAD_PIXELS</string>
                 </property>
                </widget>
               </item>
@@ -1740,7 +1662,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SERIAL_NUMBER</string>
+                 <string>ca://${prefix}:SERIAL_NUMBER</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -1815,7 +1737,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:MODEL_CODE</string>
+                 <string>ca://${prefix}:MODEL_CODE</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -1826,7 +1748,7 @@
                </widget>
               </item>
               <item row="4" column="2">
-               <widget class="PyDMEnumComboBox" name="set_adj_offset">
+               <widget class="PyDMEnumComboBox" name="adj_offset_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
@@ -1849,7 +1771,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:ADJUST_OFFSET</string>
+                 <string>ca://${prefix}:ADJUST_OFFSET</string>
                 </property>
                </widget>
               </item>
@@ -1867,7 +1789,7 @@
                </widget>
               </item>
               <item row="12" column="2">
-               <widget class="PyDMEnumComboBox" name="set_addtnl_filtering">
+               <widget class="PyDMEnumComboBox" name="addtnl_filtering_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
@@ -1890,12 +1812,12 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:ADDITIONAL_FILTERING</string>
+                 <string>ca://${prefix}:ADDITIONAL_FILTERING</string>
                 </property>
                </widget>
               </item>
               <item row="7" column="1">
-               <widget class="PyDMLabel" name="get_sub_dark_px">
+               <widget class="PyDMLabel" name="sub_dark_px_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1927,7 +1849,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SUBTRACT_DARK</string>
+                 <string>ca://${prefix}:SUBTRACT_DARK</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -1974,7 +1896,7 @@
                </widget>
               </item>
               <item row="11" column="1">
-               <widget class="PyDMLabel" name="get_corr_PRNU">
+               <widget class="PyDMLabel" name="corr_PRNU_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2006,7 +1928,7 @@
                  <string>Correct for Photoresponse non-uniformity</string>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:CORRECT_PRNU</string>
+                 <string>ca://${prefix}:CORRECT_PRNU</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -2014,7 +1936,7 @@
                </widget>
               </item>
               <item row="8" column="1">
-               <widget class="PyDMLabel" name="get_remove_temp_bad_px">
+               <widget class="PyDMLabel" name="remove_temp_bad_px_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2046,7 +1968,7 @@
                  <string>Remove single pixel spikes</string>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:REMOVE_TEMP_BAD_PIXELS</string>
+                 <string>ca://${prefix}:REMOVE_TEMP_BAD_PIXELS</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -2054,7 +1976,7 @@
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="PyDMLabel" name="get_adj_label">
+               <widget class="PyDMLabel" name="adj_offset_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2086,7 +2008,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:ADJUST_OFFSET</string>
+                 <string>ca://${prefix}:ADJUST_OFFSET</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -2094,7 +2016,7 @@
                </widget>
               </item>
               <item row="9" column="2">
-               <widget class="PyDMEnumComboBox" name="set_norm_exposure">
+               <widget class="PyDMEnumComboBox" name="norm_exposure_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
@@ -2117,7 +2039,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:NORMALIZE_EXPOSURE</string>
+                 <string>ca://${prefix}:NORMALIZE_EXPOSURE</string>
                 </property>
                </widget>
               </item>
@@ -2138,7 +2060,7 @@
                </widget>
               </item>
               <item row="5" column="2">
-               <widget class="PyDMEnumComboBox" name="set_corr_nonlin">
+               <widget class="PyDMEnumComboBox" name="corr_nonlin_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
@@ -2161,12 +2083,12 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:CORRECT_NONLINEARITY</string>
+                 <string>ca://${prefix}:CORRECT_NONLINEARITY</string>
                 </property>
                </widget>
               </item>
               <item row="12" column="1">
-               <widget class="PyDMLabel" name="get_addtnl_filtering">
+               <widget class="PyDMLabel" name="addtnl_filtering_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2198,7 +2120,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:ADDITIONAL_FILTERING</string>
+                 <string>ca://${prefix}:ADDITIONAL_FILTERING</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -2206,7 +2128,7 @@
                </widget>
               </item>
               <item row="10" column="2">
-               <widget class="PyDMEnumComboBox" name="set_sensitivity_cal">
+               <widget class="PyDMEnumComboBox" name="sensitivity_cal_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
@@ -2229,7 +2151,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SENSITIVITY_CAL</string>
+                 <string>ca://${prefix}:SENSITIVITY_CAL</string>
                 </property>
                </widget>
               </item>
@@ -2260,7 +2182,7 @@
                </widget>
               </item>
               <item row="10" column="1">
-               <widget class="PyDMLabel" name="get_sensitivity_cal">
+               <widget class="PyDMLabel" name="sensitivity_cal_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2292,7 +2214,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SENSITIVITY_CAL</string>
+                 <string>ca://${prefix}:SENSITIVITY_CAL</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -2351,7 +2273,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>503</width>
+              <width>84</width>
               <height>225</height>
              </rect>
             </property>
@@ -2372,7 +2294,7 @@
              </property>
              <layout class="QGridLayout" name="trigger_settings">
               <item row="3" column="2">
-               <widget class="PyDMEnumComboBox" name="set_trig_pin">
+               <widget class="PyDMEnumComboBox" name="trig_pin_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2395,7 +2317,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SET_TRIG_PIN</string>
+                 <string>ca://${prefix}:SET_TRIG_PIN</string>
                 </property>
                </widget>
               </item>
@@ -2407,7 +2329,7 @@
                </widget>
               </item>
               <item row="1" column="2">
-               <widget class="PyDMEnumComboBox" name="trig_enable_combo">
+               <widget class="PyDMEnumComboBox" name="trig_enable_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                   <horstretch>0</horstretch>
@@ -2418,12 +2340,12 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SET_TRIG_ENABLE</string>
+                 <string>ca://${prefix}:SET_TRIG_ENABLE</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="2">
-               <widget class="PyDMEnumComboBox" name="set_trig_edge">
+               <widget class="PyDMEnumComboBox" name="trig_edge_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2446,7 +2368,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SET_TRIG_EDGE</string>
+                 <string>ca://${prefix}:SET_TRIG_EDGE</string>
                 </property>
                </widget>
               </item>
@@ -2458,7 +2380,7 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="PyDMLabel" name="trig_enable">
+               <widget class="PyDMLabel" name="trig_enable_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2475,18 +2397,18 @@
                  <string/>
                 </property>
                 <property name="text">
-                 <string>ca://$prefix:SET_TRIG_ENABLE</string>
+                 <string>ca://${prefix}:SET_TRIG_ENABLE</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SET_TRIG_ENABLE</string>
+                 <string>ca://${prefix}:SET_TRIG_ENABLE</string>
                 </property>
                </widget>
               </item>
               <item row="5" column="1">
-               <widget class="PyDMLabel" name="get_trig_mode">
+               <widget class="PyDMLabel" name="trig_mode_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                   <horstretch>0</horstretch>
@@ -2518,7 +2440,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:TRIG_MODE_RBV</string>
+                 <string>ca://${prefix}:TRIG_MODE_RBV</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -2542,7 +2464,7 @@
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="PyDMLabel" name="get_trig_pin">
+               <widget class="PyDMLabel" name="trig_pin_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                   <horstretch>0</horstretch>
@@ -2574,7 +2496,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:TRIG_PIN_RBV</string>
+                 <string>ca://${prefix}:TRIG_PIN_RBV</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -2592,7 +2514,7 @@
                </widget>
               </item>
               <item row="2" column="2">
-               <widget class="PyDMLineEdit" name="set_trig_delay">
+               <widget class="PyDMLineEdit" name="trig_delay_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2627,12 +2549,12 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:SET_TRIG_DELAY</string>
+                 <string>ca://${prefix}:SET_TRIG_DELAY</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="PyDMLabel" name="get_trig_edge">
+               <widget class="PyDMLabel" name="trig_edge_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                   <horstretch>0</horstretch>
@@ -2664,7 +2586,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:TRIG_EDGE_RBV</string>
+                 <string>ca://${prefix}:TRIG_EDGE_RBV</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -2672,7 +2594,7 @@
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="PyDMLabel" name="get_trig_delay">
+               <widget class="PyDMLabel" name="trig_delay_get">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                   <horstretch>0</horstretch>
@@ -2704,7 +2626,7 @@
                  <string/>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:GET_TRIG_DELAY</string>
+                 <string>ca://${prefix}:GET_TRIG_DELAY</string>
                 </property>
                 <property name="enableRichText" stdset="0">
                  <bool>false</bool>
@@ -2725,7 +2647,7 @@
                </widget>
               </item>
               <item row="5" column="2">
-               <widget class="PyDMEnumComboBox" name="set_trig_mode">
+               <widget class="PyDMEnumComboBox" name="trig_mode_set">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2748,7 +2670,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="channel" stdset="0">
-                 <string>ca://$prefix:TRIG_MODE</string>
+                 <string>ca://${prefix}:TRIG_MODE</string>
                 </property>
                </widget>
               </item>
@@ -2853,7 +2775,7 @@
            <string>Raw readback on the PROCESSING_STEPS_RBV</string>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://$prefix:PROCESSING_STEPS_RBV</string>
+           <string>ca://${prefix}:PROCESSING_STEPS_RBV</string>
           </property>
           <property name="showLabels" stdset="0">
            <bool>true</bool>
