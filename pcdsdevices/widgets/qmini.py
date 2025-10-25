@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import time
+from functools import partial
 
 import qtawesome as qta
 from ophyd import Device
@@ -14,8 +15,11 @@ from qtpy.QtWidgets import QColorDialog, QFileDialog, QPushButton, QWidget
 class _QminiBaseUI(QWidget):
     """Annotations helper for QminiSpectrometerEmbedded. Do not instantiate"""
     plot: PyDMWaveformPlot
-    save_spectra_button: PyDMPushButton
+    hide_fit_button: QPushButton
     recolor_graph_button: QPushButton
+    recolor_fit_button: QPushButton
+    save_spectra_button: PyDMPushButton
+    toggle_fit_button: QPushButton
 
 
 class QminiBase:
@@ -29,8 +33,16 @@ class QminiBase:
         super().__init__(*args, **kwargs)
 
         self.ui.save_spectra_button.clicked.connect(self.save_data)
-        self.ui.recolor_graph_button.clicked.connect(self.recolor_graph)
-        self.ui.recolor_graph_button.setIcon(qta.icon('msc.symbol-color'))
+        for plot in ['graph', 'fit']:
+            _button = getattr(self.ui, f'recolor_{plot}_button')
+            _button.setIcon(qta.icon('msc.symbol-color'))
+            if plot == 'graph':
+                _button.clicked.connect(partial(self.recolor_graph, 'Spectrum'))
+            else:
+                _button.clicked.connect(partial(self.recolor_graph, 'Fit'))
+
+        self.ui.toggle_fit_button.clicked.connect(self.toggle_fit)
+        self._fit_toggle = 1
 
     @property
     def device(self):
@@ -107,7 +119,7 @@ class QminiBase:
 
         return color.name()
 
-    def recolor_graph(self):
+    def recolor_graph(self, yAxisName: str):
         """
         Hacky recolor of an active PyDMWaveFormPlot.
         """
@@ -115,7 +127,7 @@ class QminiBase:
         for curve in _plot._curves:
             # Have to inspect the y_channel address to figure out
             # which curve we are dealing with
-            if curve.y_axis_name == 'Spectrum':
+            if curve.y_axis_name == yAxisName:
                 # for now, we're only plotting the main spectrum
                 _old_color = curve.color
                 _new_color = self.color_dialog()
@@ -123,3 +135,23 @@ class QminiBase:
                 if not _new_color:
                     _new_color = _old_color
                 curve.color = _new_color
+
+    def toggle_fit(self):
+        """
+        Hacky way to hide the fitted curve.
+        """
+        _plot = self.ui.plot
+
+        if self._fit_toggle > 0:
+            self.ui.toggle_fit_button.setText('show')
+            _temp = 0
+        else:
+            self.ui.toggle_fit_button.setText('hide')
+            _temp = 1
+
+        for curve in _plot._curves:
+            if curve.y_axis_name == 'Fit':
+                curve.lineStyle = _temp
+                curve.lineWidth = 2*_temp
+
+        self._fit_toggle = _temp
