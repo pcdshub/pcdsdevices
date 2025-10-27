@@ -189,7 +189,7 @@
      </property>
      <property name="yAxes">
       <stringlist>
-       <string>{&quot;name&quot;: &quot;Intensity&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: null, &quot;minRange&quot;: -2.025816515378531, &quot;maxRange&quot;: 2.025816515378531, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
+       <string>{&quot;name&quot;: &quot;Intensity&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: null, &quot;minRange&quot;: -2.191123143033419, &quot;maxRange&quot;: 2.191123143033419, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
       </stringlist>
      </property>
      <property name="xLabels">
