@@ -124,6 +124,7 @@ class QminiBase:
         Hacky recolor of an active PyDMWaveFormPlot.
         """
         _plot = self.ui.plot
+
         for curve in _plot._curves:
             # Have to inspect the y_channel address to figure out
             # which curve we are dealing with
@@ -135,6 +136,10 @@ class QminiBase:
                 if not _new_color:
                     _new_color = _old_color
                 curve.color = _new_color
+                _plot.getPlotItem().setLabel(yAxisName,
+                                             text='Intensity',
+                                             units='a.u.',
+                                             color=_new_color)
 
     def toggle_fit(self):
         """
