@@ -7,6 +7,7 @@ from pydm import Display
 from pydm.widgets import (PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel,
                           PyDMLineEdit, PyDMPushButton)
 from pydm.widgets.waveformplot import PyDMWaveformPlot, WaveformCurveItem
+from qtpy.QtCore import QTimer
 from typhos import utils
 
 from pcdsdevices.widgets.qmini import QminiBase
@@ -33,6 +34,8 @@ class QminiSpectrometerEmbeddedUI(QminiBase, Display, utils.TyphosBase):
             return
 
         self.fix_pvs()
+
+        self.ui.debug_button.clicked.connect(self.debug_pydm_plot)
 
     def fix_pvs(self):
         """
@@ -62,9 +65,6 @@ class QminiSpectrometerEmbeddedUI(QminiBase, Display, utils.TyphosBase):
             # setting the channels in waveform plots is weird since you cannot
             # explicitly set the x and y channels. `addChannel` adds a curve??
             if isinstance(_widget, PyDMWaveformPlot):
-                # TODO: Fix the domain problem when stacking curves
-                # The last draw curve decides the domain for both axes,
-                # for some reason?
                 _widget.addChannel(
                     y_channel=f'ca://{self.device.prefix}:SPECTRUM',
                     x_channel=f'ca://{self.device.prefix}:WAVELENGTHS',
@@ -78,14 +78,22 @@ class QminiSpectrometerEmbeddedUI(QminiBase, Display, utils.TyphosBase):
 
                 _widget.addChannel(
                     y_channel=f'ca://{self.device.prefix}:FIT_SPECTRUM',
-                    x_channel=f'ca://{self.device.prefix}:WAVELENGTHS',
+                    x_channel=f'ca://{self.device.prefix}:FIT_WAVELENGTHS',
                     color='red',
                     lineStyle=1,
                     lineWidth=2,
                     redraw_mode=WaveformCurveItem.REDRAW_ON_Y,
                     yAxisName='Fit',
-                    name='Intensity (a.u.)',
+                    name='Fit Intensity (a.u.)',
                 )
+
+                # Toggle this off since the fit spectrum causes issues
+                _widget.setAutoRangeX(False)
+
+                self._plot_timer = QTimer(parent=self)
+                self._plot_timer.timeout.connect(self.fix_plot_domain)
+                self._plot_timer.setInterval(200)
+                self._plot_timer.start()
 
             # standard channel macro expansion
             else:
@@ -116,3 +124,20 @@ class QminiSpectrometerEmbeddedUI(QminiBase, Display, utils.TyphosBase):
         _omit = ['save_spectra']
 
         return [obj for obj in result if obj not in _omit]
+
+    def fix_plot_domain(self):
+        """
+        Pyqtgraph and PyDMWaveformPlot widgets have weird behavior when
+        layering curves onto the same widget and autoranging the x-axis
+        does not work as expect. Fix it when the device signals connect.
+        """
+        _min = int(self.device.wavelengths.get().min())
+        _max = int(self.device.wavelengths.get().max())
+
+        if not _max > _min:
+            # Restart the timer if these signals are still None
+            self._plot_timer.start()
+
+        else:
+            self.ui.plot.setMinXRange(_min)
+            self.ui.plot.setMaxXRange(_max)
