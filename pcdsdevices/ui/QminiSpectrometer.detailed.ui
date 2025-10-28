@@ -38,7 +38,7 @@
      <item>
       <widget class="PyDMWaveformPlot" name="plot">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -88,7 +88,7 @@
        </property>
        <property name="yAxes">
         <stringlist>
-         <string>{&quot;name&quot;: &quot;Intensity&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Intensity&quot;, &quot;minRange&quot;: -2.6658363314874194, &quot;maxRange&quot;: 2.6658363314874194, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
+         <string>{&quot;name&quot;: &quot;Intensity&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Intensity&quot;, &quot;minRange&quot;: -2.772469784746916, &quot;maxRange&quot;: 2.772469784746916, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
         </stringlist>
        </property>
        <property name="xLabels">
@@ -120,7 +120,7 @@
      <item>
       <widget class="QFrame" name="graph_tools">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -220,15 +220,15 @@
      <item>
       <widget class="QTabWidget" name="controls_tab">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
-         <width>0</width>
-         <height>0</height>
+         <width>549</width>
+         <height>281</height>
         </size>
        </property>
        <property name="tabPosition">
@@ -910,7 +910,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>84</width>
+               <width>513</width>
                <height>230</height>
               </rect>
              </property>
@@ -1384,7 +1384,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>84</width>
+               <width>513</width>
                <height>330</height>
               </rect>
              </property>
@@ -2371,7 +2371,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>84</width>
+               <width>503</width>
                <height>225</height>
               </rect>
              </property>
