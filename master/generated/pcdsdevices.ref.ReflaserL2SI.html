@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.ref.ReflaserL2SI &mdash; PCDS Devices 9.0.1.dev46+g3a498798a documentation</title>
+  <title>pcdsdevices.ref.ReflaserL2SI &mdash; PCDS Devices 10.0.1.dev25+g181ba3b36 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b97ac0bb"></script>
+      <script src="../_static/documentation_options.js?v=af37831f"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -222,49 +222,56 @@ chamber.</p>
 <td><p>omitted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.interface.LightpathInOutCptMixin.html#pcdsdevices.interface.LightpathInOutCptMixin" title="pcdsdevices.interface.LightpathInOutCptMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">LightpathInOutCptMixin</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p>las_pct</p></td>
+<tr class="row-odd"><td><p>shutdown</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.signal.PytmcSignal.html#pcdsdevices.signal.PytmcSignal" title="pcdsdevices.signal.PytmcSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytmcSignal</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:LAS:SHUTDOWN</span></code></p></td>
+<td></td>
+<td><p>hinted</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>las_pct</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.signal.PytmcSignal.html#pcdsdevices.signal.PytmcSignal" title="pcdsdevices.signal.PytmcSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytmcSignal</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:LAS:PCT</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>mirror</p></td>
+<tr class="row-odd"><td><p>mirror</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.ref.ReflaserL2SIMirror.html#pcdsdevices.ref.ReflaserL2SIMirror" title="pcdsdevices.ref.ReflaserL2SIMirror"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReflaserL2SIMirror</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:MMS:STATE</span></code></p></td>
 <td><p>In/Out control of Reflaser Mirror</p></td>
 <td><p>hinted</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>y_motor</p></td>
+<tr class="row-even"><td><p>y_motor</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxis.html#pcdsdevices.epics_motor.BeckhoffAxis" title="pcdsdevices.epics_motor.BeckhoffAxis"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeckhoffAxis</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:MMS</span></code></p></td>
 <td><p>Direct control of mirror motor.</p></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>pico1</p></td>
+<tr class="row-odd"><td><p>pico1</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.epics_motor.EpicsMotorInterface.html#pcdsdevices.epics_motor.EpicsMotorInterface" title="pcdsdevices.epics_motor.EpicsMotorInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsMotorInterface</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:MCP:01</span></code></p></td>
 <td><p>Laser alignment 01</p></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>pico2</p></td>
+<tr class="row-even"><td><p>pico2</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.epics_motor.EpicsMotorInterface.html#pcdsdevices.epics_motor.EpicsMotorInterface" title="pcdsdevices.epics_motor.EpicsMotorInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsMotorInterface</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:MCP:02</span></code></p></td>
 <td><p>Laser alignment 02</p></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>pico3</p></td>
+<tr class="row-odd"><td><p>pico3</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.epics_motor.EpicsMotorInterface.html#pcdsdevices.epics_motor.EpicsMotorInterface" title="pcdsdevices.epics_motor.EpicsMotorInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsMotorInterface</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:MCP:03</span></code></p></td>
 <td><p>Laser alignment 03</p></td>
 <td><p>config</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>pico4</p></td>
+<tr class="row-even"><td><p>pico4</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.epics_motor.EpicsMotorInterface.html#pcdsdevices.epics_motor.EpicsMotorInterface" title="pcdsdevices.epics_motor.EpicsMotorInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsMotorInterface</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:MCP:04</span></code></p></td>
 <td><p>Laser alignment 04</p></td>
