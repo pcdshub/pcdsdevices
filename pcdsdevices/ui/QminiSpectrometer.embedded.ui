@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>545</width>
-    <height>756</height>
+    <height>764</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,7 +40,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="main_layout" stretch="0,0,0,0">
+  <layout class="QVBoxLayout" name="main_layout" stretch="0,0,0,0,0">
    <property name="spacing">
     <number>4</number>
    </property>
@@ -189,7 +189,7 @@
      </property>
      <property name="yAxes">
       <stringlist>
-       <string>{&quot;name&quot;: &quot;Intensity&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: null, &quot;minRange&quot;: -2.191123143033419, &quot;maxRange&quot;: 2.191123143033419, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
+       <string>{&quot;name&quot;: &quot;Intensity&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: null, &quot;minRange&quot;: -2.464715543165144, &quot;maxRange&quot;: 2.464715543165144, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
       </stringlist>
      </property>
      <property name="xLabels">
@@ -239,12 +239,118 @@
     </spacer>
    </item>
    <item>
+    <widget class="QFrame" name="graph_tools">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>535</width>
+       <height>78</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <layout class="QGridLayout" name="graph_tools_grid">
+        <item row="0" column="0">
+         <widget class="QLabel" name="recolor_graph_label">
+          <property name="text">
+           <string>Spectrum</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="recolor_fit_button">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>25</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="fit_recolor_label">
+          <property name="text">
+           <string>Fit</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="recolor_graph_button">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>25</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="toggle_fit_button">
+          <property name="text">
+           <string>hide</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QScrollArea" name="panel_scroll_area">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>250</height>
+      </size>
      </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAsNeeded</enum>
@@ -262,7 +368,7 @@
        </rect>
       </property>
       <property name="sizePolicy">
-       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -282,101 +388,13 @@
          <height>693</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="param_layout" stretch="0,1,1">
+       <layout class="QVBoxLayout" name="param_layout" stretch="1,1">
         <property name="spacing">
          <number>10</number>
         </property>
         <property name="sizeConstraint">
          <enum>QLayout::SetNoConstraint</enum>
         </property>
-        <item>
-         <layout class="QGridLayout" name="graph_tools">
-          <item row="0" column="1">
-           <widget class="QPushButton" name="recolor_graph_button">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>25</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="recolor_fit_button">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>25</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="toggle_fit_button">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>25</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>hide</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="spectrum_recolor_label">
-            <property name="text">
-             <string>Spectrum</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="fit_recolor_label">
-            <property name="text">
-             <string>Fit</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
         <item>
          <widget class="QGroupBox" name="qmini_params">
           <property name="sizePolicy">
