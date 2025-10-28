@@ -60,6 +60,13 @@
           - hinted
           - Inherited from :class:`~pcdsdevices.pdu.PDU`
     
+        * - output_c_hi_alarm (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:InfeedLoadHighAlarm``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
         * - output_p (FCpt)
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``{prefix}{self._tower}:GetTowerActivePower``
@@ -95,58 +102,86 @@
           - hinted
           - Inherited from :class:`~pcdsdevices.pdu.PDU`
     
-        * - sensor1_id
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``:Sensor:1:GetID``
-          - 
-          - hinted
-          - Inherited from :class:`~pcdsdevices.pdu.PDU`
-    
-        * - sensor1_status
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``:Sensor:1:GetStatus``
-          - 
-          - hinted
-          - Inherited from :class:`~pcdsdevices.pdu.PDU`
-    
-        * - sensor1_temperature
+        * - sensor1_temperature_status
           - :class:`~ophyd.signal.EpicsSignal`
           - ``:Sensor:1:GetTempStatus``
           - 
           - hinted
           - Inherited from :class:`~pcdsdevices.pdu.PDU`
     
-        * - sensor1_humidity
+        * - sensor1_humidity_status
           - :class:`~ophyd.signal.EpicsSignal`
           - ``:Sensor:1:GetHumidStatus``
           - 
           - hinted
           - Inherited from :class:`~pcdsdevices.pdu.PDU`
     
-        * - sensor2_id
+        * - sensor1_temperature
           - :class:`~ophyd.signal.EpicsSignal`
-          - ``:Sensor:2:GetID``
+          - ``:Sensor:1:GetTempValue``
           - 
           - hinted
           - Inherited from :class:`~pcdsdevices.pdu.PDU`
     
-        * - sensor2_status
+        * - sensor1_humidity
           - :class:`~ophyd.signal.EpicsSignal`
-          - ``:Sensor:2:GetStatus``
+          - ``:Sensor:1:GetHumidValue``
           - 
           - hinted
           - Inherited from :class:`~pcdsdevices.pdu.PDU`
     
-        * - sensor2_temperature
+        * - sensor1_temperature_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:TempAlarm``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor1_humidity_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:HumidAlarm``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_temperature_status
           - :class:`~ophyd.signal.EpicsSignal`
           - ``:Sensor:2:GetTempStatus``
           - 
           - hinted
           - Inherited from :class:`~pcdsdevices.pdu.PDU`
     
-        * - sensor2_humidity
+        * - sensor2_humidity_status
           - :class:`~ophyd.signal.EpicsSignal`
           - ``:Sensor:2:GetHumidStatus``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_temperature
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:GetTempValue``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_humidity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:GetHumidValue``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_temperature_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:TempAlarm``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_humidity_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:HumidAlarm``
           - 
           - hinted
           - Inherited from :class:`~pcdsdevices.pdu.PDU`
@@ -271,6 +306,16 @@
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

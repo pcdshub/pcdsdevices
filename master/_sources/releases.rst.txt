@@ -2,6 +2,51 @@ Release History
 ###############
 
 
+v10.1.0 (2025-11-20)
+====================
+
+Device Features
+---------------
+- Added component to `ReflaserL2SI` for laser shutdown pv
+- QminiSpectromemter.embedded and .detailed screens now allow recoloring the graph and using file dialogs for saving spectra
+- Increase TMO Spectrometer Attenuator targets from 9 to 12
+- Various `DCCM` updates
+
+    - Updated `DCCMEnergy` ui files to use th1 properties and new limit_travel attributes
+    - Added `DCCMTarget` component to DCCM class and reordered components
+    - Added TXI option to `DCCMEnergyWithVernier`
+    - Removed inverse from `DCCMEnergyWithVernier` since it was identical to `DCCMEnergy.inverse`
+    - Made energy_with_vernier and energy_with_acr_status formatted components to pass hutch, acr_status_suffix, and acr_status_pv_index
+    - Added Si333 dspacing constant and ability to switch between it and Si111
+    - Added callback to update DCCMEnergy.energy.readback
+
+- Added support for Leviton & Sentry4 PDU Sensors as they were previously unused and untested. The screen now shows the analog readouts and alarms.
+
+New Devices
+-----------
+- `DREAM_Gas_Jet_Slits`: Single device holding all DREAM stages
+- `TM1L2`: derived from the ArrivalTimingMonitorClass, but has two rtds, no flow sensor, and six targets in addition to the out position
+
+Bugfixes
+--------
+- `ClippedScale`: A subclass of PyDMScaleIndicator to solve the issue of the blade widgets for SL2K4 "randomly" appearing completely black
+- `SL2K4`: Labels no longer clip in control room screens
+- `Prefocus`: add alias for x_motor and y_motor
+
+Maintenance
+-----------
+- `SL2K4`: Added labels for North/South and Top/Bottom
+
+Contributors
+------------
+- KaushikMalapati
+- TrumanPar
+- aberges-SLAC
+- carogee
+- tongju12
+
+
+
 v10.0.0 (2025-10-16)
 ===================
 

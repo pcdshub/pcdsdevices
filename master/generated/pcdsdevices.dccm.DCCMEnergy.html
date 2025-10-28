@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.dccm.DCCMEnergy &mdash; PCDS Devices 9.0.1.dev46+g3a498798a documentation</title>
+  <title>pcdsdevices.dccm.DCCMEnergy &mdash; PCDS Devices 10.0.1.dev92+ga36041846 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b97ac0bb"></script>
+      <script src="../_static/documentation_options.js?v=b8afe399"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -67,6 +67,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.dccm.DCCMEnergyWithACRStatus.html">pcdsdevices.dccm.DCCMEnergyWithACRStatus</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.dccm.DCCMEnergyWithVernier.html">pcdsdevices.dccm.DCCMEnergyWithVernier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.dccm.DCCMTarget.html">pcdsdevices.dccm.DCCMTarget</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-delay-generator">pcdsdevices.delay_generator</a></li>
@@ -199,7 +200,7 @@
 <h1>pcdsdevices.dccm.DCCMEnergy<a class="headerlink" href="#pcdsdevices-dccm-dccmenergy" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.dccm.</span></span><span class="sig-name descname"><span class="pre">DCCMEnergy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.dccm.</span></span><span class="sig-name descname"><span class="pre">DCCMEnergy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy" title="Link to this definition"></a></dt>
 <dd><p>DCCM energy motor.</p>
 <p>Calculates the current DCCM energy using the DCCM angle, and
 requests moves to the DCCM motors based on energy requests.</p>
@@ -221,6 +222,20 @@ requests moves to the DCCM motors based on energy requests.</p>
 </tr>
 </thead>
 <tbody>
+<tr class="row-even"><td><p>high_limit_travel</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">InternalSignal</span></code></p></td>
+<td></td>
+<td></td>
+<td><p>omitted</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>low_limit_travel</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">InternalSignal</span></code></p></td>
+<td></td>
+<td></td>
+<td><p>omitted</p></td>
+<td></td>
+</tr>
 <tr class="row-even"><td><p>energy</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pseudopos.PseudoSingleInterface.html#pcdsdevices.pseudopos.PseudoSingleInterface" title="pcdsdevices.pseudopos.PseudoSingleInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">PseudoSingleInterface</span></code></a></p></td>
 <td></td>
@@ -242,9 +257,46 @@ requests moves to the DCCM motors based on energy requests.</p>
 <td><p>normal</p></td>
 <td></td>
 </tr>
+<tr class="row-odd"><td><p>crystal_index</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">AttributeSignal</span></code></p></td>
+<td></td>
+<td></td>
+<td><p>omitted</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>crystal_index_name</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">AttributeSignal</span></code></p></td>
+<td></td>
+<td></td>
+<td><p>omitted</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>switch_crystal_index</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">AttributeSignal</span></code></p></td>
+<td></td>
+<td></td>
+<td><p>normal</p></td>
+<td></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Methods</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.braggAngleToEnergy">
+<span class="sig-name descname"><span class="pre">braggAngleToEnergy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.braggAngleToEnergy" title="Link to this definition"></a></dt>
+<dd><p>Converts dccm theta angle to energy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The Bragg angle theta in degrees</p></li>
+<li><p><strong>Returns</strong></p></li>
+<li><p><strong>----------</strong></p></li>
+<li><p><strong>energy</strong> – The photon energy (color) in keV.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.camonitor">
 <span class="sig-name descname"><span class="pre">camonitor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.camonitor" title="Link to this definition"></a></dt>
@@ -308,8 +360,8 @@ another thread.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.energyToSi111BraggAngle">
-<span class="sig-name descname"><span class="pre">energyToSi111BraggAngle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.energyToSi111BraggAngle" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.energyToBraggAngle">
+<span class="sig-name descname"><span class="pre">energyToBraggAngle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.energyToBraggAngle" title="Link to this definition"></a></dt>
 <dd><p>Converts energy to Bragg angle theta</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -558,22 +610,6 @@ IOC.</p>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.thetaToSi111energy">
-<span class="sig-name descname"><span class="pre">thetaToSi111energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.thetaToSi111energy" title="Link to this definition"></a></dt>
-<dd><p>Converts dccm theta angle to energy.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>energy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The Bragg angle theta in degrees</p></li>
-<li><p><strong>Returns</strong></p></li>
-<li><p><strong>----------</strong></p></li>
-<li><p><strong>energy</strong> – The photon energy (color) in keV.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.to_pseudo_tuple">
 <span class="sig-name descname"><span class="pre">to_pseudo_tuple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.to_pseudo_tuple" title="Link to this definition"></a></dt>
 <dd><p>Convert arguments to a PseudoPosition namedtuple and kwargs</p>
@@ -587,7 +623,7 @@ IOC.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.trigger" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.trigger" title="Link to this definition"></a></dt>
 <dd><p>Trigger the device and return status object.</p>
 <p>This method is responsible for implementing ‘trigger’ or
 ‘acquire’ functionality of this device.</p>
@@ -595,14 +631,14 @@ IOC.</p>
 and it being able to be read (via the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
 also responsible for arranging that the
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
 is notified when the device is ready to be read.</p>
 <p>If there is no delay between triggering and being readable,
-then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
 object which is already completed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
 as complete when the device is ready to be read.</p>
 </dd>
 </dl>
@@ -659,6 +695,16 @@ will be use.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.update_crystal_index">
+<span class="sig-name descname"><span class="pre">update_crystal_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crystal_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.update_crystal_index" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.update_readback">
+<span class="sig-name descname"><span class="pre">update_readback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.update_readback" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.wait">
 <span class="sig-name descname"><span class="pre">wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.wait" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -706,6 +752,11 @@ a background thread.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.connection_timeout">
 <span class="sig-name descname"><span class="pre">connection_timeout</span></span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.connection_timeout" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.dccm.DCCMEnergy.dspacing">
+<span class="sig-name descname"><span class="pre">dspacing</span></span><a class="headerlink" href="#pcdsdevices.dccm.DCCMEnergy.dspacing" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

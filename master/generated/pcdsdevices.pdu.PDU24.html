@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.pdu.PDU24 &mdash; PCDS Devices 9.0.1.dev46+g3a498798a documentation</title>
+  <title>pcdsdevices.pdu.PDU24 &mdash; PCDS Devices 10.0.1.dev92+ga36041846 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b97ac0bb"></script>
+      <script src="../_static/documentation_options.js?v=b8afe399"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -261,266 +261,301 @@
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p>output_p (FCpt)</p></td>
+<tr class="row-even"><td><p>output_c_hi_alarm (FCpt)</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{prefix}{self._tower}:InfeedLoadHighAlarm</span></code></p></td>
+<td></td>
+<td><p>hinted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>output_p (FCpt)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">{prefix}{self._tower}:GetTowerActivePower</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p>temperature_lo (FCpt)</p></td>
+<tr class="row-even"><td><p>temperature_lo (FCpt)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">{prefix}{self._tower}:Sensor:All:SetTempLowThresh</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p>humidity_lo (FCpt)</p></td>
+<tr class="row-odd"><td><p>humidity_lo (FCpt)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">{prefix}{self._tower}:Sensor:All:SetHumidLowThresh</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p>temperature_hi (FCpt)</p></td>
+<tr class="row-even"><td><p>temperature_hi (FCpt)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">{prefix}{self._tower}:Sensor:All:SetTempHighThresh</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p>humidity_hi (FCpt)</p></td>
+<tr class="row-odd"><td><p>humidity_hi (FCpt)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">{prefix}{self._tower}:Sensor:All:SetHumidHighThresh</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p>sensor1_id</p></td>
-<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:1:GetID</span></code></p></td>
-<td></td>
-<td><p>hinted</p></td>
-<td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
-</tr>
-<tr class="row-even"><td><p>sensor1_status</p></td>
-<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:1:GetStatus</span></code></p></td>
-<td></td>
-<td><p>hinted</p></td>
-<td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
-</tr>
-<tr class="row-odd"><td><p>sensor1_temperature</p></td>
+<tr class="row-even"><td><p>sensor1_temperature_status</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:1:GetTempStatus</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p>sensor1_humidity</p></td>
+<tr class="row-odd"><td><p>sensor1_humidity_status</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:1:GetHumidStatus</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p>sensor2_id</p></td>
+<tr class="row-even"><td><p>sensor1_temperature</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:2:GetID</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:1:GetTempValue</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p>sensor2_status</p></td>
+<tr class="row-odd"><td><p>sensor1_humidity</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:2:GetStatus</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:1:GetHumidValue</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p>sensor2_temperature</p></td>
+<tr class="row-even"><td><p>sensor1_temperature_alarm</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:1:TempAlarm</span></code></p></td>
+<td></td>
+<td><p>hinted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>sensor1_humidity_alarm</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:1:HumidAlarm</span></code></p></td>
+<td></td>
+<td><p>hinted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>sensor2_temperature_status</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:2:GetTempStatus</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p>sensor2_humidity</p></td>
+<tr class="row-odd"><td><p>sensor2_humidity_status</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:2:GetHumidStatus</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p>channel_ctrl (FCpt)</p></td>
+<tr class="row-even"><td><p>sensor2_temperature</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:2:GetTempValue</span></code></p></td>
+<td></td>
+<td><p>hinted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>sensor2_humidity</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:2:GetHumidValue</span></code></p></td>
+<td></td>
+<td><p>hinted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>sensor2_temperature_alarm</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:2:TempAlarm</span></code></p></td>
+<td></td>
+<td><p>hinted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>sensor2_humidity_alarm</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:Sensor:2:HumidAlarm</span></code></p></td>
+<td></td>
+<td><p>hinted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>channel_ctrl (FCpt)</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">{prefix}{self._ctrl}:SetControlAction</span></code></p></td>
 <td></td>
 <td><p>hinted</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.pdu.PDU.html#pcdsdevices.pdu.PDU" title="pcdsdevices.pdu.PDU"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDU</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p>channel1</p></td>
+<tr class="row-odd"><td><p>channel1</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel2</p></td>
+<tr class="row-even"><td><p>channel2</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel3</p></td>
+<tr class="row-odd"><td><p>channel3</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel4</p></td>
+<tr class="row-even"><td><p>channel4</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel5</p></td>
+<tr class="row-odd"><td><p>channel5</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel6</p></td>
+<tr class="row-even"><td><p>channel6</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel7</p></td>
+<tr class="row-odd"><td><p>channel7</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel8</p></td>
+<tr class="row-even"><td><p>channel8</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel9</p></td>
+<tr class="row-odd"><td><p>channel9</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel10</p></td>
+<tr class="row-even"><td><p>channel10</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel11</p></td>
+<tr class="row-odd"><td><p>channel11</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel12</p></td>
+<tr class="row-even"><td><p>channel12</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel13</p></td>
+<tr class="row-odd"><td><p>channel13</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel14</p></td>
+<tr class="row-even"><td><p>channel14</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel15</p></td>
+<tr class="row-odd"><td><p>channel15</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel16</p></td>
+<tr class="row-even"><td><p>channel16</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel17</p></td>
+<tr class="row-odd"><td><p>channel17</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel18</p></td>
+<tr class="row-even"><td><p>channel18</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel19</p></td>
+<tr class="row-odd"><td><p>channel19</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel20</p></td>
+<tr class="row-even"><td><p>channel20</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel21</p></td>
+<tr class="row-odd"><td><p>channel21</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel22</p></td>
+<tr class="row-even"><td><p>channel22</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>channel23</p></td>
+<tr class="row-odd"><td><p>channel23</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>channel24</p></td>
+<tr class="row-even"><td><p>channel24</p></td>
 <td><p><a class="reference internal" href="pcdsdevices.pdu.PDUChannel.html#pcdsdevices.pdu.PDUChannel" title="pcdsdevices.pdu.PDUChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDUChannel</span></code></a></p></td>
 <td></td>
 <td></td>
@@ -644,7 +679,7 @@ IOC.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.pdu.PDU24.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.pdu.PDU24.trigger" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.pdu.PDU24.trigger" title="Link to this definition"></a></dt>
 <dd><p>Trigger the device and return status object.</p>
 <p>This method is responsible for implementing ‘trigger’ or
 ‘acquire’ functionality of this device.</p>
@@ -652,14 +687,14 @@ IOC.</p>
 and it being able to be read (via the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
 also responsible for arranging that the
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
 is notified when the device is ready to be read.</p>
 <p>If there is no delay between triggering and being readable,
-then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
 object which is already completed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
 as complete when the device is ready to be read.</p>
 </dd>
 </dl>

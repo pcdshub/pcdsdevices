@@ -25,6 +25,13 @@
           - omitted
           - Inherited from :class:`~pcdsdevices.interface.LightpathInOutCptMixin`
     
+        * - shutdown
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:LAS:SHUTDOWN``
+          - 
+          - hinted
+          - 
+    
         * - las_pct
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:LAS:PCT``
@@ -75,6 +82,8 @@
           - 
     
 
+    
+    
     
     
     

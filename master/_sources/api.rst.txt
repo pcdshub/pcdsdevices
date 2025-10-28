@@ -74,6 +74,8 @@ pcdsdevices.atm
     pcdsdevices.atm.MFXATM
     pcdsdevices.atm.TM1K4
     pcdsdevices.atm.TM1K4Target
+    pcdsdevices.atm.TM1L2
+    pcdsdevices.atm.TM1L2Target
     pcdsdevices.atm.TM2K2
     pcdsdevices.atm.TM2K2Target
     pcdsdevices.atm.TM2K4
@@ -203,6 +205,7 @@ pcdsdevices.dccm
     pcdsdevices.dccm.DCCMEnergy
     pcdsdevices.dccm.DCCMEnergyWithACRStatus
     pcdsdevices.dccm.DCCMEnergyWithVernier
+    pcdsdevices.dccm.DCCMTarget
 
 pcdsdevices.delay_generator
 ---------------------------
@@ -267,6 +270,7 @@ pcdsdevices.dream_motion
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.dream_motion.DREAM_Gas_Jet_Slits
     pcdsdevices.dream_motion.DREAM_SL3K4
     pcdsdevices.dream_motion.DREAM_Sample_Paddle
     pcdsdevices.dream_motion.TMODream

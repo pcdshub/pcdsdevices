@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.areadetector.detectors.PCDSAreaDetector &mdash; PCDS Devices 9.0.1.dev46+g3a498798a documentation</title>
+  <title>pcdsdevices.areadetector.detectors.PCDSAreaDetector &mdash; PCDS Devices 10.0.1.dev92+ga36041846 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b97ac0bb"></script>
+      <script src="../_static/documentation_options.js?v=b8afe399"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -276,7 +276,7 @@ detector.</p>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.areadetector.detectors.PCDSAreaDetectorEmbedded.html#pcdsdevices.areadetector.detectors.PCDSAreaDetectorEmbedded" title="pcdsdevices.areadetector.detectors.PCDSAreaDetectorEmbedded"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCDSAreaDetectorEmbedded</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>cam (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
@@ -575,7 +575,7 @@ key which is a label like ‘light’, ‘dark’, or ‘gain8’.</p>
 <p>It in turn calls <code class="docutils literal notranslate"><span class="pre">generate_datum</span></code> on all of the plugins that have
 that method.</p>
 <p>File plugins are identified by searching for a
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
 method that must have the signature</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">generate_datum</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">datum_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
    <span class="o">...</span>
@@ -594,7 +594,7 @@ method that must have the signature</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.areadetector.detectors.PCDSAreaDetector.find_signal">
-<span class="sig-name descname"><span class="pre">find_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_re=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_sensitive=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_fcn=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.detectors.PCDSAreaDetector.find_signal" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">find_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_re=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_sensitive=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_fcn=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f=&lt;colorama.ansitowin32.StreamWrapper</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.areadetector.detectors.PCDSAreaDetector.find_signal" title="Link to this definition"></a></dt>
 <dd><p>Search through the signal docs on this detector for the string text</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -620,7 +620,7 @@ key which is a label like ‘light’, ‘dark’, or ‘gain8’.</p>
 <p>It in turn calls <code class="docutils literal notranslate"><span class="pre">generate_datum</span></code> on all of the plugins that have
 that method.</p>
 <p>File plugins are identified by searching for a
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
 method that must have the signature</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">generate_datum</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">datum_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
    <span class="o">...</span>
@@ -798,7 +798,7 @@ IOC.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.areadetector.detectors.PCDSAreaDetector.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.areadetector.detectors.PCDSAreaDetector.trigger" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.areadetector.detectors.PCDSAreaDetector.trigger" title="Link to this definition"></a></dt>
 <dd><p>Trigger the device and return status object.</p>
 <p>This method is responsible for implementing ‘trigger’ or
 ‘acquire’ functionality of this device.</p>
@@ -806,14 +806,14 @@ IOC.</p>
 and it being able to be read (via the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
 also responsible for arranging that the
-<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
 is notified when the device is ready to be read.</p>
 <p>If there is no delay between triggering and being readable,
-then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
 object which is already completed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev7+g715964357)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.11.1.dev9+g6ca3af2ca)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
 as complete when the device is ready to be read.</p>
 </dd>
 </dl>

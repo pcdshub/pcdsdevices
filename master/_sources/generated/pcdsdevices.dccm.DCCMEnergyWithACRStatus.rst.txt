@@ -18,6 +18,20 @@
           - Kind
           - Notes
     
+        * - high_limit_travel
+          - :class:`~ophyd.signal.InternalSignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - low_limit_travel
+          - :class:`~ophyd.signal.InternalSignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
         * - energy
           - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
           - 
@@ -39,6 +53,27 @@
           - normal
           - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
     
+        * - crystal_index
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - crystal_index_name
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - switch_crystal_index
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
         * - acr_energy (FCpt)
           - :class:`~pcdsdevices.beam_stats.BeamEnergyRequest`
           - ``{hutch}``
@@ -47,6 +82,16 @@
           - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
     
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -65,12 +110,13 @@
     .. rubric:: Methods
 
     
+    .. automethod:: braggAngleToEnergy
     .. automethod:: camonitor
     .. automethod:: check_single
     .. automethod:: configure
     .. automethod:: describe
     .. automethod:: end_monitor_thread
-    .. automethod:: energyToSi111BraggAngle
+    .. automethod:: energyToBraggAngle
     .. automethod:: forward
     .. automethod:: get
     .. automethod:: inverse
@@ -90,13 +136,14 @@
     .. automethod:: status
     .. automethod:: stop
     .. automethod:: summary
-    .. automethod:: thetaToSi111energy
     .. automethod:: to_pseudo_tuple
     .. automethod:: to_real_tuple
     .. automethod:: trigger
     .. automethod:: tweak
     .. automethod:: umv
     .. automethod:: umvr
+    .. automethod:: update_crystal_index
+    .. automethod:: update_readback
     .. automethod:: wait
     .. automethod:: wm
     .. automethod:: wm_update
@@ -113,6 +160,7 @@
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
     .. autoattribute:: connection_timeout
+    .. autoattribute:: dspacing
     .. autoattribute:: egu
     .. autoattribute:: high_limit
     .. autoattribute:: hints

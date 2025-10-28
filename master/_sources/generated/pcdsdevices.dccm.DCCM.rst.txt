@@ -18,6 +18,34 @@
           - Kind
           - Notes
     
+        * - tx_state
+          - :class:`~pcdsdevices.dccm.DCCMTarget`
+          - ``:MMS:STATE``
+          - Control of TX axis via saved positions.
+          - hinted
+          - 
+    
+        * - energy
+          - :class:`~pcdsdevices.dccm.DCCMEnergy`
+          - 
+          - PseudoPositioner that moves the theta motors in terms of the calculated DCCM energy.
+          - hinted
+          - 
+    
+        * - energy_with_vernier (FCpt)
+          - :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+          - ``{self.prefix}``
+          - PseudoPositioner that moves the theta motor in terms of the calculated DCCM energy while also requesting a vernier move.
+          - normal
+          - 
+    
+        * - energy_with_acr_status (FCpt)
+          - :class:`~pcdsdevices.dccm.DCCMEnergyWithACRStatus`
+          - ``{self.prefix}``
+          - PseudoPositioner that moves the alio in terms of the calculated CCM energy while also requesting an energy change to ACR. This will wait on ACR to complete the move.
+          - normal
+          - 
+    
         * - th1
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:MMS:TH1``
@@ -53,28 +81,9 @@
           - normal
           - 
     
-        * - energy
-          - :class:`~pcdsdevices.dccm.DCCMEnergy`
-          - 
-          - PseudoPositioner that moves the theta motors in terms of the calculated DCCM energy.
-          - hinted
-          - 
-    
-        * - energy_with_vernier
-          - :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
-          - 
-          - PseudoPositioner that moves the theta motor in terms of the calculated DCCM energy while also requesting a vernier move.
-          - normal
-          - 
-    
-        * - energy_with_acr_status (FCpt)
-          - :class:`~pcdsdevices.dccm.DCCMEnergyWithACRStatus`
-          - ``{prefix}``
-          - PseudoPositioner that moves the alio in terms of the calculated CCM energy while also requesting an energy change to ACR. This will wait on ACR to complete the move.
-          - normal
-          - 
-    
 
+    
+    
     
     
     
