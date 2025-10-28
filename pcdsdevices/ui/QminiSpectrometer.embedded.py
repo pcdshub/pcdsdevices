@@ -35,8 +35,6 @@ class QminiSpectrometerEmbeddedUI(QminiBase, Display, utils.TyphosBase):
 
         self.fix_pvs()
 
-        self.ui.debug_button.clicked.connect(self.debug_pydm_plot)
-
     def fix_pvs(self):
         """
         Once typhos links the device, expand the macros in the buttons and
