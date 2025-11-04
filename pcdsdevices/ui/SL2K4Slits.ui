@@ -1520,7 +1520,7 @@
   <customwidget>
    <class>ClippedScale</class>
    <extends>PyDMScaleIndicator</extends>
-   <header location="global">pcdsdevices.ui.ClippedScale</header>
+   <header location="global">pcdsdevices.widgets.ClippedScale</header>
   </customwidget>
  </customwidgets>
  <resources/>
