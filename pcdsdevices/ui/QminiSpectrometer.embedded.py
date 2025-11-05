@@ -177,14 +177,12 @@ class SettingsPanel(QWidget):
         Before show, move window to just under button.
         """
         button = self.toggle_button
-        offset = button.mapToGlobal(QPoint(0, 0))
         self.move(
             button.mapToGlobal(
                 QPoint(
                     button.pos().x() + button.width(),
                     button.pos().y() + button.height()
-                    + self.style().pixelMetric(QStyle.PM_TitleBarHeight)
-                    - offset.y(),
+                    + self.style().pixelMetric(QStyle.PM_TitleBarHeight),
                 )
             )
         )
