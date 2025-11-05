@@ -226,6 +226,8 @@ class DCCMEnergyWithVernier(DCCMEnergy):
         # Determine which hutch to use
         if hutch is not None:
             self.hutch = hutch
+        elif 'TXI' in prefix:
+            self.hutch = 'TXI'
         elif 'CXI' in prefix:
             self.hutch = 'CXI'
         elif 'MEC' in prefix:
