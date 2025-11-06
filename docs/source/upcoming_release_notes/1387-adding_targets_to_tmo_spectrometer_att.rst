@@ -23,7 +23,7 @@ Bugfixes
 
 Maintenance
 -----------
-- tongju
+- tongju12
 
 Contributors
 ------------
