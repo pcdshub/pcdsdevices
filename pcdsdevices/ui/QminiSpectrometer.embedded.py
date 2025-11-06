@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import logging
-import os
+import pathlib
 import re
+from typing import Optional
 
 from pydm import Display
 from pydm.widgets import (PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel,
                           PyDMLineEdit, PyDMPushButton)
-from qtpy import QtGui, uic
-from qtpy.QtCore import QPoint, Qt, QTimer
-from qtpy.QtWidgets import QPushButton, QStyle, QWidget
+from qtpy import uic
+from qtpy.QtCore import Qt, QTimer
+from qtpy.QtWidgets import QPushButton, QWidget
 from typhos import utils
 
 from pcdsdevices.widgets.qmini import QminiBase, _QminiBaseUI
@@ -20,9 +21,9 @@ logger = logging.getLogger(__name__)
 class _QminiSpectrometerEmbeddedUI(_QminiBaseUI):
     fit_settings_button: QPushButton
     qmini_settings_button: QPushButton
-    settings_panel: QWidget
+    settings_panel: Optional[QWidget]
     settings_panel_resize_timer: QTimer
-    parameters_panel: QWidget
+    parameters_panel: Optional[QWidget]
     parameters_panel_resize_timer: QTimer
 
 
@@ -69,19 +70,17 @@ class QminiSpectrometerEmbeddedUI(QminiBase, Display, utils.TyphosBase):
         if (self.device is None) or (not panel):
             return
 
-        subwindow_dir = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            'qmini_subwindows')
+        subwindow_dir = pathlib.Path(__file__).parent / "qmini_subwindows"
 
         if panel == 'fit':
-            ui_filename = os.path.join(subwindow_dir, 'qmini_fit_settings.ui')
+            ui_filename = pathlib.Path(subwindow_dir) / 'qmini_fit_settings.ui'
             return SettingsPanel(spectrometer=self,
                                  ui_filename=ui_filename,
                                  toggle_button=self.ui.fit_settings_button,
                                  parent=self, flags=Qt.Window)
 
         elif panel == 'parameters':
-            ui_filename = os.path.join(subwindow_dir, 'qmini_parameters.ui')
+            ui_filename = pathlib.Path(subwindow_dir) / 'qmini_parameters.ui'
             return SettingsPanel(spectrometer=self,
                                  ui_filename=ui_filename,
                                  toggle_button=self.ui.qmini_settings_button,
@@ -165,26 +164,3 @@ class SettingsPanel(QWidget):
         _omit = ['save_spectra']
 
         return [obj for obj in result if obj not in _omit]
-
-    def hideEvent(self, event: QtGui.QHideEvent) -> QtGui.QHideEvent:
-        """
-        Hide the panel
-        """
-        return super().hideEvent(event)
-
-    def showEvent(self, event: QtGui.QShowEvent) -> QtGui.QShowEvent:
-        """
-        Before show, move window to just under button.
-        """
-        button = self.toggle_button
-        self.move(
-            button.mapToGlobal(
-                QPoint(
-                    button.pos().x() + button.width(),
-                    button.pos().y() + button.height()
-                    + self.style().pixelMetric(QStyle.PM_TitleBarHeight),
-                )
-            )
-        )
-
-        return super().showEvent(event)
