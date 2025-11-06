@@ -76,7 +76,7 @@ class Prefocus(CombinedInOutRecordPositioner, LightpathInOutMixin):
                                          else (1 if state in self.out_states
                                                else 0))
         super().__init__(prefix, name=name, **kwargs)
-        # motor aliases                                                                                                 
+        # motor aliases
         self.x = self.x_motor
         self.y = self.y_motor
 
