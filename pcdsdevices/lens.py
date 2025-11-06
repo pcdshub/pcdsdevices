@@ -80,6 +80,7 @@ class Prefocus(CombinedInOutRecordPositioner, LightpathInOutMixin):
         self.x = self.x_motor
         self.y = self.y_motor
 
+
 class LensStackBase(BaseInterface, PseudoPositioner):
     """
     Class for Be lens macros and safe operations.
