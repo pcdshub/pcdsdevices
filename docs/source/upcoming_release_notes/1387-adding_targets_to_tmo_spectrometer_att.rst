@@ -23,8 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- tongju12
+- N/A
 
 Contributors
 ------------
-- N/A
+- tongju12
