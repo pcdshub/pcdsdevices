@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- alias for x_motor and y_motor
+- `Prefocus` lens: add alias for x_motor and y_motor
 
 Maintenance
 -----------
