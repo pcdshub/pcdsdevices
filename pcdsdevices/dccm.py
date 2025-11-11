@@ -43,6 +43,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         The PV prefix of the DCCM motor, e.g. XPP:MON:MPZ:07A
     """
 
+    # used to display limits on ui since self.energy.low/high_limit are properties, not components
     _extra_sig_md = {
         'precision': 3,
         'units': 'mrad',
@@ -62,6 +63,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         super().__init__(prefix, name=name, **kwargs)
         self.low_limit_travel.put(self.energy.low_limit, internal=True)
         self.high_limit_travel.put(self.energy.high_limit, internal=True)
+        # callback needed to update self.energy.readback attribute when energy changes
         self.energy.subscribe(self.update_readback, event_type=self.energy.SUB_READBACK)
 
     def update_readback(self, *args, **kwargs):
@@ -83,12 +85,12 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
 
     th1 = Cpt(BeckhoffAxis, ":MMS:TH1", doc="Bragg Upstream/TH1 Axis", kind="normal", name='th1')
     th2 = Cpt(BeckhoffAxis, ":MMS:TH2", doc="Bragg Upstream/TH2 Axis", kind="normal", name='th2')
-    # th1 = Cpt(BeckhoffAxis, ":mtr1", doc="Bragg Upstream/TH1 Axis", kind="normal", name='th1')
-    # th2 = Cpt(BeckhoffAxis, ":mtr2", doc="Bragg Upstream/TH2 Axis", kind="normal", name='th2')
 
+    # the numerical dspacing value
     _crystal_index = CrystalIndex.Si111
     crystal_index = Cpt(AttributeSignal, attr='_crystal_index', kind='omitted', write_access=False)
 
+    # string for current dspacing value
     @property
     def _crystal_index_name(self):
         return self._crystal_index.name
@@ -97,13 +99,16 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
     def update_crystal_index(self, crystal_index):
         if not isinstance(crystal_index, CrystalIndex):
             return
+        # Change dspacing
         self.crystal_index._metadata.update(write_access=True)
         self.crystal_index.put(crystal_index)
         self.crystal_index._metadata.update(write_access=False)
+        # Update energy
         old_value = self.energy.readback.get()
         self._my_move = True
         self._update_position()
         self.energy.readback._run_subs(sub_type=self.energy.readback.SUB_VALUE, old_value=old_value, value=self.energy.readback.get(), timestamp=time.time())
+        # Update string
         cin = self.crystal_index_name
         cin._run_subs(sub_type=cin.SUB_VALUE, old_value=cin._readback, value=cin.get(), timestamp=time.time())
 
