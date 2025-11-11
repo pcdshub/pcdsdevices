@@ -32,6 +32,7 @@ class ReflaserL2SI(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     lightpath_cpts = ['mirror']
     _icon = 'fa.bullseye'
 
+    shutdown = Cpt(PytmcSignal, ':LAS:SHUTDOWN', io='io', kind='hinted')
     las_pct = Cpt(PytmcSignal, ':LAS:PCT', io='io', kind='hinted')
     mirror = Cpt(ReflaserL2SIMirror, ':MMS:STATE', kind='hinted',
                  doc='In/Out control of Reflaser Mirror')

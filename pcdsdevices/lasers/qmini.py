@@ -124,7 +124,6 @@ class QminiSpectrometer(Device):
 
     save_spectrum = Cpt(AttributeSignal, attr='_save_spectrum', kind='omitted')
     file_dest = Cpt(Signal, value='', kind='omitted')
-    set_metadata(save_spectrum, dict(variety='command-proc', value=1))
 
     @property
     def _save_spectrum(self):
