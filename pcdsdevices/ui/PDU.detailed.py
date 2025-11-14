@@ -31,8 +31,19 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
 
         # Alarm color callbacks
         status_widget = self.ui.Status_Label
+        sensor1_temp_status = self.ui.S1_Temp_Status
+        sensor2_temp_status = self.ui.S2_Temp_Status
+        sensor1_hum_status = self.ui.S1_Hum_Status
+        sensor2_hum_status = self.ui.S2_Hum_Status
+        infeed_status = self.ui.Infeed_Status
+
         if status_widget:
             self.update_color(status_widget, self.device.status.pvname)
+            self.update_color(sensor1_temp_status, self.device.sensor1_temperature_status.pvname)
+            self.update_color(sensor2_temp_status, self.device.sensor2_temperature_status.pvname)
+            self.update_color(sensor1_hum_status, self.device.sensor1_humidity_status.pvname)
+            self.update_color(sensor2_hum_status, self.device.sensor2_humidity_status.pvname)
+            self.update_color(infeed_status, self.device.output_c_hi_alarm.pvname)
 
         self.add_channels()
 

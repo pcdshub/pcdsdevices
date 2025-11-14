@@ -341,7 +341,7 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <layout class="QVBoxLayout" name="Infeed_Layout" stretch="0,0,1,1,1,0">
+      <layout class="QVBoxLayout" name="Infeed_Layout" stretch="0,0,1,1,0">
        <property name="sizeConstraint">
         <enum>QLayout::SetFixedSize</enum>
        </property>
@@ -441,73 +441,6 @@
          </item>
          <item>
           <spacer name="horizontalSpacer_22">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>70</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_16">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetFixedSize</enum>
-         </property>
-         <item>
-          <widget class="QLabel" name="label_35">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>15</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Active Power (W):    </string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="PyDMLabel" name="PDU_Power">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>15</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="channel" stdset="0">
-            <string>sig://${name}.output_p</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_23">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -681,7 +614,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>80</height>
+           <height>100</height>
           </size>
          </property>
         </spacer>
@@ -737,235 +670,53 @@
           </widget>
          </item>
          <item>
+          <spacer name="horizontalSpacer_26">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>15</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>Sensor 1</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_27">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>Sensor 2</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>210</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="1,5,0,5,0">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetFixedSize</enum>
-         </property>
-         <item>
-          <widget class="QLabel" name="label_15">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>15</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>120</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>ID:                  </string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="PyDMLabel" name="S1_ID">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>15</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="channel" stdset="0">
-            <string>sig://${name}.sensor1_id</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_17">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="PyDMLabel" name="S2_ID">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>15</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="channel" stdset="0">
-            <string>sig://${name}.sensor2_id</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="1,5,0,5,0">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetFixedSize</enum>
-         </property>
-         <item>
-          <widget class="QLabel" name="label_16">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>15</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>120</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Status:           </string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="PyDMLabel" name="S1_Status">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>15</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="channel" stdset="0">
-            <string>sig://${name}.sensor1_status</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_18">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="PyDMLabel" name="S2_Status">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>15</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="channel" stdset="0">
-            <string>sig://${name}.sensor2_status</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_10">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -1008,12 +759,126 @@
             </size>
            </property>
            <property name="text">
-            <string>Temp (C):       </string>
+            <string>Temp Status:       </string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="PyDMLabel" name="S2_Temp">
+          <widget class="PyDMLabel" name="S1_Temp_Status">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>15</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor1_temperature_status</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_19">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="PyDMLabel" name="S2_Temp_Status">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>15</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor2_temperature_status</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_11">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="1,5,0,5,0">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_15">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>15</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>120</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Temp (C):                  </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="PyDMLabel" name="S1_Temp">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1038,7 +903,7 @@
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_19">
+          <spacer name="horizontalSpacer_17">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -1054,7 +919,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="PyDMLabel" name="S1_Temp">
+          <widget class="PyDMLabel" name="S2_Temp_2">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1079,7 +944,7 @@
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_11">
+          <spacer name="horizontalSpacer_3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -1122,7 +987,121 @@
             </size>
            </property>
            <property name="text">
-            <string>Humidity (%):</string>
+            <string>Humidity Status:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="PyDMLabel" name="S1_Hum_Status">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>15</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor1_humidity_status</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_20">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="PyDMLabel" name="S2_Hum_Status">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>15</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="channel" stdset="0">
+            <string>sig://${name}.sensor2_humidity_status</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_16">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="1,5,0,5,0">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_16">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>15</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>120</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Humidity (%):           </string>
            </property>
           </widget>
          </item>
@@ -1152,7 +1131,7 @@
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_20">
+          <spacer name="horizontalSpacer_18">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -1193,7 +1172,7 @@
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_16">
+          <spacer name="horizontalSpacer_10">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -1414,6 +1393,12 @@
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
+             <property name="precision" stdset="0">
+              <number>1</number>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>false</bool>
+             </property>
              <property name="channel" stdset="0">
               <string>sig://${name}.temperature_lo</string>
              </property>
@@ -1460,6 +1445,12 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
+             </property>
+             <property name="precision" stdset="0">
+              <number>1</number>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>false</bool>
              </property>
              <property name="channel" stdset="0">
               <string>sig://${name}.temperature_hi</string>
@@ -1556,6 +1547,12 @@
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
+             <property name="precision" stdset="0">
+              <number>1</number>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>false</bool>
+             </property>
              <property name="channel" stdset="0">
               <string>sig://${name}.humidity_lo</string>
              </property>
@@ -1602,6 +1599,12 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
+             </property>
+             <property name="precision" stdset="0">
+              <number>1</number>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>false</bool>
              </property>
              <property name="channel" stdset="0">
               <string>sig://${name}.humidity_hi</string>
@@ -1728,7 +1731,7 @@
         <x>0</x>
         <y>0</y>
         <width>900</width>
-        <height>253</height>
+        <height>256</height>
        </rect>
       </property>
       <property name="sizePolicy">
