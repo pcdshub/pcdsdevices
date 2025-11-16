@@ -9,6 +9,7 @@ import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import AttributeSignal, InternalSignal
+from scipy.constants import angstrom, c, h, physical_constants
 
 from .beam_stats import BeamEnergyRequest
 from .device import GroupDevice
@@ -21,6 +22,9 @@ from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
+
+# conversion factor between photon energy and wavelength
+eV_to_lambda = physical_constants["joule-electron volt relationship"][0] * c * h / angstrom
 
 
 class CrystalIndex(float, Enum):
@@ -94,6 +98,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
     @property
     def _crystal_index_name(self):
         return self._crystal_index.name
+
     crystal_index_name = Cpt(AttributeSignal, attr='_crystal_index_name', kind='omitted', write_access=False)
 
     def update_crystal_index(self, crystal_index):
@@ -155,7 +160,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         if theta < 0.1:
             energy = float('NaN')
         else:
-            energy = self.thetaToEnergy(theta)
+            energy = self.braggAngleToEnergy(theta)
         return self.PseudoPosition(energy=energy)
 
     def energyToBraggAngle(self, energy: float) -> float:
@@ -173,10 +178,10 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
             The angle in degrees
         """
         energy = energy * 1000
-        bragg_angle = np.rad2deg(np.arcsin(np.float64(12398.419)/energy/(2*self.dspacing)))
+        bragg_angle = np.rad2deg(np.arcsin(np.float64(eV_to_lambda)/energy/(2*self.dspacing)))
         return bragg_angle
 
-    def thetaToEnergy(self, theta):
+    def braggAngleToEnergy(self, theta):
         """
         Converts dccm theta angle to energy.
 
@@ -190,7 +195,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         energy: float
              The photon energy (color) in keV.
         """
-        energy = 12398.419/(2*self.dspacing*np.sin(np.deg2rad(np.float64(theta))))
+        energy = eV_to_lambda/(2*self.dspacing*np.sin(np.deg2rad(np.float64(theta))))
         return energy/1000
 
 

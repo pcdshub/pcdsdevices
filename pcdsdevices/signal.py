@@ -919,14 +919,13 @@ class _OptionalEpicsSignal(Signal):
     there is a good chance we will reject your PR.
     """
 
-    def __init__(self, read_pv, write_pv=None, *, name, parent=None, kind=None,
-                 attr_name=None, **kwargs):
+    def __init__(self, read_pv, write_pv=None, *, name, parent=None, kind=None, **kwargs):
         self._saw_connection = False
         self._epics_signal = EpicsSignal(
             read_pv=read_pv, write_pv=write_pv, parent=self, name=name,
             kind=kind, **kwargs
         )
-        super().__init__(name=name, parent=parent, kind=kind, attr_name=attr_name)
+        super().__init__(name=name, parent=parent, kind=kind, attr_name=kwargs.get("attr_name", ""))
         self._epics_signal.subscribe(
             self._epics_meta_update,
             event_type=self._epics_signal.SUB_META,
