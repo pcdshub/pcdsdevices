@@ -68,16 +68,16 @@
       <string>energy.setpoint</string>
      </property>
      <property name="low_limit_switch_attribute" stdset="0">
-      <string/>
+      <string>th1.low_limit_switch</string>
      </property>
      <property name="high_limit_switch_attribute" stdset="0">
-      <string/>
+      <string>th1.low_limit_switch</string>
      </property>
      <property name="low_limit_travel_attribute" stdset="0">
-      <string/>
+      <string>low_limit_travel</string>
      </property>
      <property name="high_limit_travel_attribute" stdset="0">
-      <string/>
+      <string>high_limit_travel</string>
      </property>
      <property name="velocity_attribute" stdset="0">
       <string/>
@@ -86,10 +86,10 @@
       <string/>
      </property>
      <property name="moving_attribute" stdset="0">
-      <string/>
+      <string>th1.motor_is_moving</string>
      </property>
      <property name="error_message_attribute" stdset="0">
-      <string/>
+      <string>th1.plc.status</string>
      </property>
      <property name="show_expert_button" stdset="0">
       <bool>true</bool>
