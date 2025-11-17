@@ -39,5 +39,7 @@ def test_energy_update(fake_dccm):
     fake_dccm.energy.th1.user_readback.sim_put(10)
     motor_setup(fake_dccm.energy.th2)
     assert not isnan(fake_dccm.energy.energy.readback.get())
-    fake_dccm.energy.th1.user_readback.sim_put(10)
+    fake_dccm.energy.th1.user_readback.sim_put(8.746)
     assert not isnan(fake_dccm.energy.energy.readback.get())
+    assert abs(fake_dccm.energy.energy.readback.get() - 13.0022) < 0.001
+    assert abs(fake_dccm.energy.forward(13).th1 - 8.7475) < 0.0001
