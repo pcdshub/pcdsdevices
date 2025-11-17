@@ -28,6 +28,8 @@ The alignment is something like:
 """
 
 from typing import Callable, Optional, Union
+import time
+import math
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -277,6 +279,88 @@ class UndPointAbs2DMFX(UndPointAbs2D):
     ):
         super().__init__(prefix, name=name, **kwargs)
 
+
+class SafeUndPointAbs2D(UndPointAbs2D):
+    """
+    Absolute undulator pointing with safe segmented moves (both axes per step).
+    """
+
+    @validate_call
+    def move(
+        self,
+        position: Union[tuple[float, float], float],
+        y_abs: Optional[float] = None,
+        wait: bool = True,
+        max_step: Optional[float] = 50.0,
+        sleep_between: float = 2.0,
+        timeout: Optional[float] = None,
+        moved_cb: Optional[Callable] = None,
+    ):
+        """
+        Do an absolute move with optional segmentation.
+
+        If max_step is set, split the total move into segments on both axes,
+        each segment clamped to max_step in magnitude. Otherwise, perform a
+        single absolute move via the base class.
+        """
+        target_abs = coerce_input_to_tuple(position, y_abs)
+        dx_total, dy_total = self.get_delta_from_abs(target_abs)
+
+        # no segmentation requested or unnecessary: do a single absolute move
+        if max_step is None or (abs(dx_total) <= max_step and abs(dy_total) <= max_step):
+            return super().move(position=target_abs, wait=wait, timeout=timeout, moved_cb=moved_cb)
+
+        # for segmented moves, we require synchronous execution
+        if not wait:
+            raise ValueError("Safe chunked move requires wait=True.")
+
+        # determine number of equal segments so each per-axis step magnitude <= max_step
+        n_x = int(math.ceil(abs(dx_total) / max_step)) if max_step and abs(dx_total) > 0 else 1
+        n_y = int(math.ceil(abs(dy_total) / max_step)) if max_step and abs(dy_total) > 0 else 1
+        n_steps = max(n_x, n_y, 1)
+        if n_steps == 1:
+            return super().move(position=target_abs, wait=wait, timeout=timeout, moved_cb=moved_cb)
+
+        # compute equal-sized steps for each axis
+        step_x = dx_total / n_steps
+        step_y = dy_total / n_steps
+        last_status = None
+        # perform the segmented moves
+        for i in range(n_steps):
+            # correct the final step to hit the target exactly
+            if i == n_steps - 1:
+                corr_x = dx_total - step_x * (n_steps - 1)
+                corr_y = dy_total - step_y * (n_steps - 1)
+                move_dx, move_dy = float(corr_x), float(corr_y)
+            else:
+                move_dx, move_dy = float(step_x), float(step_y)
+            last_status = self.delta_xy.move((move_dx, move_dy), wait=True, timeout=timeout)
+            # sleep between moves to allow motors to settle
+            if sleep_between > 0:
+                time.sleep(sleep_between)
+
+        # call the callback if provided
+        if moved_cb is not None:
+            try:
+                moved_cb(obj=self)
+            except TypeError:
+                moved_cb(self)
+        return last_status
+
+
+class SafeUndPointAbs2DMFX(SafeUndPointAbs2D):
+    """
+    Safe segmented variant with MFX PV defaults.
+    """
+
+    def __init__(
+        self,
+        prefix: str = "MFX:USER:MCC:UND",
+        *,
+        name: str = "mfx_undp_safe",
+        **kwargs,
+    ):
+        super().__init__(prefix, name=name, **kwargs)
 
 class UndPointDelta2DSim(UndPointDelta2D):
     """
