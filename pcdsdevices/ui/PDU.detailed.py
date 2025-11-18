@@ -45,6 +45,10 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             self.update_color(sensor2_hum_status, self.device.sensor2_humidity_status.pvname)
             self.update_color(infeed_status, self.device.output_c_hi_alarm.pvname)
 
+        # Alarm thresholds need to update when you lose focus in case EPICS layer re-wrote to it
+        hum_lo_thresh = self.ui.Hum_Lo
+        hum_lo_thresh.returnPressed.connect(lambda: hum_lo_thresh.channelValueChanged(self.device.humidity_lo.value))
+
         self.add_channels()
 
     def add_channels(self):

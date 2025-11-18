@@ -1223,7 +1223,7 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>20</width>
+             <width>30</width>
              <height>20</height>
             </size>
            </property>
@@ -1399,6 +1399,9 @@
              <property name="precisionFromPV" stdset="0">
               <bool>false</bool>
              </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>true</bool>
+             </property>
              <property name="channel" stdset="0">
               <string>sig://${name}.temperature_lo</string>
              </property>
@@ -1451,6 +1454,9 @@
              </property>
              <property name="precisionFromPV" stdset="0">
               <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>true</bool>
              </property>
              <property name="channel" stdset="0">
               <string>sig://${name}.temperature_hi</string>
@@ -1553,6 +1559,9 @@
              <property name="precisionFromPV" stdset="0">
               <bool>false</bool>
              </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>true</bool>
+             </property>
              <property name="channel" stdset="0">
               <string>sig://${name}.humidity_lo</string>
              </property>
@@ -1605,6 +1614,9 @@
              </property>
              <property name="precisionFromPV" stdset="0">
               <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>true</bool>
              </property>
              <property name="channel" stdset="0">
               <string>sig://${name}.humidity_hi</string>
@@ -1731,7 +1743,7 @@
         <x>0</x>
         <y>0</y>
         <width>900</width>
-        <height>256</height>
+        <height>240</height>
        </rect>
       </property>
       <property name="sizePolicy">
