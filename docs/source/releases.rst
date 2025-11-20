@@ -2,6 +2,39 @@ Release History
 ###############
 
 
+v10.1.0 (2025-11-20)
+====================
+
+Device Features
+---------------
+- Added component to `ReflaserL2SI` for laser shutdown pv
+- QminiSpectromemter.embedded and .detailed screens now allow recoloring the graph and using file dialogs for saving spectra
+- Increase TMO Spectrometer Attenuator targets from 9 to 12
+
+New Devices
+-----------
+- `DREAM_Gas_Jet_Slits`: Single device holding all DREAM stages
+
+Bugfixes
+--------
+- `ClippedScale`: A subclass of PyDMScaleIndicator to solve the issue of the blade widgets for SL2K4 "randomly" appearing completely black
+- `SL2K4`: Labels no longer clip in control room screens
+- `Prefocus`: add alias for x_motor and y_motor
+
+Maintenance
+-----------
+- SL2K4: Added labels for North/South and Top/Bottom
+
+Contributors
+------------
+- KaushikMalapati
+- TrumanPar
+- aberges-SLAC
+- carogee
+- tongju12
+
+
+
 v10.0.0 (2025-10-16)
 ===================
 
