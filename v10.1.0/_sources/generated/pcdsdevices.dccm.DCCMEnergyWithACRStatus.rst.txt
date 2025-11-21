@@ -1,0 +1,182 @@
+﻿pcdsdevices.dccm.DCCMEnergyWithACRStatus
+========================================
+
+.. currentmodule:: pcdsdevices.dccm
+
+.. autoclass:: DCCMEnergyWithACRStatus
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - high_limit_travel
+          - :class:`~ophyd.signal.InternalSignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - low_limit_travel
+          - :class:`~ophyd.signal.InternalSignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - energy
+          - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
+          - 
+          - PseudoSingle that moves the calculated DCCM selected energy in keV.
+          - hinted
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - th1
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:TH1``
+          - Bragg Upstream/TH1 Axis
+          - normal
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - th2
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:TH2``
+          - Bragg Upstream/TH2 Axis
+          - normal
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - crystal_index
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - crystal_index_name
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - switch_crystal_index
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+        * - acr_energy (FCpt)
+          - :class:`~pcdsdevices.beam_stats.BeamEnergyRequest`
+          - ``{hutch}``
+          - Requests ACR to move the energy.
+          - normal
+          - Inherited from :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: braggAngleToEnergy
+    .. automethod:: camonitor
+    .. automethod:: check_single
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: energyToBraggAngle
+    .. automethod:: forward
+    .. automethod:: get
+    .. automethod:: inverse
+    .. automethod:: move
+    .. automethod:: move_single
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_defaults
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: to_pseudo_tuple
+    .. automethod:: to_real_tuple
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: update_crystal_index
+    .. automethod:: update_readback
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: composite_egu
+    .. autoattribute:: concurrent
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: dspacing
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: pseudo_positioners
+    .. autoattribute:: real_position
+    .. autoattribute:: real_positioners
+    .. autoattribute:: sequential
+    .. autoattribute:: settle_time
+    .. autoattribute:: subscriptions
+    .. autoattribute:: target
+    .. autoattribute:: timeout
+    .. autoattribute:: hutch
+    
+    

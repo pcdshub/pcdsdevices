@@ -1,0 +1,329 @@
+﻿pcdsdevices.qadc.Qadc
+=====================
+
+.. currentmodule:: pcdsdevices.qadc
+
+.. autoclass:: Qadc
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ch0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH0``
+          - Input 0 of the ADC
+          - normal
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - ch1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH1``
+          - Input 1 of the ADC
+          - normal
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - ch2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH2``
+          - Input 2 of the ADC
+          - normal
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - ch3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH3``
+          - Input 3 of the ADC
+          - normal
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CONFIG``
+          - Write the current config to the QADC
+          - config
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - start
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:START``
+          - Start/stop acquisition
+          - normal
+          - Inherited from :class:`~pcdsdevices.qadc.QadcCommon`
+    
+        * - gain0_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN0_I``
+          - 
+          - config
+          - 
+    
+        * - gain0_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN0_NI``
+          - 
+          - config
+          - 
+    
+        * - gain1_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN1_I``
+          - 
+          - config
+          - 
+    
+        * - gain1_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN1_NI``
+          - 
+          - config
+          - 
+    
+        * - gain2_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN2_I``
+          - 
+          - config
+          - 
+    
+        * - gain2_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN2_NI``
+          - 
+          - config
+          - 
+    
+        * - gain3_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN3_I``
+          - 
+          - config
+          - 
+    
+        * - gain3_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN3_NI``
+          - 
+          - config
+          - 
+    
+        * - ichan
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ICHAN``
+          - 
+          - config
+          - 
+    
+        * - interleave
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:INTERLEAVE``
+          - 
+          - config
+          - 
+    
+        * - length
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LENGTH``
+          - 
+          - config
+          - 
+    
+        * - off0_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF0_I``
+          - 
+          - config
+          - 
+    
+        * - off0_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF0_NI``
+          - 
+          - config
+          - 
+    
+        * - off1_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF1_I``
+          - 
+          - config
+          - 
+    
+        * - off1_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF1_NI``
+          - 
+          - config
+          - 
+    
+        * - off2_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF2_I``
+          - 
+          - config
+          - 
+    
+        * - off2_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF2_NI``
+          - 
+          - config
+          - 
+    
+        * - off3_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF3_I``
+          - 
+          - config
+          - 
+    
+        * - off3_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF3_NI``
+          - 
+          - config
+          - 
+    
+        * - out
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OUT``
+          - 
+          - normal
+          - 
+    
+        * - rawdata
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RAWDATA``
+          - 
+          - normal
+          - 
+    
+        * - train
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRAIN``
+          - 
+          - config
+          - 
+    
+        * - trig_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_DELAY``
+          - 
+          - config
+          - 
+    
+        * - trig_event
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_EVENT``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

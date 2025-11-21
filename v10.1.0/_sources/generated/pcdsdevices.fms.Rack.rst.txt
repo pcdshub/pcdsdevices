@@ -1,0 +1,83 @@
+﻿pcdsdevices.fms.Rack
+====================
+
+.. currentmodule:: pcdsdevices.fms
+
+.. autoclass:: Rack
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TEMP:SVAL_RBV``
+          - 
+          - normal
+          - 
+    
+        * - humidity
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HMD:SVAL_RBV``
+          - 
+          - normal
+          - 
+    
+        * - th1_sensor_data
+          - :class:`~pcdsdevices.fms.RaritanSensor`
+          - ``:TEMP``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

@@ -1,0 +1,158 @@
+﻿pcdsdevices.keithley.K6514
+==========================
+
+.. currentmodule:: pcdsdevices.keithley
+
+.. autoclass:: K6514
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - avg_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AvgEnable``
+          - Enable/disable the average function
+          - normal
+          - 
+    
+        * - avg_count
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GetAvgCount``
+          - Get the averaging factor
+          - normal
+          - 
+    
+        * - avg_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PutAvgType``
+          - Select filter control: Moving or Repeated
+          - normal
+          - 
+    
+        * - auto_range
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PutAutoRange``
+          - Enable/disable autorange
+          - normal
+          - 
+    
+        * - current_range
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SelectCurrentRange``
+          - Set range in amps
+          - normal
+          - 
+    
+        * - damping
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PutDamping``
+          - Enable/disable current damping
+          - normal
+          - 
+    
+        * - integration_time
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GetIntCycles``
+          - Set integration time
+          - hinted
+          - 
+    
+        * - measurement_function
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PutFunction``
+          - Select function - Voltage, Current, Resistance, or Charge
+          - hinted
+          - 
+    
+        * - reading_rate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Reading.SCAN``
+          - Reading scan rate/type
+          - normal
+          - 
+    
+        * - reading
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Reading``
+          - Trigger and return a new measurement
+          - hinted
+          - 
+    
+        * - zero_correct
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ZeroCorrect``
+          - Run zero-correct
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

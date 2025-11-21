@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.format\_ophyds\_to\_html
+==========================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: format_ophyds_to_html

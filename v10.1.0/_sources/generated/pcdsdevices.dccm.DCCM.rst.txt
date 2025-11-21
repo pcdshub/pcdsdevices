@@ -1,0 +1,143 @@
+﻿pcdsdevices.dccm.DCCM
+=====================
+
+.. currentmodule:: pcdsdevices.dccm
+
+.. autoclass:: DCCM
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - tx_state
+          - :class:`~pcdsdevices.dccm.DCCMTarget`
+          - ``:MMS:STATE``
+          - Control of TX axis via saved positions.
+          - hinted
+          - 
+    
+        * - energy
+          - :class:`~pcdsdevices.dccm.DCCMEnergy`
+          - 
+          - PseudoPositioner that moves the theta motors in terms of the calculated DCCM energy.
+          - hinted
+          - 
+    
+        * - energy_with_vernier (FCpt)
+          - :class:`~pcdsdevices.dccm.DCCMEnergyWithVernier`
+          - ``{self.prefix}``
+          - PseudoPositioner that moves the theta motor in terms of the calculated DCCM energy while also requesting a vernier move.
+          - normal
+          - 
+    
+        * - energy_with_acr_status (FCpt)
+          - :class:`~pcdsdevices.dccm.DCCMEnergyWithACRStatus`
+          - ``{self.prefix}``
+          - PseudoPositioner that moves the alio in terms of the calculated CCM energy while also requesting an energy change to ACR. This will wait on ACR to complete the move.
+          - normal
+          - 
+    
+        * - th1
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:TH1``
+          - Bragg Upstream/TH1 Axis
+          - normal
+          - 
+    
+        * - th2
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:TH2``
+          - Bragg Downstream/TH2 Axis
+          - normal
+          - 
+    
+        * - tx
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:TX``
+          - Translation X Axis
+          - normal
+          - 
+    
+        * - txd
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:TXD``
+          - YAG Diagnostic X Axis
+          - normal
+          - 
+    
+        * - tyd
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:TYD``
+          - YAG Diagnostic Y Axis
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    
