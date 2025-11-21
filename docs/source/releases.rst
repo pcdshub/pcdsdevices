@@ -20,6 +20,8 @@ Device Features
     - Added Si333 dspacing constant and ability to switch between it and Si111
     - Added callback to update DCCMEnergy.energy.readback
 
+- Added support for Leviton & Sentry4 PDU Sensors as they were previously unused and untested. The screen now shows the analog readouts and alarms.
+
 New Devices
 -----------
 - `DREAM_Gas_Jet_Slits`: Single device holding all DREAM stages
