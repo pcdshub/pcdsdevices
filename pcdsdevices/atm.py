@@ -108,3 +108,24 @@ class MFXATM(ArrivalTimeMonitor):
     An ATM in MFX that has no cooling.
     """
     flow_meter = None
+
+
+class TM1L2Target(ATMTarget):
+    """
+    Controls TM1L2's states, an ATM in XPP.
+
+    Defines the state count as 7 (OUT and 6 targets), one more than the
+    standard ATM.
+    """
+    config = UpCpt(state_count=7)
+
+
+class TM1L2(ArrivalTimeMonitor):
+    """
+    An ATM in XPP that has one extra target state, one extra rtd, and no cooling.
+    """
+    target = Cpt(TM1L2Target, ':MMS:STATE', kind='hinted',
+                 doc='Control of the diagnostic stack via saved positions.')
+    thermocouple2 = Cpt(TwinCATTempSensor, ':STC:02', kind='normal',
+                        doc='Second thermocouple.')
+    flow_meter = None

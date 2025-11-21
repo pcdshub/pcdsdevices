@@ -60,7 +60,7 @@ class QminiBase:
         self.fix_pvs()
 
         # subscribe the callback only after the PVs have been expanded
-        self.device.spectrum.subscribe(self.auto_range_y)
+        self._autorange_cid = self.device.spectrum.subscribe(self.auto_range_y)
 
     @property
     def device(self):
@@ -190,8 +190,12 @@ class QminiBase:
             return
 
         else:
-            plot.setMinYRange(y_min)
-            plot.setMaxYRange(1.1*y_max)
+            try:
+                plot.setMinYRange(y_min)
+                plot.setMaxYRange(1.1*y_max)
+            except RuntimeError:
+                # We must've deleted the plot without unsubscribing, do it!
+                self.device.spectrum.unsubscribe(self._autorange_cid)
 
     # Save spectra functions
     def save_data(self, **kwargs):
