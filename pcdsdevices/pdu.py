@@ -96,6 +96,7 @@ class PDU(Device):
     output_c_max = FCpt(EpicsSignal, '{prefix}{self._tower}:SetInfeedLoadHighThresh', kind='hinted')
     output_c = FCpt(EpicsSignalRO, '{prefix}{self._tower}:GetInfeedLoadValue', kind='hinted')
     output_c_status = FCpt(EpicsSignalRO, '{prefix}{self._tower}:GetInfeedLoadStatus', kind='hinted')
+    output_c_hi_alarm = FCpt(EpicsSignalRO, '{prefix}{self._tower}:InfeedLoadHighAlarm', kind='hinted')
     output_p = FCpt(EpicsSignalRO, '{prefix}{self._tower}:GetTowerActivePower', kind='hinted')
 
     temperature_lo = FCpt(EpicsSignal, '{prefix}{self._tower}:Sensor:All:SetTempLowThresh', kind='hinted')
@@ -103,15 +104,19 @@ class PDU(Device):
     temperature_hi = FCpt(EpicsSignal, '{prefix}{self._tower}:Sensor:All:SetTempHighThresh', kind='hinted')
     humidity_hi = FCpt(EpicsSignal, '{prefix}{self._tower}:Sensor:All:SetHumidHighThresh', kind='hinted')
 
-    sensor1_id = Cpt(EpicsSignal, ':Sensor:1:GetID', kind='hinted')
-    sensor1_status = Cpt(EpicsSignal, ':Sensor:1:GetStatus', kind='hinted')
-    sensor1_temperature = Cpt(EpicsSignal, ':Sensor:1:GetTempStatus', kind='hinted')
-    sensor1_humidity = Cpt(EpicsSignal, ':Sensor:1:GetHumidStatus', kind='hinted')
+    sensor1_temperature_status = Cpt(EpicsSignal, ':Sensor:1:GetTempStatus', kind='hinted')
+    sensor1_humidity_status = Cpt(EpicsSignal, ':Sensor:1:GetHumidStatus', kind='hinted')
+    sensor1_temperature = Cpt(EpicsSignal, ':Sensor:1:GetTempValue', kind='hinted')
+    sensor1_humidity = Cpt(EpicsSignal, ':Sensor:1:GetHumidValue', kind='hinted')
+    sensor1_temperature_alarm = Cpt(EpicsSignal, ':Sensor:1:TempAlarm', kind='hinted')
+    sensor1_humidity_alarm = Cpt(EpicsSignal, ':Sensor:1:HumidAlarm', kind='hinted')
 
-    sensor2_id = Cpt(EpicsSignal, ':Sensor:2:GetID', kind='hinted')
-    sensor2_status = Cpt(EpicsSignal, ':Sensor:2:GetStatus', kind='hinted')
-    sensor2_temperature = Cpt(EpicsSignal, ':Sensor:2:GetTempStatus', kind='hinted')
-    sensor2_humidity = Cpt(EpicsSignal, ':Sensor:2:GetHumidStatus', kind='hinted')
+    sensor2_temperature_status = Cpt(EpicsSignal, ':Sensor:2:GetTempStatus', kind='hinted')
+    sensor2_humidity_status = Cpt(EpicsSignal, ':Sensor:2:GetHumidStatus', kind='hinted')
+    sensor2_temperature = Cpt(EpicsSignal, ':Sensor:2:GetTempValue', kind='hinted')
+    sensor2_humidity = Cpt(EpicsSignal, ':Sensor:2:GetHumidValue', kind='hinted')
+    sensor2_temperature_alarm = Cpt(EpicsSignal, ':Sensor:2:TempAlarm', kind='hinted')
+    sensor2_humidity_alarm = Cpt(EpicsSignal, ':Sensor:2:HumidAlarm', kind='hinted')
 
     channel_ctrl = FCpt(EpicsSignal, '{prefix}{self._ctrl}:SetControlAction', kind='hinted')
 
@@ -126,7 +131,7 @@ class PDU(Device):
             else:
                 self._ctrl = ":Outlet:All"
         else:
-            self._tower = ":"
+            self._tower = ""
             self._ctrl = ":Outlet:All"
 
         self.num_channels = num_channels
