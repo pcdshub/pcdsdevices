@@ -14,6 +14,7 @@ Device Features
 New Devices
 -----------
 - `DREAM_Gas_Jet_Slits`: Single device holding all DREAM stages
+- `TM1L2`: derived from the ArrivalTimingMonitorClass, but has two rtds, no flow sensor, and six targets in addition to the out position
 
 Bugfixes
 --------
@@ -23,7 +24,7 @@ Bugfixes
 
 Maintenance
 -----------
-- SL2K4: Added labels for North/South and Top/Bottom
+- `SL2K4`: Added labels for North/South and Top/Bottom
 
 Contributors
 ------------
