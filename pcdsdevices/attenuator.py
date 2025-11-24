@@ -28,7 +28,8 @@ from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin)
 from .pmps import TwinCATStatePMPS
 from .pv_positioner import PVPositionerNoInterrupt
-from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO
+from .signal import (InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO,
+                     PytmcSignal)
 from .type_hints import OphydDataType, SignalToValue
 from .utils import get_status_float, get_status_value
 from .valve import VCN, VVC
@@ -1885,3 +1886,109 @@ def render_ascii_att(blade_states, *, start_index=0):
     return [separator.join(filter_line + ['']),
             separator.join(out_line + ['']),
             separator.join(in_line + [''])]
+
+
+class HE_SATT_Sequence(BaseInterface, Device):
+    state = Cpt(PytmcSignal, 'State', io='i', kind='omitted',
+                doc='Current solid attenuator sequence state.')
+    curr_trans = Cpt(PytmcSignal, 'CurTransOverall', io='i', kind='omitted',
+                     doc='Current transmission through all holders.')
+    curr_trans_3d = Cpt(PytmcSignal, 'CurTrans3rdOverall', io='i', kind='omitted',
+                        doc='Current third harmonic transmission through all holders.')
+    curr_safe_power = Cpt(PytmcSignal, 'CurSafePowerOverall', io='i', kind='omitted',
+                          doc='Current overall safe power accounting for attenuation.')
+    chosen_filters_active = Cpt(PytmcSignal, 'ChosenFilttersActive', io='i', kind='omitted',
+                                doc='False if chosen filters moved off of.')
+
+
+class HE_SATT_Commands(BaseInterface, Device):
+    permit_move = Cpt(PytmcSignal, 'CmdPermitMove', io='io', kind='omitted',
+                      doc='Permit attenuator to move.')
+    reset = Cpt(PytmcSignal, 'CmdReset', io='io', kind='omitted',
+                doc='Reset attenuator sequence.')
+    request_trans = Cpt(PytmcSignal, 'CmdReqTrans', io='io', kind='omitted',
+                        doc='Request transmission.')
+    request_atten = Cpt(PytmcSignal, 'CmdReqAtten', io='io', kind='omitted',
+                        doc='Request attenuation.')
+    requested_trans = Cpt(PytmcSignal, 'Trans', io='io', kind='omitted',
+                          doc='Requested transmission value.')
+    requested_atten = Cpt(PytmcSignal, 'Atten', io='io', kind='omitted',
+                          doc='Requested attenuation value.')
+    trans_rounding_mode = Cpt(PytmcSignal, 'TransRoundMode', io='io', kind='omitted',
+                              doc='Requested transmission rounding mode.')
+    atten_rounding_mode = Cpt(PytmcSignal, 'AttenRoundMode', io='io', kind='omitted',
+                              doc='Requested attenuation rounding mode.')
+
+
+class HE_SATT_FilterHolder(BaseInterface, Device):
+    name = Cpt(PytmcSignal, 'Name', io='io', kind='omitted',
+               doc='Name of filter.')
+    enabled = Cpt(PytmcSignal, 'Enabled', io='io', kind='omitted',
+                  doc='Filter enabled for transmission requests.')
+    curr_trans = Cpt(PytmcSignal, 'CurTrans', io='i', kind='omitted',
+                     doc='Current transmission through this holder.')
+    curr_trans_3rd = Cpt(PytmcSignal, 'CurTrans3rd', io='i', kind='omitted',
+                         doc='Current third harmonic transmission through this holder.')
+    curr_safe_power = Cpt(PytmcSignal, 'CurSafePower', io='i', kind='omitted',
+                          doc='Current safe power for this holder in watts.')
+    out_position = Cpt(PytmcSignal, 'OutPos', io='io', kind='omitted',
+                       doc='Out position for holder in axis units.')
+    active_filter = Cpt(PytmcSignal, 'ActiveFiltName', io='i', kind='omitted',
+                        doc='Name of active filter in this holder or None.')
+
+
+class FilterWedge(BaseInterface, Device):
+    start_thickness = Cpt(PytmcSignal, 'ThickAtStartPos', io='io', kind='omitted',
+                          doc='Thickness of filter at start position in mm.')
+    end_thickness = Cpt(PytmcSignal, 'ThickAtEndPos', io='io', kind='omitted',
+                        doc='Thickness of filter at end position in mm.')
+    target_thickness = Cpt(PytmcSignal, 'TargetThick', io='i', kind='omitted',
+                           doc='Thickness of filter target in mm.')
+    target_pos = Cpt(PytmcSignal, 'TargetPos', io='i', kind='omitted',
+                     doc='Position of filter target in axis units.')
+    target_pos_tolerance = Cpt(PytmcSignal, 'TargetPosTol', io='io', kind='omitted',
+                               doc='Allowable range of manual motion around target position.')
+
+
+class FilterConstantThickness(BaseInterface, Device):
+    thickness = Cpt(PytmcSignal, 'Thickness', io='io', kind='omitted',
+                    doc='Thickness of filter in mm.')
+    target_pos = Cpt(PytmcSignal, 'TargetPos', io='io', kind='omitted',
+                     doc='Position of filter target in axis units.')
+
+
+class HE_SATT_Wedge_Holder(HE_SATT_FilterHolder):
+    wedge1 = FCpt(FilterWedge, '{self.prefix}{self.holder_num}Filter:01', kind='omitted')
+    wedge2 = FCpt(FilterWedge, '{self.prefix}{self.holder_num}Filter:02', kind='omitted')
+
+    def __init__(self, prefix, *, name, holder_num, **kwargs):
+        self.holder_num = holder_num
+        super().__init__(prefix, name=name, **kwargs)
+
+
+class HE_SATT_ConstantThickness_Holder(HE_SATT_FilterHolder):
+    filter1 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:01', kind='omitted')
+    filter2 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:02', kind='omitted')
+    filter3 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:03', kind='omitted')
+    filter4 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:04', kind='omitted')
+    filter5 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:05', kind='omitted')
+    filter6 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:06', kind='omitted')
+    filter7 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:07', kind='omitted')
+    filter8 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:08', kind='omitted')
+    filter9 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:09', kind='omitted')
+    filter10 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:10', kind='omitted')
+    filter11 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:11', kind='omitted')
+    filter12 = FCpt(FilterConstantThickness, '{self.prefix}{self.holder_num}Filter:12', kind='omitted')
+
+    def __init__(self, prefix, *, name, holder_num, **kwargs):
+        self.holder_num = holder_num
+        super().__init__(prefix, name=name, **kwargs)
+
+
+class HE_SATT(BaseInterface, Device):
+    sequence = Cpt(HE_SATT_Sequence, ':', kind='omitted')
+    commands = Cpt(HE_SATT_Commands, ':', kind='omitted')
+    holder_1 = Cpt(HE_SATT_ConstantThickness_Holder, ':Holder', holder_num=1, kind='omitted')
+    holder_2 = Cpt(HE_SATT_ConstantThickness_Holder, ':Holder', holder_num=2, kind='omitted')
+    holder_3 = Cpt(HE_SATT_Wedge_Holder, ':Holder', holder_num=3, kind='omitted')
+    holder_4 = Cpt(HE_SATT_Wedge_Holder, ':Holder', holder_num=5, kind='omitted')
