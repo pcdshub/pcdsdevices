@@ -30,7 +30,7 @@ class _SmarActDetailedUI(QtWidgets.QWidget):
     step_freq_rbv: PyDMLabel
     step_freq_set: PyDMLineEdit
     scan_move_rbv: PyDMLabel
-    scan_move_set: PyDMLineEdit
+    scan_move_set: PyDMSlider
     # Closed-loop tab
     home_forward_button: PyDMPushButton
     home_reverse_button: PyDMPushButton
@@ -143,6 +143,8 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         # Now let's manually add the funky egu and description signals here to avoid terminal spam
         self.desc_set.set_channel(f'sig://{self.device.name}_description')
         self.egu_set.set_channel(f'sig://{self.device.name}_motor_egu')
+        self.scan_move_set._minimum = 0
+        self.scan_move_set._maximum = 65535
 
     def add_tool_tips(self):
         """
