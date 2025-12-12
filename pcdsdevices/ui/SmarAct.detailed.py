@@ -3,8 +3,9 @@ from __future__ import annotations
 import logging
 import re
 
-import pydm
 from pydm import Display
+from pydm.widgets import (PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel,
+                          PyDMLineEdit, PyDMPushButton, PyDMSlider)
 from qtpy import QtCore, QtWidgets
 from typhos import utils
 
@@ -14,75 +15,75 @@ logger = logging.getLogger(__name__)
 class _SmarActDetailedUI(QtWidgets.QWidget):
     """Annotations helper for SmarAct.detailed.ui. Do not instantiate."""
     # Status bar
-    calibrated_bool: pydm.widgets.byte.PyDMByteIndicator
-    has_encoder_bool: pydm.widgets.byte.PyDMByteIndicator
-    referenced_bool: pydm.widgets.byte.PyDMByteIndicator
+    calibrated_bool: PyDMByteIndicator
+    has_encoder_bool: PyDMByteIndicator
+    referenced_bool: PyDMByteIndicator
     # Open-loop tab
-    jog_fwd_button: pydm.widgets.pushbutton.PyDMPushButton
-    jog_rev_button: pydm.widgets.pushbutton.PyDMPushButton
-    step_clear_cmd_button: pydm.widgets.pushbutton.PyDMPushButton
-    total_step_count_rbv: pydm.widgets.label.PyDMLabel
-    step_size_rbv: pydm.widgets.label.PyDMLabel
-    step_size_set: pydm.widgets.line_edit.PyDMLineEdit
-    step_volt_rbv: pydm.widgets.label.PyDMLabel
-    step_volt_set: pydm.widgets.line_edit.PyDMLineEdit
-    step_freq_rbv: pydm.widgets.label.PyDMLabel
-    step_freq_set: pydm.widgets.line_edit.PyDMLineEdit
-    scan_move_rbv: pydm.widgets.label.PyDMLabel
-    scan_move_set: pydm.widgets.line_edit.PyDMLineEdit
+    jog_fwd_button: PyDMPushButton
+    jog_rev_button: PyDMPushButton
+    step_clear_cmd_button: PyDMPushButton
+    total_step_count_rbv: PyDMLabel
+    step_size_rbv: PyDMLabel
+    step_size_set: PyDMLineEdit
+    step_volt_rbv: PyDMLabel
+    step_volt_set: PyDMLineEdit
+    step_freq_rbv: PyDMLabel
+    step_freq_set: PyDMLineEdit
+    scan_move_rbv: PyDMLabel
+    scan_move_set: PyDMLineEdit
     # Closed-loop tab
-    home_forward_button: pydm.widgets.pushbutton.PyDMPushButton
-    home_reverse_button: pydm.widgets.pushbutton.PyDMPushButton
-    curr_pos_rbv: pydm.widgets.label.PyDMLabel
-    curr_pos_set: pydm.widgets.line_edit.PyDMLineEdit
-    home_velocity_rbv: pydm.widgets.label.PyDMLabel
-    home_velocity_set: pydm.widgets.line_edit.PyDMLineEdit
-    velocity_rbv: pydm.widgets.label.PyDMLabel
-    velocity_set: pydm.widgets.line_edit.PyDMLineEdit
-    velocity_base_rbv: pydm.widgets.label.PyDMLabel
-    velocity_base_set: pydm.widgets.line_edit.PyDMLineEdit
-    velocity_max_rbv: pydm.widgets.label.PyDMLabel
-    velocity_max_set: pydm.widgets.line_edit.PyDMLineEdit
-    acceleration_rbv: pydm.widgets.label.PyDMLabel
-    acceleration_set: pydm.widgets.line_edit.PyDMLineEdit
-    closed_loop_freq_max_rbv: pydm.widgets.label.PyDMLabel
-    closed_loop_freq_max_set: pydm.widgets.line_edit.PyDMLineEdit
+    home_forward_button: PyDMPushButton
+    home_reverse_button: PyDMPushButton
+    curr_pos_rbv: PyDMLabel
+    curr_pos_set: PyDMLineEdit
+    home_velocity_rbv: PyDMLabel
+    home_velocity_set: PyDMLineEdit
+    velocity_rbv: PyDMLabel
+    velocity_set: PyDMLineEdit
+    velocity_base_rbv: PyDMLabel
+    velocity_base_set: PyDMLineEdit
+    velocity_max_rbv: PyDMLabel
+    velocity_max_set: PyDMLineEdit
+    acceleration_rbv: PyDMLabel
+    acceleration_set: PyDMLineEdit
+    closed_loop_freq_max_rbv: PyDMLabel
+    closed_loop_freq_max_set: PyDMLineEdit
     # Diagnostics tab
-    channel_temp_rbv: pydm.widgets.label.PyDMLabel
-    module_temp_rbv: pydm.widgets.label.PyDMLabel
-    motor_load_rbv: pydm.widgets.label.PyDMLabel
-    chan_error_rbv: pydm.widgets.label.PyDMLabel
-    diag_closed_loop_freq_max_rbv: pydm.widgets.label.PyDMLabel
-    diag_closed_loop_freq_avg_rbv: pydm.widgets.label.PyDMLabel
-    diag_closed_loop_freq_timebase_rbv: pydm.widgets.label.PyDMLabel
-    channel_states: pydm.widgets.byte.PyDMByteIndicator
+    channel_temp_rbv: PyDMLabel
+    module_temp_rbv: PyDMLabel
+    motor_load_rbv: PyDMLabel
+    chan_error_rbv: PyDMLabel
+    diag_closed_loop_freq_max_rbv: PyDMLabel
+    diag_closed_loop_freq_avg_rbv: PyDMLabel
+    diag_closed_loop_freq_timebase_rbv: PyDMLabel
+    channel_states: PyDMByteIndicator
     # Config tab
-    desc_rbv: pydm.widgets.label.PyDMLabel
-    desc_set: pydm.widgets.line_edit.PyDMLineEdit
-    egu_rbv: pydm.widgets.label.PyDMLabel
-    egu_set: pydm.widgets.line_edit.PyDMLineEdit
-    pos_type_rbv: pydm.widgets.label.PyDMLabel
-    pos_type_set: pydm.widgets.line_edit.PyDMLineEdit
-    needs_calib_led: pydm.widgets.byte.PyDMByteIndicator
-    do_calib_button: pydm.widgets.pushbutton.PyDMPushButton
-    low_limit_rbv: pydm.widgets.label.PyDMLabel
-    low_limit_set: pydm.widgets.line_edit.PyDMLineEdit
-    high_limit_rbv: pydm.widgets.label.PyDMLabel
-    high_limit_set: pydm.widgets.line_edit.PyDMLineEdit
-    ttzv_rbv: pydm.widgets.label.PyDMLabel
-    ttzv_set: pydm.widgets.enum_combo_box.PyDMEnumComboBox
-    ttzv_threshold_rbv: pydm.widgets.label.PyDMLabel
-    ttzv_treshold_set: pydm.widgets.line_edit.PyDMLineEdit
-    log_scale_offset_rbv: pydm.widgets.label.PyDMLabel
-    log_scale_offset_set: pydm.widgets.line_edit.PyDMLineEdit
-    log_scale_inversion_rbv: pydm.widgets.label.PyDMLabel
-    log_scale_inversion_set: pydm.widgets.enum_combo_box.PyDMEnumComboBox
-    def_range_min_rbv: pydm.widgets.label.PyDMLabel
-    def_range_min_set: pydm.widgets.line_edit.PyDMLineEdit
-    def_range_max_rbv: pydm.widgets.label.PyDMLabel
-    def_range_max_set: pydm.widgets.line_edit.PyDMLineEdit
-    dist_code_inversion_rbv: pydm.widgets.label.PyDMLabel
-    dist_code_inversion_set: pydm.widgets.enum_combo_box.PyDMEnumComboBox
+    desc_rbv: PyDMLabel
+    desc_set: PyDMLineEdit
+    egu_rbv: PyDMLabel
+    egu_set: PyDMLineEdit
+    pos_type_rbv: PyDMLabel
+    pos_type_set: PyDMLineEdit
+    needs_calib_led: PyDMByteIndicator
+    do_calib_button: PyDMPushButton
+    low_limit_rbv: PyDMLabel
+    low_limit_set: PyDMLineEdit
+    high_limit_rbv: PyDMLabel
+    high_limit_set: PyDMLineEdit
+    ttzv_rbv: PyDMLabel
+    ttzv_set: PyDMEnumComboBox
+    ttzv_threshold_rbv: PyDMLabel
+    ttzv_treshold_set: PyDMLineEdit
+    log_scale_offset_rbv: PyDMLabel
+    log_scale_offset_set: PyDMLineEdit
+    log_scale_inversion_rbv: PyDMLabel
+    log_scale_inversion_set: PyDMEnumComboBox
+    def_range_min_rbv: PyDMLabel
+    def_range_min_set: PyDMLineEdit
+    def_range_max_rbv: PyDMLabel
+    def_range_max_set: PyDMLineEdit
+    dist_code_inversion_rbv: PyDMLabel
+    dist_code_inversion_set: PyDMEnumComboBox
     # Misc
     controls_tabs: QtWidgets.QTabWidget
     pico_adjustment_prog_bar: QtWidgets.QProgressBar
@@ -187,15 +188,12 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         result : list[str]
             1D list of object names
         """
-        _button = pydm.widgets.pushbutton.PyDMPushButton
-        _byte = pydm.widgets.byte.PyDMByteIndicator
-        _label = pydm.widgets.label.PyDMLabel
-        _line_edit = pydm.widgets.line_edit.PyDMLineEdit
-        _combo_box = pydm.widgets.enum_combo_box.PyDMEnumComboBox
+        pydm_objs = [PyDMPushButton, PyDMByteIndicator, PyDMLabel,
+                     PyDMLineEdit, PyDMEnumComboBox, PyDMSlider]
 
         result = []
 
-        for obj_type in [_button, _byte, _label, _line_edit, _combo_box]:
+        for obj_type in pydm_objs:
             result += [obj.objectName() for obj in self.findChildren(obj_type)]
 
         # get rid of the objects from the embedded TyphosPositioner widget
@@ -287,12 +285,12 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             setattr(self, signal_dict['name'] + '_label', row_label)
 
             # Then set the RBV widget
-            rbv_widget = pydm.widgets.label.PyDMLabel()
+            rbv_widget = PyDMLabel()
             rbv_widget.setAlignment(QtCore.Qt.AlignCenter)
             # Unless they're special
             if 'meta' in signal_dict:
                 if signal_dict['meta'] == 'byte':
-                    rbv_widget = pydm.widgets.byte.PyDMByteIndicator()
+                    rbv_widget = PyDMByteIndicator()
                     rbv_widget.circles = 1
                     rbv_widget.showLabels = 0
                 if signal_dict['meta'] == 'progressbar':
@@ -311,7 +309,7 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             if 'write_pv' in signal_dict:
                 # handle tricky enums
                 if 'meta' in signal_dict and signal_dict['meta'] == 'enum':
-                    setpoint_widget = pydm.widgets.enum_combo_box.PyDMEnumComboBox()
+                    setpoint_widget = PyDMEnumComboBox()
                     setpoint_widget.set_channel(signal_dict['write_pv'])
                     # lean on HAPPI if possible
                     _signal_metadata = getattr(self.device, signal_dict['name']).metadata
@@ -324,7 +322,7 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
                             setpoint_widget.addItem(item)
                 # Default line edits
                 else:
-                    setpoint_widget = pydm.widgets.line_edit.PyDMLineEdit()
+                    setpoint_widget = PyDMLineEdit()
                     setpoint_widget.set_channel(signal_dict['write_pv'])
 
                 # Add the widget as an attr for later shenanigans
