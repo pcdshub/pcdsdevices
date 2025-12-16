@@ -15,7 +15,7 @@ from .beam_stats import BeamEnergyRequest
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis
-from .interface import BaseInterface, FltMvInterface
+from .interface import BaseInterface, FltMvInterface, LightpathInOutCptMixin
 from .pmps import TwinCATStatePMPS
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
@@ -308,7 +308,7 @@ class DCCMTarget(TwinCATStatePMPS):
     _in_if_not_out = True
 
 
-class DCCM(BaseInterface, GroupDevice):
+class DCCM(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """
     The full DCCM assembly.
 
@@ -367,6 +367,8 @@ class DCCM(BaseInterface, GroupDevice):
     tx = Cpt(BeckhoffAxis, ":MMS:TX", doc="Translation X Axis", kind="normal")
     txd = Cpt(BeckhoffAxis, ":MMS:TXD", doc="YAG Diagnostic X Axis", kind="normal")
     tyd = Cpt(BeckhoffAxis, ":MMS:TYD", doc="YAG Diagnostic Y Axis", kind="normal")
+
+    lightpath_cpts = ['tx_state']
 
     def __init__(
             self,
