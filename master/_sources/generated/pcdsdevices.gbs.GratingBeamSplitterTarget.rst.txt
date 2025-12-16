@@ -39,17 +39,17 @@
           - normal
           - 
     
-        * - thermocouple1
+        * - rtd1
           - :class:`~pcdsdevices.sensors.TwinCATTempSensor`
-          - ``:STC:01``
-          - First thermocouple.
+          - ``:RTD:01``
+          - First RTD.
           - normal
           - 
     
-        * - thermocouple2
+        * - rtd2
           - :class:`~pcdsdevices.sensors.TwinCATTempSensor`
-          - ``:STC:02``
-          - Second thermocouple.
+          - ``:RTD:02``
+          - Second RTD.
           - normal
           - 
     
