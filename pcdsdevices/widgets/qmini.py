@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
 import time
@@ -13,6 +14,8 @@ from pydm.widgets import (PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel,
 from pydm.widgets.waveformplot import PyDMWaveformPlot, WaveformCurveItem
 from qtpy.QtCore import QTimer
 from qtpy.QtWidgets import QColorDialog, QFileDialog, QPushButton, QWidget
+
+logger = logging.getLogger(__name__)
 
 
 class _QminiBaseUI(QWidget):
@@ -67,7 +70,8 @@ class QminiBase:
         """The associated device."""
         try:
             return self.devices[0]
-        except Exception:
+        except Exception as e:
+            logger.exception(e)
             ...
 
     def fix_pvs(self):
@@ -166,36 +170,42 @@ class QminiBase:
         does not work as expect. Fix it when the device signals connect.
         """
         plot = self.ui.plot
-        x_min = int(self.device.wavelengths.get().min())
-        x_max = int(self.device.wavelengths.get().max())
-
-        if not x_max > x_min:
-            # Restart the timer if these signals are still None
-            self._plot_timer.start()
-
+        # Avoid infinite window spawning with numpy fails on subscription
+        try:
+            x_min = int(self.device.wavelengths.get().min())
+            x_max = int(self.device.wavelengths.get().max())
+        except Exception as e:
+            logger.exception(e)
         else:
-            plot.setMinXRange(x_min)
-            plot.setMaxXRange(x_max)
+            if not x_max > x_min:
+                # Restart the timer if these signals are still None
+                self._plot_timer.start()
+
+            else:
+                plot.setMinXRange(x_min)
+                plot.setMaxXRange(x_max)
 
     def auto_range_y(self, value, *args, **kwargs):
         """
         Callback function for updating autorange on the y-axis
         """
         plot = self.ui.plot
-
-        y_min = int(value.min())
-        y_max = int(value.max())
-
-        if not y_max > y_min:
-            return
-
+        # Avoid inifinite window spawning with numpy fails on subscription
+        try:
+            y_min = int(value.min())
+            y_max = int(value.max())
+        except Exception as e:
+            logger.exception(e)
         else:
-            try:
-                plot.setMinYRange(y_min)
-                plot.setMaxYRange(1.1*y_max)
-            except RuntimeError:
-                # We must've deleted the plot without unsubscribing, do it!
-                self.device.spectrum.unsubscribe(self._autorange_cid)
+            if not y_max > y_min:
+                return
+            else:
+                try:
+                    plot.setMinYRange(y_min)
+                    plot.setMaxYRange(1.1*y_max)
+                except RuntimeError:
+                    # We must've deleted the plot without unsubscribing, do it!
+                    self.device.spectrum.unsubscribe(self._autorange_cid)
 
     # Save spectra functions
     def save_data(self, **kwargs):
