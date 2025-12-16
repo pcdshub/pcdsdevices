@@ -6,17 +6,17 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.signal.SummarySignal &mdash; PCDS Devices 10.0.1.dev92+ga36041846 documentation</title>
+  <title>pcdsdevices.signal.SummarySignal &mdash; PCDS Devices 10.1.1.dev22+g92864db13 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/_static/theme_overrides.css" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b8afe399"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=8a82cef5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -221,7 +221,7 @@
 <h1>pcdsdevices.signal.SummarySignal<a class="headerlink" href="#pcdsdevices-signal-summarysignal" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pcdsdevices.signal.SummarySignal">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.signal.</span></span><span class="sig-name descname"><span class="pre">SummarySignal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.SummarySignal" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pcdsdevices.signal.</span></span><span class="sig-name descname"><span class="pre">SummarySignal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.SummarySignal" title="Link to this definition"></a></dt>
 <dd><p>Signal that holds a hash of the values of the constituent signals.</p>
 <p>Meant to allow tracking of constituent signals via callbacks.</p>
 <p>The calculated readback value is useless, and should not be used
@@ -313,7 +313,7 @@ case of basic soft Signals</p>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.signal.SummarySignal.SUB_META">
-<span class="sig-name descname"><span class="pre">SUB_META</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meta'</span></em><a class="headerlink" href="#pcdsdevices.signal.SummarySignal.SUB_META" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">SUB_META</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meta'</span></span><a class="headerlink" href="#pcdsdevices.signal.SummarySignal.SUB_META" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -376,7 +376,7 @@ case of basic soft Signals</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.signal.SummarySignal.subscriptions">
-<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'meta',</span> <span class="pre">'value'})</span></em><a class="headerlink" href="#pcdsdevices.signal.SummarySignal.subscriptions" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.14)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.FrozenSet" title="(in Python v3.14)"><span class="pre">FrozenSet</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'meta',</span> <span class="pre">'value'})</span></span><a class="headerlink" href="#pcdsdevices.signal.SummarySignal.subscriptions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -418,7 +418,7 @@ case of basic soft Signals</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

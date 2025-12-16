@@ -18,6 +18,13 @@
           - Kind
           - Notes
     
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathInOutCptMixin`
+    
         * - tx_state
           - :class:`~pcdsdevices.dccm.DCCMTarget`
           - ``:MMS:STATE``
@@ -101,6 +108,8 @@
     
     
     
+    
+    
 
     
     
@@ -110,9 +119,11 @@
     .. rubric:: Methods
 
     
+    .. automethod:: calc_lightpath_state
     .. automethod:: configure
     .. automethod:: describe
     .. automethod:: get
+    .. automethod:: get_lightpath_state
     .. automethod:: post_elog_status
     .. automethod:: read
     .. automethod:: read_configuration
@@ -136,6 +147,8 @@
     .. autoattribute:: connection_timeout
     .. autoattribute:: hints
     .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
     .. autoattribute:: needs_parent
     .. autoattribute:: stage_group
     .. autoattribute:: subscriptions
