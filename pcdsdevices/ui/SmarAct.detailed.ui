@@ -624,117 +624,6 @@
              <property name="spacing">
               <number>6</number>
              </property>
-             <item row="6" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="scan_move_label">
-               <property name="text">
-                <string>Scan Voltage</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <layout class="QHBoxLayout" name="step_clear_cmd_layout">
-               <item>
-                <widget class="PyDMPushButton" name="step_clear_cmd_button">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>55</width>
-                   <height>31</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string/>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>25</width>
-                   <height>25</height>
-                  </size>
-                 </property>
-                 <property name="alarmSensitiveContent" stdset="0">
-                  <bool>false</bool>
-                 </property>
-                 <property name="alarmSensitiveBorder" stdset="0">
-                  <bool>false</bool>
-                 </property>
-                 <property name="PyDMToolTip" stdset="0">
-                  <string/>
-                 </property>
-                 <property name="monitorDisp" stdset="0">
-                  <bool>false</bool>
-                 </property>
-                 <property name="channel" stdset="0">
-                  <string>ca://${prefix}:CLEAR_COUNT.PROC</string>
-                 </property>
-                 <property name="PyDMIcon" stdset="0">
-                  <string>eraser</string>
-                 </property>
-                 <property name="PyDMIconColor" stdset="0">
-                  <color>
-                   <red>255</red>
-                   <green>85</green>
-                   <blue>255</blue>
-                  </color>
-                 </property>
-                 <property name="passwordProtected" stdset="0">
-                  <bool>false</bool>
-                 </property>
-                 <property name="password" stdset="0">
-                  <string/>
-                 </property>
-                 <property name="protectedPassword" stdset="0">
-                  <string/>
-                 </property>
-                 <property name="showConfirmDialog" stdset="0">
-                  <bool>true</bool>
-                 </property>
-                 <property name="confirmMessage" stdset="0">
-                  <string>Are you sure you want to clear the total step count?</string>
-                 </property>
-                 <property name="pressValue" stdset="0">
-                  <string>1</string>
-                 </property>
-                 <property name="releaseValue" stdset="0">
-                  <string>None</string>
-                 </property>
-                 <property name="relativeChange" stdset="0">
-                  <bool>false</bool>
-                 </property>
-                 <property name="writeWhenRelease" stdset="0">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="step_clear_cmd_label">
-                 <property name="text">
-                  <string>Clear Count</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="step_clear_cmd_spacer">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </item>
              <item row="4" column="2">
               <widget class="PyDMLineEdit" name="step_voltage_set">
                <property name="sizePolicy">
@@ -877,6 +766,62 @@
                </property>
               </widget>
              </item>
+             <item row="1" column="1">
+              <widget class="PyDMLabel" name="total_step_count_rbv">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="precision" stdset="0">
+                <number>0</number>
+               </property>
+               <property name="showUnits" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="precisionFromPV" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string/>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}:TOTAL_STEP_COUNT</string>
+               </property>
+               <property name="enableRichText" stdset="0">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="step_voltage_label">
+               <property name="text">
+                <string>Step Voltage</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
              <item row="4" column="3">
               <spacer name="open_loop_h_spacer">
                <property name="orientation">
@@ -893,18 +838,8 @@
                </property>
               </spacer>
              </item>
-             <item row="3" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="jog_step_size_label">
-               <property name="text">
-                <string>Step Size</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="2">
-              <widget class="PyDMLineEdit" name="scan_move_set">
+             <item row="5" column="2">
+              <widget class="PyDMLineEdit" name="step_freq_set">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -945,7 +880,128 @@
                 <bool>false</bool>
                </property>
                <property name="channel" stdset="0">
-                <string>ca://${prefix}:SCAN_MOVE</string>
+                <string>ca://${prefix}:STEP_FREQ</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="scan_move_label">
+               <property name="text">
+                <string>Scan Voltage</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <layout class="QHBoxLayout" name="step_clear_cmd_layout">
+               <item>
+                <widget class="PyDMPushButton" name="step_clear_cmd_button">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>55</width>
+                   <height>31</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string/>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>25</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="alarmSensitiveContent" stdset="0">
+                  <bool>false</bool>
+                 </property>
+                 <property name="alarmSensitiveBorder" stdset="0">
+                  <bool>false</bool>
+                 </property>
+                 <property name="PyDMToolTip" stdset="0">
+                  <string/>
+                 </property>
+                 <property name="monitorDisp" stdset="0">
+                  <bool>false</bool>
+                 </property>
+                 <property name="channel" stdset="0">
+                  <string>ca://${prefix}:CLEAR_COUNT.PROC</string>
+                 </property>
+                 <property name="PyDMIcon" stdset="0">
+                  <string>eraser</string>
+                 </property>
+                 <property name="PyDMIconColor" stdset="0">
+                  <color>
+                   <red>255</red>
+                   <green>85</green>
+                   <blue>255</blue>
+                  </color>
+                 </property>
+                 <property name="passwordProtected" stdset="0">
+                  <bool>false</bool>
+                 </property>
+                 <property name="password" stdset="0">
+                  <string/>
+                 </property>
+                 <property name="protectedPassword" stdset="0">
+                  <string/>
+                 </property>
+                 <property name="showConfirmDialog" stdset="0">
+                  <bool>true</bool>
+                 </property>
+                 <property name="confirmMessage" stdset="0">
+                  <string>Are you sure you want to clear the total step count?</string>
+                 </property>
+                 <property name="pressValue" stdset="0">
+                  <string>1</string>
+                 </property>
+                 <property name="releaseValue" stdset="0">
+                  <string>None</string>
+                 </property>
+                 <property name="relativeChange" stdset="0">
+                  <bool>false</bool>
+                 </property>
+                 <property name="writeWhenRelease" stdset="0">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="step_clear_cmd_label">
+                 <property name="text">
+                  <string>Clear Count</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="step_clear_cmd_spacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item row="3" column="0" alignment="Qt::AlignLeft">
+              <widget class="QLabel" name="jog_step_size_label">
+               <property name="text">
+                <string>Step Size</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -1023,62 +1079,6 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="0" alignment="Qt::AlignLeft">
-              <widget class="QLabel" name="step_voltage_label">
-               <property name="text">
-                <string>Step Voltage</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="2">
-              <widget class="PyDMLineEdit" name="step_freq_set">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="precision" stdset="0">
-                <number>0</number>
-               </property>
-               <property name="showUnits" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="precisionFromPV" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string/>
-               </property>
-               <property name="monitorDisp" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}:STEP_FREQ</string>
-               </property>
-              </widget>
-             </item>
              <item row="4" column="1">
               <widget class="PyDMLabel" name="step_voltage_rbv">
                <property name="sizePolicy">
@@ -1119,52 +1119,6 @@
                </property>
                <property name="channel" stdset="0">
                 <string>ca://${prefix}:STEP_VOLTAGE</string>
-               </property>
-               <property name="enableRichText" stdset="0">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="PyDMLabel" name="total_step_count_rbv">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-               <property name="precision" stdset="0">
-                <number>0</number>
-               </property>
-               <property name="showUnits" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="precisionFromPV" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="alarmSensitiveContent" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="alarmSensitiveBorder" stdset="0">
-                <bool>true</bool>
-               </property>
-               <property name="PyDMToolTip" stdset="0">
-                <string/>
-               </property>
-               <property name="channel" stdset="0">
-                <string>ca://${prefix}:TOTAL_STEP_COUNT</string>
                </property>
                <property name="enableRichText" stdset="0">
                 <bool>false</bool>
@@ -1214,6 +1168,73 @@
                </property>
                <property name="enableRichText" stdset="0">
                 <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="2">
+              <widget class="PyDMSlider" name="scan_move_set">
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="precision" stdset="0">
+                <number>0</number>
+               </property>
+               <property name="showUnits" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="precisionFromPV" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="alarmSensitiveContent" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="alarmSensitiveBorder" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="PyDMToolTip" stdset="0">
+                <string>Right click for more options</string>
+               </property>
+               <property name="monitorDisp" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="channel" stdset="0">
+                <string>ca://${prefix}:SCAN_MOVE</string>
+               </property>
+               <property name="orientation" stdset="0">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tracking" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="ignoreMouseWheel" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="showLimitLabels" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="showValueLabel" stdset="0">
+                <bool>true</bool>
+               </property>
+               <property name="tickPosition" stdset="0">
+                <enum>QSlider::NoTicks</enum>
+               </property>
+               <property name="userDefinedLimits" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="userMinimum" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="userMaximum" stdset="0">
+                <double>65535.000000000000000</double>
+               </property>
+               <property name="num_steps" stdset="0">
+                <number>99</number>
+               </property>
+               <property name="step_size" stdset="0">
+                <double>1.000000000000000</double>
+               </property>
+               <property name="step_size_channel" stdset="0">
+                <string/>
                </property>
               </widget>
              </item>
@@ -4697,6 +4718,11 @@
    <class>PyDMPushButton</class>
    <extends>QPushButton</extends>
    <header>pydm.widgets.pushbutton</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMSlider</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.slider</header>
   </customwidget>
   <customwidget>
    <class>TyphosDisplayTitle</class>
