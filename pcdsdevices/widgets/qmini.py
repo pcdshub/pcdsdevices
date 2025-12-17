@@ -129,8 +129,7 @@ class QminiBase:
                 widget.setAutoRangeY(False)
 
                 self._plot_timer = QTimer(parent=self)
-                self._plot_timer.timeout.connect(self.fix_plot_domain)
-                self._plot_timer.setInterval(200)
+                self._plot_timer.singleShot(200, self.fix_plot_domain)
                 self._plot_timer.start()
 
             # standard channel macro expansion
