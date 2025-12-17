@@ -176,14 +176,15 @@ class QminiBase:
             x_max = int(self.device.wavelengths.get().max())
         except Exception as e:
             logger.exception(e)
-        else:
-            if not x_max > x_min:
-                # Restart the timer if these signals are still None
-                self._plot_timer.start()
+            return
 
-            else:
-                plot.setMinXRange(x_min)
-                plot.setMaxXRange(x_max)
+        if not x_max > x_min:
+            # Restart the timer if these signals are still None
+            self._plot_timer.start()
+
+        else:
+            plot.setMinXRange(x_min)
+            plot.setMaxXRange(x_max)
 
     def auto_range_y(self, value, *args, **kwargs):
         """
@@ -196,16 +197,17 @@ class QminiBase:
             y_max = int(value.max())
         except Exception as e:
             logger.exception(e)
-        else:
-            if not y_max > y_min:
-                return
-            else:
-                try:
-                    plot.setMinYRange(y_min)
-                    plot.setMaxYRange(1.1*y_max)
-                except RuntimeError:
-                    # We must've deleted the plot without unsubscribing, do it!
-                    self.device.spectrum.unsubscribe(self._autorange_cid)
+            return
+
+        if not y_max > y_min:
+            return
+
+        try:
+            plot.setMinYRange(y_min)
+            plot.setMaxYRange(1.1*y_max)
+        except RuntimeError:
+            # We must've deleted the plot without unsubscribing, do it!
+            self.device.spectrum.unsubscribe(self._autorange_cid)
 
     # Save spectra functions
     def save_data(self, **kwargs):
