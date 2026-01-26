@@ -2,6 +2,27 @@ Release History
 ###############
 
 
+v10.2.0 (2026-01-22)
+====================
+
+Device Features
+---------------
+- `SmarAct.detailed`: Replace scan_voltage_set widget with PyDMSlider for more intuitive use.
+- add `LightPathInOutMixin` to `DCCM` in dccm.py
+
+Bugfixes
+--------
+- `Qmini` GUI: prevent subscribed methods from spawning infinite exception windows
+- Fixed pv names for gbs rtds
+
+Contributors
+------------
+- KaushikMalapati
+- aberges-SLAC
+- nrwslac
+
+
+
 v10.1.0 (2025-11-20)
 ====================
 
