@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.format\_status\_table
+=======================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: format_status_table
