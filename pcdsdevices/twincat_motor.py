@@ -89,8 +89,6 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
 
     set_metadata(actuate, dict(variety='command', value=1))
     set_metadata(stop_signal, dict(variety='command-proc', value=1))
-    # set_metadata(low_limit_enable, dict(variety='command', value=1))
-    # set_metadata(high_limit_enable, dict(variety='command', value=1))
     set_metadata(done, dict(variety='bitmask', bits=1))
     set_metadata(motor_is_moving, dict(variety='bitmask', bits=1))
     set_metadata(motor_is_moving_negative, dict(variety='bitmask', bits=1))
@@ -207,7 +205,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Check the limits switches.
 
         Returns
-       ----
+        ----
         limit_switch_indicator : str
             Indicate which limit switch is activated.
         """
@@ -227,12 +225,12 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Set the low limit.
 
         Parameters
-       -------
+        -------
         value : float
             Limit of travel in the negative direction.
 
         Raises
-       ---
+        ---
         ValueError
             When motor in motion or position outside of limit.
         """
@@ -257,12 +255,12 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Limit of travel in the positive direction.
 
         Parameters
-       -------
+        -------
         value : float
             High limit value to be set.
 
         Raises
-       ---
+        ---
         ValueError
             When motor in motion or position outside of limit.
         """
@@ -293,7 +291,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         """Whether or not the motor is moving
 
         Returns
-       ----
+        ----
         moving : bool
         """
         return bool(self.motor_is_moving.get(use_monitor=False))
@@ -477,7 +475,7 @@ class TwinCATAxis(TwinCATMotorInterface):
         - Robust session-tracking and logging logic for post-move diagnostics.
 
     Attributes
-   -------
+    -------
     actuate_home : PytmcSignal
         PV to trigger a homing command.
     home_mode : PytmcSignal
@@ -554,7 +552,7 @@ class TwinCATAxis(TwinCATMotorInterface):
         Otherwise, set success.
 
         Parameters
-       -------
+        -------
         status : MoveStatus
             The status that we need to update.
         """
@@ -590,14 +588,14 @@ class TwinCATAxis(TwinCATMotorInterface):
         Execute specified homing routine.
 
         Parameters
-       -------
+        -------
         mode : HomeMode
             Specifies homing mode *and* direction (see HomeMode).
         wait : bool
             If True, block until the homing completes.
 
         Returns
-       ----
+        ----
         status : MoveStatus
             Status object for move completion.
         """
@@ -627,14 +625,14 @@ class TwinCATAxis(TwinCATMotorInterface):
         Move to the requested position using custom actuate+monitor sequence.
 
         Parameters
-       -------
+        -------
         position : float
             Target position.
         wait : bool
             Wait for move completion before returning.
 
         Returns
-       ----
+        ----
         status : MoveStatus
             Object to monitor asynchronous move completion.
         """
