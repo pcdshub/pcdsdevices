@@ -380,3 +380,29 @@ class DCCM(BaseInterface, GroupDevice):
         self.acr_status_suffix = acr_status_suffix
         self.acr_status_pv_index = acr_status_pv_index
         super().__init__(prefix, **kwargs)
+
+
+    def _proxy_method(method_name):  # noqa
+        """
+        Proxy a method from tx_state
+        """
+        def method_selector(self, *args, **kwargs):
+            return getattr(self.tx_state, method_name)(*args, **kwargs)
+
+        return method_selector
+
+
+    def _proxy_property(prop_name):  # noqa
+        """Read-only property proxy for tx_state"""
+        def getter(self):
+            return getattr(self.tx_state, prop_name)
+
+        # Only support read-only properties for now.
+        return property(getter)
+
+    inserted = _proxy_property('inserted')
+    check_inserted = _proxy_method('check_inserted')
+    removed = _proxy_property('removed')
+    check_removed = _proxy_method('check_removed')
+    insert = _proxy_method('insert')
+    remove = _proxy_method('remove')
