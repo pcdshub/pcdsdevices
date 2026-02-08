@@ -30,6 +30,12 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     It presents all critical motion and configuration PVs found in TwinCAT motors,
     as well as soft limit, status, and safety/diagnostic methods.
 
+    Many methods and their core logic in this class (e.g., limits, move, check_value,
+    limit setter/clearer, stop, status change subscriptions, error filtering) are
+    directly reused or adapted from the legacy EpicsMotorInterface to ensure
+    API and UX consistency across PCDS motor controls. See each method's
+    docstring for duplication/adaptation notes.
+
     Notes
     -----
     The PCDS interface preferences and design patterns implemented here are:
@@ -42,10 +48,9 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
        with appropriate error raising.
     4. Subscribes to all key status bits (moving, limit switches, homed, power, direction)
        for robust feedback and event-driven updates.
-    5. Metadata and tab whitelisting enable rich Typhos and IPython display.
-    6. Post-move error logs are only shown after motions initiated from this client session,
+    5. Post-move error logs are only shown after motions initiated from this client session,
        not from others—by maintaining `_moved_in_session` and filtering logs accordingly.
-    7. All IOCs differences are handled elsewhere; this interface is IOC-agnostic and can
+    6. All IOCs differences are handled elsewhere; this interface is IOC-agnostic and can
        be used with any compliant TwinCAT axis IOC.
     """
     # Position
@@ -54,6 +59,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     done = Cpt(PytmcSignal, "bDone", io="i", kind="normal", auto_monitor=True)
     actuate = Cpt(PytmcSignal, "bMoveCmd", io="io", kind="normal")
     stop_signal = Cpt(PytmcSignal, "bHalt", io="io", kind="normal")
+    reset_signal = Cpt(PytmcSignal, "bReset", io="io", kind="normal")
 
     # Motion Configuration
     velocity = Cpt(PytmcSignal, "fVelocity", io="io", kind="config", auto_monitor=True)
@@ -73,6 +79,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     negative_dir_enabled = Cpt(PytmcSignal, "bNegativeMotionIsEnabled", io="i", kind="normal", auto_monitor=True)
     positive_dir_enabled = Cpt(PytmcSignal, "bPositiveMotionIsEnabled", io="i", kind="normal", auto_monitor=True)
     command = Cpt(PytmcSignal, "eCommand", io="i", kind="normal", auto_monitor=True)
+    motor_egu = Cpt(PytmcSignal, "sEGU", io="i", kind="normal", auto_monitor=True)
 
     # Limits (configuration)
     low_limit_travel = Cpt(EpicsSignal, 'NC:MinPos:Val_RBV', write_pv='NC:MinPos:Goal', kind='config', auto_monitor=True)
@@ -81,10 +88,14 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     high_limit_enable = Cpt(EpicsSignal, 'NC:SoftPosMaxOn:Val_RBV', write_pv='NC:SoftPosMaxOn:Goal', kind='config', auto_monitor=True)
 
     tab_whitelist = [
-        "velocity",
+        "reset",
+        "set_low_limit",
+        "set_high_limit",
+        "clear_limits",
         "check_limit_switches",
-        "get_low_limit", "set_low_limit",
-        "get_high_limit", "set_high_limit"
+        "enabled",
+        "homed",
+        "Position"
     ]
 
     set_metadata(actuate, dict(variety='command', value=1))
@@ -103,7 +114,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
 
     _alarm_filter_installed: ClassVar[bool] = False
     _moved_in_session: bool
-    _egu: str
+    _egu = ''
 
     def __init__(
         self,
@@ -116,8 +127,13 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         parent=None,
         **kwargs
     ):
+        """
+        Initialization adapted from EpicsMotorInterface.
+
+        Ensures log filters are installed, .name is set on readback for UI/logs,
+        and sets up default metadata for the session.
+        """
         self._moved_in_session = False
-        self._egu = ''
         super().__init__(
             prefix=prefix,
             name=name,
@@ -128,7 +144,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
             **kwargs
         )
         self._install_motion_error_filter()
-
+        self.motor_egu.subscribe(self._cache_egu)
         self.readback.name = self.name
 
         def on_limit_changed(value, old_value, **kwargs):
@@ -145,31 +161,74 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         self.high_limit_travel.subscribe(on_limit_changed)
 
     @property
-    def units(self):
-        """The engineering units (units) for a position"""
-        # return self.units.get()
+    @raise_if_disconnected
+    def position(self):
+        """The current position of the motor in its engineering units
+
+        Returns
+        -------
+        position : float
+        """
+        return self.readback.get()
+
+    def _cache_egu(self, value=None, **kwargs):
+        """Cache motor engineering unit string."""
+        if value is not None:
+            self._egu = value
+
+    @property
+    def egu(self):
+        """
+        The engineering units (EGU) for this motor. Updated via the motor_egu PV.
+        """
+        return self._egu
 
     def move(self, position: float, wait: bool = True, **kwargs) -> MoveStatus:
+        """
+        Reused from EpicsMotorInterface:
+        Sets _moved_in_session True, then calls superclass move.
+        """
         self._moved_in_session = True
         return super().move(position, wait=wait, **kwargs)
 
     def _get_epics_limits(self) -> tuple[float, float]:
+        """
+        Nearly identical to EpicsMotorInterface._get_epics_limits.
+        Returns tuple (low_limit, high_limit), or (0,0) if uninitialized.
+        """
         limits = self.setpoint.limits
         if limits is None or limits == (None, None):
             # Not initialized
             return (0, 0)
         return limits
 
+    def _instance_error_filter(self, record: logging.LogRecord) -> bool:
+        """
+        Instance-specific motion error filter.
+
+        Logic directly reused from EpicsMotorInterface.
+        Filters alarm log messages unless a move is requested in this session.
+        """
+        return self._moved_in_session or ' alarm ' not in record.msg
+
     def _install_motion_error_filter(self) -> None:
-        """Applies the class _motion_error_filter to self.log"""
-        if not TwinCATMotorInterface._alarm_filter_installed:
-            TwinCATMotorInterface._alarm_filter_installed = True
+        """
+        Applies the class _motion_error_filter to self.log.
+        Pattern adapted from EpicsMotorInterface, now installed per instance.
+        """
+        if not self._alarm_filter_installed:
             self.log.logger.addFilter(EpicsMotorInterfaceAlarmFilter())
+            self._alarm_filter_installed = True
 
     @property
     @raise_if_disconnected
     def limits(self) -> tuple[float, float]:
-        """Override the limits attribute"""
+        """
+        Override limits property to always return the latest values from
+        the soft limit PVs (low_limit_travel and high_limit_travel).
+
+        This ensures no stale/cached values are reported.
+        """
         return (
             self.low_limit_travel.get(),
             self.high_limit_travel.get(),
@@ -178,11 +237,11 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     @limits.setter
     def limits(self, lims: tuple[float, float]):
         """
-        Write to the epics limits on setattr
+        Write to the epics limits on setattr.
 
+        Duplicated from EpicsMotorInterface for API consistency:
         Expects a tuple of two elements, the low and high limits to set.
         """
-        # Wrong len is probably a bigger mistake
         if len(lims) != 2:
             raise ValueError("Limits should be a tuple of 2 values.")
         low = min(lims)
@@ -202,12 +261,10 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
 
     def check_limit_switches(self):
         """
-        Check the limits switches.
+        Check the limit switches.
 
-        Returns
-        ----
-        limit_switch_indicator : str
-            Indicate which limit switch is activated.
+        Logic structure reused from EpicsMotorInterface for API consistency.
+        Returns a string summary.
         """
         low = self.low_limit_switch.get()
         high = self.high_limit_switch.get()
@@ -222,7 +279,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
 
     def set_low_limit(self, value):
         """
-        Set the low limit.
+        Set the low limit. Adapted from EpicsMotorInterface.
 
         Parameters
         -------
@@ -232,7 +289,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Raises
         ---
         ValueError
-            When motor in motion or position outside of limit.
+            When in motion or position outside of limit.
         """
         if self.moving:
             raise ValueError('Motor is in motion, cannot set the low limit!')
@@ -252,7 +309,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
 
     def set_high_limit(self, value):
         """
-        Limit of travel in the positive direction.
+        Limit of travel in the positive direction. Adapted from EpicsMotorInterface.
 
         Parameters
         -------
@@ -262,7 +319,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Raises
         ---
         ValueError
-            When motor in motion or position outside of limit.
+            When in motion or position outside of limit.
         """
         if self.moving:
             raise ValueError('Motor is in motion, cannot set the high limit!')
@@ -281,14 +338,21 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         self.high_limit_travel.put(value)
 
     def clear_limits(self):
-        """Set both low and high limits to 0."""
+        """
+        Set both low and high limits to 0.
+
+        Duplicated from EpicsMotorInterface for function and API consistency.
+        """
         self.high_limit_travel.put(0)
         self.low_limit_travel.put(0)
 
     @property
     @raise_if_disconnected
     def moving(self):
-        """Whether or not the motor is moving
+        """
+        Whether or not the motor is moving.
+
+        Duplicated logic from EpicsMotorInterface for API consistency.
 
         Returns
         ----
@@ -305,6 +369,10 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     def stop(self, *, success=False):
         self.stop_signal.put(1, wait=False)
         super().stop(success=success)
+
+    @raise_if_disconnected
+    def reset(self, *, success=False):
+        self.reset.put(1, wait=False)
 
     @property
     def enabled(self):
@@ -327,17 +395,6 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
                 or bool(self.positive_dir_enabled.get())
             )
         )
-
-    @property
-    @raise_if_disconnected
-    def position(self):
-        """The current position of the motor in its engineering units
-
-        Returns
-       ----
-        position : float
-        """
-        return self.readback.get()
 
     def check_value(self, value):
         """
@@ -370,13 +427,20 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     @required_for_connection
     @readback.sub_value
     def _pos_changed(self, timestamp=None, value=None, **kwargs):
-        """Callback from EPICS, indicating a change in position"""
+        """
+        Callback from EPICS, indicating a change in position.
+        Signature and structure reused from EpicsMotorInterface.
+        """
         self._set_position(value)
 
     @required_for_connection
     @done.sub_value
     def _move_changed(self, timestamp=None, value=None, sub_type=None, **kwargs):
-        """Callback from EPICS, indicating that movement status has changed"""
+        """
+        Callback from EPICS, indicating that movement status has changed.
+
+        Signature and event logic reused from EpicsMotorInterface.
+        """
         was_moving = self._moving
         self._moving = value != 1
 
@@ -438,20 +502,17 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         """
         Override _done_moving to always reset our _moved_in_session attribute.
 
-        This is not possible through adding subscriptions because SUB_DONE
-        is only run on success and _SUB_REQ_DONE is private and repeatedly
-        cleared.
+        Logic reused from EpicsMotorInterface for session state reset.
         """
         super()._done_moving(value=value, **kwargs)
         if value:
-            self._reset_moved_in_session()
-
-    def _reset_moved_in_session(self) -> None:
-        """Mark that a move have not yet been requested in this session."""
-        self._moved_in_session = False
+            self._moved_in_session = False
 
     @property
     def report(self):
+        """
+        Report status. Adapted from EpicsMotorInterface for PV inclusion.
+        """
         try:
             rep = super().report
         except Exception:
@@ -473,6 +534,11 @@ class TwinCATAxis(TwinCATMotorInterface):
         - A `home()` method exposing all PLC-configured homing routines with
           proper mode setting, actuation, status, and timing.
         - Robust session-tracking and logging logic for post-move diagnostics.
+   Note
+    ----
+    Some methods in this class are identical or adapted from BeckhoffAxis,
+    to ensure the error-handling, staging, homing, and value checking logic
+    behaves identically.
 
     Attributes
     -------
@@ -488,7 +554,7 @@ class TwinCATAxis(TwinCATMotorInterface):
     home_mode = Cpt(PytmcSignal, "eHomeMode", io="io", kind="config")
 
     __doc__ += basic_positioner_init
-    tab_whitelist = ['clear_error', 'home']
+    tab_whitelist = ['clear_error', 'home', 'stage']
 
     plc = Cpt(BeckhoffAxisPLC, '', kind='normal',
               doc='PLC error handling and aux functions.')
@@ -502,25 +568,13 @@ class TwinCATAxis(TwinCATMotorInterface):
         run: bool = True,
     ) -> int:
         """
-        Subscribe to events this event_type generates.
-
-        See ophydobj.subscribe for full details.
+        Mostly adapted from BeckhoffAxis.subscribe.
 
         This is a thin wrapper over subscribe for custom error handling
         to intercept the normal end of move handler.
 
-        Unlike during EpicsMotor's move, the move status will
-        be set to the TwinCAT error message if there is one.
-        The move will be marked as successful otherwise.
-
-        Possibly this was unnecessary with an ophyd PR to allow me to
-        customize the error handling, but without that this seems like
-        the easiest way to sidestep the status._finished call and ignore
-        the error logic in _move_changed.
+        See documentation in BeckhoffAxis.subscribe for complete details.
         """
-        # Mutate subscribe appropriately if this is the exact sub req done
-        # Or if it's a similar one using non-deprecated set_finished
-        # See PositionerBase.move
         if all((
             event_type == self._SUB_REQ_DONE,
             callback.__qualname__ in (
@@ -546,15 +600,11 @@ class TwinCATAxis(TwinCATMotorInterface):
 
     def _end_move_cb(self, status: MoveStatus, **kwargs) -> None:
         """
-        Special end of move handling to set the status for TwinCATAxis.
+        Adapted nearly verbatim from BeckhoffAxis._end_move_cb.
 
-        If the TwinCATAxis has an error message, include it and mark failure.
-        Otherwise, set success.
-
-        Parameters
-        -------
-        status : MoveStatus
-            The status that we need to update.
+        Checks for errors via PLC, attaches error message/details/code
+        to the MoveStatus if an error is detected. Otherwise, signals
+        success.
         """
         has_error = self.plc.err_bool.get()
         if has_error:
@@ -569,15 +619,18 @@ class TwinCATAxis(TwinCATMotorInterface):
             status.set_finished()
 
     def clear_error(self):
-        """Clear any active motion errors on this axis."""
+        """
+        Identical to BeckhoffAxis.clear_error.
+        Clears any active motion/plc errors on this axis.
+        """
         self.plc.cmd_err_reset.put(1)
 
     def stage(self):
         """
         Stage the TwinCAT axis.
 
-        This simply clears any errors. Stage is called at the start of most
-        :mod:`bluesky` plans.
+        Implementation identical to BeckhoffAxis.stage and EpicsMotorInterface.stage:
+        Simply clears any errors, then calls parent stage.
         """
         self.clear_error()
         return super().stage()
@@ -585,19 +638,10 @@ class TwinCATAxis(TwinCATMotorInterface):
     @raise_if_disconnected
     def home(self, wait: bool = True, **kwargs):
         """
-        Execute specified homing routine.
+        Adapted from BeckhoffAxis.home.
 
-        Parameters
-        -------
-        mode : HomeMode
-            Specifies homing mode *and* direction (see HomeMode).
-        wait : bool
-            If True, block until the homing completes.
-
-        Returns
-        ----
-        status : MoveStatus
-            Status object for move completion.
+        Executes the PLC-programmed home routine.
+        For hardware where only one homing method may be active/configured.
         """
         self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
         self._reset_sub(self._SUB_REQ_DONE)
@@ -622,21 +666,11 @@ class TwinCATAxis(TwinCATMotorInterface):
     @raise_if_disconnected
     def move(self, position: float, wait: bool = True, **kwargs) -> MoveStatus:
         """
-        Move to the requested position using custom actuate+monitor sequence.
+        Functionally adapted from BeckhoffAxis.move.
 
-        Parameters
-        -------
-        position : float
-            Target position.
-        wait : bool
-            Wait for move completion before returning.
-
-        Returns
-        ----
-        status : MoveStatus
-            Object to monitor asynchronous move completion.
+        Sets up tailored end-of-move handler and error capture, as in BeckhoffAxis.
+        Prepares a new MoveStatus for custom error interpretation.
         """
-        # Indicate we're starting a move, for status/subscriptions
         self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
         self._reset_sub(self._SUB_REQ_DONE)
 
@@ -665,15 +699,9 @@ class TwinCATAxis(TwinCATMotorInterface):
 
     def check_value(self, pos: float) -> None:
         """
-        Check that the motor can reach the position.
+        Functionally identical/adapted from BeckhoffAxis.check_value.
 
-        Inherits limits and related checks from parent classes.
-        Adds one additional check: the velocity must be nonzero
-        for a move to succeed. Otherwise, the move fails silently.
-
-        TwinCAT EPICS motors at LCLS that have never been initialized
-        before default to a zero velocity for safety. This check
-        lets the user know why the motor does not move.
+        Checks both limits and velocity (must be nonzero) before permitting a move.
         """
         super().check_value(pos)
         velo = self.velocity.get()
