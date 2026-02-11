@@ -261,6 +261,9 @@ def test_limits_update_from_epics(cls):
     is_twincat_motor = issubclass(cls, TwinCATMotorInterface)
     exc_type = RuntimeError if is_twincat_motor else LimitError
 
+    # Use setpoint signal for logging metadata, adapting for Epics/TwinCAT
+    setpoint = getattr(mot, "user_setpoint", getattr(mot, "setpoint", None))
+
     for low, high in (
         (-10, 10),
         (-100, 100),
@@ -275,6 +278,13 @@ def test_limits_update_from_epics(cls):
         for num in list(range(low - 10, low)) + list(range(high + 1, high + 10)):
             with pytest.raises(exc_type):
                 mot.check_value(num)
+                # debug only hit if the check_value doesn't raise
+                logger.debug(f'{low} < {num} < {high}')
+                logger.debug(f'limits are {mot.limits}')
+                logger.debug(f'LLM={mot.low_limit_travel.get()}')
+                logger.debug(f'HLM={mot.high_limit_travel.get()}')
+                if setpoint is not None:
+                    logger.debug(f'md={setpoint.metadata}')
 
 
 def test_epics_motor_tdir(fake_pcds_motor):
