@@ -1265,6 +1265,16 @@ pcdsdevices.tpr
     pcdsdevices.tpr.TprMotor
     pcdsdevices.tpr.TprTrigger
 
+pcdsdevices.twincat_motor
+-------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.twincat_motor.TwinCATAxis
+    pcdsdevices.twincat_motor.TwinCATAxisEPS
+    pcdsdevices.twincat_motor.TwinCATMotorInterface
+
 pcdsdevices.usb_encoder
 -----------------------
 

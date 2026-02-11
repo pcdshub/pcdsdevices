@@ -2,6 +2,26 @@ Release History
 ###############
 
 
+v10.3.0 (2026-02-17)
+====================
+
+New Devices
+-----------
+- Adds `TwinCATMotorInterface`, `TwinCATAxis`, and `TwinCATAxisEPS` to support
+  new motion abstraction interface.  Also adds corresponding typhos screen support.
+
+Device Features
+---------------
+- Adds `insert`, `remove`, `check_inserted`, `check_removed`, `inserted,` and `removed` methods/properties
+  to DCCM class which are proxies for the corresponding members of DCCM.tx_state for convenience
+
+
+Contributors
+------------
+- KaushikMalapati
+- yannS2016
+
+
 v10.2.0 (2026-01-22)
 ====================
 

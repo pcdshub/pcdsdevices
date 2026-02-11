@@ -120,13 +120,17 @@
 
     
     .. automethod:: calc_lightpath_state
+    .. automethod:: check_inserted
+    .. automethod:: check_removed
     .. automethod:: configure
     .. automethod:: describe
     .. automethod:: get
     .. automethod:: get_lightpath_state
+    .. automethod:: insert
     .. automethod:: post_elog_status
     .. automethod:: read
     .. automethod:: read_configuration
+    .. automethod:: remove
     .. automethod:: screen
     .. automethod:: set_defaults
     .. automethod:: stage_group_instances
