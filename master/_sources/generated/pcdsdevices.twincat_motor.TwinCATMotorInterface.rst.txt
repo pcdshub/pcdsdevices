@@ -1,0 +1,327 @@
+﻿pcdsdevices.twincat\_motor.TwinCATMotorInterface
+================================================
+
+.. currentmodule:: pcdsdevices.twincat_motor
+
+.. autoclass:: TwinCATMotorInterface
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - setpoint
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``fPosition``
+          - 
+          - hinted
+          - 
+    
+        * - readback
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``fActPosition``
+          - 
+          - hinted
+          - 
+    
+        * - done
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bDone``
+          - 
+          - normal
+          - 
+    
+        * - actuate
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bMoveCmd``
+          - 
+          - normal
+          - 
+    
+        * - stop_signal
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bHalt``
+          - 
+          - normal
+          - 
+    
+        * - reset_signal
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bReset``
+          - 
+          - normal
+          - 
+    
+        * - velocity
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``fVelocity``
+          - 
+          - config
+          - 
+    
+        * - acceleration
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``fAcceleration``
+          - 
+          - config
+          - 
+    
+        * - deceleration
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``fDeceleration``
+          - 
+          - config
+          - 
+    
+        * - jerk
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``fJerk``
+          - 
+          - config
+          - 
+    
+        * - enable_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``eEnableMode``
+          - 
+          - config
+          - 
+    
+        * - brake_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``eBrakeMode``
+          - 
+          - config
+          - 
+    
+        * - motor_is_moving
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bMoving``
+          - 
+          - normal
+          - 
+    
+        * - motor_is_moving_negative
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bNegativeDirection``
+          - 
+          - normal
+          - 
+    
+        * - motor_is_moving_positive
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bPositiveDirection``
+          - 
+          - normal
+          - 
+    
+        * - power_is_enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bPowerIsEnabled``
+          - 
+          - normal
+          - 
+    
+        * - high_limit_switch
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bLimitFwd``
+          - 
+          - normal
+          - 
+    
+        * - low_limit_switch
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bLimitBwd``
+          - 
+          - normal
+          - 
+    
+        * - negative_dir_enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bNegativeMotionIsEnabled``
+          - 
+          - normal
+          - 
+    
+        * - positive_dir_enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bPositiveMotionIsEnabled``
+          - 
+          - normal
+          - 
+    
+        * - command
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``eCommand``
+          - 
+          - normal
+          - 
+    
+        * - motor_egu
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``sEGU``
+          - 
+          - normal
+          - 
+    
+        * - low_limit_travel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NC:MinPos:Val_RBV``
+          - 
+          - config
+          - 
+    
+        * - high_limit_travel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NC:MaxPos:Val_RBV``
+          - 
+          - config
+          - 
+    
+        * - low_limit_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NC:SoftPosMinOn:Val_RBV``
+          - 
+          - config
+          - 
+    
+        * - high_limit_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NC:SoftPosMaxOn:Val_RBV``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_limit_switches
+    .. automethod:: clear_limits
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: reset
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_defaults
+    .. automethod:: set_high_limit
+    .. automethod:: set_low_limit
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: enabled
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: homed
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: tolerated_alarm
+    
+    
