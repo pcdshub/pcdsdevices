@@ -1,0 +1,6 @@
+﻿pcdsdevices.gon.Goniometer
+==========================
+
+.. currentmodule:: pcdsdevices.gon
+
+.. autofunction:: Goniometer

@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.get\_component
+================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: get_component

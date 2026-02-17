@@ -1,0 +1,6 @@
+﻿pcdsdevices.ipm.IPM
+===================
+
+.. currentmodule:: pcdsdevices.ipm
+
+.. autofunction:: IPM

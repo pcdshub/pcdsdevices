@@ -1,0 +1,131 @@
+﻿pcdsdevices.digitizers.Wave8V2ADCSamples
+========================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2ADCSamples
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - sample0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample0_RBV``
+          - 
+          - config
+          - 
+    
+        * - sample1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample1_RBV``
+          - 
+          - config
+          - 
+    
+        * - sample2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample2_RBV``
+          - 
+          - config
+          - 
+    
+        * - sample3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample3_RBV``
+          - 
+          - config
+          - 
+    
+        * - sample4
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample4_RBV``
+          - 
+          - config
+          - 
+    
+        * - sample5
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample5_RBV``
+          - 
+          - config
+          - 
+    
+        * - sample6
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample6_RBV``
+          - 
+          - config
+          - 
+    
+        * - sample7
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sample7_RBV``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

@@ -1,0 +1,6 @@
+﻿pcdsdevices.mpod.MPOD
+=====================
+
+.. currentmodule:: pcdsdevices.mpod
+
+.. autofunction:: MPOD

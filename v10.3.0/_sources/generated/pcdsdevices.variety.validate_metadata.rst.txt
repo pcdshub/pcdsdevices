@@ -1,0 +1,6 @@
+﻿pcdsdevices.variety.validate\_metadata
+======================================
+
+.. currentmodule:: pcdsdevices.variety
+
+.. autofunction:: validate_metadata

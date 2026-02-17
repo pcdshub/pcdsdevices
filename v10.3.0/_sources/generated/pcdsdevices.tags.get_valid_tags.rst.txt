@@ -1,0 +1,6 @@
+﻿pcdsdevices.tags.get\_valid\_tags
+=================================
+
+.. currentmodule:: pcdsdevices.tags
+
+.. autofunction:: get_valid_tags

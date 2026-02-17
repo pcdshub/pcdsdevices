@@ -1,0 +1,119 @@
+﻿pcdsdevices.pdu.PDUChannel
+==========================
+
+.. currentmodule:: pcdsdevices.pdu
+
+.. autoclass:: PDUChannel
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ch_index (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}:Outlet:{self._ch}:{self._ch_index}``
+          - 
+          - hinted
+          - 
+    
+        * - ch_name (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}:Outlet:{self._ch}:{self._ch_name}``
+          - 
+          - hinted
+          - 
+    
+        * - ch_status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}:Outlet:{self._ch}:{self._ch_status}``
+          - 
+          - hinted
+          - 
+    
+        * - ch_ctrl_state (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}:Outlet:{self._ch}:{self._ch_ctrl_state}``
+          - 
+          - hinted
+          - 
+    
+        * - ch_ctrl_command_on (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}:Outlet:{self._ch}:{self._ch_command_on}``
+          - 
+          - omitted
+          - 
+    
+        * - ch_ctrl_command_off (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}:Outlet:{self._ch}:{self._ch_command_off}``
+          - 
+          - omitted
+          - 
+    
+        * - ch_ctrl_command_reboot (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}:Outlet:{self._ch}:{self._ch_command_reboot}``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

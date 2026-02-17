@@ -1,0 +1,6 @@
+﻿pcdsdevices.mpod.get\_card\_number
+==================================
+
+.. currentmodule:: pcdsdevices.mpod
+
+.. autofunction:: get_card_number

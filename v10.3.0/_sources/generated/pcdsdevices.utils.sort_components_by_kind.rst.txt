@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.sort\_components\_by\_kind
+============================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: sort_components_by_kind

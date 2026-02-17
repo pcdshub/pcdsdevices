@@ -1,0 +1,6 @@
+﻿pcdsdevices.make\_ophyd\_device.write\_file
+===========================================
+
+.. currentmodule:: pcdsdevices.make_ophyd_device
+
+.. autofunction:: write_file

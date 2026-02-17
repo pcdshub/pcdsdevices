@@ -1,0 +1,6 @@
+﻿pcdsdevices.tags.explain\_tag
+=============================
+
+.. currentmodule:: pcdsdevices.tags
+
+.. autofunction:: explain_tag

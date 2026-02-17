@@ -1,0 +1,281 @@
+﻿pcdsdevices.pdu.PDU
+===================
+
+.. currentmodule:: pcdsdevices.pdu
+
+.. autoclass:: PDU
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - tower_name (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:SetTowerName``
+          - 
+          - hinted
+          - 
+    
+        * - location
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SetSystemLocation``
+          - 
+          - hinted
+          - 
+    
+        * - status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:GetTowerStatus``
+          - 
+          - hinted
+          - 
+    
+        * - output_c_max (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:SetInfeedLoadHighThresh``
+          - 
+          - hinted
+          - 
+    
+        * - output_c (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:GetInfeedLoadValue``
+          - 
+          - hinted
+          - 
+    
+        * - output_c_status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:GetInfeedLoadStatus``
+          - 
+          - hinted
+          - 
+    
+        * - output_c_hi_alarm (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:InfeedLoadHighAlarm``
+          - 
+          - hinted
+          - 
+    
+        * - output_p (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:GetTowerActivePower``
+          - 
+          - hinted
+          - 
+    
+        * - temperature_lo (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:Sensor:All:SetTempLowThresh``
+          - 
+          - hinted
+          - 
+    
+        * - humidity_lo (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:Sensor:All:SetHumidLowThresh``
+          - 
+          - hinted
+          - 
+    
+        * - temperature_hi (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:Sensor:All:SetTempHighThresh``
+          - 
+          - hinted
+          - 
+    
+        * - humidity_hi (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:Sensor:All:SetHumidHighThresh``
+          - 
+          - hinted
+          - 
+    
+        * - sensor1_temperature_status
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:GetTempStatus``
+          - 
+          - hinted
+          - 
+    
+        * - sensor1_humidity_status
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:GetHumidStatus``
+          - 
+          - hinted
+          - 
+    
+        * - sensor1_temperature
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:GetTempValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor1_humidity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:GetHumidValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor1_temperature_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:TempAlarm``
+          - 
+          - hinted
+          - 
+    
+        * - sensor1_humidity_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:HumidAlarm``
+          - 
+          - hinted
+          - 
+    
+        * - sensor2_temperature_status
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:GetTempStatus``
+          - 
+          - hinted
+          - 
+    
+        * - sensor2_humidity_status
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:GetHumidStatus``
+          - 
+          - hinted
+          - 
+    
+        * - sensor2_temperature
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:GetTempValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor2_humidity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:GetHumidValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor2_temperature_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:TempAlarm``
+          - 
+          - hinted
+          - 
+    
+        * - sensor2_humidity_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:HumidAlarm``
+          - 
+          - hinted
+          - 
+    
+        * - channel_ctrl (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._ctrl}:SetControlAction``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

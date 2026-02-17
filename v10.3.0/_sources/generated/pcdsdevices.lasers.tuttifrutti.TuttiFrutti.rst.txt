@@ -1,0 +1,6 @@
+﻿pcdsdevices.lasers.tuttifrutti.TuttiFrutti
+==========================================
+
+.. currentmodule:: pcdsdevices.lasers.tuttifrutti
+
+.. autofunction:: TuttiFrutti

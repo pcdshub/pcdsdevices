@@ -1,0 +1,6 @@
+﻿pcdsdevices.ccm.theta\_to\_wavelength
+=====================================
+
+.. currentmodule:: pcdsdevices.ccm
+
+.. autofunction:: theta_to_wavelength

@@ -1,0 +1,115 @@
+﻿pcdsdevices.example.PLCExampleMotion
+====================================
+
+.. currentmodule:: pcdsdevices.example
+
+.. autoclass:: PLCExampleMotion
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - mot1
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``01``
+          - 
+          - normal
+          - 
+    
+        * - mot2
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``02``
+          - 
+          - normal
+          - 
+    
+        * - mot3
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``03``
+          - 
+          - normal
+          - 
+    
+        * - xpim (FCpt)
+          - :class:`~pcdsdevices.example.PLCOnlyXPIM`
+          - ``IMTST:XTES``
+          - 
+          - normal
+          - 
+    
+        * - sim3d
+          - :class:`~pcdsdevices.example.Example3D`
+          - ``3D:``
+          - 
+          - normal
+          - 
+    
+        * - siml2l
+          - :class:`~pcdsdevices.example.ExampleL2L`
+          - ``L2L:``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: all_pvnames
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: disconnected_pvnames
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

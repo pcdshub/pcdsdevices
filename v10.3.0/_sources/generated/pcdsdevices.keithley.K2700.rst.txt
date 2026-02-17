@@ -1,0 +1,113 @@
+﻿pcdsdevices.keithley.K2700
+==========================
+
+.. currentmodule:: pcdsdevices.keithley
+
+.. autoclass:: K2700
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - idn
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Identity``
+          - Identity (name) of this device
+          - normal
+          - 
+    
+        * - reading
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Reading``
+          - Trigger and return a new measurement
+          - normal
+          - 
+    
+        * - dcv_range
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GetDCV``
+          - DC voltage range
+          - normal
+          - 
+    
+        * - acv_range
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GetACV``
+          - AC voltage range
+          - normal
+          - 
+    
+        * - dci_range
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GetDCI``
+          - DC current range
+          - normal
+          - 
+    
+        * - aci_range
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GetACI``
+          - AC current range
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

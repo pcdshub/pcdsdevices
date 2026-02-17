@@ -1,0 +1,6 @@
+﻿pcdsdevices.targets.StageStack
+==============================
+
+.. currentmodule:: pcdsdevices.targets
+
+.. autofunction:: StageStack

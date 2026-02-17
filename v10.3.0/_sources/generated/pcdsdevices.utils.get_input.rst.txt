@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.get\_input
+============================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: get_input
