@@ -83,3 +83,25 @@ class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
     y = Cpt(SmarAct, ':m1', kind='normal')
     z = Cpt(SmarAct, ':m4', kind='normal')
     ret = Cpt(SmarAct, ':m3', kind='normal')
+
+
+class DREAM_Gas_Jet_Slits(BaseInterface, GroupDevice):
+    """
+    DREAM Motion Class
+    This class controls gas jet slits north, south, east, and west motors fixed to the DREAM Motion system for the
+    DREAM endstation in TMO.
+    Parameters
+    ----------
+    prefix : str
+        TMO:DREAM:MCS2:01
+    name : str, keyword-only
+        Alias for the device
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+    tab_component_names = True
+    # Motor components
+    north = Cpt(SmarAct, ':m5', kind='normal')
+    south = Cpt(SmarAct, ':m10', kind='normal')
+    east = Cpt(SmarAct, ':m6', kind='normal')
+    west = Cpt(SmarAct, ':m11', kind='normal')

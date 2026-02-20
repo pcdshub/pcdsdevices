@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>556</width>
-    <height>591</height>
+    <height>589</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -53,35 +53,8 @@
      <property name="toolTip">
       <string/>
      </property>
-     <property name="readback_attribute" stdset="0">
-      <string>energy.readback</string>
-     </property>
-     <property name="setpoint_attribute" stdset="0">
-      <string>energy.setpoint</string>
-     </property>
-     <property name="low_limit_switch_attribute" stdset="0">
-      <string>th1.low_limit_switch</string>
-     </property>
-     <property name="high_limit_switch_attribute" stdset="0">
-      <string>th1.high_limit_switch</string>
-     </property>
-     <property name="low_limit_travel_attribute" stdset="0">
-      <string>low_limit_travel</string>
-     </property>
-     <property name="high_limit_travel_attribute" stdset="0">
-      <string>high_limit_travel</string>
-     </property>
-     <property name="velocity_attribute" stdset="0">
-      <string/>
-     </property>
-     <property name="acceleration_attribute" stdset="0">
-      <string/>
-     </property>
-     <property name="moving_attribute" stdset="0">
-      <string>th1.motor_is_moving</string>
-     </property>
      <property name="error_message_attribute" stdset="0">
-      <string>th1.plc.status</string>
+      <string>plc.status</string>
      </property>
      <property name="alarmKindLevel" stdset="0">
       <enum>TyphosPositionerWidget::HINTED</enum>

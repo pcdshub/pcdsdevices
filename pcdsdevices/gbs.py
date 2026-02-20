@@ -38,7 +38,5 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
     y_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:Y', kind='normal',
                   doc='Direct control of the diagnostic stack motor.')
 
-    thermocouple1 = Cpt(TwinCATTempSensor, ':STC:01', kind='normal',
-                        doc='First thermocouple.')
-    thermocouple2 = Cpt(TwinCATTempSensor, ':STC:02', kind='normal',
-                        doc='Second thermocouple.')
+    rtd1 = Cpt(TwinCATTempSensor, ':RTD:01', kind='normal', doc='First RTD.')
+    rtd2 = Cpt(TwinCATTempSensor, ':RTD:02', kind='normal', doc='Second RTD.')
