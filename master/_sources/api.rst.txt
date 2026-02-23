@@ -429,6 +429,15 @@ pcdsdevices.gon
     pcdsdevices.gon.SimSampleStage
     pcdsdevices.gon.XYZStage
 
+pcdsdevices.he_lodcm
+--------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.he_lodcm.HE_LODCM
+    pcdsdevices.he_lodcm.HE_LODCMEnergy
+
 pcdsdevices.inout
 -----------------
 

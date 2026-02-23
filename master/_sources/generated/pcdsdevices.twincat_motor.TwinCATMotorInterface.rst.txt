@@ -166,8 +166,8 @@
           - 
     
         * - motor_egu
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``sEGU``
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``EGU``
           - 
           - normal
           - 

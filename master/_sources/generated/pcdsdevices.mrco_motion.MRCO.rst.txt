@@ -60,7 +60,34 @@
           - normal
           - 
     
+        * - sample_paddle_vx
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:V4``
+          - 
+          - normal
+          - 
+    
+        * - sample_paddle_vy
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:V5``
+          - 
+          - normal
+          - 
+    
+        * - sample_paddle_vz
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:V6``
+          - 
+          - normal
+          - 
+    
 
+    
+    
+    
+    
+    
+    
     
     
     

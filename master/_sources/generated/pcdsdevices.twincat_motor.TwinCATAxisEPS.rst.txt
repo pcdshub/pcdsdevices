@@ -166,8 +166,8 @@
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
     
         * - motor_egu
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``sEGU``
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``EGU``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
