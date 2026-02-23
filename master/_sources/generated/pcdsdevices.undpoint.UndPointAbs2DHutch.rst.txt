@@ -1,0 +1,121 @@
+﻿pcdsdevices.undpoint.UndPointAbs2DHutch
+=======================================
+
+.. currentmodule:: pcdsdevices.undpoint
+
+.. autoclass:: UndPointAbs2DHutch
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - xpos
+          - :class:`~pcdsdevices.signal.UnitConversionDerivedSignal`
+          - ``x_raw_rbv``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.undpoint.UndPointAbs2D`
+    
+        * - ypos
+          - :class:`~pcdsdevices.signal.UnitConversionDerivedSignal`
+          - ``y_raw_rbv``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.undpoint.UndPointAbs2D`
+    
+        * - x_raw_rbv (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{x_abs_pvname}``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.undpoint.UndPointAbs2D`
+    
+        * - y_raw_rbv (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{y_abs_pvname}``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.undpoint.UndPointAbs2D`
+    
+        * - delta_xy (FCpt)
+          - :class:`~pcdsdevices.undpoint.UndPointDelta2D`
+          - ``{prefix}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.undpoint.UndPointAbs2D`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_delta_from_abs
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    
+    

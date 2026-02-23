@@ -195,9 +195,9 @@
           - omitted
           - Inherited from :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`
     
-        * - plc
+        * - plc (FCpt)
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
-          - ``:PLC:``
+          - ``{prefix}{_plc_suffix}``
           - PLC error handling and aux functions.
           - normal
           - 

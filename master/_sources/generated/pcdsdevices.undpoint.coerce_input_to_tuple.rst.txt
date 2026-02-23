@@ -1,0 +1,6 @@
+﻿pcdsdevices.undpoint.coerce\_input\_to\_tuple
+=============================================
+
+.. currentmodule:: pcdsdevices.undpoint
+
+.. autofunction:: coerce_input_to_tuple

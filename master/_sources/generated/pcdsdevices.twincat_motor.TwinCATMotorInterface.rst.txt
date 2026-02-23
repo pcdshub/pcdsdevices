@@ -20,187 +20,241 @@
     
         * - setpoint
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fPosition``
+          - ``:fPosition``
           - 
           - hinted
           - 
     
         * - readback
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fActPosition``
+          - ``:fActPosition``
           - 
           - hinted
           - 
     
         * - done
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bDone``
+          - ``:bDone``
           - 
           - normal
           - 
     
         * - actuate
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bMoveCmd``
+          - ``:bMoveCmd``
           - 
           - normal
           - 
     
         * - stop_signal
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bHalt``
+          - ``:bHalt``
           - 
           - normal
           - 
     
         * - reset_signal
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bReset``
+          - ``:bReset``
           - 
           - normal
           - 
     
         * - velocity
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fVelocity``
+          - ``:fVelocity``
           - 
           - config
           - 
     
         * - acceleration
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fAcceleration``
+          - ``:fAcceleration``
           - 
           - config
           - 
     
         * - deceleration
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fDeceleration``
+          - ``:fDeceleration``
           - 
           - config
           - 
     
         * - jerk
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fJerk``
+          - ``:fJerk``
           - 
           - config
           - 
     
         * - enable_mode
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``eEnableMode``
+          - ``:eEnableMode``
           - 
           - config
           - 
     
         * - brake_mode
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``eBrakeMode``
+          - ``:eBrakeMode``
           - 
           - config
           - 
     
         * - motor_is_moving
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bMoving``
+          - ``:bMoving``
           - 
           - normal
           - 
     
         * - motor_is_moving_negative
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bNegativeDirection``
+          - ``:bNegativeDirection``
           - 
           - normal
           - 
     
         * - motor_is_moving_positive
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bPositiveDirection``
+          - ``:bPositiveDirection``
           - 
           - normal
           - 
     
         * - power_is_enabled
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bPowerIsEnabled``
+          - ``:bPowerIsEnabled``
+          - 
+          - normal
+          - 
+    
+        * - fwd_enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bForwardEnabled``
+          - 
+          - normal
+          - 
+    
+        * - bwd_enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bBackwardEnabled``
           - 
           - normal
           - 
     
         * - high_limit_switch
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bLimitFwd``
+          - :class:`~pcdsdevices.twincat_motor.InvertedBoolEpicsSignal`
+          - ``fwd_enabled``
           - 
           - normal
           - 
     
         * - low_limit_switch
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bLimitBwd``
+          - :class:`~pcdsdevices.twincat_motor.InvertedBoolEpicsSignal`
+          - ``bwd_enabled``
           - 
           - normal
           - 
     
         * - negative_dir_enabled
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bNegativeMotionIsEnabled``
+          - ``:bNegativeMotionIsEnabled``
           - 
           - normal
           - 
     
         * - positive_dir_enabled
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bPositiveMotionIsEnabled``
+          - ``:bPositiveMotionIsEnabled``
           - 
           - normal
           - 
     
         * - command
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``eCommand``
+          - ``:eCommand``
           - 
           - normal
           - 
     
         * - motor_egu
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``sEGU``
+          - ``:NC:Eu:Val``
           - 
           - normal
           - 
     
         * - low_limit_travel
           - :class:`~ophyd.signal.EpicsSignal`
-          - ``NC:MinPos:Val_RBV``
+          - ``:NC:MinPos:Val_RBV``
           - 
           - config
           - 
     
         * - high_limit_travel
           - :class:`~ophyd.signal.EpicsSignal`
-          - ``NC:MaxPos:Val_RBV``
+          - ``:NC:MaxPos:Val_RBV``
           - 
           - config
           - 
     
         * - low_limit_enable
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``NC:SoftPosMinOn:Val_RBV``
+          - :class:`~pcdsdevices.twincat_motor.EnabledDisabledSignal`
+          - ``:NC:SoftPosMinOn:Val_RBV``
           - 
           - config
           - 
     
         * - high_limit_enable
+          - :class:`~pcdsdevices.twincat_motor.EnabledDisabledSignal`
+          - ``:NC:SoftPosMaxOn:Val_RBV``
+          - 
+          - config
+          - 
+    
+        * - pos_correction
+          - :class:`~pcdsdevices.twincat_motor.EnabledDisabledSignal`
+          - ``:NC:PosCorr:Val_RBV``
+          - 
+          - config
+          - 
+    
+        * - backlash
           - :class:`~ophyd.signal.EpicsSignal`
-          - ``NC:SoftPosMaxOn:Val_RBV``
+          - ``:NC:Backlash:Val_RBV``
+          - 
+          - config
+          - 
+    
+        * - pos_cor_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bBacklashStatus``
+          - 
+          - normal
+          - 
+    
+        * - home_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:eHomeMode``
           - 
           - config
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

@@ -429,6 +429,15 @@ pcdsdevices.gon
     pcdsdevices.gon.SimSampleStage
     pcdsdevices.gon.XYZStage
 
+pcdsdevices.he_lodcm
+--------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.he_lodcm.HE_LODCM
+    pcdsdevices.he_lodcm.HE_LODCMEnergy
+
 pcdsdevices.inout
 -----------------
 
@@ -959,6 +968,8 @@ pcdsdevices.pump
     pcdsdevices.pump.IonPump
     pcdsdevices.pump.IonPumpBase
     pcdsdevices.pump.IonPumpWithController
+    pcdsdevices.pump.Kashiyama_G
+    pcdsdevices.pump.Kashiyama_G_Serial
     pcdsdevices.pump.Navigator
     pcdsdevices.pump.PIPPLC
     pcdsdevices.pump.PIPSerial
@@ -1271,9 +1282,28 @@ pcdsdevices.twincat_motor
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.twincat_motor.EnabledDisabledSignal
+    pcdsdevices.twincat_motor.InvertedBoolEpicsSignal
     pcdsdevices.twincat_motor.TwinCATAxis
     pcdsdevices.twincat_motor.TwinCATAxisEPS
+    pcdsdevices.twincat_motor.TwinCATMREAxis
     pcdsdevices.twincat_motor.TwinCATMotorInterface
+
+pcdsdevices.undpoint
+--------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.undpoint.SafeUndPointAbs2D
+    pcdsdevices.undpoint.SafeUndPointAbs2DHutch
+    pcdsdevices.undpoint.SafeUndPointAbs2DSim
+    pcdsdevices.undpoint.UndPointAbs2D
+    pcdsdevices.undpoint.UndPointAbs2DHutch
+    pcdsdevices.undpoint.UndPointAbs2DSim
+    pcdsdevices.undpoint.UndPointDelta2D
+    pcdsdevices.undpoint.UndPointDelta2DSim
+    pcdsdevices.undpoint.coerce_input_to_tuple
 
 pcdsdevices.usb_encoder
 -----------------------

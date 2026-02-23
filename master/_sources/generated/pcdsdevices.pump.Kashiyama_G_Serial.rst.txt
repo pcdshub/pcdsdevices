@@ -1,0 +1,272 @@
+﻿pcdsdevices.pump.Kashiyama\_G\_Serial
+=====================================
+
+.. currentmodule:: pcdsdevices.pump
+
+.. autoclass:: Kashiyama_G_Serial
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - run_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD``
+          - 
+          - normal
+          - 
+    
+        * - run
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RUN_RBV``
+          - 
+          - normal
+          - 
+    
+        * - mode_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OPMODE``
+          - 
+          - normal
+          - 
+    
+        * - mode_cmd_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPMODE_RBV``
+          - 
+          - normal
+          - 
+    
+        * - freq
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FREQ_HZ``
+          - 
+          - normal
+          - 
+    
+        * - freq_cpm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FREQSET``
+          - 
+          - normal
+          - 
+    
+        * - freq_cpm_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FREQSET_RBV``
+          - 
+          - normal
+          - 
+    
+        * - lspd_freq_cpm_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:LOWFREQSET_RBV``
+          - 
+          - normal
+          - 
+    
+        * - current
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CURR_RBV``
+          - 
+          - normal
+          - 
+    
+        * - voltage
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VOLT_RBV``
+          - 
+          - normal
+          - 
+    
+        * - power
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PWR_RBV``
+          - 
+          - normal
+          - 
+    
+        * - motor_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MTRTEMP_RBV``
+          - 
+          - normal
+          - 
+    
+        * - driver_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DRVTEMP_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - ipm_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:IPMTEMP_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - warn
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:WARN_RBV``
+          - 
+          - normal
+          - 
+    
+        * - alarm
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ALM_RBV``
+          - 
+          - normal
+          - 
+    
+        * - error_count
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ERRCNT_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - error_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ERRRST``
+          - 
+          - normal
+          - 
+    
+        * - valve_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VALVE_RBV``
+          - 
+          - normal
+          - 
+    
+        * - fan_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FAN_RBV``
+          - 
+          - normal
+          - 
+    
+        * - overhaul_one
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OVHL1_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - overaul_two
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OVHL2_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - run_time
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RTIME_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - run_time_post_overhaul
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RTIME_OH_RBV``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

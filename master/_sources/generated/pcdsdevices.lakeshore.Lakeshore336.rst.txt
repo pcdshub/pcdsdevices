@@ -104,7 +104,7 @@
     
         * - mode
           - :class:`~ophyd.signal.EpicsSignal`
-          - ``GET_MODE``
+          - ``:GET_MODE``
           - control mode
           - normal
           - 

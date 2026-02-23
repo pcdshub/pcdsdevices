@@ -20,208 +20,244 @@
     
         * - setpoint
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fPosition``
+          - ``:fPosition``
           - 
           - hinted
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - readback
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fActPosition``
+          - ``:fActPosition``
           - 
           - hinted
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - done
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bDone``
+          - ``:bDone``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - actuate
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bMoveCmd``
+          - ``:bMoveCmd``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - stop_signal
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bHalt``
+          - ``:bHalt``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - reset_signal
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bReset``
+          - ``:bReset``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - velocity
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fVelocity``
+          - ``:fVelocity``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - acceleration
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fAcceleration``
+          - ``:fAcceleration``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - deceleration
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fDeceleration``
+          - ``:fDeceleration``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - jerk
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``fJerk``
+          - ``:fJerk``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - enable_mode
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``eEnableMode``
+          - ``:eEnableMode``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - brake_mode
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``eBrakeMode``
+          - ``:eBrakeMode``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - motor_is_moving
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bMoving``
+          - ``:bMoving``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - motor_is_moving_negative
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bNegativeDirection``
+          - ``:bNegativeDirection``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - motor_is_moving_positive
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bPositiveDirection``
+          - ``:bPositiveDirection``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - power_is_enabled
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bPowerIsEnabled``
+          - ``:bPowerIsEnabled``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
+    
+        * - fwd_enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bForwardEnabled``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
+    
+        * - bwd_enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bBackwardEnabled``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - high_limit_switch
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bLimitFwd``
+          - :class:`~pcdsdevices.twincat_motor.InvertedBoolEpicsSignal`
+          - ``fwd_enabled``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - low_limit_switch
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bLimitBwd``
+          - :class:`~pcdsdevices.twincat_motor.InvertedBoolEpicsSignal`
+          - ``bwd_enabled``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - negative_dir_enabled
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bNegativeMotionIsEnabled``
+          - ``:bNegativeMotionIsEnabled``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - positive_dir_enabled
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bPositiveMotionIsEnabled``
+          - ``:bPositiveMotionIsEnabled``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - command
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``eCommand``
+          - ``:eCommand``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - motor_egu
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``sEGU``
+          - ``:NC:Eu:Val``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - low_limit_travel
           - :class:`~ophyd.signal.EpicsSignal`
-          - ``NC:MinPos:Val_RBV``
+          - ``:NC:MinPos:Val_RBV``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - high_limit_travel
           - :class:`~ophyd.signal.EpicsSignal`
-          - ``NC:MaxPos:Val_RBV``
+          - ``:NC:MaxPos:Val_RBV``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - low_limit_enable
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``NC:SoftPosMinOn:Val_RBV``
+          - :class:`~pcdsdevices.twincat_motor.EnabledDisabledSignal`
+          - ``:NC:SoftPosMinOn:Val_RBV``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - high_limit_enable
-          - :class:`~ophyd.signal.EpicsSignal`
-          - ``NC:SoftPosMaxOn:Val_RBV``
+          - :class:`~pcdsdevices.twincat_motor.EnabledDisabledSignal`
+          - ``:NC:SoftPosMaxOn:Val_RBV``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
-        * - homed
+        * - pos_correction
+          - :class:`~pcdsdevices.twincat_motor.EnabledDisabledSignal`
+          - ``:NC:PosCorr:Val_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
+    
+        * - backlash
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:NC:Backlash:Val_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
+    
+        * - pos_cor_status
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``bHomed``
+          - ``:bBacklashStatus``
           - 
           - normal
-          - 
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - home_mode
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``eHomeMode``
+          - ``:eHomeMode``
           - 
           - config
-          - 
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATMotorInterface`
     
         * - plc
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
-          - 
+          - ``:``
           - PLC error handling and aux functions.
           - normal
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -340,6 +376,7 @@
     .. autoattribute:: enabled
     .. autoattribute:: high_limit
     .. autoattribute:: hints
+    .. autoattribute:: homed
     .. autoattribute:: kind
     .. autoattribute:: limits
     .. autoattribute:: low_limit
