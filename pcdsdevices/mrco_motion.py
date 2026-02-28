@@ -31,7 +31,7 @@ class MRCO(BaseInterface, GroupDevice):
     _icon = 'fa.minus-square'
     tab_component_names = True
 
-    ## Motor components
+    # Motor components
     gas_nozzle_x = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
     gas_nozzle_y = Cpt(BeckhoffAxisNoOffset, ':MMS:02', kind='normal')
     gas_nozzle_z = Cpt(BeckhoffAxisNoOffset, ':MMS:03', kind='normal')
@@ -40,16 +40,7 @@ class MRCO(BaseInterface, GroupDevice):
     sample_paddle_y = Cpt(BeckhoffAxisNoOffset, ':MMS:05', kind='normal')
     sample_paddle_z = Cpt(BeckhoffAxisNoOffset, ':MMS:06', kind='normal')
 
-
-
-    ## Motor components rotated
-
+    # Motor components rotated
     sample_paddle_vx = Cpt(BeckhoffAxisNoOffset, ':MMS:V4', kind='normal')
     sample_paddle_vy = Cpt(BeckhoffAxisNoOffset, ':MMS:V5', kind='normal')
     sample_paddle_vz = Cpt(BeckhoffAxisNoOffset, ':MMS:V6', kind='normal')
-
-
-
-
-
-
