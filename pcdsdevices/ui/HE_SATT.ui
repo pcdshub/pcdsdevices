@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
-    <height>191</height>
+    <width>666</width>
+    <height>192</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -70,10 +70,10 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Desired transmission</string>
+          <string>Current Energy</string>
          </property>
         </widget>
        </item>
@@ -81,91 +81,6 @@
         <widget class="QLabel" name="label_6">
          <property name="text">
           <string>Safe power</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_9">
-         <property name="text">
-          <string>Current transmission</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Energy</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="PyDMEnumComboBox" name="PyDMEnumComboBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="editable">
-          <bool>false</bool>
-         </property>
-         <property name="alarmSensitiveContent" stdset="0">
-          <bool>false</bool>
-         </property>
-         <property name="alarmSensitiveBorder" stdset="0">
-          <bool>true</bool>
-         </property>
-         <property name="PyDMToolTip" stdset="0">
-          <string/>
-         </property>
-         <property name="monitorDisp" stdset="0">
-          <bool>false</bool>
-         </property>
-         <property name="channel" stdset="0">
-          <string>ca://${prefix}:TransRoundMode</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="PyDMLabel" name="PyDMLabel_2">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>15365.983</string>
-         </property>
-         <property name="precision" stdset="0">
-          <number>3</number>
-         </property>
-         <property name="showUnits" stdset="0">
-          <bool>false</bool>
-         </property>
-         <property name="precisionFromPV" stdset="0">
-          <bool>true</bool>
-         </property>
-         <property name="alarmSensitiveContent" stdset="0">
-          <bool>false</bool>
-         </property>
-         <property name="alarmSensitiveBorder" stdset="0">
-          <bool>true</bool>
-         </property>
-         <property name="PyDMToolTip" stdset="0">
-          <string/>
-         </property>
-         <property name="channel" stdset="0">
-          <string>ca://PMPS:LFE:PE:UND:CurrentPhotonEnergy_RBV</string>
-         </property>
-         <property name="enableRichText" stdset="0">
-          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -209,6 +124,104 @@
          </property>
          <property name="channel" stdset="0">
           <string>ca://${prefix}:Seq:CurTrans3rdOverall_RBV</string>
+         </property>
+         <property name="enableRichText" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="PyDMEnumComboBox" name="PyDMEnumComboBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="monitorDisp" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${prefix}:TransRoundMode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Current transmission</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Desired transmission</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Mode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="PyDMLabel" name="PyDMLabel_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>ca://${prefix}:PE:Value_RBV</string>
+         </property>
+         <property name="precision" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="showUnits" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="precisionFromPV" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${prefix}:PE:Value_RBV</string>
          </property>
          <property name="enableRichText" stdset="0">
           <bool>false</bool>
@@ -265,13 +278,6 @@
         <widget class="QLabel" name="label_10">
          <property name="text">
           <string>3rd harmonic</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Mode</string>
          </property>
         </widget>
        </item>
@@ -332,6 +338,50 @@
         <number>0</number>
        </property>
        <item>
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Calculated Energy</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_9">
+         <property name="maximumSize">
+          <size>
+           <width>75</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="precision" stdset="0">
+          <number>0</number>
+         </property>
+         <property name="showUnits" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="precisionFromPV" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="alarmSensitiveContent" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="alarmSensitiveBorder" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="PyDMToolTip" stdset="0">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${prefix}:Seq:eVForCalc_RBV</string>
+         </property>
+         <property name="enableRichText" stdset="0">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="label_4">
          <property name="text">
           <string>Calculated transmission</string>
@@ -348,7 +398,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>75</width>
            <height>16777215</height>
           </size>
          </property>
@@ -387,7 +437,7 @@
        <item>
         <widget class="QLabel" name="label_5">
          <property name="text">
-          <string>3rd harmonic</string>
+          <string>Calculated 3rd harmonic</string>
          </property>
         </widget>
        </item>
@@ -401,7 +451,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>75</width>
            <height>16777215</height>
           </size>
          </property>
@@ -440,7 +490,7 @@
        <item>
         <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>Error</string>
+          <string>Calculated Error</string>
          </property>
         </widget>
        </item>
@@ -454,7 +504,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>75</width>
            <height>16777215</height>
           </size>
          </property>
@@ -726,7 +776,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>100</width>
+           <width>200</width>
            <height>16777215</height>
           </size>
          </property>

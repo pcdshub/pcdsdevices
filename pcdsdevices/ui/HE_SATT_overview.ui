@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>519</width>
-    <height>221</height>
+    <height>229</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,47 +91,7 @@
            <property name="topMargin">
             <number>0</number>
            </property>
-           <item row="1" column="6">
-            <widget class="PyDMLabel" name="PyDMLabel_14">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="precision" stdset="0">
-              <number>0</number>
-             </property>
-             <property name="showUnits" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="precisionFromPV" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="alarmSensitiveContent" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="alarmSensitiveBorder" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="PyDMToolTip" stdset="0">
-              <string/>
-             </property>
-             <property name="channel" stdset="0">
-              <string>ca://${prefix}:Holder:04:Name_RBV</string>
-             </property>
-             <property name="enableRichText" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="displayFormat" stdset="0">
-              <enum>PyDMLabel::String</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="6">
+           <item row="4" column="7">
             <widget class="PyDMShellCommand" name="PyDMShellCommand_4">
              <property name="toolTip">
               <string/>
@@ -149,8 +109,8 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="2">
-            <widget class="PyDMLabel" name="PyDMLabel_10">
+           <item row="1" column="5">
+            <widget class="PyDMLabel" name="PyDMLabel_12">
              <property name="toolTip">
               <string/>
              </property>
@@ -179,7 +139,7 @@
               <string/>
              </property>
              <property name="channel" stdset="0">
-              <string>ca://${prefix}:Holder:02:Name_RBV</string>
+              <string>ca://${prefix}:Holder:03:Name_RBV</string>
              </property>
              <property name="enableRichText" stdset="0">
               <bool>false</bool>
@@ -189,111 +149,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="PyDMLabel" name="PyDMLabel_8">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="precision" stdset="0">
-              <number>0</number>
-             </property>
-             <property name="showUnits" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="precisionFromPV" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="alarmSensitiveContent" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="alarmSensitiveBorder" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="PyDMToolTip" stdset="0">
-              <string/>
-             </property>
-             <property name="channel" stdset="0">
-              <string>ca://${prefix}:Holder:01:Name_RBV</string>
-             </property>
-             <property name="enableRichText" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="displayFormat" stdset="0">
-              <enum>PyDMLabel::String</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="PyDMLabel" name="Material">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="text">
-              <string>ca://${prefix}:Holder:01:Enabled_RBV</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="precision" stdset="0">
-              <number>0</number>
-             </property>
-             <property name="showUnits" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="precisionFromPV" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="alarmSensitiveContent" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="alarmSensitiveBorder" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="PyDMToolTip" stdset="0">
-              <string/>
-             </property>
-             <property name="channel" stdset="0">
-              <string>ca://${prefix}:Holder:01:Enabled_RBV</string>
-             </property>
-             <property name="enableRichText" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="displayFormat" stdset="0">
-              <enum>PyDMLabel::String</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="PyDMShellCommand" name="PyDMShellCommand">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="text">
-              <string>Holder</string>
-             </property>
-             <property name="showIcon" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="commands" stdset="0">
-              <stringlist>
-               <string>typhos &quot;pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder[{'prefix':'${prefix}:Holder:01','name':'${name}_holder1'}]&quot;</string>
-              </stringlist>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2">
+           <item row="2" column="3">
             <widget class="PyDMLabel" name="Material_2">
              <property name="toolTip">
               <string/>
@@ -339,22 +195,10 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="4">
-            <widget class="PyDMLabel" name="Material_3">
+           <item row="5" column="7">
+            <widget class="PyDMLineEdit" name="PyDMLineEdit_3">
              <property name="toolTip">
               <string/>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="text">
-              <string>ca://${prefix}:Holder:03:Enabled_RBV</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
              </property>
              <property name="precision" stdset="0">
               <number>0</number>
@@ -374,39 +218,24 @@
              <property name="PyDMToolTip" stdset="0">
               <string/>
              </property>
-             <property name="channel" stdset="0">
-              <string>ca://${prefix}:Holder:03:Enabled_RBV</string>
-             </property>
-             <property name="enableRichText" stdset="0">
+             <property name="monitorDisp" stdset="0">
               <bool>false</bool>
              </property>
-             <property name="displayFormat" stdset="0">
-              <enum>PyDMLabel::String</enum>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:MMSOOP:03:fVelocity</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
-            <widget class="PyDMLabel" name="Thickness_2">
+           <item row="5" column="1">
+            <widget class="PyDMLineEdit" name="PyDMLineEdit">
              <property name="toolTip">
               <string/>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="text">
-              <string>ca://${prefix}:Holder:02:ActiveFiltName_RBV</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
              </property>
              <property name="precision" stdset="0">
               <number>0</number>
              </property>
              <property name="showUnits" stdset="0">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="precisionFromPV" stdset="0">
               <bool>true</bool>
@@ -420,18 +249,15 @@
              <property name="PyDMToolTip" stdset="0">
               <string/>
              </property>
-             <property name="channel" stdset="0">
-              <string>ca://${prefix}:Holder:02:ActiveFiltName_RBV</string>
-             </property>
-             <property name="enableRichText" stdset="0">
+             <property name="monitorDisp" stdset="0">
               <bool>false</bool>
              </property>
-             <property name="displayFormat" stdset="0">
-              <enum>PyDMLabel::String</enum>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:MMSOOP:02:fVelocity</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="6">
+           <item row="3" column="7">
             <widget class="PyDMLabel" name="Thickness_4">
              <property name="toolTip">
               <string/>
@@ -477,136 +303,8 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="2">
-            <widget class="PyDMShellCommand" name="PyDMShellCommand_2">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="text">
-              <string>Holder</string>
-             </property>
-             <property name="showIcon" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="commands" stdset="0">
-              <stringlist>
-               <string>typhos &quot;pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder[{'prefix':'${prefix}:Holder:02','name':'${name}_holder2'}]&quot;</string>
-              </stringlist>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="4">
-            <widget class="PyDMShellCommand" name="PyDMShellCommand_3">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="text">
-              <string>Holder</string>
-             </property>
-             <property name="showIcon" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="commands" stdset="0">
-              <stringlist>
-               <string>typhos &quot;pcdsdevices.attenuator.HE_SATT_Wedge_Holder[{'prefix':'${prefix}:Holder:03','name':'${name}_holder3'}]&quot;</string>
-              </stringlist>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="PyDMLabel" name="Thickness">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="text">
-              <string>ca://${prefix}:Holder:01:ActiveFiltName_RBV</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="precision" stdset="0">
-              <number>0</number>
-             </property>
-             <property name="showUnits" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="precisionFromPV" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="alarmSensitiveContent" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="alarmSensitiveBorder" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="PyDMToolTip" stdset="0">
-              <string/>
-             </property>
-             <property name="channel" stdset="0">
-              <string>ca://${prefix}:Holder:01:ActiveFiltName_RBV</string>
-             </property>
-             <property name="enableRichText" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="displayFormat" stdset="0">
-              <enum>PyDMLabel::String</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="4">
-            <widget class="PyDMLabel" name="Thickness_3">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"/>
-             </property>
-             <property name="text">
-              <string>ca://${prefix}:Holder:03:ActiveFiltName_RBV</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="precision" stdset="0">
-              <number>0</number>
-             </property>
-             <property name="showUnits" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="precisionFromPV" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="alarmSensitiveContent" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="alarmSensitiveBorder" stdset="0">
-              <bool>true</bool>
-             </property>
-             <property name="PyDMToolTip" stdset="0">
-              <string/>
-             </property>
-             <property name="channel" stdset="0">
-              <string>ca://${prefix}:Holder:03:ActiveFiltName_RBV</string>
-             </property>
-             <property name="enableRichText" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="displayFormat" stdset="0">
-              <enum>PyDMLabel::String</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="4">
-            <widget class="PyDMLabel" name="PyDMLabel_12">
+           <item row="1" column="7">
+            <widget class="PyDMLabel" name="PyDMLabel_14">
              <property name="toolTip">
               <string/>
              </property>
@@ -635,7 +333,7 @@
               <string/>
              </property>
              <property name="channel" stdset="0">
-              <string>ca://${prefix}:Holder:03:Name_RBV</string>
+              <string>ca://${prefix}:Holder:04:Name_RBV</string>
              </property>
              <property name="enableRichText" stdset="0">
               <bool>false</bool>
@@ -645,7 +343,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="6">
+           <item row="2" column="7">
             <widget class="PyDMLabel" name="Material_4">
              <property name="toolTip">
               <string/>
@@ -691,7 +389,84 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
+           <item row="5" column="5">
+            <widget class="PyDMLineEdit" name="PyDMLineEdit_2">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="precision" stdset="0">
+              <number>0</number>
+             </property>
+             <property name="showUnits" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveBorder" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="PyDMToolTip" stdset="0">
+              <string/>
+             </property>
+             <property name="monitorDisp" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:MMSOOP:01:fVelocity</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="PyDMLabel" name="Material">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>ca://${prefix}:Holder:01:Enabled_RBV</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="precision" stdset="0">
+              <number>0</number>
+             </property>
+             <property name="showUnits" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveBorder" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="PyDMToolTip" stdset="0">
+              <string/>
+             </property>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:Holder:01:Enabled_RBV</string>
+             </property>
+             <property name="enableRichText" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="displayFormat" stdset="0">
+              <enum>PyDMLabel::String</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
             <widget class="PyDMShellCommand" name="PyDMShellCommand_5">
              <property name="toolTip">
               <string/>
@@ -709,25 +484,111 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="2">
-            <widget class="PyDMShellCommand" name="PyDMShellCommand_6">
+           <item row="2" column="5">
+            <widget class="PyDMLabel" name="Material_3">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>ca://${prefix}:Holder:03:Enabled_RBV</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="precision" stdset="0">
+              <number>0</number>
+             </property>
+             <property name="showUnits" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveBorder" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="PyDMToolTip" stdset="0">
+              <string/>
+             </property>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:Holder:03:Enabled_RBV</string>
+             </property>
+             <property name="enableRichText" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="displayFormat" stdset="0">
+              <enum>PyDMLabel::String</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="5">
+            <widget class="PyDMShellCommand" name="PyDMShellCommand_3">
              <property name="toolTip">
               <string/>
              </property>
              <property name="text">
-              <string>Axis</string>
+              <string>Holder</string>
              </property>
              <property name="showIcon" stdset="0">
               <bool>false</bool>
              </property>
              <property name="commands" stdset="0">
               <stringlist>
-               <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:04','name':'${name}_holder2_axis'}]&quot;</string>
+               <string>typhos &quot;pcdsdevices.attenuator.HE_SATT_Wedge_Holder[{'prefix':'${prefix}:Holder:03','name':'${name}_holder3'}]&quot;</string>
               </stringlist>
              </property>
             </widget>
            </item>
-           <item row="5" column="4">
+           <item row="1" column="3">
+            <widget class="PyDMLabel" name="PyDMLabel_10">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="precision" stdset="0">
+              <number>0</number>
+             </property>
+             <property name="showUnits" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveBorder" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="PyDMToolTip" stdset="0">
+              <string/>
+             </property>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:Holder:02:Name_RBV</string>
+             </property>
+             <property name="enableRichText" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="displayFormat" stdset="0">
+              <enum>PyDMLabel::String</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="5">
             <widget class="PyDMShellCommand" name="PyDMShellCommand_7">
              <property name="toolTip">
               <string/>
@@ -745,7 +606,148 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="6">
+           <item row="3" column="5">
+            <widget class="PyDMLabel" name="Thickness_3">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>ca://${prefix}:Holder:03:ActiveFiltName_RBV</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="precision" stdset="0">
+              <number>0</number>
+             </property>
+             <property name="showUnits" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveBorder" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="PyDMToolTip" stdset="0">
+              <string/>
+             </property>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:Holder:03:ActiveFiltName_RBV</string>
+             </property>
+             <property name="enableRichText" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="displayFormat" stdset="0">
+              <enum>PyDMLabel::String</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="3">
+            <widget class="PyDMLineEdit" name="PyDMLineEdit_4">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="precision" stdset="0">
+              <number>0</number>
+             </property>
+             <property name="showUnits" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveBorder" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="PyDMToolTip" stdset="0">
+              <string/>
+             </property>
+             <property name="monitorDisp" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:MMSOOP:04:fVelocity</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="PyDMLabel" name="Thickness">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>ca://${prefix}:Holder:01:ActiveFiltName_RBV</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="precision" stdset="0">
+              <number>0</number>
+             </property>
+             <property name="showUnits" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveBorder" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="PyDMToolTip" stdset="0">
+              <string/>
+             </property>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:Holder:01:ActiveFiltName_RBV</string>
+             </property>
+             <property name="enableRichText" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="displayFormat" stdset="0">
+              <enum>PyDMLabel::String</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="PyDMShellCommand" name="PyDMShellCommand">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="text">
+              <string>Holder</string>
+             </property>
+             <property name="showIcon" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="commands" stdset="0">
+              <stringlist>
+               <string>typhos &quot;pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder[{'prefix':'${prefix}:Holder:01','name':'${name}_holder1'}]&quot;</string>
+              </stringlist>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="7">
             <widget class="PyDMShellCommand" name="PyDMShellCommand_8">
              <property name="toolTip">
               <string/>
@@ -760,6 +762,180 @@
               <stringlist>
                <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:03','name':'${name}_holder4_axis'}]&quot;</string>
               </stringlist>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="3">
+            <widget class="PyDMShellCommand" name="PyDMShellCommand_6">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="text">
+              <string>Axis</string>
+             </property>
+             <property name="showIcon" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="commands" stdset="0">
+              <stringlist>
+               <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:04','name':'${name}_holder2_axis'}]&quot;</string>
+              </stringlist>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="3">
+            <widget class="PyDMLabel" name="Thickness_2">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>ca://${prefix}:Holder:02:ActiveFiltName_RBV</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="precision" stdset="0">
+              <number>0</number>
+             </property>
+             <property name="showUnits" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveBorder" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="PyDMToolTip" stdset="0">
+              <string/>
+             </property>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:Holder:02:ActiveFiltName_RBV</string>
+             </property>
+             <property name="enableRichText" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="displayFormat" stdset="0">
+              <enum>PyDMLabel::String</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="3">
+            <widget class="PyDMShellCommand" name="PyDMShellCommand_2">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="text">
+              <string>Holder</string>
+             </property>
+             <property name="showIcon" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="commands" stdset="0">
+              <stringlist>
+               <string>typhos &quot;pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder[{'prefix':'${prefix}:Holder:02','name':'${name}_holder2'}]&quot;</string>
+              </stringlist>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="PyDMLabel" name="PyDMLabel_8">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="precision" stdset="0">
+              <number>0</number>
+             </property>
+             <property name="showUnits" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="precisionFromPV" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveBorder" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="PyDMToolTip" stdset="0">
+              <string/>
+             </property>
+             <property name="channel" stdset="0">
+              <string>ca://${prefix}:Holder:01:Name_RBV</string>
+             </property>
+             <property name="enableRichText" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="displayFormat" stdset="0">
+              <enum>PyDMLabel::String</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Holder Name</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Holder Enabled</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Active Filter</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="label_7">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Velocity (mm/s)</string>
              </property>
             </widget>
            </item>
@@ -884,6 +1060,11 @@
    <extends>QFrame</extends>
    <header>pydm.widgets.frame</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PyDMLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>pydm.widgets.line_edit</header>
   </customwidget>
   <customwidget>
    <class>PyDMShellCommand</class>

@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>833</width>
+    <width>1063</width>
     <height>503</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_7" stretch="1,0,0,0,0">
    <property name="spacing">
@@ -179,13 +182,13 @@
             <string/>
            </property>
            <property name="text">
-            <string>15365.794 eV</string>
+            <string>ca://${prefix}:Seq:eVForCalc_RBV</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
            <property name="precision" stdset="0">
-            <number>3</number>
+            <number>0</number>
            </property>
            <property name="showUnits" stdset="0">
             <bool>true</bool>
@@ -203,7 +206,7 @@
             <string/>
            </property>
            <property name="channel" stdset="0">
-            <string>ca://PMPS:LFE:PE:UND:CurrentPhotonEnergy_RBV</string>
+            <string>ca://${prefix}:Seq:eVForCalc_RBV</string>
            </property>
            <property name="enableRichText" stdset="0">
             <bool>false</bool>
@@ -629,13 +632,13 @@
             <string notr="true"/>
            </property>
            <property name="text">
-            <string>15365.794 eV</string>
+            <string>ca://${prefix}:Seq:eVForCalc_RBV</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
            </property>
            <property name="precision" stdset="0">
-            <number>3</number>
+            <number>0</number>
            </property>
            <property name="showUnits" stdset="0">
             <bool>true</bool>
@@ -653,7 +656,7 @@
             <string/>
            </property>
            <property name="channel" stdset="0">
-            <string>ca://PMPS:LFE:PE:UND:CurrentPhotonEnergy_RBV</string>
+            <string>ca://${prefix}:Seq:eVForCalc_RBV</string>
            </property>
            <property name="enableRichText" stdset="0">
             <bool>false</bool>
@@ -794,7 +797,38 @@
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="1">
+        <item row="2" column="1">
+         <widget class="PyDMLabel" name="PyDMLabel_11">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string/>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${prefix}:Seq:Optimal:01:Thickness_RBV</string>
+          </property>
+          <property name="enableRichText" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
          <widget class="PyDMLabel" name="PyDMLabel_4">
           <property name="toolTip">
            <string/>
@@ -828,7 +862,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
+        <item row="0" column="1">
          <widget class="PyDMLabel" name="PyDMLabel_5">
           <property name="toolTip">
            <string/>
@@ -862,72 +896,69 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="2">
+         <widget class="PyDMLabel" name="PyDMLabel_12">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string/>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${prefix}:Seq:Optimal:02:Material_RBV</string>
+          </property>
+          <property name="enableRichText" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="PyDMLabel" name="PyDMLabel_14">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string/>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${prefix}:Seq:Optimal:03:Material_RBV</string>
+          </property>
+          <property name="enableRichText" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="3">
-         <widget class="PyDMLabel" name="PyDMLabel_2">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="precision" stdset="0">
-           <number>0</number>
-          </property>
-          <property name="showUnits" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="precisionFromPV" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="alarmSensitiveContent" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="alarmSensitiveBorder" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="PyDMToolTip" stdset="0">
-           <string/>
-          </property>
-          <property name="channel" stdset="0">
-           <string>ca://${prefix}:Seq:Optimal:04:Name_RBV</string>
-          </property>
-          <property name="enableRichText" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="displayFormat" stdset="0">
-           <enum>PyDMLabel::String</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="PyDMLabel" name="PyDMLabel_6">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="precision" stdset="0">
-           <number>0</number>
-          </property>
-          <property name="showUnits" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="precisionFromPV" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="alarmSensitiveContent" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="alarmSensitiveBorder" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="PyDMToolTip" stdset="0">
-           <string/>
-          </property>
-          <property name="channel" stdset="0">
-           <string>ca://${prefix}:Seq:Optimal:01:Material_RBV</string>
-          </property>
-          <property name="enableRichText" stdset="0">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
          <widget class="PyDMLabel" name="PyDMLabel_3">
           <property name="toolTip">
            <string/>
@@ -961,131 +992,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
-         <widget class="PyDMLabel" name="PyDMLabel_11">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="precision" stdset="0">
-           <number>0</number>
-          </property>
-          <property name="showUnits" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="precisionFromPV" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="alarmSensitiveContent" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="alarmSensitiveBorder" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="PyDMToolTip" stdset="0">
-           <string/>
-          </property>
-          <property name="channel" stdset="0">
-           <string>ca://${prefix}:Seq:Optimal:01:Thickness_RBV</string>
-          </property>
-          <property name="enableRichText" stdset="0">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="PyDMLabel" name="PyDMLabel_12">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="precision" stdset="0">
-           <number>0</number>
-          </property>
-          <property name="showUnits" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="precisionFromPV" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="alarmSensitiveContent" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="alarmSensitiveBorder" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="PyDMToolTip" stdset="0">
-           <string/>
-          </property>
-          <property name="channel" stdset="0">
-           <string>ca://${prefix}:Seq:Optimal:02:Material_RBV</string>
-          </property>
-          <property name="enableRichText" stdset="0">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="PyDMLabel" name="PyDMLabel_13">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="precision" stdset="0">
-           <number>0</number>
-          </property>
-          <property name="showUnits" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="precisionFromPV" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="alarmSensitiveContent" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="alarmSensitiveBorder" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="PyDMToolTip" stdset="0">
-           <string/>
-          </property>
-          <property name="channel" stdset="0">
-           <string>ca://${prefix}:Seq:Optimal:02:Thickness_RBV</string>
-          </property>
-          <property name="enableRichText" stdset="0">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="PyDMLabel" name="PyDMLabel_14">
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="precision" stdset="0">
-           <number>0</number>
-          </property>
-          <property name="showUnits" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="precisionFromPV" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="alarmSensitiveContent" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="alarmSensitiveBorder" stdset="0">
-           <bool>true</bool>
-          </property>
-          <property name="PyDMToolTip" stdset="0">
-           <string/>
-          </property>
-          <property name="channel" stdset="0">
-           <string>ca://${prefix}:Seq:Optimal:03:Material_RBV</string>
-          </property>
-          <property name="enableRichText" stdset="0">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
+        <item row="2" column="3">
          <widget class="PyDMLabel" name="PyDMLabel_15">
           <property name="toolTip">
            <string/>
@@ -1116,7 +1023,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="3">
+        <item row="1" column="4">
          <widget class="PyDMLabel" name="PyDMLabel_16">
           <property name="toolTip">
            <string/>
@@ -1147,7 +1054,103 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="3">
+        <item row="1" column="1">
+         <widget class="PyDMLabel" name="PyDMLabel_6">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string/>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${prefix}:Seq:Optimal:01:Material_RBV</string>
+          </property>
+          <property name="enableRichText" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="PyDMLabel" name="PyDMLabel_2">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string/>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${prefix}:Seq:Optimal:04:Name_RBV</string>
+          </property>
+          <property name="enableRichText" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="displayFormat" stdset="0">
+           <enum>PyDMLabel::String</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="PyDMLabel" name="PyDMLabel_13">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string/>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${prefix}:Seq:Optimal:02:Thickness_RBV</string>
+          </property>
+          <property name="enableRichText" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="4">
          <widget class="PyDMLabel" name="PyDMLabel_17">
           <property name="toolTip">
            <string/>
@@ -1175,6 +1178,45 @@
           </property>
           <property name="enableRichText" stdset="0">
            <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Filter Name</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Material</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Thickness</string>
           </property>
          </widget>
         </item>

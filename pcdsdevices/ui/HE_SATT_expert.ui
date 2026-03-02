@@ -14,7 +14,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">/cds/group/pcds/pyps/conda/py312/envs/pcds-6.0.1/lib/python3.12/site-packages/typhos/ui/style.qss</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
    <property name="spacing">
@@ -43,10 +43,10 @@
      <widget class="QWidget" name="scrollAreaWidgetContents">
       <property name="geometry">
        <rect>
-        <x>-100</x>
+        <x>0</x>
         <y>0</y>
         <width>1250</width>
-        <height>813</height>
+        <height>815</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -54,6 +54,9 @@
         <widget class="TyphosDisplayTitle" name="TyphosDisplayTitle">
          <property name="toolTip">
           <string/>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
          </property>
         </widget>
        </item>
