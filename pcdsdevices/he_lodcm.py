@@ -125,10 +125,7 @@ class HE_LODCM(BaseInterface, GroupDevice):
     tct2 = Cpt(Lakeshore336, ':TCT:02', kind='normal', doc='Crystal 2 temperature controller')
 
     def format_status_info(self, status_info):
-        try:
-            energy = self.energy.get()
-        except Exception:
-            energy = 'Unknown'
+        energy = get_status_float(status_info, 'energy', 'value')
 
         def motor_status(attr, status_info):
             units = get_status_value(
