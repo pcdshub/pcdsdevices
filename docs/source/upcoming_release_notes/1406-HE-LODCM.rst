@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Fixing mode and units pvs for Lakeshore336
 
 Maintenance
 -----------
