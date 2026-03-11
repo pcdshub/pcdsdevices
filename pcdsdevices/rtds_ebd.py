@@ -1,49 +1,11 @@
 from lightpath import LightpathState
 from ophyd import Component as Cpt
-from ophyd import Signal
 
 from .device import GroupDevice
 from .epics_motor import BeckhoffAxis
-from .inout import InOutPositioner
 from .interface import BaseInterface, LightpathInOutCptMixin, LightpathMixin
-from .signal import EpicsSignalRO, PytmcSignal
-
-
-class PneumaticActuator(InOutPositioner):
-    states_list = ['RETRACTED', 'INSERTED', 'MOVING', 'INVALID']
-    in_states = ['INSERTED']
-    out_states = ['RETRACTED']
-    _invalid_states = ['MOVING', 'INVALID']
-    _unknown = False
-
-    state = Cpt(PytmcSignal, ':POS_STATE', io='i', kind='hinted')
-
-    in_sw = Cpt(PytmcSignal, ':IN', io='i', kind='normal')
-    out_sw = Cpt(PytmcSignal, ':OUT', io='i', kind='normal')
-    error = Cpt(PytmcSignal, ':ERROR', io='i', kind='normal')
-
-    in_cmd = Cpt(PytmcSignal, ':IN_CMD', io='io', kind='config')
-    out_cmd = Cpt(PytmcSignal, ':OUT_CMD', io='io', kind='config')
-    filter_type = Cpt(Signal, value='Unknown filter', kind='config')
-
-    done = Cpt(PytmcSignal, ':MOT_DONE', io='i', kind='omitted')
-
-    def __init__(self, prefix, *, name, transmission=1,
-                 filter_type='Unknown filter', **kwargs):
-        self._transmission = {'INSERTED': transmission}
-        super().__init__(prefix, name=name, **kwargs)
-        self.filter_type.put(filter_type)
-
-    def _do_move(self, state):
-        """
-        Override state move because we can't use the default.
-
-        Here we need to put 1 to the proper command pv.
-        """
-        if state.name == 'INSERTED':
-            self.in_cmd.put(1)
-        elif state.name == 'RETRACTED':
-            self.out_cmd.put(1)
+from .pneumatic import PneumaticActuator
+from .signal import EpicsSignalRO
 
 
 class RTDSX0ThreeStage(BaseInterface, LightpathMixin):
