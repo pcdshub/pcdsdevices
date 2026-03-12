@@ -1,4 +1,4 @@
-1407 mrco_endstation_update
+1406 HE-LODCM
 #################
 
 API Breaks
@@ -11,15 +11,15 @@ Library Features
 
 Device Features
 ---------------
-- Added the virtual motors for rotation axes of the mrco sample paddle
+- N/A
 
 New Devices
 -----------
-- N/A
+- HE_LODCM - 16 axes, 2 lakeshores, and an energy pseudopositioner
 
 Bugfixes
 --------
-- N/A
+- Fixing mode and units pvs for Lakeshore336
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- kdborne
+- KaushikMalapati
