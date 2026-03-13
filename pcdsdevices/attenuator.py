@@ -22,13 +22,15 @@ from .analog_signals import FDQ
 from .device import GroupDevice
 from .device import UnrelatedComponent as UCpt
 from .device import UpdateComponent as UpCpt
-from .epics_motor import BeckhoffAxisNoOffset
+from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin)
 from .pmps import TwinCATStatePMPS
 from .pv_positioner import PVPositionerNoInterrupt
-from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO
+from .sensors import TwinCATTempSensor
+from .signal import (InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO,
+                     PytmcSignal)
 from .type_hints import OphydDataType, SignalToValue
 from .utils import get_status_float, get_status_value
 from .valve import VCN, VVC
@@ -1885,3 +1887,127 @@ def render_ascii_att(blade_states, *, start_index=0):
     return [separator.join(filter_line + ['']),
             separator.join(out_line + ['']),
             separator.join(in_line + [''])]
+
+
+class HE_SATT_Filter(BaseInterface, Device):
+    filter_name = Cpt(PytmcSignal, ':Name', io='io', kind='normal', doc='Name of filter', string=True)
+    help_config_start_pos = Cpt(PytmcSignal, ':HelpConfigStartPos', io='i', kind='normal', doc='Help information for configuration of start position', string=True)
+    help_config_end_pos = Cpt(PytmcSignal, ':HelpConfigEndPos', io='i', kind='normal', doc='Help information for configuration of end position', string=True)
+    material = Cpt(PytmcSignal, ':Material', io='io', kind='normal', doc='Material of filter', string=True)
+    start_pos = Cpt(PytmcSignal, ':StartPos', io='io', kind='normal', doc='Start position of filter in holder in axis coordinates')
+    end_pos = Cpt(PytmcSignal, ':EndPos', io='io', kind='normal', doc='End position of filter in holder in axis coordinates')
+    status = Cpt(PytmcSignal, ':Status', io='io', kind='normal', doc='Status of filter', string=True)
+
+
+class HE_SATT_FilterWedge(HE_SATT_Filter):
+    start_thickness = Cpt(PytmcSignal, ':ThickAtStartPos', io='io', kind='normal',
+                          doc='Thickness of filter at start position in mm.')
+    end_thickness = Cpt(PytmcSignal, ':ThickAtEndPos', io='io', kind='normal',
+                        doc='Thickness of filter at end position in mm.')
+    target_thickness = Cpt(PytmcSignal, ':TargetThick', io='i', kind='normal',
+                           doc='Thickness of filter target in mm.')
+    target_pos = Cpt(PytmcSignal, ':TargetPos', io='i', kind='normal',
+                     doc='Position of filter target in axis units.')
+    target_pos_tolerance = Cpt(PytmcSignal, ':TargetPosTol', io='io', kind='normal',
+                               doc='Allowable range of manual motion around target position.')
+
+
+class HE_SATT_FilterConstantThickness(HE_SATT_Filter):
+    thickness = Cpt(PytmcSignal, ':Thickness', io='io', kind='normal',
+                    doc='Thickness of filter in mm.')
+    target_pos = Cpt(PytmcSignal, ':TargetPos', io='io', kind='normal',
+                     doc='Position of filter target in axis units.')
+
+
+class HE_SATT_Sequence(BaseInterface, Device):
+    state = Cpt(PytmcSignal, ':State', io='i', kind='normal',
+                doc='Current solid attenuator sequence state.', string=True)
+    curr_trans = Cpt(PytmcSignal, ':CurTransOverall', io='i', kind='normal',
+                     doc='Current transmission through all holders.')
+    curr_trans_3d = Cpt(PytmcSignal, ':CurTrans3rdOverall', io='i', kind='normal',
+                        doc='Current third harmonic transmission through all holders.')
+    curr_safe_power = Cpt(PytmcSignal, ':CurSafePowerOverall', io='i', kind='normal',
+                          doc='Current overall safe power accounting for attenuation.')
+    chosen_filters_active = Cpt(PytmcSignal, ':ChosenFiltersActive', io='i', kind='normal',
+                                doc='False if chosen filters moved off of.', string=True)
+    optimal_filter_1 = Cpt(HE_SATT_FilterConstantThickness, ':Optimal:01', kind='normal')
+    optimal_filter_2 = Cpt(HE_SATT_FilterConstantThickness, ':Optimal:02', kind='normal')
+    optimal_filter_3 = Cpt(HE_SATT_FilterWedge, ':Optimal:03', kind='normal')
+    optimal_filter_4 = Cpt(HE_SATT_FilterWedge, ':Optimal:04', kind='normal')
+
+
+class HE_SATT_Commands(BaseInterface, Device):
+    permit_move = Cpt(PytmcSignal, ':CmdPermitMove', io='io', kind='normal',
+                      doc='Permit attenuator to move.', string=True)
+    reset = Cpt(PytmcSignal, ':CmdReset', io='io', kind='normal',
+                doc='Reset attenuator sequence.')
+    request_trans = Cpt(PytmcSignal, ':CmdReqTrans', io='io', kind='normal',
+                        doc='Request transmission.')
+    request_atten = Cpt(PytmcSignal, ':CmdReqAtten', io='io', kind='normal',
+                        doc='Request attenuation.')
+    requested_trans = Cpt(PytmcSignal, ':Trans', io='io', kind='normal',
+                          doc='Requested transmission value.')
+    requested_atten = Cpt(PytmcSignal, ':Atten', io='io', kind='normal',
+                          doc='Requested attenuation value.')
+    trans_rounding_mode = Cpt(PytmcSignal, ':TransRoundMode', io='io', kind='normal',
+                              doc='Requested transmission rounding mode.')
+    atten_rounding_mode = Cpt(PytmcSignal, ':AttenRoundMode', io='io', kind='normal',
+                              doc='Requested attenuation rounding mode.')
+
+
+class HE_SATT_FilterHolder(BaseInterface, Device):
+    holder_name = Cpt(PytmcSignal, ':Name', io='io', kind='normal',
+                      doc='Name of filter.', string=True)
+    enabled = Cpt(PytmcSignal, ':Enabled', io='io', kind='normal',
+                  doc='Filter enabled for transmission requests.', string=True)
+    curr_trans = Cpt(PytmcSignal, ':CurTrans', io='i', kind='normal',
+                     doc='Current transmission through this holder.')
+    curr_trans_3rd = Cpt(PytmcSignal, ':CurTrans3rd', io='i', kind='normal',
+                         doc='Current third harmonic transmission through this holder.')
+    curr_safe_power = Cpt(PytmcSignal, ':CurSafePower', io='i', kind='normal',
+                          doc='Current safe power for this holder in watts.')
+    out_position = Cpt(PytmcSignal, ':OutPos', io='io', kind='normal',
+                       doc='Out position for holder in axis units.')
+    active_filter = Cpt(PytmcSignal, ':ActiveFiltName', io='i', kind='normal',
+                        doc='Name of active filter in this holder or None.', string=True)
+    rtd1 = Cpt(TwinCATTempSensor, ':RTD:01', kind='normal', doc='First thermocouple.')
+    rtd2 = Cpt(TwinCATTempSensor, ':RTD:02', kind='normal', doc='Second thermocouple.')
+
+
+class HE_SATT_Wedge_Holder(HE_SATT_FilterHolder):
+    wedge1 = Cpt(HE_SATT_FilterWedge, ':Filter:01', kind='normal')
+    wedge2 = Cpt(HE_SATT_FilterWedge, ':Filter:02', kind='normal')
+
+
+class HE_SATT_ConstantThickness_Holder(HE_SATT_FilterHolder):
+    filter1 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:01', kind='normal')
+    filter2 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:02', kind='normal')
+    filter3 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:03', kind='normal')
+    filter4 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:04', kind='normal')
+    filter5 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:05', kind='normal')
+    filter6 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:06', kind='normal')
+    filter7 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:07', kind='normal')
+    filter8 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:08', kind='normal')
+    filter9 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:09', kind='normal')
+    filter10 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:10', kind='normal')
+    filter11 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:11', kind='normal')
+    filter12 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:12', kind='normal')
+
+
+class HE_SATT(BaseInterface, Device):
+    max_beam_power = Cpt(PytmcSignal, ':MaxBeamPower', io='io', kind='config', doc='Max expected beam power')
+    trans_error = Cpt(PytmcSignal, ':TransError', io='i', kind='config', doc='Transmission error')
+    sequence = Cpt(HE_SATT_Sequence, ':Seq', kind='normal')
+    commands = Cpt(HE_SATT_Commands, '', kind='normal')
+    holder1 = Cpt(HE_SATT_ConstantThickness_Holder, ':Holder:01', kind='normal')
+    holder1_axis = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
+    holder1_velo = Cpt(PytmcSignal, ':MMSOOP:02:fVelocity', io='io', kind='normal')
+    holder2 = Cpt(HE_SATT_ConstantThickness_Holder, ':Holder:02', kind='normal')
+    holder2_axis = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
+    holder2_velo = Cpt(PytmcSignal, ':MMSOOP:04:fVelocity', io='io', kind='normal')
+    holder3 = Cpt(HE_SATT_Wedge_Holder, ':Holder:03', kind='normal')
+    holder3_axis = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
+    holder3_velo = Cpt(PytmcSignal, ':MMSOOP:01:fVelocity', io='io', kind='normal')
+    holder4 = Cpt(HE_SATT_Wedge_Holder, ':Holder:04', kind='normal')
+    holder4_axis = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
+    holder4_velo = Cpt(PytmcSignal, ':MMSOOP:03:fVelocity', io='io', kind='normal')
