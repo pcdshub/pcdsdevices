@@ -374,6 +374,10 @@ class LaserTiming(FltMvInterface, PVPositioner):
         new_offset = position - self.setpoint.get()
         self.user_offset.put(new_offset)
 
+        # Update the notepad readback to reflect the new position
+        if self.notepad_readback.connected and self.notepad_readback.write_access:
+            self.notepad_readback.put(position, wait=False)
+
     @property
     def dial_pos(self):
         """

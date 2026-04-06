@@ -1,0 +1,30 @@
+1409 lxe.py update position
+#################
+
+API Breaks
+----------
+- N/A
+
+Library Features
+----------------
+- N/A
+
+Device Features
+---------------
+- N/A
+
+New Devices
+-----------
+- N/A
+
+Bugfixes
+--------
+- This bugfix now updates the lxt motor PV after setting current position to zero in the set_current_position function lxe.py, since normally the PV is not updated until the motor moves.
+
+Maintenance
+-----------
+- N/A
+
+Contributors
+------------
+- Carolyn Gee
