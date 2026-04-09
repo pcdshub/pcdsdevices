@@ -11,7 +11,6 @@ from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
 
 
-
 class MBES(BaseInterface, GroupDevice):
     """
     MBES Motion Class
@@ -44,8 +43,3 @@ class MBES(BaseInterface, GroupDevice):
     gas_needle_z = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
 
     sample_paddle = Cpt(BeckhoffAxis, ':MMS:010', kind='normal')
-
-   
-
-
-
