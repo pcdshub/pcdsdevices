@@ -1,7 +1,7 @@
 """
 MBES Motion Classes
 
-This module contains classes related to the TMO-MOTION Motion System
+This module contains classes related to the TMO-MBES Motion System
 """
 
 from ophyd import Component as Cpt
@@ -16,7 +16,7 @@ class MBES(BaseInterface, GroupDevice):
     MBES Motion Class
 
     This class controls motors fixed to the MBES Motion system for the IP1
-    endstation in TMO. It also controls LED rings for the endstation.
+    endstation in TMO.
 
     Parameters
     ----------
@@ -42,4 +42,4 @@ class MBES(BaseInterface, GroupDevice):
     gas_needle_y = Cpt(BeckhoffAxis, ':MMS:08', kind='normal')
     gas_needle_z = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
 
-    sample_paddle = Cpt(BeckhoffAxis, ':MMS:010', kind='normal')
+    sample_paddle = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
