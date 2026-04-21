@@ -803,7 +803,7 @@ class TwinCATStatePositioner(StatePositioner):
                doc='True if we have an ongoing move.')
     done = Cpt(PytmcSignal, ':DONE', io='i', kind='normal',
                doc='True if we completed the last move.')
-    reset_cmd = Cpt(EpicsSignal, ':RESET', kind='normal',
+    reset_cmd = Cpt(PytmcSignal, ':RESET', io='io', kind='normal',
                     doc='Command to reset an error.')
 
     config = Cpt(

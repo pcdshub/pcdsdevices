@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>354</width>
+    <height>380</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>350</width>
+    <height>380</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinimumSize</enum>
+   </property>
+   <item>
+    <widget class="TyphosDisplayTitle" name="title">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="tilt_indicators_widget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>158</width>
+       <height>101</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>25</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="step_count_row">
+        <item row="3" column="1" alignment="Qt::AlignHCenter">
+         <widget class="QCheckBox" name="invert_tilt">
+          <property name="text">
+           <string>Invert</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="PyDMLabel" name="tilt_step_count">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>25</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string>Total Step Count</string>
+          </property>
+          <property name="channel" stdset="0">
+           <string/>
+          </property>
+          <property name="enableRichText" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="PyDMLineEdit" name="tilt_step_size">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string>Step Size</string>
+          </property>
+          <property name="monitorDisp" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="channel" stdset="0">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetFixedSize</enum>
+     </property>
+     <item>
+      <widget class="QWidget" name="embedded" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="4" column="1">
+         <layout class="QGridLayout" name="dpad_step_grid">
+          <item row="2" column="2">
+           <widget class="PyDMPushButton" name="tip_forward">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>35</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="alarmSensitiveContent" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alarmSensitiveBorder" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="PyDMToolTip" stdset="0">
+             <string/>
+            </property>
+            <property name="monitorDisp" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="channel" stdset="0">
+             <string/>
+            </property>
+            <property name="PyDMIcon" stdset="0">
+             <string>caret-right</string>
+            </property>
+            <property name="PyDMIconColor" stdset="0">
+             <color>
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </property>
+            <property name="passwordProtected" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="password" stdset="0">
+             <string/>
+            </property>
+            <property name="protectedPassword" stdset="0">
+             <string/>
+            </property>
+            <property name="showConfirmDialog" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="confirmMessage" stdset="0">
+             <string>Are you sure you want to proceed?</string>
+            </property>
+            <property name="pressValue" stdset="0">
+             <string>1</string>
+            </property>
+            <property name="releaseValue" stdset="0">
+             <string>None</string>
+            </property>
+            <property name="relativeChange" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="writeWhenRelease" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="dpad_label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Step</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="PyDMPushButton" name="tip_reverse">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>35</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="alarmSensitiveContent" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alarmSensitiveBorder" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="PyDMToolTip" stdset="0">
+             <string/>
+            </property>
+            <property name="monitorDisp" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="channel" stdset="0">
+             <string/>
+            </property>
+            <property name="PyDMIcon" stdset="0">
+             <string>caret-left</string>
+            </property>
+            <property name="PyDMIconColor" stdset="0">
+             <color>
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </property>
+            <property name="passwordProtected" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="password" stdset="0">
+             <string/>
+            </property>
+            <property name="protectedPassword" stdset="0">
+             <string/>
+            </property>
+            <property name="showConfirmDialog" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="confirmMessage" stdset="0">
+             <string>Are you sure you want to proceed?</string>
+            </property>
+            <property name="pressValue" stdset="0">
+             <string>1</string>
+            </property>
+            <property name="releaseValue" stdset="0">
+             <string>None</string>
+            </property>
+            <property name="relativeChange" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="writeWhenRelease" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" alignment="Qt::AlignHCenter">
+           <widget class="PyDMPushButton" name="tilt_reverse">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>35</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="alarmSensitiveContent" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alarmSensitiveBorder" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="PyDMToolTip" stdset="0">
+             <string/>
+            </property>
+            <property name="monitorDisp" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="channel" stdset="0">
+             <string/>
+            </property>
+            <property name="PyDMIcon" stdset="0">
+             <string>caret-down</string>
+            </property>
+            <property name="PyDMIconColor" stdset="0">
+             <color>
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </property>
+            <property name="passwordProtected" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="password" stdset="0">
+             <string/>
+            </property>
+            <property name="protectedPassword" stdset="0">
+             <string/>
+            </property>
+            <property name="showConfirmDialog" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="confirmMessage" stdset="0">
+             <string>Are you sure you want to proceed?</string>
+            </property>
+            <property name="pressValue" stdset="0">
+             <string>1</string>
+            </property>
+            <property name="releaseValue" stdset="0">
+             <string>None</string>
+            </property>
+            <property name="relativeChange" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="writeWhenRelease" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" alignment="Qt::AlignHCenter">
+           <widget class="PyDMPushButton" name="tilt_forward">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>35</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="alarmSensitiveContent" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alarmSensitiveBorder" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="PyDMToolTip" stdset="0">
+             <string/>
+            </property>
+            <property name="monitorDisp" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="channel" stdset="0">
+             <string/>
+            </property>
+            <property name="PyDMIcon" stdset="0">
+             <string>caret-up</string>
+            </property>
+            <property name="PyDMIconColor" stdset="0">
+             <color>
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </property>
+            <property name="passwordProtected" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="password" stdset="0">
+             <string/>
+            </property>
+            <property name="protectedPassword" stdset="0">
+             <string/>
+            </property>
+            <property name="showConfirmDialog" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="confirmMessage" stdset="0">
+             <string>Are you sure you want to proceed?</string>
+            </property>
+            <property name="pressValue" stdset="0">
+             <string>1</string>
+            </property>
+            <property name="releaseValue" stdset="0">
+             <string>None</string>
+            </property>
+            <property name="relativeChange" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="writeWhenRelease" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="tip_indicator_widget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>144</width>
+         <height>118</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <layout class="QGridLayout" name="tip_indicator_layout">
+          <item row="2" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QCheckBox" name="invert_tip">
+            <property name="text">
+             <string>Invert</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="PyDMLineEdit" name="tip_step_size">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="precision" stdset="0">
+             <number>0</number>
+            </property>
+            <property name="showUnits" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="precisionFromPV" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="alarmSensitiveContent" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alarmSensitiveBorder" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="PyDMToolTip" stdset="0">
+             <string>Step Size</string>
+            </property>
+            <property name="monitorDisp" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="channel" stdset="0">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="PyDMLabel" name="tip_step_count">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="precision" stdset="0">
+             <number>0</number>
+            </property>
+            <property name="showUnits" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="precisionFromPV" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="alarmSensitiveContent" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alarmSensitiveBorder" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="PyDMToolTip" stdset="0">
+             <string>Total Step Count</string>
+            </property>
+            <property name="channel" stdset="0">
+             <string/>
+            </property>
+            <property name="enableRichText" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>5</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="PyDMPushButton" name="settings_button">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alarmSensitiveContent" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="alarmSensitiveBorder" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="PyDMToolTip" stdset="0">
+      <string/>
+     </property>
+     <property name="monitorDisp" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="channel" stdset="0">
+      <string/>
+     </property>
+     <property name="PyDMIcon" stdset="0">
+      <string>SP_ToolBarHorizontalExtensionButton</string>
+     </property>
+     <property name="passwordProtected" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="password" stdset="0">
+      <string/>
+     </property>
+     <property name="protectedPassword" stdset="0">
+      <string/>
+     </property>
+     <property name="showConfirmDialog" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="confirmMessage" stdset="0">
+      <string>Are you sure you want to proceed?</string>
+     </property>
+     <property name="pressValue" stdset="0">
+      <string>None</string>
+     </property>
+     <property name="releaseValue" stdset="0">
+      <string>None</string>
+     </property>
+     <property name="relativeChange" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="writeWhenRelease" stdset="0">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMLabel</class>
+   <extends>QLabel</extends>
+   <header>pydm.widgets.label</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>pydm.widgets.line_edit</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMPushButton</class>
+   <extends>QPushButton</extends>
+   <header>pydm.widgets.pushbutton</header>
+  </customwidget>
+  <customwidget>
+   <class>TyphosDisplayTitle</class>
+   <extends>QFrame</extends>
+   <header>typhos.display</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

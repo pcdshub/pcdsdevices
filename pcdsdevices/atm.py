@@ -50,10 +50,10 @@ class TM1K4Target(ATMTarget):
     """
     Controls TM1K4's states, and ATM in TMO.
 
-    Defines the state count as 8 (OUT and 7 targets), two more than the
+    Defines the state count as 9 (OUT and 8 targets), three more than the
     standard ATM.
     """
-    config = UpCpt(state_count=8)
+    config = UpCpt(state_count=9)
 
 
 class TM1K4(ArrivalTimeMonitor):
@@ -69,10 +69,10 @@ class TM2K4Target(ATMTarget):
     """
     Controls TM2K4's states, an ATM in TMO.
 
-    Defines the state count as 5 (OUT and 4 targets), one less than the
+    Defines the state count as 9 (OUT and 8 targets), three more than the
     standard ATM.
     """
-    config = UpCpt(state_count=5)
+    config = UpCpt(state_count=9)
 
 
 class TM2K4(ArrivalTimeMonitor):
@@ -107,4 +107,25 @@ class MFXATM(ArrivalTimeMonitor):
     """
     An ATM in MFX that has no cooling.
     """
+    flow_meter = None
+
+
+class TM1L2Target(ATMTarget):
+    """
+    Controls TM1L2's states, an ATM in XPP.
+
+    Defines the state count as 7 (OUT and 6 targets), one more than the
+    standard ATM.
+    """
+    config = UpCpt(state_count=7)
+
+
+class TM1L2(ArrivalTimeMonitor):
+    """
+    An ATM in XPP that has one extra target state, one extra rtd, and no cooling.
+    """
+    target = Cpt(TM1L2Target, ':MMS:STATE', kind='hinted',
+                 doc='Control of the diagnostic stack via saved positions.')
+    thermocouple2 = Cpt(TwinCATTempSensor, ':STC:02', kind='normal',
+                        doc='Second thermocouple.')
     flow_meter = None

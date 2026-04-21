@@ -180,14 +180,14 @@ class Wave8V2ADCSamples(BaseInterface, Device):
     Class for the LCLS-II Wave8 ADC sample readout registers.
     """
 
-    sample0 = Cpt(EpicsSignal, 'Sample[0]', kind='config')
-    sample1 = Cpt(EpicsSignal, 'Sample[1]', kind='config')
-    sample2 = Cpt(EpicsSignal, 'Sample[2]', kind='config')
-    sample3 = Cpt(EpicsSignal, 'Sample[3]', kind='config')
-    sample4 = Cpt(EpicsSignal, 'Sample[4]', kind='config')
-    sample5 = Cpt(EpicsSignal, 'Sample[5]', kind='config')
-    sample6 = Cpt(EpicsSignal, 'Sample[6]', kind='config')
-    sample7 = Cpt(EpicsSignal, 'Sample[7]', kind='config')
+    sample0 = Cpt(EpicsSignalRO, 'Sample0_RBV', kind='config')
+    sample1 = Cpt(EpicsSignalRO, 'Sample1_RBV', kind='config')
+    sample2 = Cpt(EpicsSignalRO, 'Sample2_RBV', kind='config')
+    sample3 = Cpt(EpicsSignalRO, 'Sample3_RBV', kind='config')
+    sample4 = Cpt(EpicsSignalRO, 'Sample4_RBV', kind='config')
+    sample5 = Cpt(EpicsSignalRO, 'Sample5_RBV', kind='config')
+    sample6 = Cpt(EpicsSignalRO, 'Sample6_RBV', kind='config')
+    sample7 = Cpt(EpicsSignalRO, 'Sample7_RBV', kind='config')
 
 
 class Wave8V2ADCDelayLanes(BaseInterface, Device):
@@ -322,6 +322,8 @@ class Wave8V2Integrators(BaseInterface, Device):
     # Including PVs based on EDM GUI.
     integral_size = Cpt(EpicsSignal, ':IntegralSize_RBV',
                         write_pv=':IntegralSize', kind='config')
+    integral_signed = Cpt(EpicsSignal, ':IntegralSigned_RBV',
+                          write_pv=':IntegralSigned', kind='config')
     baseline_size = Cpt(EpicsSignal, ':BaselineSize_RBV',
                         write_pv=':BaselineSize', kind='config')
     trig_delay = Cpt(EpicsSignal, ':TrigDelay_RBV',

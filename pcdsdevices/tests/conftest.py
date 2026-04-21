@@ -5,6 +5,7 @@ import os
 import pkgutil
 import shutil
 import sys
+import time
 import warnings
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
@@ -13,7 +14,7 @@ from typing import Any, Callable, Optional
 import ophyd
 import pytest
 from epics import PV
-from ophyd.signal import LimitError
+from ophyd.signal import LimitError, Signal
 from ophyd.sim import FakeEpicsSignal, make_fake_device
 
 from .. import analog_signals, lens, lxe
@@ -259,3 +260,18 @@ def elog():
             self.posts.append((args, kwargs))
 
     return MockELog('TST')
+
+
+def wait_and_assert(sig: Signal, val: Any, tries: int = 10, wait: float = 0.1):
+    """
+    Wait for sig's value to be val, asserting it after waiting.
+
+    This should be used when the timing of the value changing is not
+    fully deterministic, such as when its governed by the execution of a
+    background thread.
+    """
+    for _ in range(tries):
+        if sig.get() == val:
+            break
+        time.sleep(wait)
+    assert sig.get() == val

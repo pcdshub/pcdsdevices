@@ -2,6 +2,376 @@ Release History
 ###############
 
 
+v10.3.0 (2026-02-17)
+====================
+
+New Devices
+-----------
+- Adds `TwinCATMotorInterface`, `TwinCATAxis`, and `TwinCATAxisEPS` to support
+  new motion abstraction interface.  Also adds corresponding typhos screen support.
+
+Device Features
+---------------
+- Adds `insert`, `remove`, `check_inserted`, `check_removed`, `inserted,` and `removed` methods/properties
+  to DCCM class which are proxies for the corresponding members of DCCM.tx_state for convenience
+
+
+Contributors
+------------
+- KaushikMalapati
+- yannS2016
+
+
+v10.2.0 (2026-01-22)
+====================
+
+Device Features
+---------------
+- `SmarAct.detailed`: Replace scan_voltage_set widget with PyDMSlider for more intuitive use.
+- add `LightPathInOutMixin` to `DCCM` in dccm.py
+
+Bugfixes
+--------
+- `Qmini` GUI: prevent subscribed methods from spawning infinite exception windows
+- Fixed pv names for gbs rtds
+
+Contributors
+------------
+- KaushikMalapati
+- aberges-SLAC
+- nrwslac
+
+
+
+v10.1.0 (2025-11-20)
+====================
+
+Device Features
+---------------
+- Added component to `ReflaserL2SI` for laser shutdown pv
+- QminiSpectromemter.embedded and .detailed screens now allow recoloring the graph and using file dialogs for saving spectra
+- Increase TMO Spectrometer Attenuator targets from 9 to 12
+- Various `DCCM` updates
+
+    - Updated `DCCMEnergy` ui files to use th1 properties and new limit_travel attributes
+    - Added `DCCMTarget` component to DCCM class and reordered components
+    - Added TXI option to `DCCMEnergyWithVernier`
+    - Removed inverse from `DCCMEnergyWithVernier` since it was identical to `DCCMEnergy.inverse`
+    - Made energy_with_vernier and energy_with_acr_status formatted components to pass hutch, acr_status_suffix, and acr_status_pv_index
+    - Added Si333 dspacing constant and ability to switch between it and Si111
+    - Added callback to update DCCMEnergy.energy.readback
+
+- Added support for Leviton & Sentry4 PDU Sensors as they were previously unused and untested. The screen now shows the analog readouts and alarms.
+
+New Devices
+-----------
+- `DREAM_Gas_Jet_Slits`: Single device holding all DREAM stages
+- `TM1L2`: derived from the ArrivalTimingMonitorClass, but has two rtds, no flow sensor, and six targets in addition to the out position
+
+Bugfixes
+--------
+- `ClippedScale`: A subclass of PyDMScaleIndicator to solve the issue of the blade widgets for SL2K4 "randomly" appearing completely black
+- `SL2K4`: Labels no longer clip in control room screens
+- `Prefocus`: add alias for x_motor and y_motor
+
+Maintenance
+-----------
+- `SL2K4`: Added labels for North/South and Top/Bottom
+
+Contributors
+------------
+- KaushikMalapati
+- TrumanPar
+- aberges-SLAC
+- carogee
+- tongju12
+
+
+
+v10.0.0 (2025-10-16)
+===================
+
+API Breaks
+----------
+- Group all dream air motions into one class and one gui: `TMODream`
+    - Removes `DREAM_MC_Y`, `DREAM_CoilMover`, `DREAM_GasJet`, `DREAM_GasNozzle`
+
+Device Features
+---------------
+- Added `instrument` argument to `Lcls2LaserTiming` which is added to user_offset PV if defined
+- Change `TMOSpectrometerSOLIDATTStates` target count from 5 to 9
+- `TMOSpectrometer`: add back an old motor under the new name "fzp_piranha_rot"
+
+New Devices
+-----------
+- `DREAM_Sample_Paddle`: Controls sample paddle X, Y, Z, and Ret motors
+- `TMODream`: Combines previous DREAM motion classes
+
+Bugfixes
+--------
+- Swapped indicator and background colors for slits in SL2K4Slits.ui
+- Added prefix for wave8 component of `BeckhoffIntensityProfileTarget` so PVs connect
+
+Contributors
+------------
+- KaushikMalapati
+- tongju12
+- TrumanPar
+
+
+
+v9.0.0 (2025-08-05)
+===================
+
+API Breaks
+----------
+- `EllBase` now requires 'port' as a mandatory arg on initialization.
+- Removed brackets for in PVs for `Wave8V2ADCSamples`.
+
+Device Features
+---------------
+- Added `hla_enabled` component to `Lcls2LaserTiming`.
+- Added `hla_check` decorator, used by `_setup_move`, to raise an exception if hla is disabled.
+- Add typhos template for `DCCMEnergy` to make sure the DCCM screen is usable.
+- `SmarPod`:
+
+    - use `PVPositionerIsClose` instead of raw records
+    - add mutli axis move
+    - add reachability checks
+
+- Added SL3K4 motors to `dream_motion` (`DREAM_SL3K4`)
+- Added `integral_signed` component to `Wave8V2ADCDelayLanes`
+
+New Devices
+-----------
+- `AT3K2`: Custom Solid Attenuator w/ 2 blades and 8 filters on each blade.
+- `DCCM`: Double Channel Cut Monochrometer from XCS.
+- `GratingBeamSplitterStates`: Grating Beam Splitter target state controls.
+- `BeckhoffIntensityProfileTarget`: Intensity Profile Monitor (beckhoff version).
+- `SL2K4Slits`: is a BeckhoffSlits device with new PVA based camera viewer.
+- `lasers.ek9000.SimpleShutter`: A repurposed LSS shutter, not used in safety applications.
+
+    - `pcdsdevices.happi.containers.SimpleShutter`: its corresponding happi container.
+
+- Added generic `PDU` (Leviton, Sentry4) and `TripplitePDU` device classes, along with detailed device screens.
+
+Maintenance
+-----------
+- Adds warning to docstring in `EllBase` on port defaults based on common IOC
+- Sync presets when Presets.positions is accessed.
+
+Contributors
+------------
+- KaushikMalapati
+- aberges-SLAC
+- baljamal
+- jozamudi
+- tangkong
+- tongju12
+- TrumanPar
+- zllentz
+
+
+
+v8.8.1 (2025-05-13)
+===================
+
+Device Features
+---------------
+- Changes gas needle y to BeckhoffAxisEps class instead of regular BeckhoffAxis
+- Adds new component event_trip to MPODApalisChannel
+- Updates the target number for tm2k4
+
+New Devices
+-----------
+- Adds new devices for dream motion
+    - `DREAM_MC_Y`: main chamber motion class
+    - `DREAM_CoilMover`: coil motor control
+    - `DREAM_GasJet`: gas jet X, Y motors
+    - `DREAM_GasNozzle`: gas nozzle X, Y, Z motors
+- Adds FMS related devices, focusing on Raritan sensors
+    - `SRCController`
+    - `RaritanSensor`
+    - `Floor`
+    - `PCWFlow`
+    - `PCWTemp`
+    - `AMBTemp`
+    - `Rack`
+
+Contributors
+------------
+- KaushikMalapati
+- jyin999
+- nrwslac
+- tongju
+
+
+
+v8.8.0 (2025-03-27)
+===================
+
+API Breaks
+----------
+- `EllBase`: Calling this constructor now requires channel to be declared as a mandatory arg. It will no longer default to channel=1.
+
+Library Features
+----------------
+- Added `SmarAct`.detailed.ui screen
+- Accompanying `SmarAct`.detailed.py screen to handle closed loop and picoscale
+- Added `SmarActTipTilt`.embedded ui and py screens for operational support
+- Designed and implemented huge improvements for all the SmarAct typhos screens, a monumental win for laser folk.
+
+Device Features
+---------------
+- `SmarAct`: fix TTZ_THRESHOLD setter in detailed screen
+- `SmarActTipTilt`: Added invert_tip and invert_tilt check boxes
+- `SmarActTipTilt`: Added methods to flip which button corresponds to STEP_FORWARD and STEP_REVERSE respectively
+- `SmarActTipTilt`: added step_size to embedded screen
+- `SmarActEncodedTipTilt`: added embedded screens
+- `SmarActEncodedTipTilt`: bundles open-loop and closed-loop motion
+- `SmarActEncodedTipTilt`: wraps the home and calibrate sequence into single methods
+- `SmarActEncodedTipTilt`: add ``channel_state_raw``, ``calibrating``, and ``referencing`` signals
+- Added long_name fields to various SmarAct classes in pcsdevices.epics_motor
+- `LasBasler`: Adds long_names to signals
+- `LasBasler`: Adds `save_setting` and `load_setting` signals for saving and loading settings
+- Change gas needle gui name to be consistent with PLC gas jet name
+- Made ``m_pi_up_enc`` and ``g_pi_up_enc`` components in `spectrometer.Mono` kind ommitted instead of normal so they aren't on gui
+- Added ``m_pi_enc_rms`` and ``g_pi_enc_rms`` components to `spectrometer.Mono`
+- Added ``pitch_enc_rms`` component to `mirror.XOffsetMirrorBend` to override the inherited component
+  from `mirror.XOffsetMirror` with a different pv and docstring
+- Add ``cvmi_bootstrap`` module for the special CVMI RP bootstrapping experiment.
+  Rename the four axis names per request from scientists and remove three axes.
+- `Ell6` and `Ell9`: overload done_comparator to not use numpy.isclose()
+- Adding error_message component to `EllBase` for typhos to display error messages
+
+New Devices
+-----------
+- The `DCCMono` is a new device to support SP1L0:DCCM installed on L0S09 in the FEE. This SP1L0 is the first of many new Double Channel Cut Monochromators (DCCMs) that will be coming to LCLS in the future. This device can also be used for other DCCMs such as the L2HE DXS HHLMs (High Heat Load Monochromators) and other DCCMs.
+
+Bugfixes
+--------
+- Improves error handling for presets when the position is unknown or uninitialized.
+- `TwinCATStatePositioner.reset_cmd` is now a ``PytmcSignal`` with io='io' instead of an ``EpicsSignal`` to properly display the RBV readback PV in typhos.
+
+Maintenance
+-----------
+- Adjusts ``MPODApalisChannel`` to set its limits based on the parent MPODApalisModule settings
+- Adds option to defer preset path loading until needed.  Presets will
+  now load when tab-completion or preset-related attributes are accessed.
+
+Contributors
+------------
+- tongju12
+- KaushikMalapati
+- aberges-SLAC
+- mitchellc5
+- tangkong
+
+
+
+v8.7.0 (2024-12-20)
+===================
+
+API Breaks
+----------
+- `FFMirrorZ` components `chin_left_rtd`, `chin_right_rtd`, and `chin_tail_rtd` are renamed: `mirror_temp_[l,r,tail]`.
+
+Library Features
+----------------
+- Added the ability to add custom units in custom_units.py which convert_unit if the unit can't be found in scipy, and a unit test for it
+- Add the capability for `AvgSignal` to reset itself on trigger,
+  then wait a duration before marking the trigger as complete.
+  This lets you use `AvgSignal` in a bluesky plan as a way to
+  accumulate the time average of a fast-updating signal at each
+  scan point. To enable this, provide a ``duration`` argument.
+
+Device Features
+---------------
+- `KBOMirrorHE` gets 2 new RTD readouts for RTDs installed on the mirror inside vaccum.
+- Add `calibrated_uj` and `manual_in_progress` components to `pcdsdevices.pim.PPMPowerMeter`
+-Added manual to names of components in PPMPowerMeter that are used for manual background voltage collection to distinguish them from components related to automatic background voltage collection
+- Add the ``desc``, ``last_voltage_set``, and ``is_trip`` component signals to
+  `MPODApalisChannel`. These have been helpful during operations at TMO.
+  ``last_voltage_set`` will also get a ``voltage_setpoint`` alias, which is the
+  original name as used in TMO's scripts.
+- Add proper control limits to `MPODApalisChannel.voltage` and `MPODApalisChannel.current`.
+  This will give useful errors when someone tries to put values outside of the
+  channel's supported range.
+- Adjust `pcdsdevices.tmo_ip1.CalibrationAxis` from 5 -> 7 -> 8 states
+- `pcdsdevices.spectrometer.Mono` now has a `MonoGratingStates` component (`grating_states`)
+- `pcdsdevices.mirror.XOffsetMirrorSwitch` now has a `TwinCATMirrorStripe` component (`coating`)
+- Add `FDQ` to `pcdsdevices.spectrometer.TMOSpectrometer` (`flow_meter`)
+- Recover sp1k4 attenuator targets number from 3 to 5
+- Add one additional (SiN) target into TM1K4 (8 targets, 9 states with OUT)
+- `pcdsdevices.mirror.FFMirror` now has a `TwinCATMirrorStripe` component (`coating`)
+  - `FFMirrorZ` inherits these and sets them `None`
+- `pcdsdevices.slits.ExitSlits` now has an `FDQ` component (`flow_meter`)
+- Allow init-time configuration of phase shifter inversion and setpoint limits
+  for `LaserTiming` and `LCLS2LaserTiming` devices.
+- Improve ``QminiSpectrometer.embedded.ui``
+- Add ``QminiSpectrometer.detailed.ui``
+- Add ``save_data()`` function and accompanying signals to `QminiSpectrometer` for use in the UIs.
+
+New Devices
+-----------
+- `HxrDiffractometer` for the Beckhoff-based HXR diffractometer.
+  This controls the diffractometer in XPP with prefix ``"HXR:GON:MMS"``.
+- `MonoGratingStates`: SP1K1 Mono Grating States Axis G_H with PMPS.
+- `MirrorStripe2D2P`: Mirror Stripe with 2D Coating states, 2 positions and PMPS.
+- `PhotonCollimatorFDQ`: Photon Collimator with Cooling Meter Readback
+- `BeckhoffPneumaticFDQ`: Beckhoff Pneumatics with a flow meter for cooling readback
+- `VCN_OpenLoop`: similar to VCN w/ the removal of 'open' and 'position_readback'
+  commands. The 'state' member variable has been renamed to 'control_mode' and
+  the associated doc string was been updated.
+- `Lakeshore336`: support for Lakeshore 336 temperature controller
+
+Bugfixes
+--------
+- Made `PPMPowerMeter`'s ``responsivity`` component input-only, like the pytmc pragma, so the connection does not fail when looking for a non-existant non-RBV pv.
+- Fix an issue where the LookupTablePositioner would fail silently if the
+  lookup table was not strictly increasing in both axes.
+  Lookup tables that are strictly decreasing in either axis
+  will now be supported.
+  Lookup tables that have inconsistent ordering in either axis will
+  log a warning when the conversion is done.
+- `pcdsdevices.tpr._get_delay`, and by extension `TprMotor.readback` and `TprTrigger.ns_delay` now calculate delays correctly by using a more precise conversion factor from ticks to nanoseconds
+- Fix an issue where arbitrarily large negative values were permitted to be
+  passed during the `MPODApalisChannel.set_voltage` method, and where
+  small values passed to a negative-polarity channel would jump to the
+  most negative value. Now, this function will clamp all values between
+  zero and the maximum channel voltage.
+- Rename ``Smarpod.detailed.ui`` to ``SmarPod.detailed.ui`` so that it will be
+  properly discovered by ``typhos`` for the `SmarPod` class.
+- Replace the ``velocity_base`` (``.VBAS``) signal in the `MMC100` class
+  with a base `Signal` to avoid a PV disconnected error
+  that was preventing moves.
+  The `MMC100` record does not have this field.
+  With this fix, `MMC100` devices can move again.
+
+Maintenance
+-----------
+- reorder `cool_flow1` and `cool_flow2` components in `KBOMirrorHE` to the end of the list.
+- reorder `mirror_temp_[l,r,tail]` components in `FFMirrorZ` to align with other temperature sensors.
+- Make test_at2l0_clear_errors pass more consistently on CI.
+- Add a utility for checking signal values that don't update promptly.
+- Added unit tests to cover the `MPODApalisChannel` changes.
+- Restore `PIPPLC`'s ``qpc_name`` component.
+- `XOffsetMirrorBend` `coating` changed to `TwinCATMirrorStripe` from `MirrorStripe2D2P`
+- Add unit tests for the new `AvgSignal` features.
+
+Contributors
+------------
+- aberges-SLAC
+- KaushikMalapati
+- c-tsoi
+- jozamudi
+- mseaberg
+- nrwslac
+- tongju12
+- zllentz
+
+
+
 v8.6.0 (2024-09-16)
 ===================
 

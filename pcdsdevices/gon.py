@@ -660,15 +660,15 @@ x, y, z: {x}, {y}, {z} [{units}]
 
 class HxrDiffractometer(BaseInterface, Device):
     """
-    Class for diffractometer.
+    Class for Beckhoff-based diffractometer.
 
     Parameters
     ----------
-    name : str
-        A name to refer to the device
-
-    prefix_base : str
+    prefix : str
         The EPICS base PV of the diffractometer stages
+
+    name : str, keyword-only
+        A name to refer to the device
     """
 
     base_h = Cpt(BeckhoffAxis, 'BASE_H', kind='normal')
@@ -678,9 +678,6 @@ class HxrDiffractometer(BaseInterface, Device):
     chi = Cpt(BeckhoffAxis, 'CHI', kind='normal')
 
     tab_component_names = True
-
-    def __init__(self, prefix, name, **kwargs):
-        super().__init__(prefix, name=name, **kwargs)
 
 
 class SimSampleStage(KappaXYZStage):

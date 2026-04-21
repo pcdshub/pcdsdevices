@@ -6,6 +6,9 @@ from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
+from .analog_signals import FDQ
+from .utils import reorder_components
+
 
 class Setra5000(Device):
     time_stamp = Cpt(EpicsSignalRO, ':TIME', kind='hinted')
@@ -356,3 +359,73 @@ class LCP2(Device):
     air_temp_out_bot_f = Cpt(EpicsSignalRO, ':AirTempOutBot_CALC', kind='hinted')
     front_door_access = Cpt(EpicsSignalRO, ':FrontDoorAccess_CALC', kind='hinted')
     rear_door_access = Cpt(EpicsSignalRO, ':RearDoorAccess_CALC', kind='hinted')
+
+
+class SRCController(Device):
+    """
+    A Raritan SRC 800 controller. One unit required to connect
+    to all Raritan sensors.
+    """
+    src_model = Cpt(EpicsSignalRO, ':SRC800:MODEL_RBV', doc="Raritan 8 port Smart Sensor Controller")
+    serial_number = Cpt(EpicsSignalRO, ':SRC800:SERIAL_RBV', doc="Controller Serial Number")
+    number_sensors = Cpt(EpicsSignalRO, ':SRC800:MAX_SENSOR_NUM', doc="Number of sensors on controller")
+
+
+class RaritanSensor(Device):
+    """
+    Raritan Sensor meta data.
+    """
+    sensor_name = Cpt(EpicsSignalRO, ':NAME_RBV')
+    chain_position = Cpt(EpicsSignalRO, ':POSITION_RBV')
+    sensor_serial = Cpt(EpicsSignalRO, ':SERIAL_RBV')
+    state = Cpt(EpicsSignalRO, ':STATE_RBV')
+
+
+@reorder_components(
+    start_with=[
+        'sensor_name', 'leak_detection'
+    ]
+)
+class Floor(RaritanSensor):
+    """
+    Raritan Water/Leak Rope SmartSensor DX2-WSC-35-KIT
+    """
+    leak_detection = Cpt(EpicsSignalRO, ':SEVR_RBV', doc="Detects fluid leak, 0 dry, 2 wet")
+
+
+class PCWFlow(Device):
+    """
+    Two Keyence flow meters intalled one on PCW supply
+    and one PCW outlet.
+    """
+    pcw_flow_supply = Cpt(FDQ, ':PCW:SUP', doc="FDQ Measurment of PCW flow supply")
+    pcw_flow_return = Cpt(FDQ, ':PCW:RET', doc="FDQ Measurement of PCW flow return")
+
+
+class PCWTemp(Device):
+    """
+    3 Wire RTDs surface mount on cooling hoses
+    or pipes.
+    """
+    pcw_temp = Cpt(EpicsSignalRO, ":PCW:TEMP_RBV")
+
+
+@reorder_components(
+    start_with=[
+        'sensor_name', 'temp'
+    ]
+)
+class AmbTemp(RaritanSensor):
+    """Ambient temperature sensor Raritan DX2-T1"""
+    temp = Cpt(EpicsSignalRO, ":SVAL_RBV")
+
+
+class Rack(Device):
+    """
+    Racks equipped with a Raritan DX2-T1H1 sensor.
+    Reads out humidity and temperature.
+    """
+
+    temp = Cpt(EpicsSignalRO, ":TEMP:SVAL_RBV")
+    humidity = Cpt(EpicsSignalRO, ":HMD:SVAL_RBV")
+    th1_sensor_data = Cpt(RaritanSensor, ":TEMP")

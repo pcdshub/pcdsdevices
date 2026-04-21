@@ -6,15 +6,17 @@ from .attenuator import Attenuator
 from .beam_stats import BeamStats
 from .ccm import CCM
 from .dc_devices import ICT
+from .dccm import DCCM
 from .epics_motor import (IMS, PMC100, BeckhoffAxis, DelayNewport, EpicsMotor,
                           Motor, Newport)
 from .evr import Trigger
 from .gauge import GaugeSet
+from .gbs import GratingBeamSplitterTarget
 from .gon import BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, XYZStage
 from .inout import Reflaser, TTReflaser
-from .ipm import IPM, IPM_IPIMB, IPM_Wave8
+from .ipm import IPM, IPM_IPIMB, BeckhoffIntensityProfileTarget, IPM_Wave8
 from .jet import BeckhoffJet
-from .lasers.ek9000 import El3174AiCh, EnvironmentalMonitor
+from .lasers.ek9000 import El3174AiCh, EnvironmentalMonitor, SimpleShutter
 from .lasers.elliptec import Ell6, Ell9, EllBase, EllLinear, EllRotation
 from .lasers.qmini import QminiSpectrometer
 from .lasers.rfof import (CycleRfofRx, CycleRfofTx, ItechRfofAll,

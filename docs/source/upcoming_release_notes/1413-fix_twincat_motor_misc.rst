@@ -1,5 +1,5 @@
-1287 fix lowercase error
-#################
+1413 fix_twincat_motor_misc
+###########################
 
 API Breaks
 ----------
@@ -19,7 +19,8 @@ New Devices
 
 Bugfixes
 --------
-- Change statecount from 7 to 8 to fix target name lower case issue
+- Fix polarity of twincat motor limit switches
+- For twincat motor, switch EGU units PV to correct value
 
 Maintenance
 -----------
@@ -27,4 +28,5 @@ Maintenance
 
 Contributors
 ------------
-- tongju12
+- zllentz
+- yannS2016

@@ -1,6 +1,7 @@
 import logging
 import time
 
+import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
@@ -15,7 +16,9 @@ logger = logging.getLogger(__name__)
 
 class MPODApalisChannel(BaseInterface, Device):
     """
-    MPODApalis Channel Object.
+    MPODApalis Channel Object.  Takes voltage limit from the parent module,
+    and as such MUST only be used as a Component of MPODApalisModule for limits
+    to make sense
 
     Parameters
     ----------
@@ -73,9 +76,21 @@ class MPODApalisChannel(BaseInterface, Device):
     is_trip = Cpt(EpicsSignalRO, ':isTrip', kind='omitted',
                   doc='True if MPOD channel is tripped.')
 
+    event_trip = Cpt(
+        EpicsSignalRO, ':EventTrip', kind='normal',
+        doc=(
+            'Latching bit that event supply is not good.'
+            'External supply exceeds lower or upper limits.'
+        )
+    )
+
     tab_component_names = True
     tab_whitelist = ['on', 'off',
                      'set_voltage', 'set_current']
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._max_voltage = 100
 
     @property
     def voltage_setpoint(self) -> EpicsSignalRO:
@@ -120,11 +135,21 @@ class MPODApalisChannel(BaseInterface, Device):
 
     @max_voltage.sub_value
     def _new_max_voltage(self, value: float, **kwargs) -> None:
-        """Set explicit limits on voltage for better error reporting."""
-        bounds = (0, value)
+        self._max_voltage = value
+        self._update_max_voltage_limits()
+
+    def _update_max_voltage_limits(self) -> None:
+        """
+        Update limits on voltage, referring to the parent module if it exists
+
+        If parent module does not exist, defaults limits to (0, 100)
+        """
+        limit_pct = getattr(self, "biological_parent.limit_percents", (0, 100))
+        limits = [lim * self._max_voltage / 100 for lim in limit_pct]
+
         self.voltage._override_metadata(
-            lower_ctrl_limit=min(bounds),
-            upper_ctrl_limit=max(bounds),
+            lower_ctrl_limit=min(limits),
+            upper_ctrl_limit=max(limits),
         )
 
     @max_current.sub_value
@@ -212,9 +237,24 @@ class MPODApalisModule(BaseInterface, GroupDevice):
                  kind='normal', string=True,
                  doc='Clears all MPOD module faults')
 
+    limit_pos = Cpt(EpicsSignalRO, ':VoltageLimit', kind='omitted',
+                    doc='Positive voltage limit as a % of the max voltage')
+
+    limit_neg = Cpt(EpicsSignalRO, ':VoltageLimitNegative', kind='omitted',
+                    doc='Negative voltage limit as a % of the max voltage')
+
     tab_component_names = True
     tab_whitelist = ['clear_faults', 'set_voltage_ramp_speed',
                      'set_current_ramp_speed']
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._limit_pos = 0.0
+        self._limit_neg = 0.0
+        # tolerances for voltage limit tolerances (expected 0-100)
+        # .5% relative change (of original value), and .5% absolute
+        self._limit_rtol = 0.005
+        self._limit_atol = 0.5
 
     def clear_faults(self):
         """Clears all module faults"""
@@ -245,6 +285,45 @@ class MPODApalisModule(BaseInterface, GroupDevice):
             Current ramp speed [%/sec*Vnom].
         """
         self.current_ramp_speed.put(ramp_speed)
+
+    @property
+    def limit_percents(self) -> tuple[float, float]:
+        """
+        Returns limit percentage tuple.  Represents the % of the channel's max_voltage
+        signal (:VoltageNominal) to be used as the actual limits for the channel
+
+        Returns
+        -------p
+        tuple[float, float]
+            The voltage limits as a proportion of the max_voltage
+        """
+        # negative limits are displayed as positive %
+        limits = (-self._limit_neg, self._limit_pos)
+
+        return limits
+
+    def _update_channel_limits(self) -> None:
+        """Signal all the MPODApalisChannel components to update their limits"""
+        for cpt_name in self.component_names:
+            cpt = getattr(self, cpt_name)
+            if isinstance(cpt, MPODApalisChannel):
+                cpt._update_max_voltage_limits()
+
+    @limit_pos.sub_value
+    def _update_limit_pos(self, value, **kwargs):
+        if np.isclose(self._limit_pos, value,
+                      rtol=self._limit_rtol, atol=self._limit_atol):
+            return
+        self._limit_pos = value
+        self._update_channel_limits()
+
+    @limit_neg.sub_value
+    def _update_limit_neg(self, value, **kwargs):
+        if np.isclose(self._limit_neg, value,
+                      rtol=self._limit_rtol, atol=self._limit_atol):
+            return
+        self._limit_neg = value
+        self._update_channel_limits()
 
 
 class MPODApalisModule4Channel(MPODApalisModule):

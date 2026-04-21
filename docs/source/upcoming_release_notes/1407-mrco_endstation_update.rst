@@ -1,4 +1,4 @@
-1295 ffmirror-states
+1407 mrco_endstation_update
 #################
 
 API Breaks
@@ -11,8 +11,7 @@ Library Features
 
 Device Features
 ---------------
-- `FFMirror` gets `coating` a `TwinCATMirrorStripe`
-- `FFMirrorZ` inherits these and sets them `None`
+- Added the virtual motors for rotation axes of the mrco sample paddle
 
 New Devices
 -----------
@@ -28,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- nrwslac
+- kdborne

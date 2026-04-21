@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from ..slits import BeckhoffSlits, LusiSlits, SimLusiSlits
+from ..slits import BeckhoffSlits, LusiSlits, SimLusiSlits, SL2K4Slits
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +32,14 @@ def fake_beckhoff_slits():
     slits = FakeBeckhoffSlits('TST:BKSLITS', name='test_slits',
                               input_branches=['X0'], output_branches=['X0'])
     return slits
+
+
+@pytest.fixture
+def fake_sl2k4_slits():
+    FakeSlits = make_fake_device(SL2K4Slits)
+    return FakeSlits(prefix='SL2K4:SCATTER', cam='IM6K4:PPM:CAM',
+                     data_source='IMAGE2',
+                     name='sl2k4_slits')
 
 
 def test_slit_states(fake_slits):
@@ -147,6 +155,26 @@ def test_beckhoffslits_dmov(fake_beckhoff_slits):
     assert sl.done_all.get()
     sl.done_top.sim_put(False)
     assert not sl.done_all.get()
+
+
+def test_sl2k4_slits(fake_sl2k4_slits):
+    logger.debug('test_sl2k4_slits')
+    sl = fake_sl2k4_slits
+
+    def set_all(dmov):
+        sl.done_top.sim_put(dmov)
+        sl.done_bottom.sim_put(dmov)
+        sl.done_north.sim_put(dmov)
+        sl.done_south.sim_put(dmov)
+
+    set_all(False)
+    assert not sl.done_all.get()
+    set_all(True)
+    assert sl.done_all.get()
+    sl.done_top.sim_put(False)
+    assert not sl.done_all.get()
+
+    assert sl.md is not None
 
 
 @pytest.mark.timeout(5)

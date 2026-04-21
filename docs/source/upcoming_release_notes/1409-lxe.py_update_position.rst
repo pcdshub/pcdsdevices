@@ -1,4 +1,4 @@
-1291 fix_smarpod_ui_name
+1409 lxe.py update position
 #################
 
 API Breaks
@@ -19,8 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- Rename ``Smarpod.detailed.ui`` to ``SmarPod.detailed.ui`` so that it will be
-  properly discovered by ``typhos`` for the `SmarPod` class.
+- This bugfix now updates the lxt motor PV after setting current position to zero in the set_current_position function lxe.py, since normally the PV is not updated until the motor moves.
 
 Maintenance
 -----------
@@ -28,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- zllentz
+- Carolyn Gee

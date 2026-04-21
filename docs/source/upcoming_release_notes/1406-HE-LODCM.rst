@@ -1,5 +1,5 @@
-1288 mnt_revert_qpc_name
-########################
+1406 HE-LODCM
+#################
 
 API Breaks
 ----------
@@ -15,16 +15,16 @@ Device Features
 
 New Devices
 -----------
-- N/A
+- HE_LODCM - 16 axes, 2 lakeshores, and an energy pseudopositioner
 
 Bugfixes
 --------
-- N/A
+- Fixing mode and units pvs for Lakeshore336
 
 Maintenance
 -----------
-- Restore `PIPPLC`'s ``qpc_name`` component.
+- N/A
 
 Contributors
 ------------
-- zllentz
+- KaushikMalapati

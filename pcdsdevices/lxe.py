@@ -31,10 +31,13 @@ import pathlib
 import time
 import types
 import typing
+from functools import wraps
 
 import numpy as np
 from ophyd import Component as Cpt
-from ophyd import EpicsSignal, PVPositioner
+from ophyd import EpicsSignal
+from ophyd import FormattedComponent as FCpt
+from ophyd import PVPositioner
 from scipy.constants import speed_of_light
 
 from .device import UnrelatedComponent as UCpt
@@ -291,13 +294,19 @@ class LaserTiming(FltMvInterface, PVPositioner):
     done = Cpt(EpicsSignal, ':MMS:PH.DMOV', auto_monitor=True, kind='omitted')
     done_value = 1
 
-    def __init__(self, prefix='', *, egu=None, **kwargs):
+    def __init__(self, prefix='', *, egu=None, invert=True, limits=None, **kwargs):
         if egu not in (None, 's'):
             raise ValueError(
                 f'{self.__class__.__name__} is pre-configured to work in units'
                 f' of seconds.'
             )
         super().__init__(prefix, egu='s', **kwargs)
+        if invert:
+            self.setpoint.scale = -1
+        else:
+            self.setpoint.scale = 1
+        if limits is not None:
+            self.limits = limits
 
     @user_offset.sub_value
     def _offset_changed(self, value, **kwargs):
@@ -364,6 +373,10 @@ class LaserTiming(FltMvInterface, PVPositioner):
         self.user_offset.put(0.0)
         new_offset = position - self.setpoint.get()
         self.user_offset.put(new_offset)
+
+        # Update the notepad readback to reflect the new position
+        if self.notepad_readback.connected and self.notepad_readback.write_access:
+            self.notepad_readback.put(position, wait=False)
 
     @property
     def dial_pos(self):
@@ -444,10 +457,14 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
                                              'default_value': 0.0},
                            kind='omitted'
                            )
-    user_offset = Cpt(NotepadLinkedSignal, ':lxt:OphydOffset',
-                      notepad_metadata={'record': 'ao', 'default_value': 0.0},
-                      kind='normal',
-                      doc='A Python-level user offset.'
+    user_offset = FCpt(NotepadLinkedSignal, '{self.prefix}:lxt:OphydOffset{self.instrument}',
+                       notepad_metadata={'record': 'ao', 'default_value': 0.0},
+                       kind='normal',
+                       doc='A Python-level user offset.'
+                       )
+    hla_enabled = Cpt(EpicsSignal, ':PHASCTL:HLA_ENABLED',
+                      kind='omitted',
+                      doc='HLA status',
                       )
 
     # The phase shifter will be moved after the above record is touched, so
@@ -455,13 +472,23 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
     done = Cpt(EpicsSignal, ':PHASCTL:DELAY_MOVING', auto_monitor=True, kind='omitted')
     done_value = 0
 
-    def __init__(self, prefix='', *, egu=None, **kwargs):
+    def __init__(self, prefix='', *, egu=None, invert=True, limits=None, instrument=None, **kwargs):
         if egu not in (None, 's'):
             raise ValueError(
                 f'{self.__class__.__name__} is pre-configured to work in units'
                 f' of seconds.'
             )
+        if instrument is not None:
+            self.instrument = ':' + instrument
+        else:
+            self.instrument = ''
         super().__init__(prefix, egu='s', **kwargs)
+        if invert:
+            self.setpoint.scale = -1
+        else:
+            self.setpoint.scale = 1
+        if limits is not None:
+            self.limits = limits
 
     @user_offset.sub_value
     def _offset_changed(self, value, **kwargs):
@@ -470,6 +497,16 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
         """
         self.setpoint.user_offset = value
 
+    def check_hla(func):
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            if self.hla_enabled.get() == 1:
+                func(self, *args, **kwargs)
+            else:
+                raise Exception("HLA is not enabled.")
+        return wrapper
+
+    @check_hla
     def _setup_move(self, position):
         """Update the notepad setpoint, move, and do not wait."""
         try:

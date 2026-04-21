@@ -502,6 +502,64 @@ class LasBasler(PCDSAreaDetectorTyphosBeamStats, BaslerBase):
     def _auto_configure(self, value):
         self.configure(self._conf_d)
 
+    # Handle UserPresets configuration
+    default_setting = Cpt(EpicsSignal, 'UserSetDefaultSe_RBV', write_pv='UserSetDefaultSe',
+                          kind='config',
+                          doc='Default User Set to use on startup. See UserSetSelector'
+                          ' for more options')
+    user_setting = Cpt(EpicsSignal, 'UserSetSelector_RBV', write_pv='UserSetSelector',
+                       kind='config',
+                       doc='Current User Set to save/load')
+    save_setting = Cpt(EpicsSignal, 'UserSetSave.PROC', kind='config',
+                       doc='Save current settings into selected User Set')
+    set_metadata(save_setting, dict(variety='command-proc', value=1))
+    load_setting = Cpt(EpicsSignal, 'UserSetLoad.PROC', kind='config',
+                       doc='Load current settings into selected User Set')
+    set_metadata(load_setting, dict(variety='command-proc', value=1))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Add some long_names
+        self.reset.long_name = 'Reset'
+        self.packet_size.long_name = 'Packet Size'
+        self.enet_bw.long_name = 'eNet Bandwidth'
+        self.manufacturer.long_name = 'Manufacturer'
+        self.camera_model.long_name = 'Camera Model'
+        self.sensor_size_x.long_name = 'Sensor Size (X)'
+        self.sensor_size_y.long_name = 'Sensor Size (Y)'
+        self.data_type.long_name = 'Data Type'
+        self.exposure.long_name = 'Exposure (s)'
+        self.gain.long_name = 'Gain'
+        self.num_images.long_name = 'Number of Images'
+        self.image_mode.long_name = 'Image Mode'
+        self.trigger_mode.long_name = 'Trigger Mode'
+        self.acquisition_period.long_name = 'Acquisition Period'
+        self.bin_x.long_name = 'Software Bin X'
+        self.bin_y.long_name = 'Software Bin Y'
+        self.region_start_x.long_name = 'Region Start (X)'
+        self.region_size_x.long_name = 'Region Size (X)'
+        self.region_start_y.long_name = 'Region Start (Y)'
+        self.region_size_y.long_name = 'Region Size (Y)'
+        self.acquire.long_name = 'Set Acquire'
+        self.acquire_rbv.long_name = 'Acquire State'
+        self.image_counter.long_name = 'Image Counter'
+        self.event_code.long_name = 'Event Code'
+        self.event_rate.long_name = 'Event Rate'
+        self.stats_enable.long_name = 'Enable Stats'
+        self.centroid_x.long_name = 'Centroid (X)'
+        self.centroid_y.long_name = 'Centroid (Y)'
+        self.sigma_x.long_name = 'Sigma (X)'
+        self.sigma_y.long_name = 'Sigma (Y)'
+        self.centroid_threshold.long_name = 'Centroid Threshold'
+        self.centroid_enable.long_name = 'Enable Centroid'
+        self.target_x.long_name = 'Target X'
+        self.target_y.long_name = 'Target Y'
+        self.auto_configure.long_name = 'Auto-configure'
+        self.default_setting.long_name = 'Default Preset'
+        self.user_setting.long_name = 'Current User Set'
+        self.save_setting.long_name = 'Save User Set'
+        self.load_setting.long_name = 'Load User Set'
+
 
 class LasBaslerNF(LasBasler):
     """

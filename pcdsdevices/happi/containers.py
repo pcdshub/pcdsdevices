@@ -674,6 +674,28 @@ class EnvironmentalMonitor(LCLSItem):
                              optional=True, enforce=str)
 
 
+class SimpleShutter(LCLSItem):
+    """
+    Container for repurposed LSS shutters that are _NOT_ used in safety applications.
+    These are simple 24 VDC shutters actuated by EL2794 DC relay cards or equivalent.
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.device_types.SimpleShutter'
+    ioc_type = copy(LCLSItem.ioc_type)
+    ioc_type.default = 'EK9000'
+    ioc_ip = EntryInfo(('Netconfig name of the EK9000 the sensors are '
+                        'connected to. Used to build IOC configs.'),
+                       optional=True, enforce=str)
+    ioc_base = EntryInfo('Base PV of the EK9000 IOC', optional=True,
+                         enforce=str)
+    ioc_alias = EntryInfo('Optional PV alias for this shutter.',
+                          optional=True, enforce=str)
+    ioc_chan_num = EntryInfo('Channel number for the shutter on the relay.',
+                             optional=True, enforce=str)
+    ioc_card_num = EntryInfo('Card number for the DC relay.',
+                             optional=True, enforce=str)
+
+
 class Leviton(LCLSItem):
     kwargs = deepcopy(LCLSItem.kwargs)
     kwargs.default['elevations'] = "{{elevations}}"
