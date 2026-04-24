@@ -250,6 +250,7 @@ class Kashiyama_G(Device):
     remote = Cpt(EpicsSignalWithRBV, ':REMOTE_SW', kind='omitted')
     remote_do = Cpt(EpicsSignalRO, ':REM_DO_RBV', kind='normal')
     alarm = Cpt(EpicsSignalRO, ':ALARM_OK_RBV', kind='normal')  # NORMALLY CLOSED 0 = OK | 1 = ALARM
+    state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal')
 
 class Kashiyama_G_Serial(Device):
     """Class for the Kashiyama Neo Dry G-Series IOC"""
