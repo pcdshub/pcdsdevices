@@ -252,6 +252,7 @@ class Kashiyama_G(Device):
     alarm = Cpt(EpicsSignalRO, ':ALARM_OK_RBV', kind='normal')  # NORMALLY CLOSED 0 = OK | 1 = ALARM
     state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal')
 
+
 class Kashiyama_G_Serial(Device):
     """Class for the Kashiyama Neo Dry G-Series IOC"""
     run_cmd = Cpt(EpicsSignal, ':CMD', kind='normal')
@@ -259,9 +260,9 @@ class Kashiyama_G_Serial(Device):
     mode_cmd = Cpt(EpicsSignal, ':OPMODE', kind='normal')
     mode_cmd_rbv = Cpt(EpicsSignalRO, ':OPMODE_RBV', kind='normal')
     freq = Cpt(EpicsSignalRO, ':FREQ_HZ', kind='normal')
-    freq_cpm = Cpt(EpicsSignal, ':FREQSET', kind='normal') # cpm
-    freq_cpm_rbv = Cpt(EpicsSignalRO, ':FREQSET_RBV', kind='normal') # cpm
-    lspd_freq_cpm_rbv = Cpt(EpicsSignalRO, ':LOWFREQSET_RBV', kind='normal') # cpm
+    freq_cpm = Cpt(EpicsSignal, ':FREQSET', kind='normal')  # cpm
+    freq_cpm_rbv = Cpt(EpicsSignalRO, ':FREQSET_RBV', kind='normal')  # cpm
+    lspd_freq_cpm_rbv = Cpt(EpicsSignalRO, ':LOWFREQSET_RBV', kind='normal')  # cpm
     current = Cpt(EpicsSignalRO, ':CURR_RBV', kind='normal')
     voltage = Cpt(EpicsSignalRO, ':VOLT_RBV', kind='normal')
     power = Cpt(EpicsSignalRO, ':PWR_RBV', kind='normal')
@@ -276,8 +277,8 @@ class Kashiyama_G_Serial(Device):
     fan_status = Cpt(EpicsSignalRO, ':FAN_RBV', kind='normal')
     overhaul_one = Cpt(EpicsSignalRO, ':OVHL1_RBV', kind='omitted')
     overaul_two = Cpt(EpicsSignalRO, ':OVHL2_RBV', kind='omitted')
-    run_time = Cpt(EpicsSignalRO, ':RTIME_RBV', kind ='omitted')  # hours
-    run_time_post_overhaul = Cpt(EpicsSignalRO, ':RTIME_OH_RBV', kind ='omitted')  # hours
+    run_time = Cpt(EpicsSignalRO, ':RTIME_RBV', kind='omitted')  # hours
+    run_time_post_overhaul = Cpt(EpicsSignalRO, ':RTIME_OH_RBV', kind='omitted')  # hours
 
 
 class AgilentSerial(Device):
