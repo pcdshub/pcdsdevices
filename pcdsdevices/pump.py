@@ -239,15 +239,15 @@ class Kashiyama_G(Device):
     Class for the Kashiyama Neo Dry G-Series
     Does not inherit from PROPLC as some PVs are unused in the implementation
     """
-    switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted')
+    switch_pump_on = Cpt(EpicsSignal, ':RUN_SW', kind='omitted')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock is ok when true')
     run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal')
-    reset = Cpt(EpicsSignalWithRBV, ':RESET_SW', kind='omitted')
+    reset = Cpt(EpicsSignal, ':RESET_SW', kind='normal')
     reset_do = Cpt(EpicsSignalRO, ':RESET_DO_RBV', kind='normal')
-    low_speed = Cpt(EpicsSignalWithRBV, ':LSPD_SW', kind='omitted')
-    low_speed_do = Cpt(EpicsSignalRO, ':LSPD_DO', kind='normal')
-    remote = Cpt(EpicsSignalWithRBV, ':REMOTE_SW', kind='omitted')
+    low_speed = Cpt(EpicsSignal, ':LSPD_SW', kind='normal')
+    low_speed_do = Cpt(EpicsSignalRO, ':LSPD_DO_RBV', kind='normal')
+    remote = Cpt(EpicsSignal, ':REMOTE_SW', kind='omitted')
     remote_do = Cpt(EpicsSignalRO, ':REM_DO_RBV', kind='normal')
     alarm = Cpt(EpicsSignalRO, ':ALARM_OK_RBV', kind='normal')  # NORMALLY CLOSED 0 = OK | 1 = ALARM
     state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal')
@@ -274,10 +274,10 @@ class Kashiyama_G_Serial(Device):
     error_reset = Cpt(EpicsSignal, ':ERRRST', kind='normal')
     valve_status = Cpt(EpicsSignalRO, ':VALVE_RBV', kind='normal')
     fan_status = Cpt(EpicsSignalRO, ':FAN_RBV', kind='normal')
-    overhaul_one = Cpt(EpicsSignalRO, ':OVHL1_RBV', kind='ommitted')
-    overaul_two = Cpt(EpicsSignalRO, ':OVHL2_RBV', kind='ommitted')
-    run_time = Cpt(EpicsSignalRO, ':RTIME_RBV', kind ='ommited')  # hours
-    run_time_post_overhaul = Cpt(EpicsSignalRO, ':RTIME_OH_RBV', kind ='ommited')  # hours
+    overhaul_one = Cpt(EpicsSignalRO, ':OVHL1_RBV', kind='omitted')
+    overaul_two = Cpt(EpicsSignalRO, ':OVHL2_RBV', kind='omitted')
+    run_time = Cpt(EpicsSignalRO, ':RTIME_RBV', kind ='omitted')  # hours
+    run_time_post_overhaul = Cpt(EpicsSignalRO, ':RTIME_OH_RBV', kind ='omitted')  # hours
 
 
 class AgilentSerial(Device):
