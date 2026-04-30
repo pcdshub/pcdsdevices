@@ -247,7 +247,7 @@ class Kashiyama_G(Device):
     reset_do = Cpt(EpicsSignalRO, ':RESET_DO_RBV', kind='normal')
     low_speed = Cpt(EpicsSignal, ':LSPD_SW', kind='normal')
     low_speed_do = Cpt(EpicsSignalRO, ':LSPD_DO_RBV', kind='normal')
-    remote = Cpt(EpicsSignal, ':REMOTE_SW', kind='omitted')
+    remote = Cpt(EpicsSignal, ':REMOTE_SW', kind='normal')
     remote_do = Cpt(EpicsSignalRO, ':REM_DO_RBV', kind='normal')
     alarm = Cpt(EpicsSignalRO, ':ALARM_OK_RBV', kind='normal')  # NORMALLY CLOSED 0 = OK | 1 = ALARM
     state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal')
