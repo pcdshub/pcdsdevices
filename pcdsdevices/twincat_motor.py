@@ -5,7 +5,8 @@ from typing import Callable, ClassVar, Optional
 from ophyd.device import Component as Cpt
 from ophyd.device import required_for_connection
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.signal import DerivedSignal, EpicsSignal
+from ophyd.sim import FakeEpicsSignalRO, fake_device_cache
 from ophyd.status import MoveStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils.epics_pvs import (AlarmSeverity, fmt_time,
@@ -20,6 +21,15 @@ from .signal import PytmcSignal
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
+
+
+class InvertedBoolEpicsSignal(DerivedSignal):
+    def inverse(self, value: bool):
+        """Convert motor limit enable to switch state: it's the inverse."""
+        return not value
+
+
+fake_device_cache[InvertedBoolEpicsSignal] = FakeEpicsSignalRO
 
 
 class TwinCATMotorInterface(FltMvInterface, PVPositioner):
@@ -74,12 +84,14 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     motor_is_moving_negative = Cpt(PytmcSignal, "bNegativeDirection", io="i", kind="normal", auto_monitor=True)
     motor_is_moving_positive = Cpt(PytmcSignal, "bPositiveDirection", io="i", kind="normal", auto_monitor=True)
     power_is_enabled = Cpt(PytmcSignal, "bPowerIsEnabled", io="i", kind="normal", auto_monitor=True)
-    high_limit_switch = Cpt(PytmcSignal, "bLimitFwd", io="i", kind="normal", auto_monitor=True)
-    low_limit_switch = Cpt(PytmcSignal, "bLimitBwd", io="i", kind="normal", auto_monitor=True)
+    fwd_enabled = Cpt(PytmcSignal, "bForwardEnabled", io="i", kind="normal", auto_monitor=True)
+    bwd_enabled = Cpt(PytmcSignal, "bBackwardEnabled", io="i", kind="normal", auto_monitor=True)
+    high_limit_switch = Cpt(InvertedBoolEpicsSignal, "fwd_enabled", kind="normal", add_prefix=())
+    low_limit_switch = Cpt(InvertedBoolEpicsSignal, "bwd_enabled", kind="normal", add_prefix=())
     negative_dir_enabled = Cpt(PytmcSignal, "bNegativeMotionIsEnabled", io="i", kind="normal", auto_monitor=True)
     positive_dir_enabled = Cpt(PytmcSignal, "bPositiveMotionIsEnabled", io="i", kind="normal", auto_monitor=True)
     command = Cpt(PytmcSignal, "eCommand", io="i", kind="normal", auto_monitor=True)
-    motor_egu = Cpt(EpicsSignalRO, "EGU", kind="normal", auto_monitor=True)
+    motor_egu = Cpt(PytmcSignal, "NC:Eu:Val", io="i", kind="normal", string=True, auto_monitor=True)
 
     # Limits (configuration)
     low_limit_travel = Cpt(EpicsSignal, 'NC:MinPos:Val_RBV', write_pv='NC:MinPos:Goal', kind='config', auto_monitor=True)
