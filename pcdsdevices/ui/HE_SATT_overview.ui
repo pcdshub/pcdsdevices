@@ -222,7 +222,7 @@
               <bool>false</bool>
              </property>
              <property name="channel" stdset="0">
-              <string>ca://${prefix}:MMSOOP:03:fVelocity</string>
+              <string>ca://${prefix}:MMSOOP:01:fVelocity</string>
              </property>
             </widget>
            </item>
@@ -253,7 +253,7 @@
               <bool>false</bool>
              </property>
              <property name="channel" stdset="0">
-              <string>ca://${prefix}:MMSOOP:02:fVelocity</string>
+              <string>ca://${prefix}:MMSOOP:04:fVelocity</string>
              </property>
             </widget>
            </item>
@@ -416,7 +416,7 @@
               <bool>false</bool>
              </property>
              <property name="channel" stdset="0">
-              <string>ca://${prefix}:MMSOOP:01:fVelocity</string>
+              <string>ca://${prefix}:MMSOOP:03:fVelocity</string>
              </property>
             </widget>
            </item>
@@ -474,13 +474,55 @@
              <property name="text">
               <string>Axis</string>
              </property>
+             <property name="alarmSensitiveContent" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="alarmSensitiveBorder" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="PyDMToolTip" stdset="0">
+              <string/>
+             </property>
+             <property name="channel" stdset="0">
+              <string/>
+             </property>
+             <property name="PyDMIcon" stdset="0">
+              <string/>
+             </property>
+             <property name="showConfirmDialog" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="runCommandsInFullShell" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="confirmMessage" stdset="0">
+              <string>Are you sure you want to proceed?</string>
+             </property>
+             <property name="environmentVariables" stdset="0">
+              <string/>
+             </property>
              <property name="showIcon" stdset="0">
               <bool>false</bool>
              </property>
+             <property name="allowMultipleExecutions" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="titles" stdset="0">
+              <stringlist/>
+             </property>
              <property name="commands" stdset="0">
               <stringlist>
-               <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:02','name':'${name}_holder1_axis'}]&quot;</string>
+               <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:04','name':'${name}_holder1_axis'}]&quot;</string>
               </stringlist>
+             </property>
+             <property name="passwordProtected" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="password" stdset="0">
+              <string/>
+             </property>
+             <property name="protectedPassword" stdset="0">
+              <string/>
              </property>
             </widget>
            </item>
@@ -601,7 +643,7 @@
              </property>
              <property name="commands" stdset="0">
               <stringlist>
-               <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:01','name':'${name}_holder3_axis'}]&quot;</string>
+               <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:03','name':'${name}_holder3_axis'}]&quot;</string>
               </stringlist>
              </property>
             </widget>
@@ -679,7 +721,7 @@
               <bool>false</bool>
              </property>
              <property name="channel" stdset="0">
-              <string>ca://${prefix}:MMSOOP:04:fVelocity</string>
+              <string>ca://${prefix}:MMSOOP:02:fVelocity</string>
              </property>
             </widget>
            </item>
@@ -760,7 +802,7 @@
              </property>
              <property name="commands" stdset="0">
               <stringlist>
-               <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:03','name':'${name}_holder4_axis'}]&quot;</string>
+               <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:01','name':'${name}_holder4_axis'}]&quot;</string>
               </stringlist>
              </property>
             </widget>
@@ -778,7 +820,7 @@
              </property>
              <property name="commands" stdset="0">
               <stringlist>
-               <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:04','name':'${name}_holder2_axis'}]&quot;</string>
+               <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:02','name':'${name}_holder2_axis'}]&quot;</string>
               </stringlist>
              </property>
             </widget>

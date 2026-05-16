@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1063</width>
+    <width>1205</width>
     <height>503</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_7" stretch="1,0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout_7" stretch="1,0,0">
    <property name="spacing">
     <number>10</number>
    </property>
@@ -194,7 +194,7 @@
             <bool>true</bool>
            </property>
            <property name="precisionFromPV" stdset="0">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="alarmSensitiveContent" stdset="0">
             <bool>false</bool>
@@ -406,188 +406,217 @@
      </layout>
     </widget>
    </item>
-   <item alignment="Qt::AlignHCenter">
-    <widget class="PyDMPushButton" name="CalculateButton">
-     <property name="toolTip">
-      <string/>
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <property name="leftMargin">
+      <number>6</number>
      </property>
-     <property name="text">
-      <string>Calculate</string>
+     <property name="topMargin">
+      <number>6</number>
      </property>
-     <property name="autoDefault">
-      <bool>true</bool>
+     <property name="rightMargin">
+      <number>6</number>
      </property>
-     <property name="default">
-      <bool>false</bool>
+     <property name="bottomMargin">
+      <number>6</number>
      </property>
-     <property name="alarmSensitiveContent" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="alarmSensitiveBorder" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="PyDMToolTip" stdset="0">
-      <string/>
-     </property>
-     <property name="monitorDisp" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="channel" stdset="0">
-      <string>ca://${prefix}:CmdReqTrans</string>
-     </property>
-     <property name="PyDMIcon" stdset="0">
-      <string/>
-     </property>
-     <property name="passwordProtected" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="password" stdset="0">
-      <string/>
-     </property>
-     <property name="protectedPassword" stdset="0">
-      <string/>
-     </property>
-     <property name="showConfirmDialog" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="confirmMessage" stdset="0">
-      <string>Are you sure you want to proceed?</string>
-     </property>
-     <property name="pressValue" stdset="0">
-      <string>1</string>
-     </property>
-     <property name="releaseValue" stdset="0">
-      <string>None</string>
-     </property>
-     <property name="relativeChange" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="writeWhenRelease" stdset="0">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item alignment="Qt::AlignHCenter">
-    <widget class="PyDMPushButton" name="CalculateButton">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>Reset</string>
-     </property>
-     <property name="autoDefault">
-      <bool>true</bool>
-     </property>
-     <property name="default">
-      <bool>false</bool>
-     </property>
-     <property name="alarmSensitiveContent" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="alarmSensitiveBorder" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="PyDMToolTip" stdset="0">
-      <string/>
-     </property>
-     <property name="monitorDisp" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="channel" stdset="0">
-      <string>ca://${prefix}:CmdReset</string>
-     </property>
-     <property name="PyDMIcon" stdset="0">
-      <string/>
-     </property>
-     <property name="passwordProtected" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="password" stdset="0">
-      <string/>
-     </property>
-     <property name="protectedPassword" stdset="0">
-      <string/>
-     </property>
-     <property name="showConfirmDialog" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="confirmMessage" stdset="0">
-      <string>Are you sure you want to proceed?</string>
-     </property>
-     <property name="pressValue" stdset="0">
-      <string>1</string>
-     </property>
-     <property name="releaseValue" stdset="0">
-      <string>None</string>
-     </property>
-     <property name="relativeChange" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="writeWhenRelease" stdset="0">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item alignment="Qt::AlignHCenter">
-    <widget class="PyDMPushButton" name="CalculateButton_2">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>Apply Configuration</string>
-     </property>
-     <property name="autoDefault">
-      <bool>true</bool>
-     </property>
-     <property name="default">
-      <bool>false</bool>
-     </property>
-     <property name="alarmSensitiveContent" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="alarmSensitiveBorder" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="PyDMToolTip" stdset="0">
-      <string/>
-     </property>
-     <property name="monitorDisp" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="channel" stdset="0">
-      <string>ca://${prefix}:CmdPermitMove</string>
-     </property>
-     <property name="PyDMIcon" stdset="0">
-      <string/>
-     </property>
-     <property name="passwordProtected" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="password" stdset="0">
-      <string/>
-     </property>
-     <property name="protectedPassword" stdset="0">
-      <string/>
-     </property>
-     <property name="showConfirmDialog" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="confirmMessage" stdset="0">
-      <string>Are you sure you want to proceed?</string>
-     </property>
-     <property name="pressValue" stdset="0">
-      <string>1</string>
-     </property>
-     <property name="releaseValue" stdset="0">
-      <string>None</string>
-     </property>
-     <property name="relativeChange" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="writeWhenRelease" stdset="0">
-      <bool>false</bool>
-     </property>
-    </widget>
+     <item row="0" column="3">
+      <widget class="PyDMPushButton" name="CalculateButton_2">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Apply Configuration</string>
+       </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:CmdPermitMove</string>
+       </property>
+       <property name="PyDMIcon" stdset="0">
+        <string/>
+       </property>
+       <property name="passwordProtected" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="password" stdset="0">
+        <string/>
+       </property>
+       <property name="protectedPassword" stdset="0">
+        <string/>
+       </property>
+       <property name="showConfirmDialog" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="confirmMessage" stdset="0">
+        <string>Are you sure you want to proceed?</string>
+       </property>
+       <property name="pressValue" stdset="0">
+        <string>1</string>
+       </property>
+       <property name="releaseValue" stdset="0">
+        <string>None</string>
+       </property>
+       <property name="relativeChange" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="writeWhenRelease" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="PyDMPushButton" name="CalculateButton">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Calculate</string>
+       </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:CmdReqTrans</string>
+       </property>
+       <property name="PyDMIcon" stdset="0">
+        <string/>
+       </property>
+       <property name="passwordProtected" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="password" stdset="0">
+        <string/>
+       </property>
+       <property name="protectedPassword" stdset="0">
+        <string/>
+       </property>
+       <property name="showConfirmDialog" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="confirmMessage" stdset="0">
+        <string>Are you sure you want to proceed?</string>
+       </property>
+       <property name="pressValue" stdset="0">
+        <string>1</string>
+       </property>
+       <property name="releaseValue" stdset="0">
+        <string>None</string>
+       </property>
+       <property name="relativeChange" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="writeWhenRelease" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="PyDMPushButton" name="CalculateButton">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Reset</string>
+       </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:CmdReset</string>
+       </property>
+       <property name="PyDMIcon" stdset="0">
+        <string/>
+       </property>
+       <property name="passwordProtected" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="password" stdset="0">
+        <string/>
+       </property>
+       <property name="protectedPassword" stdset="0">
+        <string/>
+       </property>
+       <property name="showConfirmDialog" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="confirmMessage" stdset="0">
+        <string>Are you sure you want to proceed?</string>
+       </property>
+       <property name="pressValue" stdset="0">
+        <string>1</string>
+       </property>
+       <property name="releaseValue" stdset="0">
+        <string>None</string>
+       </property>
+       <property name="relativeChange" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="writeWhenRelease" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="PyDMCheckbox" name="PyDMCheckbox">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Disable Ge under 12 keV</string>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:GeDisable</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item alignment="Qt::AlignTop">
     <widget class="QGroupBox" name="groupBox">
@@ -1356,6 +1385,11 @@
    <class>PyDMLabel</class>
    <extends>QLabel</extends>
    <header>pydm.widgets.label</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMCheckbox</class>
+   <extends>QCheckBox</extends>
+   <header>pydm.widgets.checkbox</header>
   </customwidget>
   <customwidget>
    <class>PyDMEnumButton</class>
