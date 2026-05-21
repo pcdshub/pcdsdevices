@@ -10,9 +10,41 @@ SmarPod is a hexapod-like positioning system from SmarAct
 
 see https://www.smaract.com/en/smarpod
 """
+
+from __future__ import annotations
+
+import enum
+import logging
+
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.status import wait as status_wait
+
+from pcdsdevices.pv_positioner import PVPositionerIsClose
+
+logger = logging.getLogger(__name__)
+
+
+class SmarPodAxisEnum(str, enum.Enum):
+    """
+    An enumeration representing axes available in tri-sphere table stage.
+
+    - 'X': X-axis translation
+    - 'Y': Y-axis translation
+    - 'Z': Z-axis translation
+    - 'RX': X-axis rotation
+    - 'RY': Y-axis rotation
+    - 'RZ': Z-axis rotation
+    """
+
+    X = 'X'
+    Y = 'Y'
+    Z = 'Z'
+    RX = 'RX'
+    RY = 'RY'
+    RZ = 'RZ'
 
 
 class SmarPodPose(Device):
@@ -53,6 +85,40 @@ class SmarPodStatus(Device):
     display = Cpt(EpicsSignalRO, ':DISPLAY', kind='omitted')
 
 
+class SmarPodAxis(PVPositionerIsClose):
+    setpoint = FCpt(EpicsSignal, '{prefix}:CMD:{axis}')
+    readback = FCpt(EpicsSignal, '{prefix}:{axis}')
+    actuate = Cpt(EpicsSignal, ':CMD:MOVE')
+    actuate_value = 0
+    stop_signal = Cpt(EpicsSignal, ':CMD:STOP')
+    stop_value = 0
+    cmd_reachable = Cpt(EpicsSignal, ':CMD:REACHABLE', kind='normal')
+    reachable = Cpt(EpicsSignalRO, ':REACHABLE')
+    atol = 1E-5  # 10 nm
+    csy_cmd = Cpt(EpicsSignal, ':CSY:CMD:{axis}', kind='normal')
+    csy_rb = Cpt(EpicsSignalRO, ':CSY:{axis}', kind='normal')
+    defer_motion : bool = False
+
+    def __init__(self, prefix, axis: SmarPodAxisEnum, **kwargs):
+        self.axis = axis.value
+        return super().__init__(prefix, **kwargs)
+
+    def _setup_move(self, position):
+        '''Move and do not wait until motion is complete (asynchronous).
+        Before moving check the position is reachable.'''
+
+        logger.info('Checking if position is reachable')
+        self.setpoint.put(position, wait=True)
+        is_reachable = self.reachable.get()
+
+        logger.info(f"is_reachable : {is_reachable}")
+        if not is_reachable:
+            raise ValueError('Position is unreachable !!!')
+        if self.actuate and not self.defer_motion:
+            logger.debug('%s.actuate=%s', self.name, self.actuate_value)
+            self.actuate.put(self.actuate_value, wait=False)
+
+
 class SmarPod(Device):
     """
     SmarPod is a hexapod-like positioning system from SmarAct
@@ -79,14 +145,7 @@ class SmarPod(Device):
     ref_y_direct = Cpt(EpicsSignalRO, ':REF_Y_DIRECT', kind='normal', doc='Readback reference y-direction')
     cmd_ref_z_direct = Cpt(EpicsSignal, ':CMD:REF_Z_DIRECT', kind='normal', doc='Set reference z-direction')
     ref_z_direct = Cpt(EpicsSignalRO, ':REF_Z_DIRECT', kind='normal', doc='Readback reference z-direction')
-    # Positions - Move
-    cmd_move = Cpt(EpicsSignal, ':CMD:MOVE', kind='normal')
-    cmd_x = Cpt(EpicsSignal, ':CMD:X', kind='normal')
-    cmd_y = Cpt(EpicsSignal, ':CMD:Y', kind='normal')
-    cmd_z = Cpt(EpicsSignal, ':CMD:Z', kind='normal')
-    cmd_rx = Cpt(EpicsSignal, ':CMD:RX', kind='normal')
-    cmd_ry = Cpt(EpicsSignal, ':CMD:RY', kind='normal')
-    cmd_rz = Cpt(EpicsSignal, ':CMD:RZ', kind='normal')
+
     # Stop
     cmd_stop = Cpt(EpicsSignal, ':CMD:STOP', kind='normal', doc='Stops SmarPod Movements')
     # Pose reachable?
@@ -97,13 +156,8 @@ class SmarPod(Device):
     x_m = Cpt(EpicsSignalRO, ':X_M', kind='normal')
     y_m = Cpt(EpicsSignalRO, ':Y_M', kind='normal')
     z_m = Cpt(EpicsSignalRO, ':Z_M', kind='normal')
-    x = Cpt(EpicsSignalRO, ':X', kind='normal')
-    y = Cpt(EpicsSignalRO, ':Y', kind='normal')
-    z = Cpt(EpicsSignalRO, ':Z', kind='normal')
-    rx = Cpt(EpicsSignalRO, ':RX', kind='normal')
-    ry = Cpt(EpicsSignalRO, ':RY', kind='normal')
-    rz = Cpt(EpicsSignalRO, ':RZ', kind='normal')
     # Movement - Readback
+    cmd_move = Cpt(EpicsSignal, ':CMD:MOVE', kind='normal')
     moving = Cpt(EpicsSignal, ':MOVING', kind='normal', doc='Movement status')
     # Movement - Sync
     cmd_sync = Cpt(EpicsSignal, ':CMD:SYNC', kind='normal')
@@ -126,6 +180,13 @@ class SmarPod(Device):
     cmd_px = Cpt(EpicsSignal, ':CMD:PX', kind='normal')
     cmd_py = Cpt(EpicsSignal, ':CMD:PY', kind='normal')
     cmd_pz = Cpt(EpicsSignal, ':CMD:PZ', kind='normal')
+    # axes
+    x = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.Y, egu='mm', kind='normal')
+    y = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.Z, egu='mm', kind='normal')
+    z = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.X, egu='mm', kind='normal')
+    rx = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.RY, egu='deg', kind='normal')
+    ry = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.RZ, egu='deg', kind='normal')
+    rz = Cpt(SmarPodAxis, '', axis=SmarPodAxisEnum.RX, egu='deg', kind='normal')
     # Sensor mode
     cmd_sensor_mode = Cpt(EpicsSignal, ':CMD:SENSOR_MODE', kind='normal')
     sensor_mode = Cpt(EpicsSignal, ':SENSOR_MODE', kind='normal', doc='Sensor mode')
@@ -151,3 +212,61 @@ class SmarPod(Device):
     cmd_calibrate = Cpt(EpicsSignal, ':CMD:CALIBRATE', kind='normal')
     cmd_read_ver = Cpt(EpicsSignal, ':CMD:READ_VER', kind='normal')
     ver_sys = Cpt(EpicsSignalRO, ':VER:SYS', kind='omitted')
+    # coordinate offset
+    csy_set = Cpt(EpicsSignal, ':CSY:SET', kind='normal', doc="set csy offset")
+    csy_zero = Cpt(EpicsSignal, ':CMD:SPZ', kind='normal', doc="set csy to zero")
+
+    def multi_axis_move(
+        self,
+        x_sp: float | None = None,
+        y_sp: float | None = None,
+        z_sp: float | None = None,
+        rx_sp: float | None = None,
+        ry_sp: float | None = None,
+        rz_sp: float | None = None,
+        wait: bool = True,
+        timeout: float = 30.0,
+    ):
+        x_sp = self.x.readback.get() if x_sp is None else x_sp
+        y_sp = self.y.readback.get() if y_sp is None else y_sp
+        z_sp = self.z.readback.get() if z_sp is None else z_sp
+        rx_sp = self.rx.readback.get() if rx_sp is None else rx_sp
+        ry_sp = self.ry.readback.get() if ry_sp is None else ry_sp
+        rz_sp = self.rz.readback.get() if rz_sp is None else rz_sp
+
+        self.x.defer_motion = True
+        self.y.defer_motion = True
+        self.z.defer_motion = True
+        self.rx.defer_motion = True
+        self.ry.defer_motion = True
+        self.rz.defer_motion = True
+
+        self.x.setpoint.put(x_sp)
+        self.y.setpoint.put(y_sp)
+        self.z.setpoint.put(z_sp)
+        self.rx.setpoint.put(rx_sp)
+        self.ry.setpoint.put(ry_sp)
+        self.rz.setpoint.put(rz_sp)
+
+        x_status = self.x.move(x_sp, wait=False, timeout=timeout)
+        y_status = self.y.move(y_sp, wait=False, timeout=timeout)
+        z_status = self.z.move(z_sp, wait=False, timeout=timeout)
+        rx_status = self.rx.move(rx_sp, wait=False, timeout=timeout)
+        ry_status = self.ry.move(ry_sp, wait=False, timeout=timeout)
+        rz_status = self.rz.move(rz_sp, wait=False, timeout=timeout)
+
+        self.cmd_move.put(0)
+
+        status = x_status & y_status & z_status & rx_status & \
+            ry_status & rz_status
+        if wait:
+            status_wait(status)
+
+        self.x.defer_motion = False
+        self.y.defer_motion = False
+        self.z.defer_motion = False
+        self.rx.defer_motion = False
+        self.ry.defer_motion = False
+        self.rz.defer_motion = False
+
+        return status
