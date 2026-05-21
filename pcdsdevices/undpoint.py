@@ -1,9 +1,6 @@
 """
 Utilities for undulator pointing.
 
-This may move to a library at some point
-to be used in other contexts.
-
 ACR has undulator pointing scripts that expect:
 - delta_x, delta_y in microns
 - "go"
@@ -13,23 +10,17 @@ if we'd like to point the undulators multiple times
 in a shift. This process will listen to our requests
 for delta_x, delta_y, and go.
 
-Standard procedure will be something like:
+Standard procedure are something like:
 - Call ACR to set up the auto repointing
 - Run one of the utilities here to either calibrate
   or realgn
 
-The alignment is something like:
-- pick a yag
-- put global marker 1 on the goal position
-- code calculated the centroid and finds dx, dy in pixels
-- dx, dy in pixels gets converted to undulator microns
-- request the move
-- recalibrate? (maybe?)
+This was originally provisioned in the mfx repo before moving here.
 """
 
-from typing import Callable, Optional, Union
-import time
 import math
+import time
+from typing import Callable, Optional, Union
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -38,10 +29,10 @@ from ophyd.positioner import PositionerBase
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import MoveStatus
+
 from pcdsdevices.interface import MvInterface
 from pcdsdevices.signal import MultiDerivedSignal, UnitConversionDerivedSignal
 from pcdsdevices.type_hints import SignalToValue
-from pydantic import validate_call
 
 DEFAULT_DONE_MOVE_PV = "SIOC:SYS0:ML07:AO216"
 
@@ -58,8 +49,9 @@ def _put_2d_delta(mds: MultiDerivedSignal, value: tuple[float, float]) -> Signal
     return {mds.signals[0]: -value[0], mds.signals[1]: -value[1]}
 
 
-@validate_call
-def coerce_input_to_tuple(position: Union[tuple[float, float], float], ypos: Optional[float]) -> tuple[float, float]:
+def coerce_input_to_tuple(
+    position: Union[tuple[float, float], float], ypos: Optional[float]
+) -> tuple[float, float]:
     """
     Utility to coerce user input like move(3, 4) to move((3, 4))
     """
@@ -105,7 +97,6 @@ class UndPointDelta2D(PVPositioner):
         self.done_pvname = done_pvname
         super().__init__(prefix, name=name, **kwargs)
 
-    @validate_call
     def move(
         self,
         position: Union[tuple[float, float], float],
@@ -134,7 +125,12 @@ class UndPointDelta2D(PVPositioner):
             accept one keyword argument: 'obj' which will be set to this
             positioner instance.
         """
-        return super().move(coerce_input_to_tuple(position, y_delta), wait=wait, timeout=timeout, moved_cb=moved_cb)
+        return super().move(
+            coerce_input_to_tuple(position, y_delta),
+            wait=wait,
+            timeout=timeout,
+            moved_cb=moved_cb,
+        )
 
     def _setup_move(self, position: tuple[float, float]):
         # Also reset the actuate PV before we actuate
@@ -192,7 +188,6 @@ class UndPointAbs2D(MvInterface, Device, PositionerBase):
         # Alias
         self.dxy = self.delta_xy
 
-    @validate_call
     def move(
         self,
         position: Union[tuple[float, float], float],
@@ -262,21 +257,23 @@ class UndPointAbs2D(MvInterface, Device, PositionerBase):
         return (self._xpos_cache, self._ypos_cache)
 
 
-class UndPointAbs2DMFX(UndPointAbs2D):
+class UndPointAbs2DHutch(UndPointAbs2D):
     """
-    Undulator pointing with MFX PV defaults.
+    Undulator pointing with Hutch PV defaults.
 
     You can do:
-    undp = UndPointAbs2DMFX()
+    undp = UndPointAbs2DHutch("mfx")
     """
 
     def __init__(
         self,
-        prefix: str = "MFX:USER:MCC:UND",
-        *,
-        name: str = "mfx_undp",
+        hutch: str,
         **kwargs,
     ):
+        prefix = f"{hutch.upper()}:USER:MCC:UND"
+        name = kwargs.pop("name")
+        if name is None:
+            name = f"{hutch.lower()}_undp"
         super().__init__(prefix, name=name, **kwargs)
 
 
@@ -285,7 +282,6 @@ class SafeUndPointAbs2D(UndPointAbs2D):
     Absolute undulator pointing with safe segmented moves (both axes per step).
     """
 
-    @validate_call
     def move(
         self,
         position: Union[tuple[float, float], float],
@@ -307,19 +303,33 @@ class SafeUndPointAbs2D(UndPointAbs2D):
         dx_total, dy_total = self.get_delta_from_abs(target_abs)
 
         # no segmentation requested or unnecessary: do a single absolute move
-        if max_step is None or (abs(dx_total) <= max_step and abs(dy_total) <= max_step):
-            return super().move(position=target_abs, wait=wait, timeout=timeout, moved_cb=moved_cb)
+        if max_step is None or (
+            abs(dx_total) <= max_step and abs(dy_total) <= max_step
+        ):
+            return super().move(
+                position=target_abs, wait=wait, timeout=timeout, moved_cb=moved_cb
+            )
 
         # for segmented moves, we require synchronous execution
         if not wait:
             raise ValueError("Safe chunked move requires wait=True.")
 
         # determine number of equal segments so each per-axis step magnitude <= max_step
-        n_x = int(math.ceil(abs(dx_total) / max_step)) if max_step and abs(dx_total) > 0 else 1
-        n_y = int(math.ceil(abs(dy_total) / max_step)) if max_step and abs(dy_total) > 0 else 1
+        n_x = (
+            int(math.ceil(abs(dx_total) / max_step))
+            if max_step and abs(dx_total) > 0
+            else 1
+        )
+        n_y = (
+            int(math.ceil(abs(dy_total) / max_step))
+            if max_step and abs(dy_total) > 0
+            else 1
+        )
         n_steps = max(n_x, n_y, 1)
         if n_steps == 1:
-            return super().move(position=target_abs, wait=wait, timeout=timeout, moved_cb=moved_cb)
+            return super().move(
+                position=target_abs, wait=wait, timeout=timeout, moved_cb=moved_cb
+            )
 
         # compute equal-sized steps for each axis
         step_x = dx_total / n_steps
@@ -334,7 +344,9 @@ class SafeUndPointAbs2D(UndPointAbs2D):
                 move_dx, move_dy = float(corr_x), float(corr_y)
             else:
                 move_dx, move_dy = float(step_x), float(step_y)
-            last_status = self.delta_xy.move((move_dx, move_dy), wait=True, timeout=timeout)
+            last_status = self.delta_xy.move(
+                (move_dx, move_dy), wait=True, timeout=timeout
+            )
             # sleep between moves to allow motors to settle
             if sleep_between > 0:
                 time.sleep(sleep_between)
@@ -348,19 +360,25 @@ class SafeUndPointAbs2D(UndPointAbs2D):
         return last_status
 
 
-class SafeUndPointAbs2DMFX(SafeUndPointAbs2D):
+class SafeUndPointAbs2DHutch(SafeUndPointAbs2D):
     """
-    Safe segmented variant with MFX PV defaults.
+    Safe segmented variant with Hutch PV defaults.
+
+    You can do:
+    undp = SafeUndPointAbs2DHutch("mfx")
     """
 
     def __init__(
         self,
-        prefix: str = "MFX:USER:MCC:UND",
-        *,
-        name: str = "mfx_undp_safe",
+        hutch: str,
         **kwargs,
     ):
+        prefix = f"{hutch.upper()}:USER:MCC:UND"
+        name = kwargs.pop("name")
+        if name is None:
+            name = f"{hutch.lower()}_undp"
         super().__init__(prefix, name=name, **kwargs)
+
 
 class UndPointDelta2DSim(UndPointDelta2D):
     """
