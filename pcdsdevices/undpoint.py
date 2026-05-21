@@ -430,3 +430,10 @@ class UndPointAbs2DSim(UndPointAbs2D):
 
     def _new_raw_y(self, value: float, **_):
         self.y_raw_rbv.put(value)
+
+
+class SafeUndPointAbs2DSim(UndPointAbs2DSim, SafeUndPointAbs2D):
+    """
+    Test version of the segmented moving logic using no PVs
+    """
+    ...
