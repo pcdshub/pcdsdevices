@@ -3,7 +3,6 @@ import logging
 from typing import Callable, ClassVar, Optional
 
 from ophyd.device import Component as Cpt
-from ophyd.device import FormattedComponent as FCpt
 from ophyd.device import required_for_connection
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import DerivedSignal, EpicsSignal, EpicsSignalRO
@@ -74,7 +73,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     docstring for duplication/adaptation notes.
 
     Notes
-    -----
+   --
     The PCDS interface preferences and design patterns implemented here are:
 
     1. Uses the `FltMvInterface` mixin for name aliases and advanced functionality, such as improved
@@ -91,40 +90,44 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
        be used with any compliant TwinCAT axis IOC.
     """
     # Position
-    setpoint = Cpt(PytmcSignal, "fPosition", io="io", kind="hinted", auto_monitor=True)
-    readback = Cpt(PytmcSignal, "fActPosition", io="i", kind="hinted", auto_monitor=True)
-    done = Cpt(PytmcSignal, "bDone", io="i", kind="normal", auto_monitor=True)
-    actuate = Cpt(PytmcSignal, "bMoveCmd", io="io", kind="normal")
-    stop_signal = Cpt(PytmcSignal, "bHalt", io="io", kind="normal")
-    reset_signal = Cpt(PytmcSignal, "bReset", io="io", kind="normal")
+    setpoint = Cpt(PytmcSignal, ":fPosition", io="io", kind="hinted", auto_monitor=True)
+    readback = Cpt(PytmcSignal, ":fActPosition", io="i", kind="hinted", auto_monitor=True)
+    done = Cpt(PytmcSignal, ":bDone", io="i", kind="normal", auto_monitor=True)
+    actuate = Cpt(PytmcSignal, ":bMoveCmd", io="io", kind="normal")
+    stop_signal = Cpt(PytmcSignal, ":bHalt", io="io", kind="normal")
+    reset_signal = Cpt(PytmcSignal, ":bReset", io="io", kind="normal")
 
     # Motion Configuration
-    velocity = Cpt(PytmcSignal, "fVelocity", io="io", kind="config", auto_monitor=True)
-    acceleration = Cpt(PytmcSignal, "fAcceleration", io="io", kind="config", auto_monitor=True)
-    deceleration = Cpt(PytmcSignal, "fDeceleration", io="io", kind="config", auto_monitor=True)
-    jerk = Cpt(PytmcSignal, "fJerk", io="io", kind="config", auto_monitor=True)
-    enable_mode = Cpt(PytmcSignal, "eEnableMode", io="io", kind="config")
-    brake_mode = Cpt(PytmcSignal, "eBrakeMode", io="io", kind="config")
+    velocity = Cpt(PytmcSignal, ":fVelocity", io="io", kind="config", auto_monitor=True)
+    acceleration = Cpt(PytmcSignal, ":fAcceleration", io="io", kind="config", auto_monitor=True)
+    deceleration = Cpt(PytmcSignal, ":fDeceleration", io="io", kind="config", auto_monitor=True)
+    jerk = Cpt(PytmcSignal, ":fJerk", io="io", kind="config", auto_monitor=True)
+    enable_mode = Cpt(PytmcSignal, ":eEnableMode", io="io", kind="config")
+    brake_mode = Cpt(PytmcSignal, ":eBrakeMode", io="io", kind="config")
 
     # Status Bits
-    motor_is_moving = Cpt(PytmcSignal, "bMoving", io="i", kind="normal", auto_monitor=True)
-    motor_is_moving_negative = Cpt(PytmcSignal, "bNegativeDirection", io="i", kind="normal", auto_monitor=True)
-    motor_is_moving_positive = Cpt(PytmcSignal, "bPositiveDirection", io="i", kind="normal", auto_monitor=True)
-    power_is_enabled = Cpt(PytmcSignal, "bPowerIsEnabled", io="i", kind="normal", auto_monitor=True)
-    fwd_enabled = Cpt(PytmcSignal, "bForwardEnabled", io="i", kind="normal", auto_monitor=True)
-    bwd_enabled = Cpt(PytmcSignal, "bBackwardEnabled", io="i", kind="normal", auto_monitor=True)
+    motor_is_moving = Cpt(PytmcSignal, ":bMoving", io="i", kind="normal", auto_monitor=True)
+    motor_is_moving_negative = Cpt(PytmcSignal, ":bNegativeDirection", io="i", kind="normal", auto_monitor=True)
+    motor_is_moving_positive = Cpt(PytmcSignal, ":bPositiveDirection", io="i", kind="normal", auto_monitor=True)
+    power_is_enabled = Cpt(PytmcSignal, ":bPowerIsEnabled", io="i", kind="normal", auto_monitor=True)
+    fwd_enabled = Cpt(PytmcSignal, ":bForwardEnabled", io="i", kind="normal", auto_monitor=True)
+    bwd_enabled = Cpt(PytmcSignal, ":bBackwardEnabled", io="i", kind="normal", auto_monitor=True)
     high_limit_switch = Cpt(InvertedBoolEpicsSignal, "fwd_enabled", kind="normal", add_prefix=())
     low_limit_switch = Cpt(InvertedBoolEpicsSignal, "bwd_enabled", kind="normal", add_prefix=())
-    negative_dir_enabled = Cpt(PytmcSignal, "bNegativeMotionIsEnabled", io="i", kind="normal", auto_monitor=True)
-    positive_dir_enabled = Cpt(PytmcSignal, "bPositiveMotionIsEnabled", io="i", kind="normal", auto_monitor=True)
-    command = Cpt(PytmcSignal, "eCommand", io="i", kind="normal", auto_monitor=True)
-    motor_egu = Cpt(PytmcSignal, "NC:Eu:Val", io="i", kind="normal", string=True, auto_monitor=True)
+    negative_dir_enabled = Cpt(PytmcSignal, ":bNegativeMotionIsEnabled", io="i", kind="normal", auto_monitor=True)
+    positive_dir_enabled = Cpt(PytmcSignal, ":bPositiveMotionIsEnabled", io="i", kind="normal", auto_monitor=True)
+    command = Cpt(PytmcSignal, ":eCommand", io="i", kind="normal", auto_monitor=True)
+    motor_egu = Cpt(PytmcSignal, ":NC:Eu:Val", io="i", kind="normal", string=True, auto_monitor=True)
 
     # Limits (configuration)
-    low_limit_travel = Cpt(EpicsSignal, 'NC:MinPos:Val_RBV', write_pv='NC:MinPos:Goal', kind='config', auto_monitor=True)
-    high_limit_travel = Cpt(EpicsSignal, 'NC:MaxPos:Val_RBV', write_pv='NC:MaxPos:Goal', kind='config', auto_monitor=True)
-    low_limit_enable = Cpt(EpicsSignal, 'NC:SoftPosMinOn:Val_RBV', write_pv='NC:SoftPosMinOn:Goal', kind='config', auto_monitor=True)
-    high_limit_enable = Cpt(EpicsSignal, 'NC:SoftPosMaxOn:Val_RBV', write_pv='NC:SoftPosMaxOn:Goal', kind='config', auto_monitor=True)
+    low_limit_travel = Cpt(EpicsSignal, ':NC:MinPos:Val_RBV', write_pv=':NC:MinPos:Goal', kind='config', auto_monitor=True)
+    high_limit_travel = Cpt(EpicsSignal, ':NC:MaxPos:Val_RBV', write_pv=':NC:MaxPos:Goal', kind='config', auto_monitor=True)
+    low_limit_enable = Cpt(EnabledDisabledSignal, ':NC:SoftPosMinOn:Val_RBV', write_pv=':NC:SoftPosMinOn:Goal', kind='config', auto_monitor=True)
+    high_limit_enable = Cpt(EnabledDisabledSignal, ':NC:SoftPosMaxOn:Val_RBV', write_pv=':NC:SoftPosMaxOn:Goal', kind='config', auto_monitor=True)
+
+    # Homing status/config
+    homed = Cpt(PytmcSignal, ":bHomed", io="i", kind='normal', auto_monitor=True)
+    home_mode = Cpt(PytmcSignal, ":eHomeMode", io="io", kind="config")
 
     tab_whitelist = [
         "reset",
@@ -148,6 +151,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     set_metadata(power_is_enabled, dict(variety='bitmask', bits=1))
     set_metadata(high_limit_switch, dict(variety='bitmask', bits=1))
     set_metadata(low_limit_switch, dict(variety='bitmask', bits=1))
+    set_metadata(homed, dict(variety='bitmask', bits=1))
 
     tolerated_alarm = AlarmSeverity.NO_ALARM
 
@@ -205,7 +209,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         """The current position of the motor in its engineering units
 
         Returns
-        -------
+       ----
         position : float
         """
         return self.readback.get()
@@ -321,12 +325,12 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Set the low limit. Adapted from EpicsMotorInterface.
 
         Parameters
-        -------
+       ----
         value : float
             Limit of travel in the negative direction.
 
         Raises
-        ---
+
         ValueError
             When in motion or position outside of limit.
         """
@@ -351,12 +355,12 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Limit of travel in the positive direction. Adapted from EpicsMotorInterface.
 
         Parameters
-        -------
+       ----
         value : float
             High limit value to be set.
 
         Raises
-        ---
+
         ValueError
             When in motion or position outside of limit.
         """
@@ -394,7 +398,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Duplicated logic from EpicsMotorInterface for API consistency.
 
         Returns
-        ----
+       -
         moving : bool
         """
         return bool(self.motor_is_moving.get(use_monitor=False))
@@ -417,12 +421,12 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     def enabled(self):
         """
         Returns
-        -------
+       ----
         bool
             True if power is enabled **and** either negative or positive direction is enabled.
 
         Explanation
-        -----------
+       --------
         - Returns True if:
             - Power is on (`power_is_enabled`)
             - At least one direction (`negative_dir_enabled` OR `positive_dir_enabled`) is enabled
@@ -574,13 +578,13 @@ class TwinCATAxis(TwinCATMotorInterface):
           proper mode setting, actuation, status, and timing.
         - Robust session-tracking and logging logic for post-move diagnostics.
    Note
-    ----
+   ---
     Some methods in this class are identical or adapted from BeckhoffAxis,
     to ensure the error-handling, staging, homing, and value checking logic
     behaves identically.
 
-    Attributes
-    -------
+   Attributes
+   ----
     actuate_home : PytmcSignal
         PV to trigger a homing command.
     home_mode : PytmcSignal
@@ -589,16 +593,12 @@ class TwinCATAxis(TwinCATMotorInterface):
         Sub-device interface for further PLC status and diagnostics.
 
     """
-    homed = Cpt(PytmcSignal, "bHomed", io="i", kind='normal', auto_monitor=True)
-    home_mode = Cpt(PytmcSignal, "eHomeMode", io="io", kind="config")
-
+    # homed and home_mode are defined on TwinCATMotorInterface (PLC signals).
     __doc__ += basic_positioner_init
     tab_whitelist = ['clear_error', 'home', 'stage']
 
-    plc = Cpt(BeckhoffAxisPLC, '', kind='normal',
+    plc = Cpt(BeckhoffAxisPLC, ':', kind='normal',
               doc='PLC error handling and aux functions.')
-
-    set_metadata(homed, dict(variety='bitmask', bits=1))
 
     def subscribe(
         self,
@@ -771,12 +771,12 @@ class TwinCATMREAxis(TwinCATAxis):
     :meth:`home` and :meth:`check_value`).
 
     Notes
-    -----
+   --
     The PLC sub-device (``plc``) and the deceleration/jerk/enable-mode/
     direction-status tags have no ``tcmotor`` record equivalent, so they
     continue to use :class:`PytmcSignal` against the PLC PVs.
     """
-    # --- Position: tcmotor record dot-notation fields ---
+    # Position: tcmotor record dot-notation fields
     setpoint = Cpt(EpicsSignal, ".VAL", kind="hinted",
                    auto_monitor=True, doc="Desired position (tcmotor.VAL)")
     readback = Cpt(EpicsSignal, ".RBV", kind="hinted",
@@ -785,12 +785,11 @@ class TwinCATMREAxis(TwinCATAxis):
                auto_monitor=True, doc="Done moving (tcmotor.DMOV)")
     stop_signal = Cpt(EpicsSignal, ".STOP", kind="normal",
                       doc="Stop command (tcmotor.STOP)")
-    # actuate needed by PVPositioner internals, hidden from Typhos
+    # actuate overrides only the kind (omitted) to hide it from Typhos; the
+    # :bMoveCmd binding is inherited.
     actuate = Cpt(PytmcSignal, ":bMoveCmd", io="io", kind="omitted")
-    # reset_signal: no tcmotor equivalent, use PLC PV directly
-    reset_signal = Cpt(PytmcSignal, ":bReset", io="io", kind="normal")
 
-    # --- Motion configuration: tcmotor record fields ---
+    # Motion configuration: tcmotor record fields
     velocity = Cpt(EpicsSignal, ".VELO", kind="config",
                    auto_monitor=True, doc="Velocity (tcmotor.VELO)")
     velocity_base = Cpt(EpicsSignal, ".VBAS", kind="config",
@@ -801,22 +800,13 @@ class TwinCATMREAxis(TwinCATAxis):
                        doc="Max velocity (tcmotor.VMAX -> fVelocityMax)")
     acceleration = Cpt(EpicsSignal, ".ACCS", kind="config",
                        auto_monitor=True, doc="Acceleration (tcmotor.ACCS)")
-    # deceleration/jerk: no tcmotor fields, use PLC PVs
-    deceleration = Cpt(PytmcSignal, ":fDeceleration", io="io", kind="config",
-                       auto_monitor=True)
-    jerk = Cpt(PytmcSignal, ":fJerk", io="io", kind="config", auto_monitor=True)
-    enable_mode = Cpt(PytmcSignal, ":eEnableMode", io="io", kind="config")
-    brake_mode = Cpt(PytmcSignal, ":eBrakeMode", io="io", kind="config")
+    # deceleration, jerk, enable_mode, brake_mode: inherited unchanged from
+    # TwinCATMotorInterface (PLC tags, no tcmotor record equivalent).
 
-    # --- Status bits: tcmotor fields where available ---
+    # Status bits: tcmotor fields where available
     motor_is_moving = Cpt(EpicsSignal, ".MOVN", kind="normal",
                           auto_monitor=True, doc="Motor is moving (tcmotor.MOVN)")
-    motor_is_moving_negative = Cpt(PytmcSignal, ":bNegativeDirection", io="i",
-                                   kind="normal", auto_monitor=True)
-    motor_is_moving_positive = Cpt(PytmcSignal, ":bPositiveDirection", io="i",
-                                   kind="normal", auto_monitor=True)
-    power_is_enabled = Cpt(PytmcSignal, ":bPowerIsEnabled", io="i", kind="normal",
-                           auto_monitor=True)
+    # motor_is_moving_negative/positive and power_is_enabled: inherited unchanged.
     # tcmotor already presents limit switch state directly via HLS/LLS, so no
     # InvertedBoolEpicsSignal indirection is needed here. The fwd_enabled /
     # bwd_enabled components that the legacy class used as the inversion source
@@ -829,22 +819,18 @@ class TwinCATMREAxis(TwinCATAxis):
     low_limit_switch = Cpt(EpicsSignalRO, ".LLS", kind="normal",
                            auto_monitor=True,
                            doc="Backward (low) limit switch (tcmotor.LLS)")
-    negative_dir_enabled = Cpt(PytmcSignal, ":bNegativeMotionIsEnabled", io="i",
-                               kind="normal", auto_monitor=True)
-    positive_dir_enabled = Cpt(PytmcSignal, ":bPositiveMotionIsEnabled", io="i",
-                               kind="normal", auto_monitor=True)
-    command = Cpt(PytmcSignal, ":eCommand", io="i", kind="normal", auto_monitor=True)
+    # negative_dir_enabled, positive_dir_enabled, command: inherited unchanged.
     motor_egu = Cpt(EpicsSignal, ".EGU", kind="normal", string=True,
                     auto_monitor=True, doc="Engineering units (tcmotor.EGU)")
 
-    # --- SPMG state machine and MSTA status word (tcmotor) ---
+    # SPMG state machine and MSTA status word (tcmotor)
     spmg = Cpt(EpicsSignal, ".SPMG", kind="normal",
                auto_monitor=True, string=True,
                doc="Stop/Pause/Move/Go (tcmotor.SPMG)")
     msta = Cpt(EpicsSignal, ".MSTA", kind="normal",
                auto_monitor=True, doc="Motor status word (tcmotor.MSTA)")
 
-    # --- Soft limits: tcmotor record fields ---
+    # Soft limits: tcmotor record fields
     # HLM/LLM write to NC:MaxPos:Goal / NC:MinPos:Goal via tcmotor OUT_HLM/OUT_LLM
     low_limit_travel = Cpt(EpicsSignal, ".LLM", kind="config",
                            auto_monitor=True,
@@ -852,48 +838,26 @@ class TwinCATMREAxis(TwinCATAxis):
     high_limit_travel = Cpt(EpicsSignal, ".HLM", kind="config",
                             auto_monitor=True,
                             doc="High soft limit (tcmotor.HLM -> NC:MaxPos:Goal)")
-    # Limit enables still need individual PLC PVs not in tcmotor
-    low_limit_enable = FCpt(EnabledDisabledSignal,
-                            '{self.prefix}:NC:SoftPosMinOn:Val_RBV',
-                            write_pv='{self.prefix}:NC:SoftPosMinOn:Goal',
-                            kind='config', auto_monitor=True,
-                            doc='Low soft limit enable (Enabled/Disabled)')
-    high_limit_enable = FCpt(EnabledDisabledSignal,
-                             '{self.prefix}:NC:SoftPosMaxOn:Val_RBV',
-                             write_pv='{self.prefix}:NC:SoftPosMaxOn:Goal',
-                             kind='config', auto_monitor=True,
-                             doc='High soft limit enable (Enabled/Disabled)')
+    # low/high_limit_enable inherited from TwinCATMotorInterface
+    # (EnabledDisabledSignal on the shared NC:SoftPos*On records).
 
-    # --- Homing and status: bHomed, with tcmotor HOMF/HOMR commands ---
-    homed = Cpt(PytmcSignal, ":bHomed", io="i", kind='normal',
-                auto_monitor=True, doc="At home position (bHomed_RBV)")
+    # Homing: tcmotor HOMF/HOMR command fields
+    # homed and home_mode are inherited from TwinCATAxis (PLC :bHomed / :eHomeMode).
     # HOMF sets eHomeMode=LOW_LIMIT + pulses bHomeCmd; HOMR sets HIGH_LIMIT.
     # Only use HOMF/HOMR when home_mode matches, otherwise use bHomeCmd directly.
     home_cmd_fwd = Cpt(EpicsSignal, '.HOMF', kind='normal',
                        doc='Home via low limit switch (tcmotor.HOMF)')
     home_cmd_rev = Cpt(EpicsSignal, '.HOMR', kind='normal',
                        doc='Home via high limit switch (tcmotor.HOMR)')
-    home_mode = Cpt(PytmcSignal, ":eHomeMode", io="io", kind="config",
-                    doc="Homing mode enum (eHomeMode)")
-
-    # plc lives directly under the device prefix on motor-record IOCs
-    plc = Cpt(BeckhoffAxisPLC, ':', kind='normal',
-              doc='PLC error handling and aux functions.')
 
     set_metadata(stop_signal, dict(variety='command-proc', value=1))
     set_metadata(done, dict(variety='bitmask', bits=1))
     set_metadata(motor_is_moving, dict(variety='bitmask', bits=1))
-    set_metadata(motor_is_moving_negative, dict(variety='bitmask', bits=1))
-    set_metadata(motor_is_moving_positive, dict(variety='bitmask', bits=1))
-    set_metadata(negative_dir_enabled, dict(variety='bitmask', bits=1))
-    set_metadata(positive_dir_enabled, dict(variety='bitmask', bits=1))
-    set_metadata(power_is_enabled, dict(variety='bitmask', bits=1))
     set_metadata(high_limit_switch, dict(variety='bitmask', bits=1))
     set_metadata(low_limit_switch, dict(variety='bitmask', bits=1))
     set_metadata(msta, dict(variety='bitmask', bits=16))
     set_metadata(home_cmd_fwd, dict(variety='command-proc', value=1))
     set_metadata(home_cmd_rev, dict(variety='command-proc', value=1))
-    set_metadata(homed, dict(variety='bitmask', bits=1))
 
     @property
     @raise_if_disconnected
