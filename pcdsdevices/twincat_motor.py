@@ -53,7 +53,10 @@ class EnabledDisabledSignal(EpicsSignal):
             value = self._disable_map.get(value, value)
         super().put(value, **kwargs)
 
-
+"""
+EnabledDisabledSignal & InvertedBoolEpicsSignal  registered as FakeEpicsSignalRO; 
+it's writable, so consider FakeEpicsSignal when adding tests.
+"""
 fake_device_cache[InvertedBoolEpicsSignal] = FakeEpicsSignalRO
 fake_device_cache[EnabledDisabledSignal] = FakeEpicsSignalRO
 
@@ -785,10 +788,8 @@ class TwinCATMREAxis(TwinCATAxis):
                auto_monitor=True, doc="Done moving (tcmotor.DMOV)")
     stop_signal = Cpt(EpicsSignal, ".STOP", kind="normal",
                       doc="Stop command (tcmotor.STOP)")
-    # actuate overrides only the kind (omitted) to hide it from Typhos; the
-    # :bMoveCmd binding is inherited.
-    actuate = Cpt(PytmcSignal, ":bMoveCmd", io="io", kind="omitted")
-
+    # actuate overrides , MRE owns the actuation now
+    actuate = None
     # Motion configuration: tcmotor record fields
     velocity = Cpt(EpicsSignal, ".VELO", kind="config",
                    auto_monitor=True, doc="Velocity (tcmotor.VELO)")
