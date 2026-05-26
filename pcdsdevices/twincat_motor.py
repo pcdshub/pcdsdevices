@@ -73,7 +73,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     docstring for duplication/adaptation notes.
 
     Notes
-   --
+    -----
     The PCDS interface preferences and design patterns implemented here are:
 
     1. Uses the `FltMvInterface` mixin for name aliases and advanced functionality, such as improved
@@ -209,7 +209,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         """The current position of the motor in its engineering units
 
         Returns
-       ----
+        ----
         position : float
         """
         return self.readback.get()
@@ -325,7 +325,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Set the low limit. Adapted from EpicsMotorInterface.
 
         Parameters
-       ----
+        ----
         value : float
             Limit of travel in the negative direction.
 
@@ -355,7 +355,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Limit of travel in the positive direction. Adapted from EpicsMotorInterface.
 
         Parameters
-       ----
+        ----
         value : float
             High limit value to be set.
 
@@ -398,7 +398,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Duplicated logic from EpicsMotorInterface for API consistency.
 
         Returns
-       -
+        ----
         moving : bool
         """
         return bool(self.motor_is_moving.get(use_monitor=False))
@@ -421,12 +421,12 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     def enabled(self):
         """
         Returns
-       ----
+        ----
         bool
             True if power is enabled **and** either negative or positive direction is enabled.
 
         Explanation
-       --------
+        --------
         - Returns True if:
             - Power is on (`power_is_enabled`)
             - At least one direction (`negative_dir_enabled` OR `positive_dir_enabled`) is enabled
@@ -578,7 +578,7 @@ class TwinCATAxis(TwinCATMotorInterface):
           proper mode setting, actuation, status, and timing.
         - Robust session-tracking and logging logic for post-move diagnostics.
    Note
-   ---
+   ----
     Some methods in this class are identical or adapted from BeckhoffAxis,
     to ensure the error-handling, staging, homing, and value checking logic
     behaves identically.
@@ -771,7 +771,7 @@ class TwinCATMREAxis(TwinCATAxis):
     :meth:`home` and :meth:`check_value`).
 
     Notes
-   --
+    -----
     The PLC sub-device (``plc``) and the deceleration/jerk/enable-mode/
     direction-status tags have no ``tcmotor`` record equivalent, so they
     continue to use :class:`PytmcSignal` against the PLC PVs.
