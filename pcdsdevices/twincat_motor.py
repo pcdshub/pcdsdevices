@@ -53,8 +53,9 @@ class EnabledDisabledSignal(EpicsSignal):
             value = self._disable_map.get(value, value)
         super().put(value, **kwargs)
 
+
 """
-EnabledDisabledSignal & InvertedBoolEpicsSignal  registered as FakeEpicsSignalRO; 
+EnabledDisabledSignal & InvertedBoolEpicsSignal  registered as FakeEpicsSignalRO;
 it's writable, so consider FakeEpicsSignal when adding tests.
 """
 fake_device_cache[InvertedBoolEpicsSignal] = FakeEpicsSignalRO
