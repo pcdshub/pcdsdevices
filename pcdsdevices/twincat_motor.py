@@ -213,7 +213,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         """The current position of the motor in its engineering units
 
         Returns
-        ----
+        -------
         position : float
         """
         return self.readback.get()
@@ -329,12 +329,12 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Set the low limit. Adapted from EpicsMotorInterface.
 
         Parameters
-        ----
+        -------
         value : float
             Limit of travel in the negative direction.
 
         Raises
-
+        ---
         ValueError
             When in motion or position outside of limit.
         """
@@ -359,12 +359,12 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Limit of travel in the positive direction. Adapted from EpicsMotorInterface.
 
         Parameters
-        ----
+        -------
         value : float
             High limit value to be set.
 
         Raises
-
+        ---
         ValueError
             When in motion or position outside of limit.
         """
@@ -425,12 +425,12 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     def enabled(self):
         """
         Returns
-        ----
+        -------
         bool
             True if power is enabled **and** either negative or positive direction is enabled.
 
         Explanation
-        --------
+        -----------
         - Returns True if:
             - Power is on (`power_is_enabled`)
             - At least one direction (`negative_dir_enabled` OR `positive_dir_enabled`) is enabled
@@ -581,14 +581,14 @@ class TwinCATAxis(TwinCATMotorInterface):
         - A `home()` method exposing all PLC-configured homing routines with
           proper mode setting, actuation, status, and timing.
         - Robust session-tracking and logging logic for post-move diagnostics.
-    Note
-   ----
+   Note
+    ----
     Some methods in this class are identical or adapted from BeckhoffAxis,
     to ensure the error-handling, staging, homing, and value checking logic
     behaves identically.
 
-   Attributes
-   ----
+    Attributes
+    -------
     actuate_home : PytmcSignal
         PV to trigger a homing command.
     home_mode : PytmcSignal
