@@ -581,7 +581,7 @@ class TwinCATAxis(TwinCATMotorInterface):
         - A `home()` method exposing all PLC-configured homing routines with
           proper mode setting, actuation, status, and timing.
         - Robust session-tracking and logging logic for post-move diagnostics.
-   Note
+    Note
    ----
     Some methods in this class are identical or adapted from BeckhoffAxis,
     to ensure the error-handling, staging, homing, and value checking logic
