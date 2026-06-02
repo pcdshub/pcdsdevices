@@ -31,33 +31,54 @@ class InvertedBoolEpicsSignal(DerivedSignal):
 
 class EnabledDisabledSignal(EpicsSignal):
     """
-    EpicsSignal for longin enable/disable records that lack ONAM/ZNAM.
+    EpicsSignal for longin/longout enable records that lack ONAM/ZNAM.
 
-    Converts 0 -> 'Disabled', 1 -> 'Enabled' for display.
-    Accepts 'Enable'/'Disable' or 0/1 for writes.
+    Presents the underlying 0/1 channel as an enum-like signal with strings
+    'DISABLE' / 'ENABLE'. ``enum_strs`` is advertised through the signal's
+    metadata and ``describe()`` so Typhos selects an enum widget rather than
+    a raw integer line edit.
 
-    Used by the motor-record (MRE) TwinCAT axis variants whose soft-limit
-    enable PVs are plain longin records without string field definitions.
+    Used where the soft-limit enable PVs (e.g. NC:SoftPosMinOn) are plain
+    longin records without ONAM/ZNAM string fields.
     """
-    _enable_map = {0: 'Disabled', 1: 'Enabled'}
-    _disable_map = {'Enable': 1, 'Disable': 0,
-                    'Enabled': 1, 'Disabled': 0,
-                    1: 1, 0: 0}
+    _enum_strs = ('DISABLE', 'ENABLE')
 
-    def get(self, **kwargs):
-        val = super().get(**kwargs)
-        return self._enable_map.get(int(val), str(val))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Advertise the synthetic enum strings via metadata so consumers
+        # (Typhos widget selector, ophyd describe()) treat this as an enum.
+        self._metadata['enum_strs'] = tuple(self._enum_strs)
+
+    def _int_to_str(self, value):
+        try:
+            return self._enum_strs[int(value)]
+        except (ValueError, IndexError, TypeError):
+            return value
+
+    def _str_to_int(self, value):
+        if isinstance(value, str):
+            try:
+                return self._enum_strs.index(value)
+            except ValueError:
+                pass
+        return value
+
+    def get(self, as_string=False, **kwargs):
+        raw = super().get(**kwargs)
+        if as_string:
+            return self._int_to_str(raw)
+        return raw
 
     def put(self, value, **kwargs):
-        if isinstance(value, str):
-            value = self._disable_map.get(value, value)
-        super().put(value, **kwargs)
+        super().put(self._str_to_int(value), **kwargs)
+
+    def describe(self):
+        desc = super().describe()
+        for key in desc:
+            desc[key]['enum_strs'] = list(self._enum_strs)
+        return desc
 
 
-"""
-EnabledDisabledSignal & InvertedBoolEpicsSignal  registered as FakeEpicsSignalRO;
-it's writable, so consider FakeEpicsSignal when adding tests.
-"""
 fake_device_cache[InvertedBoolEpicsSignal] = FakeEpicsSignalRO
 fake_device_cache[EnabledDisabledSignal] = FakeEpicsSignalRO
 
@@ -128,6 +149,11 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     high_limit_travel = Cpt(EpicsSignal, ':NC:MaxPos:Val_RBV', write_pv=':NC:MaxPos:Goal', kind='config', auto_monitor=True)
     low_limit_enable = Cpt(EnabledDisabledSignal, ':NC:SoftPosMinOn:Val_RBV', write_pv=':NC:SoftPosMinOn:Goal', kind='config', auto_monitor=True)
     high_limit_enable = Cpt(EnabledDisabledSignal, ':NC:SoftPosMaxOn:Val_RBV', write_pv=':NC:SoftPosMaxOn:Goal', kind='config', auto_monitor=True)
+
+    # Position correction / backlash
+    pos_correction = Cpt(EnabledDisabledSignal, ':NC:PosCorr:Val_RBV', write_pv=':NC:PosCorr:Goal', kind='config', auto_monitor=True)
+    backlash = Cpt(EpicsSignal, ':NC:Backlash:Val_RBV', write_pv=':NC:Backlash:Goal', kind='config', auto_monitor=True)
+    pos_cor_status = Cpt(PytmcSignal, ":bBacklashStatus", io="i", kind="normal", auto_monitor=True)
 
     # Homing status/config
     homed = Cpt(PytmcSignal, ":bHomed", io="i", kind='normal', auto_monitor=True)
@@ -791,6 +817,7 @@ class TwinCATMREAxis(TwinCATAxis):
                       doc="Stop command (tcmotor.STOP)")
     # actuate overrides , MRE owns the actuation now
     actuate = None
+
     # Motion configuration: tcmotor record fields
     velocity = Cpt(EpicsSignal, ".VELO", kind="config",
                    auto_monitor=True, doc="Velocity (tcmotor.VELO)")
@@ -842,6 +869,13 @@ class TwinCATMREAxis(TwinCATAxis):
                             doc="High soft limit (tcmotor.HLM -> NC:MaxPos:Goal)")
     # low/high_limit_enable inherited from TwinCATMotorInterface
     # (EnabledDisabledSignal on the shared NC:SoftPos*On records).
+
+    # Backlash via tcmotor .BDST (writes to NC:Backlash:Goal via OUT_BDST).
+    # pos_correction and pos_cor_status have no tcmotor record equivalent and
+    # are inherited from TwinCATMotorInterface.
+    backlash = Cpt(EpicsSignal, '.BDST', kind='config',
+                   auto_monitor=True,
+                   doc='Backlash correction (tcmotor.BDST)')
 
     # Homing: tcmotor HOMF/HOMR command fields
     # homed and home_mode are inherited from TwinCATAxis (PLC :bHomed / :eHomeMode).
