@@ -402,6 +402,8 @@ class UndPointDelta2DSim(UndPointDelta2D):
         if value != self.actuate_value:
             return
         self.done.put(1 - self.done_value)
+        # It's fairly likely that delta_x and delta_y aren't updated yet somehow
+        time.sleep(0.2)
         self._raw_x.put(self._raw_x.get() + (-self.delta_x.get() / 1000))
         self._raw_y.put(self._raw_y.get() + (-self.delta_y.get() / 1000))
         self.actuate.put(1 - self.actuate_value)
