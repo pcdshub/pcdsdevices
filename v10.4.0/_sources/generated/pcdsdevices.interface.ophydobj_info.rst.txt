@@ -1,0 +1,6 @@
+﻿pcdsdevices.interface.ophydobj\_info
+====================================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autofunction:: ophydobj_info

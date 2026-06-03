@@ -1,0 +1,272 @@
+﻿pcdsdevices.pdu.TripplitePDU
+============================
+
+.. currentmodule:: pcdsdevices.pdu
+
+.. autoclass:: TripplitePDU
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - tower_name
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:setDeviceName``
+          - 
+          - hinted
+          - 
+    
+        * - location
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:setDeviceLocation``
+          - 
+          - hinted
+          - 
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getDeviceStatus``
+          - 
+          - hinted
+          - 
+    
+        * - num_inputs
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumInputs``
+          - 
+          - hinted
+          - 
+    
+        * - num_outputs
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumOutputs``
+          - 
+          - hinted
+          - 
+    
+        * - num_outlets
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumOutlets``
+          - 
+          - hinted
+          - 
+    
+        * - num_groups
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumOutletGroups``
+          - 
+          - hinted
+          - 
+    
+        * - num_phases
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumPhases``
+          - 
+          - hinted
+          - 
+    
+        * - num_circuits
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumCircuits``
+          - 
+          - hinted
+          - 
+    
+        * - num_breakers
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumBreakers``
+          - 
+          - hinted
+          - 
+    
+        * - num_heatsinks
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumHeatsinks``
+          - 
+          - hinted
+          - 
+    
+        * - input_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduInputPhaseFrequency``
+          - 
+          - hinted
+          - 
+    
+        * - input_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduInputPhaseVoltage``
+          - 
+          - hinted
+          - 
+    
+        * - input_v_min
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduInputPhaseVoltageMin``
+          - 
+          - hinted
+          - 
+    
+        * - input_v_max
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduInputPhaseVoltageMax``
+          - 
+          - hinted
+          - 
+    
+        * - output_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputFrequency``
+          - 
+          - hinted
+          - 
+    
+        * - output_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputVoltage``
+          - 
+          - hinted
+          - 
+    
+        * - output_p
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputActivePower``
+          - 
+          - hinted
+          - 
+    
+        * - output_c
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputCurrent``
+          - 
+          - hinted
+          - 
+    
+        * - output_c_min
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputCurrentMin``
+          - 
+          - hinted
+          - 
+    
+        * - output_c_max
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputCurrentMax``
+          - 
+          - hinted
+          - 
+    
+        * - channels_on
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:setPduControlPduOn``
+          - 
+          - hinted
+          - 
+    
+        * - channels_off
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:setPduControlPduOff``
+          - 
+          - hinted
+          - 
+    
+        * - channels_reboot
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:setPduControlPduReboot``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

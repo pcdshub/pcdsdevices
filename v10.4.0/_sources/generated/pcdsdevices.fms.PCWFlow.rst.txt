@@ -1,0 +1,74 @@
+﻿pcdsdevices.fms.PCWFlow
+=======================
+
+.. currentmodule:: pcdsdevices.fms
+
+.. autoclass:: PCWFlow
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pcw_flow_supply
+          - :class:`~pcdsdevices.analog_signals.FDQ`
+          - ``:PCW:SUP``
+          - FDQ Measurment of PCW flow supply
+          - normal
+          - 
+    
+        * - pcw_flow_return
+          - :class:`~pcdsdevices.analog_signals.FDQ`
+          - ``:PCW:RET``
+          - FDQ Measurement of PCW flow return
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

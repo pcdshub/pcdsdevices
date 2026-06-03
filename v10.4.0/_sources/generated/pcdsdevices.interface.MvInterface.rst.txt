@@ -1,0 +1,32 @@
+﻿pcdsdevices.interface.MvInterface
+=================================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autoclass:: MvInterface
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: end_monitor_thread
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    

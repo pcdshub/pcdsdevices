@@ -1,0 +1,134 @@
+﻿pcdsdevices.dream\_motion.TMODream
+==================================
+
+.. currentmodule:: pcdsdevices.dream_motion
+
+.. autoclass:: TMODream
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - gas_nozzle_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:GSJN:MMS:X``
+          - dream gas nozzle x axis
+          - normal
+          - 
+    
+        * - gas_nozzle_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:GSJN:MMS:Y``
+          - dream gas nozzle y axis
+          - normal
+          - 
+    
+        * - gas_nozzle_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:GSJN:MMS:Z``
+          - dream gas nozzle z axis
+          - normal
+          - 
+    
+        * - gas_jet_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:GSJP:MMS:X``
+          - dream gas jet x axis
+          - normal
+          - 
+    
+        * - gas_jet_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:GSJP:MMS:Z``
+          - dream gas jet z axis
+          - normal
+          - 
+    
+        * - coil_roll
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:COIL:MMS:ROLL``
+          - dream coil roll axis
+          - normal
+          - 
+    
+        * - coil_yaw
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:COIL:MMS:YAW``
+          - dream coil yaw axis
+          - normal
+          - 
+    
+        * - chamber_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MC:MMS:Y``
+          - dream main chamber Y axis
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

@@ -1,0 +1,497 @@
+﻿pcdsdevices.pdu.PDU24
+=====================
+
+.. currentmodule:: pcdsdevices.pdu
+
+.. autoclass:: PDU24
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - tower_name (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:SetTowerName``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - location
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SetSystemLocation``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:GetTowerStatus``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - output_c_max (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:SetInfeedLoadHighThresh``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - output_c (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:GetInfeedLoadValue``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - output_c_status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:GetInfeedLoadStatus``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - output_c_hi_alarm (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:InfeedLoadHighAlarm``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - output_p (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}{self._tower}:GetTowerActivePower``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - temperature_lo (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:Sensor:All:SetTempLowThresh``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - humidity_lo (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:Sensor:All:SetHumidLowThresh``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - temperature_hi (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:Sensor:All:SetTempHighThresh``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - humidity_hi (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._tower}:Sensor:All:SetHumidHighThresh``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor1_temperature_status
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:GetTempStatus``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor1_humidity_status
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:GetHumidStatus``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor1_temperature
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:GetTempValue``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor1_humidity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:GetHumidValue``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor1_temperature_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:TempAlarm``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor1_humidity_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:1:HumidAlarm``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_temperature_status
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:GetTempStatus``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_humidity_status
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:GetHumidStatus``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_temperature
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:GetTempValue``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_humidity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:GetHumidValue``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_temperature_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:TempAlarm``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - sensor2_humidity_alarm
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Sensor:2:HumidAlarm``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - channel_ctrl (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}{self._ctrl}:SetControlAction``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.PDU`
+    
+        * - channel1
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel2
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel3
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel4
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel5
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel6
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel7
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel8
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel9
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel10
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel11
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel12
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel13
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel14
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel15
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel16
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel17
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel18
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel19
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel20
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel21
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel22
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel23
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel24
+          - :class:`~pcdsdevices.pdu.PDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

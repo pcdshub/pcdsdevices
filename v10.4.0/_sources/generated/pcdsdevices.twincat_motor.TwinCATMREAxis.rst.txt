@@ -1,0 +1,423 @@
+﻿pcdsdevices.twincat\_motor.TwinCATMREAxis
+=========================================
+
+.. currentmodule:: pcdsdevices.twincat_motor
+
+.. autoclass:: TwinCATMREAxis
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - setpoint
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VAL``
+          - Desired position (tcmotor.VAL)
+          - hinted
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - readback
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.RBV``
+          - Actual position readback (tcmotor.RBV)
+          - hinted
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - done
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.DMOV``
+          - Done moving (tcmotor.DMOV)
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - stop_signal
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.STOP``
+          - Stop command (tcmotor.STOP)
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - reset_signal
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bReset``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - velocity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VELO``
+          - Velocity (tcmotor.VELO)
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - acceleration
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.ACCS``
+          - Acceleration (tcmotor.ACCS)
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - deceleration
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:fDeceleration``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - jerk
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:fJerk``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - enable_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:eEnableMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - brake_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:eBrakeMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - motor_is_moving
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.MOVN``
+          - Motor is moving (tcmotor.MOVN)
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - motor_is_moving_negative
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bNegativeDirection``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - motor_is_moving_positive
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bPositiveDirection``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - power_is_enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bPowerIsEnabled``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - high_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.HLS``
+          - Forward (high) limit switch (tcmotor.HLS)
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - low_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.LLS``
+          - Backward (low) limit switch (tcmotor.LLS)
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - negative_dir_enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bNegativeMotionIsEnabled``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - positive_dir_enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bPositiveMotionIsEnabled``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - command
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:eCommand``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - motor_egu
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.EGU``
+          - Engineering units (tcmotor.EGU)
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - low_limit_travel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.LLM``
+          - Low soft limit (tcmotor.LLM -> NC:MinPos:Goal)
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - high_limit_travel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.HLM``
+          - High soft limit (tcmotor.HLM -> NC:MaxPos:Goal)
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - low_limit_enable
+          - :class:`~pcdsdevices.twincat_motor.EnabledDisabledSignal`
+          - ``:NC:SoftPosMinOn:Val_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - high_limit_enable
+          - :class:`~pcdsdevices.twincat_motor.EnabledDisabledSignal`
+          - ``:NC:SoftPosMaxOn:Val_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - pos_correction
+          - :class:`~pcdsdevices.twincat_motor.EnabledDisabledSignal`
+          - ``:NC:PosCorr:Val_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - backlash
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.BDST``
+          - Backlash correction (tcmotor.BDST)
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - pos_cor_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:bBacklashStatus``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - home_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:eHomeMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - plc
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
+          - ``:``
+          - PLC error handling and aux functions.
+          - normal
+          - Inherited from :class:`~pcdsdevices.twincat_motor.TwinCATAxis`
+    
+        * - velocity_base
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VBAS``
+          - Base velocity (tcmotor.VBAS -> fVelocityBase)
+          - config
+          - 
+    
+        * - velocity_max
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VMAX``
+          - Max velocity (tcmotor.VMAX -> fVelocityMax)
+          - config
+          - 
+    
+        * - spmg
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.SPMG``
+          - Stop/Pause/Move/Go (tcmotor.SPMG)
+          - normal
+          - 
+    
+        * - msta
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.MSTA``
+          - Motor status word (tcmotor.MSTA)
+          - normal
+          - 
+    
+        * - home_cmd_fwd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.HOMF``
+          - Home via low limit switch (tcmotor.HOMF)
+          - normal
+          - 
+    
+        * - home_cmd_rev
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.HOMR``
+          - Home via high limit switch (tcmotor.HOMR)
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_limit_switches
+    .. automethod:: clear_error
+    .. automethod:: clear_limits
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: home
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: reset
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_defaults
+    .. automethod:: set_high_limit
+    .. automethod:: set_low_limit
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: bwd_enabled
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: enabled
+    .. autoattribute:: fwd_enabled
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: homed
+    .. autoattribute:: is_homed
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: tolerated_alarm
+    
+    

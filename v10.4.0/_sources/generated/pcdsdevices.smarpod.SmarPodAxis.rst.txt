@@ -1,0 +1,170 @@
+﻿pcdsdevices.smarpod.SmarPodAxis
+===============================
+
+.. currentmodule:: pcdsdevices.smarpod
+
+.. autoclass:: SmarPodAxis
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - done
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pv_positioner.PVPositionerIsClose`
+    
+        * - setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:CMD:{axis}``
+          - 
+          - normal
+          - 
+    
+        * - readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:{axis}``
+          - 
+          - normal
+          - 
+    
+        * - actuate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:MOVE``
+          - 
+          - normal
+          - 
+    
+        * - stop_signal
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:STOP``
+          - 
+          - normal
+          - 
+    
+        * - cmd_reachable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD:REACHABLE``
+          - 
+          - normal
+          - 
+    
+        * - reachable
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:REACHABLE``
+          - 
+          - normal
+          - 
+    
+        * - csy_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CSY:CMD:{axis}``
+          - 
+          - normal
+          - 
+    
+        * - csy_rb
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CSY:{axis}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: done_comparator
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_defaults
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate_value
+    .. autoattribute:: atol
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: defer_motion
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: rtol
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    
+    

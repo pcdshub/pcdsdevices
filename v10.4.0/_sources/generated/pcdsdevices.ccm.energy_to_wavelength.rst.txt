@@ -1,0 +1,6 @@
+﻿pcdsdevices.ccm.energy\_to\_wavelength
+======================================
+
+.. currentmodule:: pcdsdevices.ccm
+
+.. autofunction:: energy_to_wavelength

@@ -1,0 +1,83 @@
+﻿pcdsdevices.fms.SRCController
+=============================
+
+.. currentmodule:: pcdsdevices.fms
+
+.. autoclass:: SRCController
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - src_model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SRC800:MODEL_RBV``
+          - Raritan 8 port Smart Sensor Controller
+          - normal
+          - 
+    
+        * - serial_number
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SRC800:SERIAL_RBV``
+          - Controller Serial Number
+          - normal
+          - 
+    
+        * - number_sensors
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SRC800:MAX_SENSOR_NUM``
+          - Number of sensors on controller
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

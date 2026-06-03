@@ -1,0 +1,135 @@
+﻿pcdsdevices.undpoint.UndPointDelta2DSim
+=======================================
+
+.. currentmodule:: pcdsdevices.undpoint
+
+.. autoclass:: UndPointDelta2DSim
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - setpoint
+          - :class:`~pcdsdevices.signal.MultiDerivedSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.undpoint.UndPointDelta2D`
+    
+        * - delta_x
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.undpoint.UndPointDelta2D`
+    
+        * - delta_y
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.undpoint.UndPointDelta2D`
+    
+        * - actuate
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.undpoint.UndPointDelta2D`
+    
+        * - done (FCpt)
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.undpoint.UndPointDelta2D`
+    
+        * - _raw_x
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - _raw_y
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: readback
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    
+    

@@ -1,0 +1,488 @@
+﻿pcdsdevices.pdu.TripplitePDU24
+==============================
+
+.. currentmodule:: pcdsdevices.pdu
+
+.. autoclass:: TripplitePDU24
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - tower_name
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:setDeviceName``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - location
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:setDeviceLocation``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getDeviceStatus``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - num_inputs
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumInputs``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - num_outputs
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumOutputs``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - num_outlets
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumOutlets``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - num_groups
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumOutletGroups``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - num_phases
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumPhases``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - num_circuits
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumCircuits``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - num_breakers
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumBreakers``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - num_heatsinks
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduIdentNumHeatsinks``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - input_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduInputPhaseFrequency``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - input_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduInputPhaseVoltage``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - input_v_min
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduInputPhaseVoltageMin``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - input_v_max
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduInputPhaseVoltageMax``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - output_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputFrequency``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - output_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputVoltage``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - output_p
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputActivePower``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - output_c
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputCurrent``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - output_c_min
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputCurrentMin``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - output_c_max
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getPduOutputCurrentMax``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - channels_on
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:setPduControlPduOn``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - channels_off
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:setPduControlPduOff``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - channels_reboot
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:setPduControlPduReboot``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pdu.TripplitePDU`
+    
+        * - channel1
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel2
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel3
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel4
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel5
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel6
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel7
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel8
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel9
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel10
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel11
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel12
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel13
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel14
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel15
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel16
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel17
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel18
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel19
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel20
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel21
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel22
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel23
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - channel24
+          - :class:`~pcdsdevices.pdu.TripplitePDUChannel`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

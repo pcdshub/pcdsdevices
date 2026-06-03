@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.check\_kind\_flag
+===================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: check_kind_flag

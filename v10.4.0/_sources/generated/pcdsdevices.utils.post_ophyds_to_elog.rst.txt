@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.post\_ophyds\_to\_elog
+========================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: post_ophyds_to_elog

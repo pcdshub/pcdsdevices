@@ -1,0 +1,233 @@
+﻿pcdsdevices.he\_lodcm.HE\_LODCM
+===============================
+
+.. currentmodule:: pcdsdevices.he_lodcm
+
+.. autoclass:: HE_LODCM
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - energy
+          - :class:`~pcdsdevices.he_lodcm.HE_LODCMEnergy`
+          - 
+          - 
+          - hinted
+          - 
+    
+        * - t1ty
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:T1Ty``
+          - Tower 1 translation Y
+          - normal
+          - 
+    
+        * - t1tx
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:T1Tx``
+          - Tower 1 translation X
+          - normal
+          - 
+    
+        * - t1ry
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:T1Ry``
+          - Tower 1 rotation Y
+          - normal
+          - 
+    
+        * - t1tp
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:T1Tp``
+          - Tower 1 TP
+          - normal
+          - 
+    
+        * - t1rp
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:T1Rp``
+          - Tower 1 RP
+          - normal
+          - 
+    
+        * - t2ty1
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:T2Ty``
+          - Tower 2 translation Y 1
+          - normal
+          - 
+    
+        * - t2ty2
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:T2Ty2``
+          - Tower 2 translation Y 2
+          - normal
+          - 
+    
+        * - t2tz
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:T2Tz``
+          - Tower 2 translation Z
+          - normal
+          - 
+    
+        * - t2ry
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:T2Ry``
+          - Tower 2 rotation Y
+          - normal
+          - 
+    
+        * - t2tn
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:T2Tn``
+          - Tower 2 translation TN
+          - normal
+          - 
+    
+        * - t2tp
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:T2Tp``
+          - Tower 2 translation TP
+          - normal
+          - 
+    
+        * - t2rp
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:T2Rp``
+          - Tower 2 translation RP
+          - normal
+          - 
+    
+        * - d1ry
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:D1Ry``
+          - Diagnostic 1 rotation Y
+          - normal
+          - 
+    
+        * - d1ty
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:D1Ty``
+          - Diagnostic 1 translation Y
+          - normal
+          - 
+    
+        * - d2tx
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:D2Tx``
+          - Diagnostic 2 translation X
+          - normal
+          - 
+    
+        * - d2ty
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisEPS`
+          - ``:MMS:D2Ty``
+          - Diagnostic 2 translation Y
+          - normal
+          - 
+    
+        * - tct1
+          - :class:`~pcdsdevices.lakeshore.Lakeshore336`
+          - ``:TCT:01``
+          - Crystal 1 temperature controller
+          - normal
+          - 
+    
+        * - tct2
+          - :class:`~pcdsdevices.lakeshore.Lakeshore336`
+          - ``:TCT:02``
+          - Crystal 2 temperature controller
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

@@ -1,0 +1,6 @@
+﻿pcdsdevices.make\_ophyd\_device.recurse\_record
+===============================================
+
+.. currentmodule:: pcdsdevices.make_ophyd_device
+
+.. autofunction:: recurse_record

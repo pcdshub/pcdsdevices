@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.re\_arg
+=========================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: re_arg

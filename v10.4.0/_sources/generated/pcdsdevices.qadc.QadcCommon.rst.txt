@@ -1,0 +1,113 @@
+﻿pcdsdevices.qadc.QadcCommon
+===========================
+
+.. currentmodule:: pcdsdevices.qadc
+
+.. autoclass:: QadcCommon
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ch0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH0``
+          - Input 0 of the ADC
+          - normal
+          - 
+    
+        * - ch1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH1``
+          - Input 1 of the ADC
+          - normal
+          - 
+    
+        * - ch2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH2``
+          - Input 2 of the ADC
+          - normal
+          - 
+    
+        * - ch3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CH3``
+          - Input 3 of the ADC
+          - normal
+          - 
+    
+        * - config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CONFIG``
+          - Write the current config to the QADC
+          - config
+          - 
+    
+        * - start
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:START``
+          - Start/stop acquisition
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

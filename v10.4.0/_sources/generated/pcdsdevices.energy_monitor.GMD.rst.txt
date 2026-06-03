@@ -1,0 +1,212 @@
+﻿pcdsdevices.energy\_monitor.GMD
+===============================
+
+.. currentmodule:: pcdsdevices.energy_monitor
+
+.. autoclass:: GMD
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - avg_int
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HPS:AvgPulseIntensity``
+          - Avg Pulse energy [mJ]
+          - hinted
+          - 
+    
+        * - mj
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HPS:milliJoulesPerPulse``
+          - Pulse energy [mJ]
+          - hinted
+          - 
+    
+        * - photons
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HPS:AvgPhotonsPerPulse``
+          - photons
+          - hinted
+          - 
+    
+        * - transmission
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HPS:AvgTransmission``
+          - transmission
+          - hinted
+          - 
+    
+        * - gas_type
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GAS_TYPE_RBV``
+          - Gas Type
+          - hinted
+          - 
+    
+        * - mean_charge
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:HPS:MeanCharge``
+          - Mean Charge used in energy calculation
+          - normal
+          - 
+    
+        * - xsection
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:HPS:CrossSection``
+          - Photoionization cross section used in energy calculation
+          - normal
+          - 
+    
+        * - keithley_sum
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HPS:KeithleySum``
+          - 
+          - normal
+          - 
+    
+        * - pressure
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GSR:1:Calib:Pressure:Calc``
+          - Gas pressure in energy monitor
+          - normal
+          - 
+    
+        * - mean_charge_source
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:HPS:MeanCharge:Source``
+          - Source value of mean charge (Gas Table or Manual) for energy calculation
+          - omitted
+          - 
+    
+        * - xsection_source
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:HPS:MeanCharge:Source``
+          - Source value of photoionization cross section (Gas Table or Manual) for energy calculation
+          - omitted
+          - 
+    
+        * - temperature
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RTD:1:TEMP_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - beam_position_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HPS:PosXSLOW``
+          - beam position x in GMD
+          - hinted
+          - 
+    
+        * - beam_position_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HPS:PosYSLOW``
+          - beam position y in GMD
+          - hinted
+          - 
+    
+        * - preamp
+          - :class:`~pcdsdevices.energy_monitor.GMDPreAmp`
+          - ``:HPS``
+          - 
+          - omitted
+          - 
+    
+        * - keithley1
+          - :class:`~pcdsdevices.keithley.K6514`
+          - ``:ETM:01``
+          - 
+          - omitted
+          - 
+    
+        * - keithley2
+          - :class:`~pcdsdevices.keithley.K6514`
+          - ``:ETM:02``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

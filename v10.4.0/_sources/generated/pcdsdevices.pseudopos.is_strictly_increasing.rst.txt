@@ -1,0 +1,6 @@
+﻿pcdsdevices.pseudopos.is\_strictly\_increasing
+==============================================
+
+.. currentmodule:: pcdsdevices.pseudopos
+
+.. autofunction:: is_strictly_increasing

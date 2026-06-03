@@ -1,0 +1,220 @@
+﻿pcdsdevices.spectrometer.TMOSpectrometer
+========================================
+
+.. currentmodule:: pcdsdevices.spectrometer
+
+.. autoclass:: TMOSpectrometer
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
+    
+        * - zone_plate
+          - :class:`~pcdsdevices.spectrometer.FZPStates`
+          - ``SP1K4:FZP:STATE``
+          - 
+          - normal
+          - 
+    
+        * - zone_plate_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:03``
+          - x-axis of FZP to define 15 targets position
+          - normal
+          - 
+    
+        * - zone_plate_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:04``
+          - y-axis of FZP to define 15 targets position
+          - normal
+          - 
+    
+        * - zone_plate_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:05``
+          - z-axis of FZP to define 15 targets position
+          - normal
+          - 
+    
+        * - solid_att
+          - :class:`~pcdsdevices.spectrometer.TMOSpectrometerSOLIDATTStates`
+          - ``SP1K4:ATT:STATE``
+          - 
+          - normal
+          - 
+    
+        * - solid_att_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:02``
+          - X-axis of solid attenuator(FOIL) which protects FZP
+          - normal
+          - 
+    
+        * - solid_att_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:13``
+          - Y-axis of solid attenuator(FOIL) which protects FZP
+          - normal
+          - 
+    
+        * - thorlab_lens_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:12``
+          - axis to move spectrometer intensifier
+          - normal
+          - 
+    
+        * - fzp_piranha_rot
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:10``
+          - 
+          - normal
+          - 
+    
+        * - yag_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:06``
+          - x-axis of spectrometer detector
+          - normal
+          - 
+    
+        * - yag_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:07``
+          - y-axis of spectrometer detector
+          - normal
+          - 
+    
+        * - yag_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:08``
+          - z-axis of spectrometer detector
+          - normal
+          - 
+    
+        * - yag_theta
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:09``
+          - theta axis to rotate spectrometer detector
+          - normal
+          - 
+    
+        * - att_rtd_01
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:01:TEMP``
+          - solid attenuator 01 PT100
+          - normal
+          - 
+    
+        * - att_rtd_02
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:02:TEMP``
+          - solid attenuator 02 PT100
+          - normal
+          - 
+    
+        * - flow_meter
+          - :class:`~pcdsdevices.analog_signals.FDQ`
+          - 
+          - Device that measures PCW Flow Rate.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    .. autoattribute:: transmission
+    
+    

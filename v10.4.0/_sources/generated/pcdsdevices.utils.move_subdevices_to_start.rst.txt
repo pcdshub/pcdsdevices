@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.move\_subdevices\_to\_start
+=============================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: move_subdevices_to_start
