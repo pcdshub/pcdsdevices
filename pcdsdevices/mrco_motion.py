@@ -39,3 +39,8 @@ class MRCO(BaseInterface, GroupDevice):
     sample_paddle_x = Cpt(BeckhoffAxisNoOffset, ':MMS:04', kind='normal')
     sample_paddle_y = Cpt(BeckhoffAxisNoOffset, ':MMS:05', kind='normal')
     sample_paddle_z = Cpt(BeckhoffAxisNoOffset, ':MMS:06', kind='normal')
+
+    # Motor components rotated
+    sample_paddle_vx = Cpt(BeckhoffAxisNoOffset, ':MMS:V4', kind='normal')
+    sample_paddle_vy = Cpt(BeckhoffAxisNoOffset, ':MMS:V5', kind='normal')
+    sample_paddle_vz = Cpt(BeckhoffAxisNoOffset, ':MMS:V6', kind='normal')

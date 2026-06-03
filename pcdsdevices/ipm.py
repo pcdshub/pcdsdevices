@@ -12,11 +12,14 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
+from .digitizers import Wave8V2
 from .doc_stubs import IPM_base, basic_positioner_init, insert_remove
-from .epics_motor import IMS
+from .epics_motor import IMS, BeckhoffAxisNoOffset
 from .evr import Trigger
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface, LightpathMixin
+from .interface import BaseInterface, LightpathInOutCptMixin, LightpathMixin
+from .pmps import TwinCATStatePMPS
 from .utils import get_status_float, get_status_value, ipm_screen
 
 logger = logging.getLogger(__name__)
@@ -594,3 +597,33 @@ def IPM(prefix, *, name, **kwargs):
                          prefix_wave8=kwargs.pop('prefix_wave8'), **kwargs)
     else:
         return IPMMotion(prefix, name=name, **kwargs)
+
+
+class IntensityProfileMonitorStates(TwinCATStatePMPS):
+    """
+    Controls the IPM (Intensity Profile Monitor)'s target states.
+
+    Defines the state count as 5 (OUT and 4 targets) to limit the number of
+    config PVs we connect to.
+    """
+    config = UpCpt(state_count=5)
+
+
+class BeckhoffIntensityProfileTarget(BaseInterface, GroupDevice,
+                                     LightpathInOutCptMixin):
+    """
+    Diagnostic device to measure relative pulse intensity and provide
+    a signal for data normalization. Has a wave8 V3 and is PLC controlled.
+    """
+    tab_component_names = True
+
+    lightpath_cpts = ['target']
+    _icon = 'fa.ellipsis-v'
+
+    target = Cpt(IntensityProfileMonitorStates, ':MMS:STATE', kind='hinted',
+                 doc='Control of the diagnostic stack via saved positions.')
+    y_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:Y', kind='normal',
+                  doc='Direct control of the diagnostic stack motor.')
+    x_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:X', kind='normal',
+                  doc='X position of target stack.')
+    wave8 = Cpt(Wave8V2, ':W8:01', kind='hinted')

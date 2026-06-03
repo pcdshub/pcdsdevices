@@ -89,6 +89,7 @@ pcdsdevices.attenuator
     pcdsdevices.attenuator.AT1K4
     pcdsdevices.attenuator.AT2K2
     pcdsdevices.attenuator.AT2L0
+    pcdsdevices.attenuator.AT3K2
     pcdsdevices.attenuator.AttBase
     pcdsdevices.attenuator.AttBaseWith3rdHarmonic
     pcdsdevices.attenuator.AttBaseWith3rdHarmonicLP
@@ -164,6 +165,15 @@ pcdsdevices.crix_motion
     pcdsdevices.crix_motion.VLSOptics
     pcdsdevices.crix_motion.VLSOpticsSim
 
+pcdsdevices.cvmi_bootstrap
+--------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.cvmi_bootstrap.CVMI
+    pcdsdevices.cvmi_bootstrap.KTOF
+
 pcdsdevices.cvmi_motion
 -----------------------
 
@@ -182,6 +192,17 @@ pcdsdevices.dc_devices
     pcdsdevices.dc_devices.ICT
     pcdsdevices.dc_devices.ICTBus
     pcdsdevices.dc_devices.ICTChannel
+
+pcdsdevices.dccm
+----------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.dccm.DCCM
+    pcdsdevices.dccm.DCCMEnergy
+    pcdsdevices.dccm.DCCMEnergyWithACRStatus
+    pcdsdevices.dccm.DCCMEnergyWithVernier
 
 pcdsdevices.delay_generator
 ---------------------------
@@ -239,6 +260,18 @@ pcdsdevices.digitizers
     pcdsdevices.digitizers.Wave8V2TriggerEventManager
     pcdsdevices.digitizers.Wave8V2XpmMini
     pcdsdevices.digitizers.Wave8V2XpmMsg
+
+pcdsdevices.dream_motion
+------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.dream_motion.DREAM_CoilMover
+    pcdsdevices.dream_motion.DREAM_GasJet
+    pcdsdevices.dream_motion.DREAM_GasNozzle
+    pcdsdevices.dream_motion.DREAM_MC_Y
+    pcdsdevices.dream_motion.DREAM_SL3K4
 
 pcdsdevices.energy_monitor
 --------------------------
@@ -318,8 +351,12 @@ pcdsdevices.fms
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.fms.AmbTemp
+    pcdsdevices.fms.Floor
     pcdsdevices.fms.LCP1
     pcdsdevices.fms.LCP2
+    pcdsdevices.fms.PCWFlow
+    pcdsdevices.fms.PCWTemp
     pcdsdevices.fms.PDU_Humidity2
     pcdsdevices.fms.PDU_Humidity4
     pcdsdevices.fms.PDU_Humidity6
@@ -332,6 +369,9 @@ pcdsdevices.fms
     pcdsdevices.fms.PDU_Temp4
     pcdsdevices.fms.PDU_Temp6
     pcdsdevices.fms.PDU_Temp8
+    pcdsdevices.fms.Rack
+    pcdsdevices.fms.RaritanSensor
+    pcdsdevices.fms.SRCController
     pcdsdevices.fms.Setra5000
 
 pcdsdevices.gauge
@@ -361,6 +401,15 @@ pcdsdevices.gauge
     pcdsdevices.gauge.MKS937BController
     pcdsdevices.gauge.MKS937a
 
+pcdsdevices.gbs
+---------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.gbs.GratingBeamSplitterStates
+    pcdsdevices.gbs.GratingBeamSplitterTarget
+
 pcdsdevices.gon
 ---------------
 
@@ -370,6 +419,7 @@ pcdsdevices.gon
     pcdsdevices.gon.BaseGon
     pcdsdevices.gon.GonWithDetArm
     pcdsdevices.gon.Goniometer
+    pcdsdevices.gon.HxrDiffractometer
     pcdsdevices.gon.Kappa
     pcdsdevices.gon.KappaXYZStage
     pcdsdevices.gon.SamPhi
@@ -427,6 +477,7 @@ pcdsdevices.ipm
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.ipm.BeckhoffIntensityProfileTarget
     pcdsdevices.ipm.IPIMB
     pcdsdevices.ipm.IPIMBChannel
     pcdsdevices.ipm.IPM
@@ -436,6 +487,7 @@ pcdsdevices.ipm
     pcdsdevices.ipm.IPM_Det
     pcdsdevices.ipm.IPM_IPIMB
     pcdsdevices.ipm.IPM_Wave8
+    pcdsdevices.ipm.IntensityProfileMonitorStates
     pcdsdevices.ipm.Wave8
     pcdsdevices.ipm.Wave8Channel
 
@@ -460,6 +512,16 @@ pcdsdevices.keithley
     pcdsdevices.keithley.IM3L0_K2700
     pcdsdevices.keithley.K2700
     pcdsdevices.keithley.K6514
+
+pcdsdevices.lakeshore
+---------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.lakeshore.Heater
+    pcdsdevices.lakeshore.Lakeshore336
+    pcdsdevices.lakeshore.TemperatureSensor
 
 pcdsdevices.lamp_motion
 -----------------------
@@ -512,6 +574,7 @@ pcdsdevices.lasers.ek9000
 
     pcdsdevices.lasers.ek9000.El3174AiCh
     pcdsdevices.lasers.ek9000.EnvironmentalMonitor
+    pcdsdevices.lasers.ek9000.SimpleShutter
 
 pcdsdevices.lasers.elliptec
 ---------------------------
@@ -694,6 +757,7 @@ pcdsdevices.mirror
     pcdsdevices.mirror.KBOMirrorHEStates
     pcdsdevices.mirror.KBOMirrorStates
     pcdsdevices.mirror.MirrorInsertState
+    pcdsdevices.mirror.MirrorStripe2D2P
     pcdsdevices.mirror.MirrorStripe2D4P
     pcdsdevices.mirror.OMMotor
     pcdsdevices.mirror.OffsetMirror
@@ -774,6 +838,24 @@ pcdsdevices.pc
     :toctree: generated
 
     pcdsdevices.pc.PhotonCollimator
+    pcdsdevices.pc.PhotonCollimatorFDQ
+
+pcdsdevices.pdu
+---------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.pdu.PDU
+    pcdsdevices.pdu.PDU16
+    pcdsdevices.pdu.PDU24
+    pcdsdevices.pdu.PDU8
+    pcdsdevices.pdu.PDUChannel
+    pcdsdevices.pdu.TripplitePDU
+    pcdsdevices.pdu.TripplitePDU16
+    pcdsdevices.pdu.TripplitePDU24
+    pcdsdevices.pdu.TripplitePDU8
+    pcdsdevices.pdu.TripplitePDUChannel
 
 pcdsdevices.piezo
 -----------------
@@ -823,6 +905,7 @@ pcdsdevices.pneumatic
     :toctree: generated
 
     pcdsdevices.pneumatic.BeckhoffPneumatic
+    pcdsdevices.pneumatic.BeckhoffPneumaticFDQ
 
 pcdsdevices.positioner
 ----------------------
@@ -849,6 +932,7 @@ pcdsdevices.pseudopos
     pcdsdevices.pseudopos.SyncAxis
     pcdsdevices.pseudopos.delay_class_factory
     pcdsdevices.pseudopos.delay_instance_factory
+    pcdsdevices.pseudopos.is_strictly_increasing
 
 pcdsdevices.pulsepicker
 -----------------------
@@ -1043,6 +1127,7 @@ pcdsdevices.slits
     pcdsdevices.slits.LusiSlitPositioner
     pcdsdevices.slits.LusiSlits
     pcdsdevices.slits.PowerSlits
+    pcdsdevices.slits.SL2K4Slits
     pcdsdevices.slits.SimLusiSlits
     pcdsdevices.slits.SlitPositioner
     pcdsdevices.slits.Slits
@@ -1055,6 +1140,7 @@ pcdsdevices.smarpod
     :toctree: generated
 
     pcdsdevices.smarpod.SmarPod
+    pcdsdevices.smarpod.SmarPodAxis
     pcdsdevices.smarpod.SmarPodPose
     pcdsdevices.smarpod.SmarPodStatus
 
@@ -1064,12 +1150,14 @@ pcdsdevices.spectrometer
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.spectrometer.DCCMono
     pcdsdevices.spectrometer.FZPStates
     pcdsdevices.spectrometer.Gen1VonHamos4Crystal
     pcdsdevices.spectrometer.Gen1VonHamosCrystal
     pcdsdevices.spectrometer.HXRSpectrometer
     pcdsdevices.spectrometer.Kmono
     pcdsdevices.spectrometer.Mono
+    pcdsdevices.spectrometer.MonoGratingStates
     pcdsdevices.spectrometer.TMOSpectrometer
     pcdsdevices.spectrometer.TMOSpectrometerSOLIDATTStates
     pcdsdevices.spectrometer.VonHamos4Crystal
@@ -1220,6 +1308,7 @@ pcdsdevices.valve
 
     pcdsdevices.valve.GateValve
     pcdsdevices.valve.VCN
+    pcdsdevices.valve.VCN_OpenLoop
     pcdsdevices.valve.VCN_VAT590
     pcdsdevices.valve.VCN_VAT590_Status
     pcdsdevices.valve.VFS
