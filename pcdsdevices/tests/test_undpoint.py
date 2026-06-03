@@ -3,9 +3,10 @@ Make sure the simulated undulator devices are self-consistent
 """
 import time
 
-from pcdsdevices.undpoint import UndPointDelta2DSim, UndPointAbs2DSim, SafeUndPointAbs2DSim
-
 import pytest
+
+from pcdsdevices.undpoint import (SafeUndPointAbs2DSim, UndPointAbs2DSim,
+                                  UndPointDelta2DSim)
 
 
 def wait_assert_approx(getter, answer, timeout=2.0):
