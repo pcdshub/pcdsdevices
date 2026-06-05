@@ -24,9 +24,8 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
     An array of targets used to determine the beam's wavefront. Similar to
     the WFS with a unique substrate.
 
-    Each target is a waveplate that results in a characteristic pattern
-    on a downstream imager (PPM or XTES Imager) that can be used to determine
-    information about the wavefront.
+    Each target is a grating that splits the beam in different orders. Different
+    grating yields different splitting angles between the 0th and 1st order.
     """
     tab_component_names = True
 

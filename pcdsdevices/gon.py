@@ -21,6 +21,29 @@ from .utils import get_status_float, get_status_value
 logger = logging.getLogger(__name__)
 
 
+class CompactDiffractometer(BaseInterface, Device):
+    """
+    Class for diffractometer.
+    Parameters
+    ----------
+    name : str
+        A name to refer to the device
+    prefix_base : str
+        The EPICS base PV of the diffractometer stages
+    """
+
+    base_h = Cpt(BeckhoffAxis, 'BASE_H', kind='normal')
+    base_v = Cpt(BeckhoffAxis, 'BASE_V', kind='normal')
+    th = Cpt(BeckhoffAxis, 'TH', kind='normal')
+    tth = Cpt(BeckhoffAxis, '2TH', kind='normal')
+    chi = Cpt(BeckhoffAxis, 'CHI', kind='normal')
+
+    tab_component_names = True
+
+    def __init__(self, prefix, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
+
+
 class BaseGon(BaseInterface, GroupDevice):
     """
     Basic goniometer, as present in XPP.
