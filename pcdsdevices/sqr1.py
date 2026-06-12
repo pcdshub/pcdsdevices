@@ -63,8 +63,6 @@ class SQR1Axis(FltMvInterface, PVPositionerIsClose):
         The axis identifier ('X', 'Y', 'Z', 'rX', 'rY', 'rZ').
     sync_setpoints : callable or None, optional
         A callback function to synchronize setpoints before moving the axis.
-    check_setpoints : callable or None, optional
-        A callback function to check if setpoints are valid.
     ``**kwargs`` : dict
         Additional keyword arguments to pass to the base class constructor
 
@@ -99,12 +97,10 @@ class SQR1Axis(FltMvInterface, PVPositionerIsClose):
         self,
         prefix: str,
         axis: Axis,
-        check_setpoints: typing.Callable | None = None,
         sync_setpoints: typing.Callable | None = None,
         **kwargs,
     ):
         self._axis = axis.value
-        self._check_setpoints = check_setpoints
         self._sync_setpoints = sync_setpoints
         super().__init__(prefix, **kwargs)
 
@@ -143,8 +139,6 @@ class SQR1Axis(FltMvInterface, PVPositionerIsClose):
         >>> axis_x = SQR1Axis(prefix="SQR1:AXIS_X", axis="X")
         >>> axis_x.move(5.0)  # Move the X-axis to position 5.0
         """
-        if self._check_setpoints:
-            self._check_setpoints()
         if sync_enable and self._sync_setpoints:
             self._sync_setpoints()
         return super().move(position, wait, timeout, moved_cb)
@@ -281,38 +275,6 @@ class SQR1(Device):
         self.ry._sync_setpoints = self.sync_setpoints
         self.rz._sync_setpoints = self.sync_setpoints
 
-        self.x._check_setpoints = self.check_setpoints
-        self.y._check_setpoints = self.check_setpoints
-        self.z._check_setpoints = self.check_setpoints
-        self.rx._check_setpoints = self.check_setpoints
-        self.ry._check_setpoints = self.check_setpoints
-        self.rz._check_setpoints = self.check_setpoints
-
-    def check_setpoints(self):
-        """
-        After ~20 minutes, SRQ1 LABVIEW application timeout, so it return
-        zero for all setpoints, and that could cause safety issues.
-        """
-        x_sp = self.x.readback.get()
-        y_sp = self.y.readback.get()
-        z_sp = self.z.readback.get()
-        rx_sp = self.rx.readback.get()
-        ry_sp = self.ry.readback.get()
-        rz_sp = self.rz.readback.get()
-
-        if not (x_sp or y_sp or z_sp or rx_sp or ry_sp or rz_sp):
-            logger.critical("After ~20 minutes, SRQ1 LABVIEW application timeout, \
-            so it return zero for all setpoints")
-            while True:
-                answer = input("Are you sure you want to move to 0,0,0,0,0,0? (y|n)")
-                if answer in ['y', 'Y', 'yes', 'YES']:
-                    return
-                elif answer in ['n', 'N', 'no', 'NO']:
-                    raise ValueError("⚠︎⚠︎⚠︎ Please check SQR-1 LABVIEW \
-                                     application ⚠︎⚠︎⚠︎")
-                else:
-                    logger.info('invalid answer')
-
     def sync_setpoints(self):
         """
         Synchronize setpoints of multiple axes with their respective readback values.
@@ -386,7 +348,6 @@ class SQR1(Device):
         >>> tri_sphere = SQR1(prefix="SQR1:", name="tri_sphere")
         >>> status = tri_sphere.multi_axis_move(x_sp=1.0, y_sp=2.0, z_sp=3.0)
         """
-        self.check_setpoints()
 
         if preset_pos is not None:
             axis_list = [self.x, self.y, self.z, self.rz, self.ry, self.rz]
