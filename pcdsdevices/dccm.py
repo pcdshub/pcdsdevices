@@ -1,16 +1,18 @@
 from decimal import Decimal, getcontext
+from typing import Optional, Union
+
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 from ophyd.status import SubscriptionStatus
+
 from pcdsdevices.beam_stats import BeamEnergyRequest
 from pcdsdevices.device import Device
 from pcdsdevices.device import UpdateComponent as UpCpt
 from pcdsdevices.epics_motor import BeckhoffAxis
 from pcdsdevices.interface import FltMvInterface
 from pcdsdevices.pmps import TwinCATStatePMPS
-from typing import Union, Optional
 
 
 class DCCMCrystal(FltMvInterface, PVPositioner):
