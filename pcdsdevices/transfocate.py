@@ -40,9 +40,7 @@ class TFIErrors(BaseInterface, Device):
 
 
 class XPPTFI(BaseInterface, Device):
-    """
-        A development screen for the XPP Transfocator Interlock.
-    """
+    """A development screen for the XPP Transfocator Interlock."""
     bypass_mode = Cpt(PytmcSignal, ':BYP:SW', io='i',
                       kind='normal', doc='Bypass mode switch')
     test_mode = Cpt(PytmcSignal, ':TST:SW', io='i',
