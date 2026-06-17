@@ -12,8 +12,8 @@ class TFIErrors(BaseInterface, Device):
                                  kind='normal', doc='Effective radius error signal')
     current_mode_error = Cpt(PytmcSignal, ':CURR:MODE:Error', io='i',
                              kind='normal', doc='Current mode error signal')
-    diss_allowed_region_error = Cpt(PytmcSignal, ':DISSALL:Error', io='i',
-                                    kind='normal', doc='Disallowed region error signal')
+    disallowed_region_error = Cpt(PytmcSignal, ':DISSALL:Error', io='i',
+                                  kind='normal', doc='Disallowed region error signal')
     lens_mover_error = Cpt(PytmcSignal, ':LENS:MOV:Error', io='i',
                            kind='normal', doc='Lens mover error signal')
     twod_lens1_error = Cpt(PytmcSignal, ':2D1:Error', io='i',
@@ -41,7 +41,7 @@ class TFIErrors(BaseInterface, Device):
 
 class XPPTFI(BaseInterface, Device):
     """
-        Transssssfooocatttteee
+        A development screen for the XPP Transfocator Interlock.
     """
     bypass_mode = Cpt(PytmcSignal, ':BYP:SW', io='i',
                       kind='normal', doc='Bypass mode switch')
