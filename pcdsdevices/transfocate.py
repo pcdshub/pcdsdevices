@@ -110,54 +110,54 @@ class XPPTFI(BaseInterface, Device):
                            kind='normal', doc='Command to insert 2D lens 1')
     two_insert_lens2 = Cpt(PytmcSignal, ':2D:INSERT:LENS:2:INSERT', io='io',
                            kind='normal', doc='Command to insert 2D lens 2')
-    two_insert_Lens3 = Cpt(PytmcSignal, ':2D:INSERT:LENS:3:INSERT', io='io',
+    two_insert_lens3 = Cpt(PytmcSignal, ':2D:INSERT:LENS:3:INSERT', io='io',
                            kind='normal', doc='Command to insert 2D lens 3')
-    two_Insert_Lens4 = Cpt(PytmcSignal, ':2D:INSERT:LENS:4:INSERT', io='io',
+    two_insert_lens4 = Cpt(PytmcSignal, ':2D:INSERT:LENS:4:INSERT', io='io',
                            kind='normal', doc='Command to insert 2D lens 4')
-    two_Insert_Lens5 = Cpt(PytmcSignal, ':2D:INSERT:LENS:5:INSERT', io='io',
+    two_insert_lens5 = Cpt(PytmcSignal, ':2D:INSERT:LENS:5:INSERT', io='io',
                            kind='normal', doc='Command to insert 2D lens 5')
-    two_Insert_Lens6 = Cpt(PytmcSignal, ':2D:INSERT:LENS:6:INSERT', io='io',
+    two_insert_lens6 = Cpt(PytmcSignal, ':2D:INSERT:LENS:6:INSERT', io='io',
                            kind='normal', doc='Command to insert 2D lens 6')
-    two_Insert_Lens7 = Cpt(PytmcSignal, ':2D:INSERT:LENS:7:INSERT', io='io',
+    two_insert_lens7 = Cpt(PytmcSignal, ':2D:INSERT:LENS:7:INSERT', io='io',
                            kind='normal', doc='Command to insert 2D lens 7')
-    two_Insert_Lens8 = Cpt(PytmcSignal, ':2D:INSERT:LENS:8:INSERT', io='io',
+    two_insert_lens8 = Cpt(PytmcSignal, ':2D:INSERT:LENS:8:INSERT', io='io',
                            kind='normal', doc='Command to insert 2D lens 8')
 
-    two_remove_Lens1 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:1:REMOVE', io='io',
+    two_remove_lens1 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:1:REMOVE', io='io',
                            kind='normal', doc='Command to remove 2D lens 1')
-    two_Remove_Lens2 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:2:REMOVE', io='io',
+    two_remove_lens2 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:2:REMOVE', io='io',
                            kind='normal', doc='Command to remove 2D lens 2')
-    two_Remove_Lens3 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:3:REMOVE', io='io',
+    two_remove_lens3 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:3:REMOVE', io='io',
                            kind='normal', doc='Command to remove 2D lens 3')
-    two_Remove_Lens4 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:4:REMOVE', io='io',
+    two_remove_lens4 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:4:REMOVE', io='io',
                            kind='normal', doc='Command to remove 2D lens 4')
-    two_Remove_Lens5 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:5:REMOVE', io='io',
+    two_remove_lens5 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:5:REMOVE', io='io',
                            kind='normal', doc='Command to remove 2D lens 5')
-    two_Remove_Lens6 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:6:REMOVE', io='io',
+    two_remove_lens6 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:6:REMOVE', io='io',
                            kind='normal', doc='Command to remove 2D lens 6')
-    two_Remove_Lens7 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:7:REMOVE', io='io',
+    two_remove_lens7 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:7:REMOVE', io='io',
                            kind='normal', doc='Command to remove 2D lens 7')
-    two_Remove_Lens8 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:8:REMOVE', io='io',
+    two_remove_lens8 = Cpt(PytmcSignal, ':2D:REMOVE:LENS:8:REMOVE', io='io',
                            kind='normal', doc='Command to remove 2D lens 8')
 
-    one_Horz_Lens1 = Cpt(PytmcSignal, ':1D:HORZ:MOVE:LENS:1:INSERT', io='io',
+    one_horz_lens1 = Cpt(PytmcSignal, ':1D:HORZ:MOVE:LENS:1:INSERT', io='io',
                          kind='normal', doc='Command to insert 1D horizontal lens 1')
-    one_Horz_Lens2 = Cpt(PytmcSignal, ':1D:HORZ:MOVE:LENS:2:INSERT', io='io',
+    one_horz_lens2 = Cpt(PytmcSignal, ':1D:HORZ:MOVE:LENS:2:INSERT', io='io',
                          kind='normal', doc='Command to insert 1D horizontal lens 2')
-    one_Horz_Lens3 = Cpt(PytmcSignal, ':1D:HORZ:MOVE:LENS:3:INSERT', io='io',
+    one_horz_lens3 = Cpt(PytmcSignal, ':1D:HORZ:MOVE:LENS:3:INSERT', io='io',
                          kind='normal', doc='Command to insert 1D horizontal lens 3')
-    one_Horz_Lens4 = Cpt(PytmcSignal, ':1D:HORZ:MOVE:LENS:4:INSERT', io='io',
+    one_horz_lens4 = Cpt(PytmcSignal, ':1D:HORZ:MOVE:LENS:4:INSERT', io='io',
                          kind='normal', doc='Command to insert 1D horizontal lens 4')
-    one_Horz_Out = Cpt(PytmcSignal, ':1D:HORZ:MOVE:OUT', io='io',
+    one_horz_out = Cpt(PytmcSignal, ':1D:HORZ:MOVE:OUT', io='io',
                        kind='normal', doc='Command to move 1D horizontal lens out')
 
-    one_VertLens1 = Cpt(PytmcSignal, ':1D:VERT:MOVE:LENS:1:INSERT', io='io',
-                        kind='normal', doc='Command to insert 1D vertical lens 1')
-    one_VertLens2 = Cpt(PytmcSignal, ':1D:VERT:MOVE:LENS:2:INSERT', io='io',
-                        kind='normal', doc='Command to insert 1D vertical lens 2')
-    one_VertLens3 = Cpt(PytmcSignal, ':1D:VERT:MOVE:LENS:3:INSERT', io='io',
-                        kind='normal', doc='Command to insert 1D vertical lens 3')
-    one_VertLens4 = Cpt(PytmcSignal, ':1D:VERT:MOVE:LENS:4:INSERT', io='io',
-                        kind='normal', doc='Command to insert 1D vertical lens 4')
-    one_VertOut = Cpt(PytmcSignal, ':1D:VERT:MOVE:OUT', io='io',
-                      kind='normal', doc='Command to move 1D vertical lens out')
+    one_vert_lens1 = Cpt(PytmcSignal, ':1D:VERT:MOVE:LENS:1:INSERT', io='io',
+                         kind='normal', doc='Command to insert 1D vertical lens 1')
+    one_vert_lens2 = Cpt(PytmcSignal, ':1D:VERT:MOVE:LENS:2:INSERT', io='io',
+                         kind='normal', doc='Command to insert 1D vertical lens 2')
+    one_vert_lens3 = Cpt(PytmcSignal, ':1D:VERT:MOVE:LENS:3:INSERT', io='io',
+                         kind='normal', doc='Command to insert 1D vertical lens 3')
+    one_vert_lens4 = Cpt(PytmcSignal, ':1D:VERT:MOVE:LENS:4:INSERT', io='io',
+                         kind='normal', doc='Command to insert 1D vertical lens 4')
+    one_vert_out = Cpt(PytmcSignal, ':1D:VERT:MOVE:OUT', io='io',
+                       kind='normal', doc='Command to move 1D vertical lens out')
