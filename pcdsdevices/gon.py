@@ -657,6 +657,32 @@ e_eta, e_chi, e_phi: {e_eta}, {e_chi}, {e_phi}
 x, y, z: {x}, {y}, {z} [{units}]
 """
 
+class MobileKappaStages(BaseInterface, Device):
+    """
+    Class for Kappa endstation
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base PV of the kappa stages
+    """
+    
+    base_x = Cpt(BeckhoffAxis, 'BX', kind='normal')  
+    base_y = Cpt(BeckhoffAxis, 'BY', kind='normal')
+    sample_x = Cpt(BeckhoffAxis, 'SX', kind='normal')
+    sample_y = Cpt(BeckhoffAxis, 'SY', kind='normal')
+    sample_z = Cpt(BeckhoffAxis, 'SZ', kind='normal')
+    gon_x = Cpt(BeckhoffAxis, 'X', kind='normal')
+    gon_y = Cpt(BeckhoffAxis, 'Y', kind='normal')
+    gon_z = Cpt(BeckhoffAxis, 'Z', kind='normal')
+    theta = Cpt(BeckhoffAxis, 'GON', kind='normal')
+    eta = Cpt(BeckhoffAxis, 'ETA', kind='normal')
+    kappa = Cpt(BeckhoffAxis, 'KAP', kind='normal')
+    phi = Cpt(BeckhoffAxis, 'PHI', kind='normal')
+
+    tab_component_names = True
+
+
 
 class HxrDiffractometer(BaseInterface, Device):
     """
