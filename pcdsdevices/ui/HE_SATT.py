@@ -1,4 +1,4 @@
-import time
+from typing import Optional
 
 from ophyd import Device
 from pydm import Display
@@ -18,7 +18,7 @@ class HeSattGUI(Display, utils.TyphosBase):
         self.ui.state_label_pydm.currentTextChanged.connect(self.turn_state_error_red)
 
     @property
-    def device(self) -> Device:  # type: ignore
+    def device(self) -> Optional[Device]:
         """The associated device."""
         try:
             return self.devices[0]
@@ -36,11 +36,10 @@ class HeSattGUI(Display, utils.TyphosBase):
                 self.commands = getattr(self.device, cpt.dotted_name)
 
     def reset_and_request_return_callback(self):
-        self.reset_and_request_timer.singleShot(500, self.reset_and_request_timer_callback)
+        self.commands.reset.put(1)
+        self.reset_and_request_timer.singleShot(1000, self.reset_and_request_timer_callback)
 
     def reset_and_request_timer_callback(self):
-        self.commands.reset.put(1)
-        time.sleep(1)
         self.commands.request_trans.put(1)
 
     def turn_big_error_red(self, text):
