@@ -1,0 +1,194 @@
+﻿pcdsdevices.transfocate.TFIErrors
+=================================
+
+.. currentmodule:: pcdsdevices.transfocate
+
+.. autoclass:: TFIErrors
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - energy_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENRG:IN:Error``
+          - Energy input error signal
+          - normal
+          - 
+    
+        * - effective_radius_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:EFF:RADIUS:Error``
+          - Effective radius error signal
+          - normal
+          - 
+    
+        * - current_mode_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CURR:MODE:Error``
+          - Current mode error signal
+          - normal
+          - 
+    
+        * - disallowed_region_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DISSALL:Error``
+          - Disallowed region error signal
+          - normal
+          - 
+    
+        * - lens_mover_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:LENS:MOV:Error``
+          - Lens mover error signal
+          - normal
+          - 
+    
+        * - twod_lens1_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D1:Error``
+          - 2D lens 1 error signal
+          - normal
+          - 
+    
+        * - twod_lens2_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D2:Error``
+          - 2D lens 2 error signal
+          - normal
+          - 
+    
+        * - twod_lens3_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D3:Error``
+          - 2D lens 3 error signal
+          - normal
+          - 
+    
+        * - twod_lens4_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D4:Error``
+          - 2D lens 4 error signal
+          - normal
+          - 
+    
+        * - twod_lens5_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D5:Error``
+          - 2D lens 5 error signal
+          - normal
+          - 
+    
+        * - twod_lens6_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D6:Error``
+          - 2D lens 6 error signal
+          - normal
+          - 
+    
+        * - twod_lens7_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D7:Error``
+          - 2D lens 7 error signal
+          - normal
+          - 
+    
+        * - twod_lens8_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D8:Error``
+          - 2D lens 8 error signal
+          - normal
+          - 
+    
+        * - oned_horz_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1DH:Error``
+          - 1D horizontal lens error signal
+          - normal
+          - 
+    
+        * - oned_vert_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1DV:Error``
+          - 1D vertical lens error signal
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

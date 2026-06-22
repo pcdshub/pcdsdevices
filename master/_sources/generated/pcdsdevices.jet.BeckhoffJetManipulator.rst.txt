@@ -19,21 +19,21 @@
           - Notes
     
         * - x
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis_Pre140`
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:X``
           - 
           - normal
           - 
     
         * - y
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis_Pre140`
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:Y``
           - 
           - normal
           - 
     
         * - z
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis_Pre140`
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:Z``
           - 
           - normal

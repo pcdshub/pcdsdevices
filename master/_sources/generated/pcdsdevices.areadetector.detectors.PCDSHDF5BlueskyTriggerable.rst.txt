@@ -91,6 +91,7 @@
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
     .. autoattribute:: connection_timeout
+    .. autoattribute:: dtype_numpy
     .. autoattribute:: hints
     .. autoattribute:: kind
     .. autoattribute:: num_images_per_point

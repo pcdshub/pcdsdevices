@@ -1,0 +1,131 @@
+﻿pcdsdevices.attenuator.HE\_SATT\_Commands
+=========================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: HE_SATT_Commands
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - permit_move
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CmdPermitMove``
+          - Permit attenuator to move.
+          - normal
+          - 
+    
+        * - reset
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CmdReset``
+          - Reset attenuator sequence.
+          - normal
+          - 
+    
+        * - request_trans
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CmdReqTrans``
+          - Request transmission.
+          - normal
+          - 
+    
+        * - request_atten
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CmdReqAtten``
+          - Request attenuation.
+          - normal
+          - 
+    
+        * - requested_trans
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Trans``
+          - Requested transmission value.
+          - normal
+          - 
+    
+        * - requested_atten
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Atten``
+          - Requested attenuation value.
+          - normal
+          - 
+    
+        * - trans_rounding_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:TransRoundMode``
+          - Requested transmission rounding mode.
+          - normal
+          - 
+    
+        * - atten_rounding_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:AttenRoundMode``
+          - Requested attenuation rounding mode.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

@@ -1,0 +1,166 @@
+﻿pcdsdevices.attenuator.HE\_SATT\_FilterWedge
+============================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: HE_SATT_FilterWedge
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - filter_name
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Name``
+          - Name of filter
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.HE_SATT_Filter`
+    
+        * - help_config_start_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:HelpConfigStartPos``
+          - Help information for configuration of start position
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.HE_SATT_Filter`
+    
+        * - help_config_end_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:HelpConfigEndPos``
+          - Help information for configuration of end position
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.HE_SATT_Filter`
+    
+        * - material
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Material``
+          - Material of filter
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.HE_SATT_Filter`
+    
+        * - start_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:StartPos``
+          - Start position of filter in holder in axis coordinates
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.HE_SATT_Filter`
+    
+        * - end_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:EndPos``
+          - End position of filter in holder in axis coordinates
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.HE_SATT_Filter`
+    
+        * - status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Status``
+          - Status of filter
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.HE_SATT_Filter`
+    
+        * - start_thickness
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ThickAtStartPos``
+          - Thickness of filter at start position in mm.
+          - normal
+          - 
+    
+        * - end_thickness
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ThickAtEndPos``
+          - Thickness of filter at end position in mm.
+          - normal
+          - 
+    
+        * - target_thickness
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:TargetThick``
+          - Thickness of filter target in mm.
+          - normal
+          - 
+    
+        * - target_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:TargetPos``
+          - Position of filter target in axis units.
+          - normal
+          - 
+    
+        * - target_pos_tolerance
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:TargetPosTol``
+          - Allowable range of manual motion around target position.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

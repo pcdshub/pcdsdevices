@@ -33,7 +33,7 @@
           - 
     
         * - vh_epix_x
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis_Pre140`
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:DET:X``
           - 
           - normal

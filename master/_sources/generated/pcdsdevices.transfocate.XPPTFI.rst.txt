@@ -1,0 +1,572 @@
+﻿pcdsdevices.transfocate.XPPTFI
+==============================
+
+.. currentmodule:: pcdsdevices.transfocate
+
+.. autoclass:: XPPTFI
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - bypass_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BYP:SW``
+          - Bypass mode switch
+          - normal
+          - 
+    
+        * - test_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:TST:SW``
+          - Test mode switch
+          - normal
+          - 
+    
+        * - error_type
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SYS:ERROR:TYPE``
+          - System error type indicator
+          - normal
+          - 
+    
+        * - error_msg
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SYS:ERROR:MSG``
+          - System error message
+          - normal
+          - 
+    
+        * - error_summary
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERROR:SUMMARY``
+          - true means theres an error somehwere in the system
+          - normal
+          - 
+    
+        * - master_reset
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MASTER:RESET``
+          - Master reset command
+          - normal
+          - 
+    
+        * - mono_bb_temp
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MONO:BB:EPS:ILOCK:TC_TEMP``
+          - Mono beamblock motor temperature
+          - normal
+          - 
+    
+        * - reset_mono_latch
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MONO:RST:LATCH``
+          - Reset monochromator latch
+          - normal
+          - 
+    
+        * - safe_to_retract_mono_bb
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MONO:BB:EPS:SAFE:TO:RETRACT``
+          - Safe to retract monochromator beamblock
+          - normal
+          - 
+    
+        * - curr_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CURR:MODE``
+          - Current mode
+          - normal
+          - 
+    
+        * - mono_bb_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MONO:BB:State``
+          - Monochromator beamblock state
+          - normal
+          - 
+    
+        * - st1l0_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ST1L0:STATE``
+          - state is either IN or Unknown
+          - normal
+          - 
+    
+        * - st1l2_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ST1L2:STATE``
+          - state is either IN or Unknown
+          - normal
+          - 
+    
+        * - protected
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PROTECTED``
+          - Protected by stopper or beamblock
+          - normal
+          - 
+    
+        * - in_disallowed_region
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DISSALL:IN:REGION``
+          - Indicator if in disallowed region
+          - normal
+          - 
+    
+        * - disallowed_low
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DISSALL:RAD:LOW``
+          - Low bound of disallowed region
+          - normal
+          - 
+    
+        * - disallowed_high
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DISSALL:RAD:HIGH``
+          - High bound of disallowed region
+          - normal
+          - 
+    
+        * - effective_rad_vert
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:EFF:VERT:RADIUS``
+          - Vertical effective radius
+          - normal
+          - 
+    
+        * - effective_rad_horz
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:EFF:HORZ:RADIUS``
+          - Horizontal effective radius
+          - normal
+          - 
+    
+        * - pmps_photon_energy
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENRG:IN:PMPS:PHOTON:ENERGY``
+          - Photon energy from PMPS
+          - normal
+          - 
+    
+        * - epics_photon_energy
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENRG:IN:EPICS:PHOTON:ENERGY``
+          - Photon energy from EPICS
+          - normal
+          - 
+    
+        * - one_horz_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1DH:State``
+          - 1D horizontal lens state
+          - normal
+          - 
+    
+        * - one_vert_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1DV:State``
+          - 1D vertical lens state
+          - normal
+          - 
+    
+        * - twod_lens1_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D1:State``
+          - 2D lens 1 state
+          - normal
+          - 
+    
+        * - twod_lens2_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D2:State``
+          - 2D lens 2 state
+          - normal
+          - 
+    
+        * - twod_lens3_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D3:State``
+          - 2D lens 3 state
+          - normal
+          - 
+    
+        * - twod_lens4_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D4:State``
+          - 2D lens 4 state
+          - normal
+          - 
+    
+        * - twod_lens5_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D5:State``
+          - 2D lens 5 state
+          - normal
+          - 
+    
+        * - twod_lens6_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D6:State``
+          - 2D lens 6 state
+          - normal
+          - 
+    
+        * - twod_lens7_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D7:State``
+          - 2D lens 7 state
+          - normal
+          - 
+    
+        * - twod_lens8_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D8:State``
+          - 2D lens 8 state
+          - normal
+          - 
+    
+        * - two_insert_lens1
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:INSERT:LENS:1:INSERT``
+          - Command to insert 2D lens 1
+          - normal
+          - 
+    
+        * - two_insert_lens2
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:INSERT:LENS:2:INSERT``
+          - Command to insert 2D lens 2
+          - normal
+          - 
+    
+        * - two_insert_lens3
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:INSERT:LENS:3:INSERT``
+          - Command to insert 2D lens 3
+          - normal
+          - 
+    
+        * - two_insert_lens4
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:INSERT:LENS:4:INSERT``
+          - Command to insert 2D lens 4
+          - normal
+          - 
+    
+        * - two_insert_lens5
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:INSERT:LENS:5:INSERT``
+          - Command to insert 2D lens 5
+          - normal
+          - 
+    
+        * - two_insert_lens6
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:INSERT:LENS:6:INSERT``
+          - Command to insert 2D lens 6
+          - normal
+          - 
+    
+        * - two_insert_lens7
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:INSERT:LENS:7:INSERT``
+          - Command to insert 2D lens 7
+          - normal
+          - 
+    
+        * - two_insert_lens8
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:INSERT:LENS:8:INSERT``
+          - Command to insert 2D lens 8
+          - normal
+          - 
+    
+        * - two_remove_lens1
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:REMOVE:LENS:1:REMOVE``
+          - Command to remove 2D lens 1
+          - normal
+          - 
+    
+        * - two_remove_lens2
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:REMOVE:LENS:2:REMOVE``
+          - Command to remove 2D lens 2
+          - normal
+          - 
+    
+        * - two_remove_lens3
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:REMOVE:LENS:3:REMOVE``
+          - Command to remove 2D lens 3
+          - normal
+          - 
+    
+        * - two_remove_lens4
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:REMOVE:LENS:4:REMOVE``
+          - Command to remove 2D lens 4
+          - normal
+          - 
+    
+        * - two_remove_lens5
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:REMOVE:LENS:5:REMOVE``
+          - Command to remove 2D lens 5
+          - normal
+          - 
+    
+        * - two_remove_lens6
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:REMOVE:LENS:6:REMOVE``
+          - Command to remove 2D lens 6
+          - normal
+          - 
+    
+        * - two_remove_lens7
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:REMOVE:LENS:7:REMOVE``
+          - Command to remove 2D lens 7
+          - normal
+          - 
+    
+        * - two_remove_lens8
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:2D:REMOVE:LENS:8:REMOVE``
+          - Command to remove 2D lens 8
+          - normal
+          - 
+    
+        * - one_horz_lens1
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1D:HORZ:MOVE:LENS:1:INSERT``
+          - Command to insert 1D horizontal lens 1
+          - normal
+          - 
+    
+        * - one_horz_lens2
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1D:HORZ:MOVE:LENS:2:INSERT``
+          - Command to insert 1D horizontal lens 2
+          - normal
+          - 
+    
+        * - one_horz_lens3
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1D:HORZ:MOVE:LENS:3:INSERT``
+          - Command to insert 1D horizontal lens 3
+          - normal
+          - 
+    
+        * - one_horz_lens4
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1D:HORZ:MOVE:LENS:4:INSERT``
+          - Command to insert 1D horizontal lens 4
+          - normal
+          - 
+    
+        * - one_horz_out
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1D:HORZ:MOVE:OUT``
+          - Command to move 1D horizontal lens out
+          - normal
+          - 
+    
+        * - one_vert_lens1
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1D:VERT:MOVE:LENS:1:INSERT``
+          - Command to insert 1D vertical lens 1
+          - normal
+          - 
+    
+        * - one_vert_lens2
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1D:VERT:MOVE:LENS:2:INSERT``
+          - Command to insert 1D vertical lens 2
+          - normal
+          - 
+    
+        * - one_vert_lens3
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1D:VERT:MOVE:LENS:3:INSERT``
+          - Command to insert 1D vertical lens 3
+          - normal
+          - 
+    
+        * - one_vert_lens4
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1D:VERT:MOVE:LENS:4:INSERT``
+          - Command to insert 1D vertical lens 4
+          - normal
+          - 
+    
+        * - one_vert_out
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:1D:VERT:MOVE:OUT``
+          - Command to move 1D vertical lens out
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
