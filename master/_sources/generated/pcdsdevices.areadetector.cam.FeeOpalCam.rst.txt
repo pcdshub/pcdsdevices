@@ -172,6 +172,13 @@
           - normal
           - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
     
+        * - data_type_disabled (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DataType_RBV.DISA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
         * - detector_state (ADComponent)
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``DetectorState_RBV``
@@ -833,6 +840,8 @@
           - 
     
 
+    
+    
     
     
     

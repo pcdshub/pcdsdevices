@@ -1,0 +1,121 @@
+﻿pcdsdevices.attenuator.HE\_SATT\_Filter
+=======================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: HE_SATT_Filter
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - filter_name
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Name``
+          - Name of filter
+          - normal
+          - 
+    
+        * - help_config_start_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:HelpConfigStartPos``
+          - Help information for configuration of start position
+          - normal
+          - 
+    
+        * - help_config_end_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:HelpConfigEndPos``
+          - Help information for configuration of end position
+          - normal
+          - 
+    
+        * - material
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Material``
+          - Material of filter
+          - normal
+          - 
+    
+        * - start_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:StartPos``
+          - Start position of filter in holder in axis coordinates
+          - normal
+          - 
+    
+        * - end_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:EndPos``
+          - End position of filter in holder in axis coordinates
+          - normal
+          - 
+    
+        * - status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Status``
+          - Status of filter
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

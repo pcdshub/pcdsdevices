@@ -112,6 +112,15 @@ pcdsdevices.attenuator
     pcdsdevices.attenuator.GasAttenuator
     pcdsdevices.attenuator.GattApertureX
     pcdsdevices.attenuator.GattApertureY
+    pcdsdevices.attenuator.HE_SATT
+    pcdsdevices.attenuator.HE_SATT_Commands
+    pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder
+    pcdsdevices.attenuator.HE_SATT_Filter
+    pcdsdevices.attenuator.HE_SATT_FilterConstantThickness
+    pcdsdevices.attenuator.HE_SATT_FilterHolder
+    pcdsdevices.attenuator.HE_SATT_FilterWedge
+    pcdsdevices.attenuator.HE_SATT_Sequence
+    pcdsdevices.attenuator.HE_SATT_Wedge_Holder
     pcdsdevices.attenuator.SXRGasAtt
     pcdsdevices.attenuator.SXRLadderAttenuatorBlade
     pcdsdevices.attenuator.SXRLadderAttenuatorStates
@@ -753,6 +762,14 @@ pcdsdevices.make_ophyd_device
     pcdsdevices.make_ophyd_device.recurse_record
     pcdsdevices.make_ophyd_device.write_file
 
+pcdsdevices.mbes_motion
+-----------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.mbes_motion.MBES
+
 pcdsdevices.mirror
 ------------------
 
@@ -1275,6 +1292,15 @@ pcdsdevices.tpr
 
     pcdsdevices.tpr.TprMotor
     pcdsdevices.tpr.TprTrigger
+
+pcdsdevices.transfocate
+-----------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.transfocate.TFIErrors
+    pcdsdevices.transfocate.XPPTFI
 
 pcdsdevices.twincat_motor
 -------------------------

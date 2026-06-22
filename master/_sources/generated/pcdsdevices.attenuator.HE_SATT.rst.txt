@@ -1,0 +1,194 @@
+﻿pcdsdevices.attenuator.HE\_SATT
+===============================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: HE_SATT
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - max_beam_power
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MaxBeamPower``
+          - Max expected beam power
+          - normal
+          - 
+    
+        * - sequence
+          - :class:`~pcdsdevices.attenuator.HE_SATT_Sequence`
+          - ``:Seq``
+          - 
+          - normal
+          - 
+    
+        * - commands
+          - :class:`~pcdsdevices.attenuator.HE_SATT_Commands`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - holder1
+          - :class:`~pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder`
+          - ``:Holder:01``
+          - 
+          - normal
+          - 
+    
+        * - holder1_axis
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:04``
+          - 
+          - normal
+          - 
+    
+        * - holder1_velo
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MMSOOP:04:fVelocity``
+          - 
+          - normal
+          - 
+    
+        * - holder2
+          - :class:`~pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder`
+          - ``:Holder:02``
+          - 
+          - normal
+          - 
+    
+        * - holder2_axis
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:02``
+          - 
+          - normal
+          - 
+    
+        * - holder2_velo
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MMSOOP:02:fVelocity``
+          - 
+          - normal
+          - 
+    
+        * - holder3
+          - :class:`~pcdsdevices.attenuator.HE_SATT_Wedge_Holder`
+          - ``:Holder:03``
+          - 
+          - normal
+          - 
+    
+        * - holder3_axis
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:03``
+          - 
+          - normal
+          - 
+    
+        * - holder3_velo
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MMSOOP:03:fVelocity``
+          - 
+          - normal
+          - 
+    
+        * - holder4
+          - :class:`~pcdsdevices.attenuator.HE_SATT_Wedge_Holder`
+          - ``:Holder:04``
+          - 
+          - normal
+          - 
+    
+        * - holder4_axis
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:01``
+          - 
+          - normal
+          - 
+    
+        * - holder4_velo
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MMSOOP:01:fVelocity``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

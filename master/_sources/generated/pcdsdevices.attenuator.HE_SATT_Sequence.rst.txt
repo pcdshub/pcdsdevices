@@ -1,0 +1,149 @@
+﻿pcdsdevices.attenuator.HE\_SATT\_Sequence
+=========================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: HE_SATT_Sequence
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:State``
+          - Current solid attenuator sequence state.
+          - normal
+          - 
+    
+        * - curr_trans
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CurTransOverall``
+          - Current transmission through all holders.
+          - normal
+          - 
+    
+        * - curr_trans_3rd
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CurTrans3rdOverall``
+          - Current third harmonic transmission through all holders.
+          - normal
+          - 
+    
+        * - trans_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:TransError``
+          - Transmission error
+          - config
+          - 
+    
+        * - curr_safe_power
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CurSafePowerOverall``
+          - Current overall safe power accounting for attenuation.
+          - normal
+          - 
+    
+        * - chosen_filters_active
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ChosenFiltersActive``
+          - False if chosen filters moved off of.
+          - normal
+          - 
+    
+        * - optimal_filter_1
+          - :class:`~pcdsdevices.attenuator.HE_SATT_FilterConstantThickness`
+          - ``:Optimal:01``
+          - 
+          - normal
+          - 
+    
+        * - optimal_filter_2
+          - :class:`~pcdsdevices.attenuator.HE_SATT_FilterConstantThickness`
+          - ``:Optimal:02``
+          - 
+          - normal
+          - 
+    
+        * - optimal_filter_3
+          - :class:`~pcdsdevices.attenuator.HE_SATT_FilterWedge`
+          - ``:Optimal:03``
+          - 
+          - normal
+          - 
+    
+        * - optimal_filter_4
+          - :class:`~pcdsdevices.attenuator.HE_SATT_FilterWedge`
+          - ``:Optimal:04``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

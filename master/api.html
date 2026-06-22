@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; PCDS Devices 10.3.1.dev82+gbb387ead7 documentation</title>
+  <title>API &mdash; PCDS Devices 10.4.1.dev49+g97289a5c1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/_static/theme_overrides.css" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=c445bb4d"></script>
+      <script src="_static/documentation_options.js?v=e18066cd"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -133,6 +133,15 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.GasAttenuator.html">pcdsdevices.attenuator.GasAttenuator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.GattApertureX.html">pcdsdevices.attenuator.GattApertureX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.GattApertureY.html">pcdsdevices.attenuator.GattApertureY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT.html">pcdsdevices.attenuator.HE_SATT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_Commands.html">pcdsdevices.attenuator.HE_SATT_Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder.html">pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_Filter.html">pcdsdevices.attenuator.HE_SATT_Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_FilterConstantThickness.html">pcdsdevices.attenuator.HE_SATT_FilterConstantThickness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_FilterHolder.html">pcdsdevices.attenuator.HE_SATT_FilterHolder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_FilterWedge.html">pcdsdevices.attenuator.HE_SATT_FilterWedge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_Sequence.html">pcdsdevices.attenuator.HE_SATT_Sequence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_Wedge_Holder.html">pcdsdevices.attenuator.HE_SATT_Wedge_Holder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRGasAtt.html">pcdsdevices.attenuator.SXRGasAtt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorBlade.html">pcdsdevices.attenuator.SXRLadderAttenuatorBlade</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorStates.html">pcdsdevices.attenuator.SXRLadderAttenuatorStates</a></li>
@@ -591,6 +600,10 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.make_ophyd_device.write_file.html">pcdsdevices.make_ophyd_device.write_file</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-mbes-motion">pcdsdevices.mbes_motion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.mbes_motion.MBES.html">pcdsdevices.mbes_motion.MBES</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-mirror">pcdsdevices.mirror</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.mirror.FFMirror.html">pcdsdevices.mirror.FFMirror</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.mirror.FFMirrorZ.html">pcdsdevices.mirror.FFMirrorZ</a></li>
@@ -956,6 +969,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-tpr">pcdsdevices.tpr</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.tpr.TprMotor.html">pcdsdevices.tpr.TprMotor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.tpr.TprTrigger.html">pcdsdevices.tpr.TprTrigger</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-transfocate">pcdsdevices.transfocate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.transfocate.TFIErrors.html">pcdsdevices.transfocate.TFIErrors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.transfocate.XPPTFI.html">pcdsdevices.transfocate.XPPTFI</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-twincat-motor">pcdsdevices.twincat_motor</a><ul>
@@ -1334,19 +1352,46 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.GattApertureY.html#pcdsdevices.attenuator.GattApertureY" title="pcdsdevices.attenuator.GattApertureY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.GattApertureY</span></code></a>(prefix, ...)</p></td>
 <td><p>AT1K0 is a gas attenuator containing 4 discrete aperture arrays, each with 4 discrete aperture sizes to attenuate the intensity of the beam.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRGasAtt.html#pcdsdevices.attenuator.SXRGasAtt" title="pcdsdevices.attenuator.SXRGasAtt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRGasAtt</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT.html#pcdsdevices.attenuator.HE_SATT" title="pcdsdevices.attenuator.HE_SATT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.HE_SATT</span></code></a>(*args, **kwargs)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorBlade.html#pcdsdevices.attenuator.SXRLadderAttenuatorBlade" title="pcdsdevices.attenuator.SXRLadderAttenuatorBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorBlade</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_Commands.html#pcdsdevices.attenuator.HE_SATT_Commands" title="pcdsdevices.attenuator.HE_SATT_Commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.HE_SATT_Commands</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder.html#pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder" title="pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.HE_SATT_ConstantThickness_Holder</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_Filter.html#pcdsdevices.attenuator.HE_SATT_Filter" title="pcdsdevices.attenuator.HE_SATT_Filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.HE_SATT_Filter</span></code></a>(*args, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_FilterConstantThickness.html#pcdsdevices.attenuator.HE_SATT_FilterConstantThickness" title="pcdsdevices.attenuator.HE_SATT_FilterConstantThickness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.HE_SATT_FilterConstantThickness</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_FilterHolder.html#pcdsdevices.attenuator.HE_SATT_FilterHolder" title="pcdsdevices.attenuator.HE_SATT_FilterHolder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.HE_SATT_FilterHolder</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_FilterWedge.html#pcdsdevices.attenuator.HE_SATT_FilterWedge" title="pcdsdevices.attenuator.HE_SATT_FilterWedge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.HE_SATT_FilterWedge</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_Sequence.html#pcdsdevices.attenuator.HE_SATT_Sequence" title="pcdsdevices.attenuator.HE_SATT_Sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.HE_SATT_Sequence</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.HE_SATT_Wedge_Holder.html#pcdsdevices.attenuator.HE_SATT_Wedge_Holder" title="pcdsdevices.attenuator.HE_SATT_Wedge_Holder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.HE_SATT_Wedge_Holder</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRGasAtt.html#pcdsdevices.attenuator.SXRGasAtt" title="pcdsdevices.attenuator.SXRGasAtt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRGasAtt</span></code></a>(*args, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorBlade.html#pcdsdevices.attenuator.SXRLadderAttenuatorBlade" title="pcdsdevices.attenuator.SXRLadderAttenuatorBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorBlade</span></code></a>(...)</p></td>
 <td><p>Represents one ladder solid attenuator blade.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorStates.html#pcdsdevices.attenuator.SXRLadderAttenuatorStates" title="pcdsdevices.attenuator.SXRLadderAttenuatorStates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorStates</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorStates.html#pcdsdevices.attenuator.SXRLadderAttenuatorStates" title="pcdsdevices.attenuator.SXRLadderAttenuatorStates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorStates</span></code></a>(...)</p></td>
 <td><p>The states class for the SXR Ladder-style attenuators.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.get_blade_enum.html#pcdsdevices.attenuator.get_blade_enum" title="pcdsdevices.attenuator.get_blade_enum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.get_blade_enum</span></code></a>(value)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.get_blade_enum.html#pcdsdevices.attenuator.get_blade_enum" title="pcdsdevices.attenuator.get_blade_enum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.get_blade_enum</span></code></a>(value)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.render_ascii_att.html#pcdsdevices.attenuator.render_ascii_att" title="pcdsdevices.attenuator.render_ascii_att"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.render_ascii_att</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.render_ascii_att.html#pcdsdevices.attenuator.render_ascii_att" title="pcdsdevices.attenuator.render_ascii_att"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.render_ascii_att</span></code></a>(...)</p></td>
 <td><p>Creates the attenuator ascii art.</p></td>
 </tr>
 </tbody>
@@ -2613,6 +2658,16 @@
 </tbody>
 </table>
 </section>
+<section id="pcdsdevices-mbes-motion">
+<h2>pcdsdevices.mbes_motion<a class="headerlink" href="#pcdsdevices-mbes-motion" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.mbes_motion.MBES.html#pcdsdevices.mbes_motion.MBES" title="pcdsdevices.mbes_motion.MBES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.mbes_motion.MBES</span></code></a>(*args, **kwargs)</p></td>
+<td><p>MBES Motion Class</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="pcdsdevices-mirror">
 <h2>pcdsdevices.mirror<a class="headerlink" href="#pcdsdevices-mirror" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
@@ -3632,6 +3687,19 @@
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.tpr.TprTrigger.html#pcdsdevices.tpr.TprTrigger" title="pcdsdevices.tpr.TprTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.tpr.TprTrigger</span></code></a>(prefix, *, ...[, ...])</p></td>
 <td><p>Class for an individual TprTrigger.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="pcdsdevices-transfocate">
+<h2>pcdsdevices.transfocate<a class="headerlink" href="#pcdsdevices-transfocate" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.transfocate.TFIErrors.html#pcdsdevices.transfocate.TFIErrors" title="pcdsdevices.transfocate.TFIErrors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.transfocate.TFIErrors</span></code></a>(*args, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.transfocate.XPPTFI.html#pcdsdevices.transfocate.XPPTFI" title="pcdsdevices.transfocate.XPPTFI"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.transfocate.XPPTFI</span></code></a>(*args, **kwargs)</p></td>
+<td><p>A development screen for the XPP Transfocator Interlock.</p></td>
 </tr>
 </tbody>
 </table>

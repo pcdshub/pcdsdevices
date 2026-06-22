@@ -1,0 +1,140 @@
+﻿pcdsdevices.attenuator.HE\_SATT\_FilterHolder
+=============================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: HE_SATT_FilterHolder
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - holder_name
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Name``
+          - Name of filter.
+          - normal
+          - 
+    
+        * - enabled
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Enabled``
+          - Filter enabled for transmission requests.
+          - normal
+          - 
+    
+        * - curr_trans
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CurTrans``
+          - Current transmission through this holder.
+          - normal
+          - 
+    
+        * - curr_trans_3rd
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CurTrans3rd``
+          - Current third harmonic transmission through this holder.
+          - normal
+          - 
+    
+        * - curr_safe_power
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CurSafePower``
+          - Current safe power for this holder in watts.
+          - normal
+          - 
+    
+        * - out_position
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:OutPos``
+          - Out position for holder in axis units.
+          - normal
+          - 
+    
+        * - active_filter
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ActiveFiltName``
+          - Name of active filter in this holder or None.
+          - normal
+          - 
+    
+        * - rtd1
+          - :class:`~pcdsdevices.sensors.TwinCATTempSensor`
+          - ``:RTD:01``
+          - First thermocouple.
+          - normal
+          - 
+    
+        * - rtd2
+          - :class:`~pcdsdevices.sensors.TwinCATTempSensor`
+          - ``:RTD:02``
+          - Second thermocouple.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_defaults
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
