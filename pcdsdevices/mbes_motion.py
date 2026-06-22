@@ -1,5 +1,5 @@
 """
-MBES Motion Classes
+TMO MBES Motion Classes
 
 This module contains classes related to the TMO-MBES Motion System
 """
