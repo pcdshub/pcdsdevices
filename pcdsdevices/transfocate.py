@@ -54,28 +54,28 @@ class XPPTFI(BaseInterface, Device):
     master_reset = Cpt(PytmcSignal, ':MASTER:RESET', io='o',
                        kind='normal', doc='Master reset command')
     mono_bb_temp = Cpt(PytmcSignal, ':MONO:BB:EPS:ILOCK:TC_TEMP', io='i',
-                       kind='normal', doc='Monochromator backplane temperature')
+                       kind='normal', doc='Mono beamblock motor temperature')
     reset_mono_latch = Cpt(PytmcSignal, ':MONO:RST:LATCH', io='io',
                            kind='normal', doc='Reset monochromator latch')
     safe_to_retract_mono_bb = Cpt(PytmcSignal, ':MONO:BB:EPS:SAFE:TO:RETRACT', io='i',
-                                  kind='normal', doc='Safe to retract monochromator backplane')
+                                  kind='normal', doc='Safe to retract monochromator beamblock')
     curr_mode = Cpt(PytmcSignal, ':CURR:MODE', io='i',
                     kind='normal', doc='Current mode')
     mono_bb_state = Cpt(PytmcSignal, ':MONO:BB:State', io='i',
-                        kind='normal', doc='Monochromator backplane state')
+                        kind='normal', doc='Monochromator beamblock state')
     st1l0_state = Cpt(PytmcSignal, ':ST1L0:STATE', io='i',
                       kind='normal', doc='state is either IN or Unknown')
     st1l2_state = Cpt(PytmcSignal, ':ST1L2:STATE', io='i',
                       kind='normal', doc='state is either IN or Unknown')
 
     protected = Cpt(PytmcSignal, ':PROTECTED', io='i',
-                    kind='normal', doc='Protected status')
+                    kind='normal', doc='Protected by stopper or beamblock')
     in_disallowed_region = Cpt(PytmcSignal, ':DISSALL:IN:REGION', io='i',
                                kind='normal', doc='Indicator if in disallowed region')
     disallowed_low = Cpt(PytmcSignal, ':DISSALL:RAD:LOW', io='i',
-                         kind='normal', doc='Low radius of disallowed region')
+                         kind='normal', doc='Low bound of disallowed region')
     disallowed_high = Cpt(PytmcSignal, ':DISSALL:RAD:HIGH', io='i',
-                          kind='normal', doc='High radius of disallowed region')
+                          kind='normal', doc='High bound of disallowed region')
     effective_rad_vert = Cpt(PytmcSignal, ':EFF:VERT:RADIUS', io='i',
                              kind='normal', doc='Vertical effective radius')
     effective_rad_horz = Cpt(PytmcSignal, ':EFF:HORZ:RADIUS', io='i',
