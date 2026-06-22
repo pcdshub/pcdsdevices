@@ -1,8 +1,6 @@
 import re
 import sys
 
-from whatrecord import db
-
 
 def recurse_record(d, record):
     """
@@ -144,6 +142,7 @@ def write_file(lines, name):
 
 
 if __name__ == '__main__':
+    from whatrecord import db
     import argparse
     parser = argparse.ArgumentParser()
 
