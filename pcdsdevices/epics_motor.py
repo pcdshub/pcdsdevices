@@ -1296,14 +1296,18 @@ class BeckhoffAxis(EpicsMotorInterface):
     __doc__ += basic_positioner_init
     tab_whitelist = ['clear_error']
 
-    plc = Cpt(BeckhoffAxisPLC, ':PLC:', kind='normal',
-              doc='PLC error handling and aux functions.')
+    plc = FCpt(BeckhoffAxisPLC, '{prefix}{_plc_suffix}', kind='normal',
+               doc='PLC error handling and aux functions.')
     motor_spmg = Cpt(EpicsSignal, '.SPMG', kind='config',
                      doc='Stop, Pause, Move, Go')
 
     # Clear the normal homing PVs that don't really work here
     home_forward = None
     home_reverse = None
+
+    def __init__(self, prefix, *, plc_suffix=':PLC:', **kwargs):
+        self._plc_suffix = plc_suffix
+        super().__init__(prefix, **kwargs)
 
     def subscribe(
         self,

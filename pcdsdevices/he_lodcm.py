@@ -1,6 +1,7 @@
-import logging
-from enum import Enum, auto
+from dataclasses import dataclass
+from typing import Any
 
+import numpy as np
 from ophyd.device import Component as Cpt
 
 from .device import GroupDevice
@@ -11,7 +12,21 @@ from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
 from .utils import get_status_float, get_status_value
 
-logger = logging.getLogger(__name__)
+
+@dataclass(frozen=True)
+class Crystal:
+    name: str
+    d_spacing: float  # m
+    t1ty_range: tuple[float, float]
+    t2ty_range: tuple[float, float]
+
+
+SI111 = Crystal("Si111", 3.1355e-7, t1ty_range=(0.1, 15), t2ty_range=(0.1, 15))
+SI220 = Crystal("Si220", 1.9201e-7, t1ty_range=(-15, -0.1), t2ty_range=(-15, -0.1))
+
+GRATING_DISTANCE = 28.6e3  # distance of the grating to the center of rotation of crystal 1 in meters.
+IM2L0_DISTANCE = 7.3e3  # distance of iml2 from the center of rotation of crystal 1 in meters.
+GAP = 599.0  # horizontal gap between the two crystals in mm.
 
 
 class HE_LODCMEnergy(FltMvInterface, PseudoPositioner):
@@ -19,83 +34,194 @@ class HE_LODCMEnergy(FltMvInterface, PseudoPositioner):
         PseudoSingleInterface,
         egu='keV',
         kind='hinted',
-        limits=(),
+        limits=(4, 25),
         verbose_name='',
         doc=(
             'PseudoSingle that moves the calculated LODCM '
             'selected energy in keV.'
         ),
     )
+
     t1ry = Cpt(BeckhoffAxis, ':MMS:T1Ry', kind='normal', doc='Tower 1 rotation Y')
     t2ry = Cpt(BeckhoffAxis, ':MMS:T2Ry', kind='normal', doc='Tower 2 rotation Y')
     t2tz = Cpt(BeckhoffAxis, ':MMS:T2Tz', kind='normal', doc='Tower 2 translation Z')
 
     t1ty = Cpt(BeckhoffAxis, ':MMS:T1Ty', kind='normal', doc='Tower 1 translation Y')
+    t2ty1 = Cpt(BeckhoffAxis, ':MMS:T2Ty', kind='normal', doc='Tower 2 translation Y 1')
+    t2ty2 = Cpt(BeckhoffAxis, ':MMS:T2Ty2', kind='normal', doc='Tower 2 translation Y 2')
 
-    class Crystal(Enum):
-        Si111 = auto()
-        Si220 = auto()
+    tab_component_names = True
 
-    def get_crystal(self):
-        rbv = self.t1ty.user_readback.get()
-        if 0 < rbv < 1:
-            return self.Crystal.Si111
-        elif 1 < rbv < 2:
-            return self.Crystal.Si220
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.grating_period = None  # grating perdiod in mm. Proper implementation to follow
+
+    def get_crystal(self) -> Crystal:
+        """
+        Get the current crystal type from tower vertical positions.
+
+        Returns
+        -------
+        Crystal
+            SI111 or SI220 based on t1ty and t2ty readbacks.
+
+        Raises
+        ------
+        RuntimeError
+            If t1ty/t2ty positions are invalid or crystal types mismatch.
+        """
+        rbv_t1ty = self.t1ty.user_readback.get()
+        rbv_t2ty1 = self.t2ty1.user_readback.get()
+        rbv_t2ty2 = self.t2ty2.user_readback.get()
+
+        for crystal in (SI111, SI220):
+            if crystal.t1ty_range[0] <= rbv_t1ty <= crystal.t1ty_range[1]:
+                t1_crystal = crystal
+                break
         else:
-            return None
+            raise RuntimeError("Invalid t1ty position for determining crystal type")
+
+        for crystal in (SI111, SI220):
+            if (crystal.t2ty_range[0] <= rbv_t2ty1 <= crystal.t2ty_range[1]
+                    and crystal.t2ty_range[0] <= rbv_t2ty2 <= crystal.t2ty_range[1]):
+                t2_crystal = crystal
+                break
+        else:
+            raise RuntimeError("Invalid t2ty1 and t2ty2 positions for determining crystal type")
+
+        if t1_crystal != t2_crystal:
+            raise RuntimeError("Crystal types do not match between towers")
+
+        return t1_crystal
+
+    def _energy_from_theta(self, theta_deg: float, crystal: Crystal) -> float:
+        """
+        Calculate energy from Bragg angle.
+
+        Parameters
+        ----------
+        theta_deg : float
+            Bragg angle in degrees.
+        crystal : Crystal
+            Crystal object with d-spacing.
+
+        Returns
+        -------
+        float
+            Energy in keV.
+        """
+        theta_rad = np.deg2rad(theta_deg)
+
+        if self.grating_period is not None:
+            grating_correction = np.sqrt(1 + (2 * crystal.d_spacing / self.grating_period) ** 2
+                                         - 4 * crystal.d_spacing / self.grating_period * np.cos(theta_rad))
+        else:
+            grating_correction = 1
+
+        wavelength_mm = 2 * crystal.d_spacing * np.sin(theta_rad) / grating_correction
+        wavelength_nm = wavelength_mm * 1e6
+        energy_keV = 1.2398 / wavelength_nm
+        return energy_keV
+
+    def _pos_from_energy(self, energy: float) -> tuple[float, float]:
+        """
+        Calculate motor positions from target energy.
+
+        Parameters
+        ----------
+        energy : float
+            Target energy in keV (4-25).
+
+        Returns
+        -------
+        tuple[float, float]
+            Tuple of (theta_degrees, t2tz_position).
+        """
+        crystal = self.get_crystal()
+
+        wavelength_mm = (1.2398 / energy) * 1e-6
+        bragg_rad = np.arcsin(wavelength_mm / crystal.d_spacing / 2)
+
+        grating_angle_rad = 0
+
+        if self.grating_period is not None:
+            grating_angle_rad = np.arcsin(wavelength_mm / self.grating_period)
+        else:
+            grating_angle_rad = 0
+
+        gap_t2tz = GAP * (np.cos(2 * bragg_rad - grating_angle_rad) * np.sin(bragg_rad)
+                          / np.sin(2 * bragg_rad) / np.sin(bragg_rad - grating_angle_rad))
+
+        grating_t2tz = (1 - np.sin(bragg_rad) * np.sin(2 * bragg_rad - grating_angle_rad)
+                        / np.sin(2 * bragg_rad) / np.sin(bragg_rad - grating_angle_rad))
+        grating_t2tz *= (GRATING_DISTANCE + IM2L0_DISTANCE)
+
+        t2tz_pos = gap_t2tz + grating_t2tz
+        theta_pos = np.rad2deg(bragg_rad - grating_angle_rad)
+
+        return (theta_pos, t2tz_pos)
 
     @classmethod
-    def _get_real_positioners(cls):
-        # Want to use t1ty to determine the crystal but not be part of the pseudoposition
-        return [(attr, cpt) for attr, cpt in super()._get_real_positioners() if attr != 't1ty']
+    def _get_real_positioners(cls) -> list:
+        """
+        Override to exclude crystal detection motors.
+
+        Returns
+        -------
+        list
+            List of (attr, cpt) tuples excluding t1ty, t2ty1, t2ty2.
+        """
+        exclude = {'t1ty', 't2ty1', 't2ty2'}
+        return [(attr, cpt) for attr, cpt in super()._get_real_positioners()
+                if attr not in exclude]
 
     @pseudo_position_argument
-    def forward(self, pseudo_pos):
+    def forward(self, pseudo_pos: Any) -> Any:
         """
-        Calculate a RealPosition from a given PseudoPosition.
-
-        If the pseudo positioner is here at `pseudo_pos`, then this is where
-        my real motor should be.
+        Convert energy to motor positions.
 
         Parameters
         ----------
         pseudo_pos : PseudoPosition
-            The pseudo position input, a namedtuple.
+            With .energy attribute.
 
         Returns
         -------
-        real_pos : RealPosition
-            The real position output, a namedtuple.
+        RealPosition
+            With t1ry, t2ry, t2tz attributes.
         """
-        energy = self.PseudoPosition(*pseudo_pos).energy
-        raise NotImplementedError
-        return self.RealPosition(t1ry=0*energy,
-                                 t2ry=0,
-                                 t2tz=0)
+        pseudo_pos = self.PseudoPosition(*pseudo_pos)
+        th, t2tz = self._pos_from_energy(energy=pseudo_pos.energy)
+
+        return self.RealPosition(t1ry=th,
+                                 t2ry=th,
+                                 t2tz=t2tz)
 
     @real_position_argument
-    def inverse(self, real_pos):
+    def inverse(self, real_pos: Any) -> Any:
         """
-        Calculate a PseudoPosition from a given RealPosition.
-
-        If the real motor is at this `real_pos`, then this is where my pseudo
-        position should be.
+        Convert motor positions to energy.
 
         Parameters
         ----------
         real_pos : RealPosition
-            The real position input.
+            With .t1ry attribute.
 
         Returns
         -------
-        pseudo_pos : PseudoPosition
-            The pseudo position output.
+        PseudoPosition
+            With .energy attribute, or NaN if crystal detection fails.
         """
+        try:
+            crystal = self.get_crystal()
+        except Exception:
+            return self.PseudoPosition(energy=np.NaN)
+
         real_pos = self.RealPosition(*real_pos)
-        energy = 0
-        raise NotImplementedError
-        return self.PseudoPosition(energy=energy)
+        theta_deg = real_pos.t1ry
+
+        energy_keV = self._energy_from_theta(theta_deg, crystal)
+        return self.PseudoPosition(energy=energy_keV)
 
 
 class HE_LODCM(BaseInterface, GroupDevice):
@@ -124,7 +250,28 @@ class HE_LODCM(BaseInterface, GroupDevice):
     tct1 = Cpt(Lakeshore336, ':TCT:01', kind='normal', doc='Crystal 1 temperature controller')
     tct2 = Cpt(Lakeshore336, ':TCT:02', kind='normal', doc='Crystal 2 temperature controller')
 
+    tab_component_names = True
+
+    def __init__(self, prefix, *args, **kwargs):
+        super().__init__(prefix=prefix, *args, **kwargs)
+
+        # Aliases
+        self.E = self.energy.energy
+
     def format_status_info(self, status_info):
+        """
+        Format status info for display.
+
+        Parameters
+        ----------
+        status_info : dict
+            Nested dictionary with motor/channel status data.
+
+        Returns
+        -------
+        str
+            Formatted multi-line status string.
+        """
         energy = get_status_float(status_info, 'energy', 'value')
 
         def motor_status(attr, status_info):
