@@ -142,8 +142,9 @@ def write_file(lines, name):
 
 
 if __name__ == '__main__':
-    from whatrecord import db
     import argparse
+
+    from whatrecord import db
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
