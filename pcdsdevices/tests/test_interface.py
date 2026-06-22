@@ -231,7 +231,7 @@ def test_presets_tab_init(fast_motor: FastMotor, deferred_fast_motor_presets):
 
 
 @pytest.mark.parametrize("attr", [
-    ("wm_dne",), ("wm_in",), ("mv_dne",), ("mv_in",), ("umv_dne",), ("umv_in",)
+    "wm_dne", "wm_in", "mv_dne", "mv_in", "umv_dne", "umv_in",
 ])
 def test_presets_getattribute_init(
     fast_motor: FastMotor, attr: str, deferred_fast_motor_presets
