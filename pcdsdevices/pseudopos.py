@@ -790,10 +790,13 @@ class DelayBase(FltMvInterface, PseudoPositioner):
 
         For delay motors, these internal variables are not used and are safe to
         skip at startup.
+
+        Sometimes this shows itself as an attribute error instead of a timeout
+        when the egu resolves to the default value, empty string.
         """
         try:
             super()._real_pos_update(*args, **kwargs)
-        except TimeoutError:
+        except (TimeoutError, AttributeError):
             pass
 
     @pseudo_position_argument
