@@ -371,6 +371,7 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
     stage_group = [eta, kappa, phi]
     tab_component_names = True
     tab_whitelist = ['stop', 'wait', 'k_to_e', 'e_to_k', 'check_motor_step']
+    _real = ['eta', 'kappa', 'phi']
 
     def __init__(self, prefix, *, name=None, eta_max_step=2,
                  kappa_max_step=2, phi_max_step=2,
@@ -436,7 +437,7 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
         delta = np.arctan(np.tan(kappa * np.pi / 180 / 2)
                           * np.cos(kappa_ang))
 
-        e_eta = -eta * np.pi / 180 - delta
+        e_eta = eta * np.pi / 180 - delta
         e_chi = 2 * np.arcsin(np.sin(kappa * np.pi / 180 / 2)
                               * np.sin(kappa_ang))
         e_phi = -phi * np.pi / 180 - delta
@@ -482,14 +483,14 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
         kappa_ang = self.kappa_ang * np.pi / 180
         delta = np.arcsin(-np.tan(e_chi * np.pi / 180 / 2)
                           / np.tan(kappa_ang))
-        k_eta = -(e_eta * np.pi / 180 - delta)
+        k_eta = (e_eta * np.pi / 180 - delta)
         k_kap = 2 * np.arcsin(np.sin(e_chi * np.pi / 180 / 2)
                               / np.sin(kappa_ang))
         k_phi = e_phi * np.pi / 180 - delta
 
         # Phase shift for flipped kappa
         if self.kappa.position > 180:
-            k_eta = -k_eta - np.pi
+            k_eta = k_eta - np.pi
             k_kap = 2 * np.pi - k_kap
             k_phi = -e_phi * np.pi / 180 - delta
 
@@ -515,12 +516,7 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         eta, kappa, phi = self.e_to_k(pseudo_pos.e_eta, pseudo_pos.e_chi,
                                       pseudo_pos.e_phi)
-        return self.RealPosition(base_x=self.base_x.position, base_y=self.base_y.position,
-                                 sample_x=self.sample_x.position, sample_y=self.sample_y.position,
-                                 sample_z=self.sample_z.position, gon_x=self.gon_x.position,
-                                 gon_y=self.gon_y.position, gon_z=self.gon_z.position,
-                                 theta=self.theta.position,
-                                 eta=eta, kappa=kappa, phi=phi)
+        return self.RealPosition(eta=eta, kappa=kappa, phi=phi)
 
     @real_position_argument
     def inverse(self, real_pos):
