@@ -2,10 +2,12 @@ from dataclasses import dataclass
 from typing import Any
 
 import numpy as np
+from ophyd import FormattedComponent as FCpt
 from ophyd.device import Component as Cpt
 
 from .device import GroupDevice
 from .epics_motor import BeckhoffAxis, BeckhoffAxisEPS
+from .gbs import GratingBeamSplitterTarget
 from .interface import BaseInterface, FltMvInterface
 from .lakeshore import Lakeshore336
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
@@ -50,11 +52,12 @@ class HE_LODCMEnergy(FltMvInterface, PseudoPositioner):
     t2ty1 = Cpt(BeckhoffAxis, ':MMS:T2Ty', kind='normal', doc='Tower 2 translation Y 1')
     t2ty2 = Cpt(BeckhoffAxis, ':MMS:T2Ty2', kind='normal', doc='Tower 2 translation Y 2')
 
+    beam_splitter = FCpt(GratingBeamSplitterTarget, 'PF2L0:GBS')
+
     tab_component_names = True
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.grating_period = None  # grating perdiod in mm. Proper implementation to follow
 
     def get_crystal(self) -> Crystal:
         """
@@ -111,10 +114,11 @@ class HE_LODCMEnergy(FltMvInterface, PseudoPositioner):
             Energy in keV.
         """
         theta_rad = np.deg2rad(theta_deg)
+        grating_period = self.beam_splitter.get_current_grating_period()
 
-        if self.grating_period is not None:
-            grating_correction = np.sqrt(1 + (2 * crystal.d_spacing / self.grating_period) ** 2
-                                         - 4 * crystal.d_spacing / self.grating_period * np.cos(theta_rad))
+        if grating_period is not None:
+            grating_correction = np.sqrt(1 + (2 * crystal.d_spacing / grating_period) ** 2
+                                         - 4 * crystal.d_spacing / grating_period * np.cos(theta_rad))
         else:
             grating_correction = 1
 
@@ -144,8 +148,10 @@ class HE_LODCMEnergy(FltMvInterface, PseudoPositioner):
 
         grating_angle_rad = 0
 
-        if self.grating_period is not None:
-            grating_angle_rad = np.arcsin(wavelength_mm / self.grating_period)
+        grating_period = self.beam_splitter.get_current_grating_period()
+
+        if grating_period is not None:
+            grating_angle_rad = np.arcsin(wavelength_mm / grating_period)
         else:
             grating_angle_rad = 0
 
