@@ -206,6 +206,35 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         self._update_notepad_ioc(position, 'notepad_setpoint')
         return status
 
+    def _concurrent_move(self, real_pos, **kwargs):
+        """
+        Move all real positioners in parallel.
+
+        This fixes a bug where a PseudoPositioner has a PseudoSingle as one of
+        its axes and waits indefinitely for the move status. A PseudoSingle
+        does not perform the move itself. Instead, it delegates the move to its
+        parent PseudoPositioner. The parent reports that the move is done using
+        a callback, but the current PseudoPositioner is waiting for the
+        PseudoSingle child to report that it is done. Since the PseudoSingle
+        did not perform the move directly, that callback never arrives. The
+        current PseudoPositioner's status hangs and blocks other operations.
+
+        The solution is to have the PseudoPositioner object track the axis it 
+        asked to move, instead of instead of trusting which object the callback 
+        reports as done.
+        """
+        self._real_waiting.extend(self._real)
+
+        for real, value in zip(self._real, real_pos):
+            self.log.debug("[concurrent] Moving %s to %s", real.name, value)
+
+            def mark_requested_axis_done(status=None, *, obj=None,
+                                         real_axis=real, **cb_kwargs):
+                self._real_finished(status=status, obj=real_axis)
+
+            real.move(value, wait=False, moved_cb=mark_requested_axis_done,
+                      **kwargs)
+
     def _update_position(self):
         """Update the pseudo position based on that of the real positioners."""
         position = super()._update_position()
@@ -487,11 +516,12 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             try:
                 self.offset_mode = SyncAxisOffsetMode[self.offset_mode]
             except KeyError:
-                raise ValueError(f'Invalid offset_mode: {self.offset_mode}') from None
+                raise ValueError(
+                    f'Invalid offset_mode: {self.offset_mode}') from None
         self._check_info_dict(self.offsets, 'offsets')
         self._check_info_dict(self.scales, 'scales')
-        if (self.fix_sync_keep_still is not None
-                and self.fix_sync_keep_still not in self.component_names):
+        if (self.fix_sync_keep_still is not None and
+                self.fix_sync_keep_still not in self.component_names):
             raise ValueError(
                 f'Invalid fix_sync_keep_still == {self.fix_sync_keep_still}. Must match a motor.'
             )
@@ -1011,7 +1041,8 @@ class LookupTablePositioner(PseudoPositioner):
         '''
         values = pseudo_pos._asdict()
         pseudo_field, real_field = self._get_field_names()
-        xp, fp = self._load_table_arrays(x_name=pseudo_field, f_name=real_field)
+        xp, fp = self._load_table_arrays(
+            x_name=pseudo_field, f_name=real_field)
 
         real_value = np.interp(
             values[pseudo_field],
@@ -1037,7 +1068,8 @@ class LookupTablePositioner(PseudoPositioner):
         '''
         values = real_pos._asdict()
         pseudo_field, real_field = self._get_field_names()
-        xp, fp = self._load_table_arrays(x_name=real_field, f_name=pseudo_field)
+        xp, fp = self._load_table_arrays(
+            x_name=real_field, f_name=pseudo_field)
 
         pseudo_value = np.interp(
             values[real_field],
