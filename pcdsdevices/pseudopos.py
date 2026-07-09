@@ -206,6 +206,22 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         self._update_notepad_ioc(position, 'notepad_setpoint')
         return status
 
+    def _concurrent_move(self, real_pos, **kwargs):
+        """
+        Override ophyd.pseudopos.PseudoPositioner._concurrent_move to 
+        handle delegated PseudoSingle moves.
+        """
+        self._real_waiting.extend(self._real)
+
+        for real, value in zip(self._real, real_pos):
+            self.log.debug("[concurrent] Moving %s to %s", real.name, value)
+
+            def real_finished(status=None, *, obj=None, real_axis=real,
+                              **cb_kwargs):
+                self._real_finished(status=status, obj=real_axis)
+
+            real.move(value, wait=False, moved_cb=real_finished, **kwargs)
+
     def _update_position(self):
         """Update the pseudo position based on that of the real positioners."""
         position = super()._update_position()
@@ -487,7 +503,8 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             try:
                 self.offset_mode = SyncAxisOffsetMode[self.offset_mode]
             except KeyError:
-                raise ValueError(f'Invalid offset_mode: {self.offset_mode}') from None
+                raise ValueError(
+                    f'Invalid offset_mode: {self.offset_mode}') from None
         self._check_info_dict(self.offsets, 'offsets')
         self._check_info_dict(self.scales, 'scales')
         if (self.fix_sync_keep_still is not None
@@ -1008,7 +1025,8 @@ class LookupTablePositioner(PseudoPositioner):
         '''
         values = pseudo_pos._asdict()
         pseudo_field, real_field = self._get_field_names()
-        xp, fp = self._load_table_arrays(x_name=pseudo_field, f_name=real_field)
+        xp, fp = self._load_table_arrays(
+            x_name=pseudo_field, f_name=real_field)
 
         real_value = np.interp(
             values[pseudo_field],
@@ -1034,7 +1052,8 @@ class LookupTablePositioner(PseudoPositioner):
         '''
         values = real_pos._asdict()
         pseudo_field, real_field = self._get_field_names()
-        xp, fp = self._load_table_arrays(x_name=real_field, f_name=pseudo_field)
+        xp, fp = self._load_table_arrays(
+            x_name=real_field, f_name=pseudo_field)
 
         pseudo_value = np.interp(
             values[real_field],
