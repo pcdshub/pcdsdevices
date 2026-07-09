@@ -530,12 +530,7 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         eta, kappa, phi = self.e_to_k(pseudo_pos.e_eta, pseudo_pos.e_chi,
                                       pseudo_pos.e_phi)
-        return self.RealPosition(base_x=self.base_x.position, base_y=self.base_y.position,
-                                 sample_x=self.sample_x.position, sample_y=self.sample_y.position,
-                                 sample_z=self.sample_z.position, gon_x=self.gon_x.position,
-                                 gon_y=self.gon_y.position, gon_z=self.gon_z.position,
-                                 theta=self.theta.position,
-                                 eta=eta, kappa=kappa, phi=phi)
+        return self.RealPosition(eta=eta, kappa=kappa, phi=phi)
 
     @real_position_argument
     def inverse(self, real_pos):
