@@ -42,7 +42,7 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
     rtd1 = Cpt(TwinCATTempSensor, ':RTD:01', kind='normal', doc='First RTD.')
     rtd2 = Cpt(TwinCATTempSensor, ':RTD:02', kind='normal', doc='Second RTD.')
 
-    def get_current_grating_period(self):
+    def get_current_grating_period(self) -> float | None:
         """
         Get the grating period based on current grating target position.
 
