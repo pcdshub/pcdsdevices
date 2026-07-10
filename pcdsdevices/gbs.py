@@ -62,7 +62,7 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
         Returns
         -------
         float, none
-            Current target grating in nm or None if target is in out/unknown state.
+            Target grating in nm or None if target is in out/unknown state.
 
         Raises
         ------
