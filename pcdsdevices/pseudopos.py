@@ -211,19 +211,19 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         Move all real positioners in parallel.
 
         This fixes a bug where a PseudoPositioner has a PseudoSingle as one of
-        its axes and waits indefinitely for the move status. 
+        its axes and waits indefinitely for the move status.
 
-        When a nested PseudoSingle receives a move request from the 
-        PseudoPositioner, it does not perform the move itself. Instead, it 
-        delegates the move to its parent PseudoPositioner. The parent reports 
-        that the move is done using a callback, but the current 
-        PseudoPositioner is waiting for the PseudoSingle child to report that 
-        it is done. Since the PseudoSingle did not perform the move directly, 
-        that callback never arrives. The current PseudoPositioner's status 
+        When a nested PseudoSingle receives a move request from the
+        PseudoPositioner, it does not perform the move itself. Instead, it
+        delegates the move to its parent PseudoPositioner. The parent reports
+        that the move is done using a callback, but the current
+        PseudoPositioner is waiting for the PseudoSingle child to report that
+        it is done. Since the PseudoSingle did not perform the move directly,
+        that callback never arrives. The current PseudoPositioner's status
         hangs and blocks other operations.
 
-        The solution is to have the PseudoPositioner object track the axis it 
-        asked to move, instead of instead of trusting which object the callback 
+        The solution is to have the PseudoPositioner object track the axis it
+        asked to move, instead of instead of trusting which object the callback
         reports as done.
         """
         self._real_waiting.extend(self._real)

@@ -6,8 +6,7 @@ import numpy as np
 import pytest
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
-from ophyd.pseudopos import (pseudo_position_argument,
-                             real_position_argument)
+from ophyd.pseudopos import pseudo_position_argument, real_position_argument
 from ophyd.sim import make_fake_device
 
 from ..device import ObjectComponent as OCpt
