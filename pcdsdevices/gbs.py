@@ -49,7 +49,7 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
         Returns
         -------
         float, none
-            Current target grating in nm or None if target is in out/unknown state.
+            Current target grating in mm or None if target is in out/unknown state.
         """
 
         return self.get_grating_period(self.target.position)
@@ -62,7 +62,7 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
         Returns
         -------
         float, none
-            Target grating in nm or None if target is in out/unknown state.
+            Target grating in mm or None if target is in out/unknown state.
 
         Raises
         ------
