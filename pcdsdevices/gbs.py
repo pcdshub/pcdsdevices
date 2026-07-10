@@ -48,8 +48,8 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
 
         Returns
         -------
-        str
-            current target grating
+        float, none
+            Current target grating in nm or None if target is in out/unknown state.
         """
 
         return self.get_grating_period(self.target.position)
@@ -60,13 +60,14 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
         table provided by Haoyuan.
 
         Returns
-        str
-            current target grating period
+        -------
+        float, none
+            Current target grating in nm or None if target is in out/unknown state.
 
         Raises
         ------
         ValueError
-            If input target is invalid
+            If input target is invalid.
         """
 
         # map between targets and motor position values
