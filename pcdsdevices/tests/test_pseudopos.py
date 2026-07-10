@@ -6,11 +6,15 @@ import numpy as np
 import pytest
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
+from ophyd.pseudopos import (pseudo_position_argument,
+                             real_position_argument)
 from ophyd.sim import make_fake_device
 
+from ..device import ObjectComponent as OCpt
 from ..pseudopos import (DelayBase, LookupTablePositioner, OffsetMotorBase,
-                         PseudoSingleInterface, SimDelayStage, SyncAxesBase,
-                         SyncAxis, SyncAxisOffsetMode, is_strictly_increasing)
+                         PseudoPositioner, PseudoSingleInterface,
+                         SimDelayStage, SyncAxesBase, SyncAxis,
+                         SyncAxisOffsetMode, is_strictly_increasing)
 from ..sim import FastMotor
 
 logger = logging.getLogger(__name__)
@@ -53,6 +57,22 @@ class SyncAxisCrazy(SyncAxis):
     scales = {'two': -2, 'three': 3}
     fix_sync_keep_still = 'two'
     sync_limits = (-10, 10)
+
+
+class InnerPseudoPositioner(PseudoPositioner):
+    # Create a real PseudoSingleInterface object whose move delegates to a
+    # parent PseudoPositioner. This is to test the bug fix in the
+    # _concurrent_move method.
+    pseudo = Cpt(PseudoSingleInterface)
+    real = Cpt(SoftPositioner, init_pos=0)
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        return self.RealPosition(real=pseudo_pos.pseudo)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        return self.PseudoPosition(pseudo=real_pos.real)
 
 
 @pytest.fixture(scope='function')
@@ -173,7 +193,7 @@ def test_delay_basic():
     stage_inv.move(-1e-9)
     for pos in (stage_s.motor.position, stage_ns.motor.position,
                 stage_inv.motor.position):
-        assert abs(pos*1e-3 - 1e-9 * approx_c / 2) < 0.01
+        assert abs(pos * 1e-3 - 1e-9 * approx_c / 2) < 0.01
 
     stage_s.set_current_position(1.0e-6)
     np.testing.assert_allclose(stage_s.position[0], 1.e-6)
@@ -257,6 +277,43 @@ def test_lut_positioner(real_sign: bool, pseudo_sign: bool):
 def test_increasing_helper(input: np.ndarray, expected: bool):
     logger.debug("test_increasing_helper")
     assert is_strictly_increasing(input) == expected
+
+
+def test_concurrent_move_with_pseudosingle():
+    # Create an inner PseudoPositioner
+    inner = InnerPseudoPositioner('', name='inner')
+
+    class OuterPseudoPositioner(PseudoPositioner):
+        # Create a small outer PseudoPositioner that will send a request to the
+        # PseudoSingle. The inner PseudoPositioner will delegate the move to its
+        # real SoftPositioner.
+
+        # Tells ophyd that this outer pseudo-positioner has one pseudo axis
+        # named 'pseudo' and one real axis named 'nested'. In this test,
+        # nested will not be a normal motor. It will be a PseudoSingle.
+        _pseudo = ('pseudo',)
+        _real = ('nested',)
+
+        pseudo = Cpt(PseudoSingleInterface)
+        nested = OCpt(inner.pseudo)
+
+        @pseudo_position_argument
+        def forward(self, pseudo_pos):
+            return self.RealPosition(nested=pseudo_pos.pseudo)
+
+        @real_position_argument
+        def inverse(self, real_pos):
+            return self.PseudoPosition(pseudo=real_pos.nested)
+
+    outer = OuterPseudoPositioner('', name='outer')
+    status = outer.move(5, wait=False, timeout=1)
+    status.wait(timeout=1)
+
+    assert status.done
+    assert status.success
+    assert inner.real.position == 5
+    assert inner.pseudo.position == 5
+    assert outer.pseudo.position == 5
 
 
 FakeDelayBase = make_fake_device(DelayBase)
