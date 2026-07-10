@@ -17,6 +17,7 @@ from ophyd.status import SubscriptionStatus
 from ophyd.status import wait as status_wait
 
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
@@ -535,8 +536,7 @@ class TwinCATMalStateConfigOne(TwinCATStateConfigOne):
     # Motion parameters are owned by the drive layer, not the state.
     velo = None
     # Setpoint is read-only in the new format (only :SETPOINT_RBV exists).
-    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='i', kind='config',
-                   doc='The corresponding motor set position.')
+    setpoint = UpCpt(io='i')
 
 
 class TwinCATStateConfigDynamic(Device):
