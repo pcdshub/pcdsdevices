@@ -54,7 +54,7 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
 
         return self.get_grating_period(self.target.position)
 
-    def get_grating_period(self, target_pos):
+    def get_grating_period(self, target_pos: str) -> float | None:
         """
         Get the grating period associated with a given target position based on hardcoded
         table provided by Haoyuan.
