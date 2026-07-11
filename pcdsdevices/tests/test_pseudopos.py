@@ -284,12 +284,11 @@ def test_concurrent_move_with_pseudosingle():
 
     class OuterPseudoPositioner(PseudoPositioner):
         # Create a small outer PseudoPositioner that will send a request to the
-        # PseudoSingle. The inner PseudoPositioner will delegate the move to its
-        # real SoftPositioner.
+        # PseudoSingle, which delegates it to its parent.
 
         # Tells ophyd that this outer pseudo-positioner has one pseudo axis
         # named 'pseudo' and one real axis named 'nested'. In this test,
-        # nested will not be a normal motor. It will be a PseudoSingle.
+        # nested will be a PseudoSingle.
         _pseudo = ('pseudo',)
         _real = ('nested',)
 
