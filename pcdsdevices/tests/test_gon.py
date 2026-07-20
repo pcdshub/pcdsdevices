@@ -5,8 +5,7 @@ import numpy as np
 import pytest
 from ophyd.sim import make_fake_device
 
-from ..gon import (BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, SimKappa,
-                   XYZStage)
+from ..gon import BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, SimKappa
 
 logger = logging.getLogger(__name__)
 
@@ -46,13 +45,10 @@ def test_gon_init():
             prefix_rot='rot', prefix_tip='tip', prefix_tilt='tilt',
             prefix_detver='detver', prefix_dettilt='dettilt',
             prefix_2theta='2theta')
-    FakeGon = make_fake_device(XYZStage)
-    FakeGon(name='test', prefix_x='x', prefix_y='y', prefix_z='z')
     FakeGon = make_fake_device(SamPhi)
     FakeGon(name='test', prefix_samz='samz', prefix_samphi='samphi')
     FakeGon = make_fake_device(Kappa)
-    FakeGon(name='test', prefix_x='x', prefix_y='y', prefix_z='z',
-            prefix_eta='eta', prefix_kappa='kappa', prefix_phi='phi')
+    FakeGon(name='test', prefix='TST:KAPPA')
 
 
 @pytest.mark.timeout(5)
@@ -64,26 +60,24 @@ def test_gon_disconnected():
                   prefix_rot='rot', prefix_tip='tip', prefix_tilt='tilt',
                   prefix_detver='detver', prefix_dettilt='dettilt',
                   prefix_2theta='2theta')
-    XYZStage(name='test3', prefix_x='x', prefix_y='y', prefix_z='z')
     SamPhi(name='test4', prefix_samz='samz', prefix_samphi='samphi')
-    Kappa(name='test5', prefix_x='x', prefix_y='y', prefix_z='z',
-          prefix_eta='eta', prefix_kappa='kappa', prefix_phi='phi')
+    Kappa(name='test5', prefix='TST:KAPPA5')
 
 
 def test_k_to_e(fake_kappa):
     # modified test based on calculation fixes
-    expected_res = (-27.51268029508058, 10.713563480515766, -50.51268029508058)
+    expected_res = (18.48731970491942, 10.713563480515766, -50.51268029508058)
     result = fake_kappa.k_to_e(eta=23, kappa=14, phi=46)
     assert np.isclose(expected_res, result).all()
     # test with constructor's params
-    expected_res = (-16.46635439427449, 15.28854011258886, -36.4663543942744)
+    expected_res = (3.5336456057255035, 15.28854011258886, -36.4663543942744)
     result = fake_kappa.k_to_e()
     assert np.isclose(expected_res, result).all()
 
 
 def test_e_to_k(fake_kappa):
-    # expected result based on old code
-    expected_res = (-28.9135906952099, 18.3080599808285, -51.9135906952099)
+    # updated test based on eta sign flip
+    expected_res = (28.9135906952099, 18.3080599808285, -51.9135906952099)
     result = fake_kappa.e_to_k(e_eta=23, e_chi=14, e_phi=46)
     assert np.isclose(expected_res, result).all()
     # test with constructor's params
@@ -97,7 +91,7 @@ def test_e_to_k(fake_kappa):
 
 def test_forward(fake_kappa):
     # result that current positions for fake_kappa would give us
-    forward = fake_kappa.forward(e_eta=-16.466354394274497,
+    forward = fake_kappa.forward(e_eta=3.5336456057255035,
                                  e_chi=15.288540112588864,
                                  e_phi=-36.46635439427449)
     # original position: eta=10, kappa=20, phi=30
@@ -108,9 +102,9 @@ def test_forward(fake_kappa):
 
 def test_inverse(fake_kappa):
     inverse = fake_kappa.inverse(eta=10, kappa=20, phi=30)
-    # original pseudo coord: eta=-16.466354394274497, kappa=15.288540112588864,
+    # original pseudo coord: eta=3.5336456057255035, kappa=15.288540112588864,
     # phi=-36.46635439427449
-    assert np.isclose(inverse.e_eta, -16.466354394274497)
+    assert np.isclose(inverse.e_eta, 3.5336456057255035)
     assert np.isclose(inverse.e_chi, 15.288540112588864)
     assert np.isclose(inverse.e_phi, -36.46635439427449)
 
@@ -135,19 +129,19 @@ def test_coordinates(fake_kappa):
     # eta = 10, kappa = 20, phi = 30, angle = 50
     # spherical coordinates:
     #      e_eta                 e_chi               e_phi
-    # (-16.466354394274497, 15.288540112588864, -36.46635439427449)
-    assert np.isclose(fake_kappa.e_eta_coord, -16.466354394274497)
+    # (3.5336456057255035, 15.288540112588864, -36.46635439427449)
+    assert np.isclose(fake_kappa.e_eta_coord, 3.5336456057255035)
     assert np.isclose(fake_kappa.e_chi_coord, 15.288540112588864)
     assert np.isclose(fake_kappa.e_phi_coord, -36.46635439427449)
     # new pos:
     # eta = 11, kappa = 22, phi = 33, angle = 50
     # spherical coordinates:
     #      e_eta                 e_chi               e_phi
-    # (-18.121927886338778, 16.809862422228026, -40.12192788633878)
+    # (3.8780721136612235, 16.809862422228026, -40.12192788633878)
     fake_kappa.eta.move(11)
     fake_kappa.kappa.move(22)
     fake_kappa.phi.move(33)
-    assert np.isclose(fake_kappa.e_eta_coord, -18.121927886338778)
+    assert np.isclose(fake_kappa.e_eta_coord, 3.8780721136612235)
     assert np.isclose(fake_kappa.e_chi_coord, 16.809862422228026)
     assert np.isclose(fake_kappa.e_phi_coord, -40.12192788633878)
 

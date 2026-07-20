@@ -315,7 +315,6 @@ _STATUS_PRINT_IGNORES = {
     '.DelayBase',
     '.IPM_Det',
     '.InOutPVStatePositioner',
-    '.KappaXYZStage',
     '.PVPositionerComparator',
     '.PVPositionerDone',
     '.PVPositionerIsClose',

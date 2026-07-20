@@ -202,61 +202,6 @@ def Goniometer(**kwargs):
         return BaseGon(**kwargs)
 
 
-class XYZStage(BaseInterface, GroupDevice):
-    """
-    Sample XYZ stage.
-
-    Parameters
-    ----------
-    name : str
-        A name to refer to the device
-
-    prefix_x : str
-        The EPICS base PV of the sample-stage's x motor.
-
-    prefix_y : str
-        The EPICS base PV of the sample-stage's y motor.
-
-    prefix_z : str
-        The EPICS base PV of the sample-stage's z motor.
-    """
-
-    x = FCpt(IMS, '{self._prefix_x}', kind='normal')
-    y = FCpt(IMS, '{self._prefix_y}', kind='normal')
-    z = FCpt(IMS, '{self._prefix_z}', kind='normal')
-
-    tab_component_names = True
-
-    def __init__(self, *, name, prefix_x, prefix_y, prefix_z, **kwargs):
-        self._prefix_x = prefix_x
-        self._prefix_y = prefix_y
-        self._prefix_z = prefix_z
-        super().__init__('', name=name, **kwargs)
-
-    def format_status_info(self, status_info):
-        """Override status info handler to render the `XYZStage`."""
-        x = get_status_float(status_info, 'x', 'position')
-        y = get_status_float(status_info, 'y', 'position')
-        z = get_status_float(status_info, 'z', 'position')
-        units = get_status_value(status_info, 'x', 'user_setpoint', 'units')
-
-        return f"""\
-XYZStage
-X, Y, Z: {x}, {y}, {z} [{units}]
-"""
-
-
-class KappaXYZStage(XYZStage):
-    """Helper initializing function for XYZStage object."""
-    def __init__(self, *args, parent, **kwargs):
-        self._prefix_x = parent._prefix_x
-        self._prefix_y = parent._prefix_y
-        self._prefix_z = parent._prefix_z
-        super().__init__(*args, parent=parent, prefix_x=self._prefix_x,
-                         prefix_y=self._prefix_y, prefix_z=self._prefix_z,
-                         **kwargs)
-
-
 class SamPhi(BaseInterface, GroupDevice):
     """
     Sample Phi stage.
@@ -307,23 +252,8 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
     name : str
         A name to refer to the Kappa stage device.
 
-    prefix_x : str
-        The EPICS base PV of the Kappa stage's x motor.
-
-    prefix_y : str
-        The EPICS base PV of the Kappa stage's y motor.
-
-    prefix_z : str
-        The EPICS base PV of the Kappa stage's z motor.
-
-    prefix_eta : str
-        The EPICS base PV of the Kappa stage's eta motor.
-
-    prefix_kappa : str
-        The EPICS base PV of the Kappa stage's kappa motor.
-
-    prefix_phi : str
-        The EPICS base PV of the Kappa stage's phi motor.
+    prefix: str
+        EPICS base PV
 
     eta_max_step : int, optional
         Maximum eta motor step, the largest move eta motor can make without
@@ -362,12 +292,21 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
     The x, y, and z are the sample adjustment motors used to attain center of
     rotation
     """
-    sample_stage = Cpt(KappaXYZStage, name='', kind='normal')
 
     # The real (or physical) positioners:
-    eta = FCpt(IMS, '{self._prefix_eta}', kind='normal')
-    kappa = FCpt(IMS, '{self._prefix_kappa}', kind='normal')
-    phi = FCpt(IMS, '{self._prefix_phi}', kind='normal')
+    base_x = Cpt(BeckhoffAxis, 'BX', kind='normal')
+    base_y = Cpt(BeckhoffAxis, 'BY', kind='normal')
+    sample_x = Cpt(BeckhoffAxis, 'SX', kind='normal')
+    sample_y = Cpt(BeckhoffAxis, 'SY', kind='normal')
+    sample_z = Cpt(BeckhoffAxis, 'SZ', kind='normal')
+    gon_x = Cpt(BeckhoffAxis, 'X', kind='normal')
+    gon_y = Cpt(BeckhoffAxis, 'Y', kind='normal')
+    gon_z = Cpt(BeckhoffAxis, 'Z', kind='normal')
+    theta = Cpt(BeckhoffAxis, 'GON', kind='normal')
+    eta = Cpt(BeckhoffAxis, 'ETA', kind='normal')
+    kappa = Cpt(BeckhoffAxis, 'KAP', kind='normal')
+    phi = Cpt(BeckhoffAxis, 'PHI', kind='normal')
+
     # The pseudo positioner axes:
     e_eta = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_eta')
     e_chi = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_chi')
@@ -377,24 +316,16 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
     stage_group = [eta, kappa, phi]
     tab_component_names = True
     tab_whitelist = ['stop', 'wait', 'k_to_e', 'e_to_k', 'check_motor_step']
+    _real = ['eta', 'kappa', 'phi']
 
-    def __init__(self, *, name, prefix_x, prefix_y, prefix_z,
-                 prefix_eta, prefix_kappa, prefix_phi, eta_max_step=2,
-                 kappa_max_step=2, phi_max_step=2, kappa_ang=50, **kwargs):
-        self._prefix_x = prefix_x
-        self._prefix_y = prefix_y
-        self._prefix_z = prefix_z
-        self._prefix_eta = prefix_eta
-        self._prefix_kappa = prefix_kappa
-        self._prefix_phi = prefix_phi
+    def __init__(self, prefix, *, name=None, eta_max_step=2,
+                 kappa_max_step=2, phi_max_step=2,
+                 kappa_ang=50, **kwargs):
         self.eta_max_step = eta_max_step
         self.kappa_max_step = kappa_max_step
         self.phi_max_step = phi_max_step
         self.kappa_ang = kappa_ang
-        super().__init__('', name=name, **kwargs)
-        self.x = self.sample_stage.x
-        self.y = self.sample_stage.y
-        self.z = self.sample_stage.z
+        super().__init__(prefix, name=name, **kwargs)
 
     def wait(self, timeout=None):
         """Block until the action completes."""
@@ -451,7 +382,7 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
         delta = np.arctan(np.tan(kappa * np.pi / 180 / 2)
                           * np.cos(kappa_ang))
 
-        e_eta = -eta * np.pi / 180 - delta
+        e_eta = eta * np.pi / 180 - delta
         e_chi = 2 * np.arcsin(np.sin(kappa * np.pi / 180 / 2)
                               * np.sin(kappa_ang))
         e_phi = -phi * np.pi / 180 - delta
@@ -497,14 +428,14 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
         kappa_ang = self.kappa_ang * np.pi / 180
         delta = np.arcsin(-np.tan(e_chi * np.pi / 180 / 2)
                           / np.tan(kappa_ang))
-        k_eta = -(e_eta * np.pi / 180 - delta)
+        k_eta = (e_eta * np.pi / 180 - delta)
         k_kap = 2 * np.arcsin(np.sin(e_chi * np.pi / 180 / 2)
                               / np.sin(kappa_ang))
         k_phi = e_phi * np.pi / 180 - delta
 
         # Phase shift for flipped kappa
         if self.kappa.position > 180:
-            k_eta = -k_eta - np.pi
+            k_eta = np.pi - k_eta
             k_kap = 2 * np.pi - k_kap
             k_phi = -e_phi * np.pi / 180 - delta
 
@@ -635,26 +566,37 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
 
     def format_status_info(self, status_info):
         """Override status info handler to render the Kappa object."""
-        x = get_status_float(status_info, 'sample_stage', 'x', 'position')
-        y = get_status_float(status_info, 'sample_stage', 'y', 'position')
-        z = get_status_float(status_info, 'sample_stage', 'z', 'position')
-        units = get_status_value(status_info, 'sample_stage', 'x',
-                                 'user_setpoint', 'units')
+        base_x = get_status_float(status_info, 'base_x', 'position')
+        base_y = get_status_float(status_info, 'base_y', 'position')
+        base_units = get_status_value(status_info, 'base_x', 'user_setpoint', 'units')
 
+        gon_x = get_status_float(status_info, 'gon_x', 'position')
+        gon_y = get_status_float(status_info, 'gon_y', 'position')
+        gon_z = get_status_float(status_info, 'gon_z', 'position')
+        gon_units = get_status_value(status_info, 'gon_x', 'user_setpoint', 'units')
+
+        x = get_status_float(status_info, 'sample_x', 'position')
+        y = get_status_float(status_info, 'sample_y', 'position')
+        z = get_status_float(status_info, 'sample_z', 'position')
+        sample_units = get_status_value(status_info, 'sample_x', 'user_setpoint', 'units')
+
+        theta = get_status_float(status_info, 'theta', 'position')
         eta = get_status_float(status_info, 'eta', 'position')
         kappa = get_status_float(status_info, 'kappa', 'position')
         phi = get_status_float(status_info, 'phi', 'position')
-        angle_units = get_status_value(status_info, 'eta', 'user_setpoint',
-                                       'units')
+        angle_units = get_status_value(status_info, 'eta', 'user_setpoint', 'units')
+
         e_eta = get_status_float(status_info, 'e_eta', 'position')
         e_chi = get_status_float(status_info, 'e_chi', 'position')
         e_phi = get_status_float(status_info, 'e_phi', 'position')
 
         return f"""\
 Kappa
-eta, kappa, phi: {eta}, {kappa}, {phi} [{angle_units}]
+theta, eta, kappa, phi: {theta}, {eta}, {kappa}, {phi} [{angle_units}]
 e_eta, e_chi, e_phi: {e_eta}, {e_chi}, {e_phi}
-x, y, z: {x}, {y}, {z} [{units}]
+sample_x, sample_y, sample_z: {x}, {y}, {z} [{sample_units}]
+base_x, base_y: {base_x}, {base_y}  [{base_units}]
+gon_x, gon_y, gon_z: {gon_x}, {gon_y}, {gon_z} [{gon_units}]
 """
 
 
@@ -680,20 +622,21 @@ class HxrDiffractometer(BaseInterface, Device):
     tab_component_names = True
 
 
-class SimSampleStage(KappaXYZStage):
-    x = Cpt(FastMotor, limits=(-100, 100))
-    y = Cpt(FastMotor, limits=(-100, 100))
-    z = Cpt(FastMotor, limits=(-100, 100))
-
-
 class SimKappa(Kappa):
     """Test version of the Kappa object."""
-    sample_stage = Cpt(SimSampleStage, name='')
+
+    sample_x = Cpt(FastMotor, limits=(-100, 100))
+    sample_y = Cpt(FastMotor, limits=(-100, 100))
+    sample_z = Cpt(FastMotor, limits=(-100, 100))
+    base_x = Cpt(FastMotor, limits=(-100, 100))
+    base_y = Cpt(FastMotor, limits=(-100, 100))
+    gon_x = Cpt(FastMotor, limits=(-100, 100))
+    gon_y = Cpt(FastMotor, limits=(-100, 100))
+    gon_z = Cpt(FastMotor, limits=(-100, 100))
+    theta = Cpt(FastMotor, limits=(-180, 180))
     eta = Cpt(FastMotor, limits=(-180, 180))
     kappa = Cpt(FastMotor, limits=(-360, 360))
     phi = Cpt(FastMotor, limits=(-180, 180))
 
     def __init__(self):
-        super().__init__(name='SimKappa', prefix_x='X', prefix_y='Y',
-                         prefix_z='Z', prefix_eta='ETA', prefix_kappa='KAPPA',
-                         prefix_phi='PHI')
+        super().__init__(prefix="KAPPA:TST", name='SimKappa')

@@ -12,7 +12,7 @@ from .epics_motor import (IMS, PMC100, BeckhoffAxis, DelayNewport, EpicsMotor,
 from .evr import Trigger
 from .gauge import GaugeSet
 from .gbs import GratingBeamSplitterTarget
-from .gon import BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, XYZStage
+from .gon import BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi
 from .inout import Reflaser, TTReflaser
 from .ipm import IPM, IPM_IPIMB, BeckhoffIntensityProfileTarget, IPM_Wave8
 from .jet import BeckhoffJet
