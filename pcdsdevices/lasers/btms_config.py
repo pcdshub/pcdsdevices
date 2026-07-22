@@ -165,12 +165,12 @@ class SourcePosition(str, enum.Enum):
         str
         """
         return {
-            SourcePosition.ls1: "Bay 1",
-            SourcePosition.ls3: "Bay 2 1um",
-            SourcePosition.ls4: "Bay 2 800nm",
-            SourcePosition.ls5: "Bay 3 800nm",
-            SourcePosition.ls6: "Bay 3 1um",
-            SourcePosition.ls8: "Bay 4",
+            SourcePosition.ls1: "Bay 1 LS1",
+            SourcePosition.ls3: "Bay 2 LS3",
+            SourcePosition.ls4: "Bay 2 LS4",
+            SourcePosition.ls5: "Bay 3 LS5",
+            SourcePosition.ls6: "Bay 3 LS6",
+            SourcePosition.ls8: "Bay 4 LS8",
         }.get(self, "Unknown")
 
     def is_above(self, other: SourcePosition) -> bool:
@@ -207,10 +207,10 @@ class SourcePosition(str, enum.Enum):
         """
         return {
             SourcePosition.ls1: "las_lhn_bay1_cam_nf",
-            SourcePosition.ls3: "las_lhn_bay2_amphos_nf",
-            SourcePosition.ls4: "las_lhn_bay2_amphos_nf",
-            SourcePosition.ls5: "las_lhn_bay3_amphos_nf",
-            SourcePosition.ls6: "las_lhn_bay3_amphos_nf",
+            SourcePosition.ls3: "las_lhn_bay2_ls3_nf",
+            SourcePosition.ls4: "las_lhn_bay2_ls4_nf",
+            SourcePosition.ls5: "las_lhn_bay3_ls5_nf",
+            SourcePosition.ls6: "las_lhn_bay3_ls6_nf",
             SourcePosition.ls8: "las_lhn_bay4_cam_nf",
         }.get(self, None)
 
@@ -221,10 +221,10 @@ class SourcePosition(str, enum.Enum):
         """
         return {
             SourcePosition.ls1: "las_lhn_bay1_cam_ff",
-            SourcePosition.ls3: "las_lhn_bay2_amphos_ff",
-            SourcePosition.ls4: "las_lhn_bay2_amphos_ff",
-            SourcePosition.ls5: "las_lhn_bay3_amphos_ff",
-            SourcePosition.ls6: "las_lhn_bay3_amphos_ff",
+            SourcePosition.ls3: "las_lhn_bay2_ls3_ff",
+            SourcePosition.ls4: "las_lhn_bay2_ls4_ff",
+            SourcePosition.ls5: "las_lhn_bay3_ls5_ff",
+            SourcePosition.ls6: "las_lhn_bay3_ls6_ff",
             SourcePosition.ls8: "las_lhn_bay4_cam_ff",
         }.get(self, None)
 
@@ -233,10 +233,10 @@ class SourcePosition(str, enum.Enum):
         """The near field camera prefix associated with this source position."""
         return {
             SourcePosition.ls1: "LAS:LHN:BAY1:CAM:01:",
-            SourcePosition.ls3: "LAS:LHN:BAY2:CAM:01:",
-            SourcePosition.ls4: "LAS:LHN:BAY2:CAM:01:",
-            SourcePosition.ls5: "LAS:LHN:BAY3:CAM:01:",
-            SourcePosition.ls6: "LAS:LHN:BAY3:CAM:01:",
+            SourcePosition.ls3: "LAS:LHN:BAY2:CAM:08:",
+            SourcePosition.ls4: "LAS:LHN:BAY2:CAM:05:",
+            SourcePosition.ls5: "LAS:LHN:BAY3:CAM:07:",
+            SourcePosition.ls6: "LAS:LHN:BAY3:CAM:05:",
             SourcePosition.ls8: "LAS:LHN:BAY4:CAM:01:",
         }.get(self, None)
 
@@ -245,10 +245,10 @@ class SourcePosition(str, enum.Enum):
         """The far field camera prefix associated with this source position."""
         return {
             SourcePosition.ls1: "LAS:LHN:BAY1:CAM:02:",
-            SourcePosition.ls3: "LAS:LHN:BAY2:CAM:02:",
-            SourcePosition.ls4: "LAS:LHN:BAY2:CAM:02:",
-            SourcePosition.ls5: "LAS:LHN:BAY3:CAM:02:",
-            SourcePosition.ls6: "LAS:LHN:BAY3:CAM:02:",
+            SourcePosition.ls3: "LAS:LHN:BAY2:CAM:07:",
+            SourcePosition.ls4: "LAS:LHN:BAY2:CAM:06:",
+            SourcePosition.ls5: "LAS:LHN:BAY3:CAM:08:",
+            SourcePosition.ls6: "LAS:LHN:BAY3:CAM:06:",
             SourcePosition.ls8: "LAS:LHN:BAY4:CAM:02:",
         }.get(self, None)
 
@@ -304,8 +304,10 @@ class DestinationPosition(str, enum.Enum):
             DestinationPosition.ld4: "RIX ChemRIXS",
             DestinationPosition.ld6: "RIX QRIXS",
             DestinationPosition.ld8: "TMO IP1",
-            DestinationPosition.ld9: "Laser Lab",
+            DestinationPosition.ld9: "Laser Lab 1",
             DestinationPosition.ld10: "TMO IP2",
+            DestinationPosition.ld11: "Laser Lab 2",
+            DestinationPosition.ld12: "TXI",
             DestinationPosition.ld14: "XPP",
         }.get(self, "Unknown")
 
@@ -374,21 +376,23 @@ PORT_SPACING_MM = 215.9  # 8.5 in
 # PV source index (bay) to installed LS port
 valid_sources: tuple[SourcePosition, ...] = (
     SourcePosition.ls1,  # Bay 1
-    SourcePosition.ls3,  # Bay 2 1um
-    SourcePosition.ls4,  # Bay 2 800nm
-    SourcePosition.ls5,  # Bay 3 800nm
-    SourcePosition.ls6,  # Bay 3 1um
+    SourcePosition.ls3,  # Bay 2
+    SourcePosition.ls4,  # Bay 2
+    SourcePosition.ls5,  # Bay 3
+    SourcePosition.ls6,  # Bay 3
     SourcePosition.ls8,  # Bay 4
 )
 # PV destination index (bay) to installed LD port
 valid_destinations: tuple[DestinationPosition, ...] = (
     DestinationPosition.ld1,   # Diagnostics box
-    DestinationPosition.ld2,   # RIX IP3
+    DestinationPosition.ld2,   # RIX 3RIX
     DestinationPosition.ld4,   # RIX ChemRIXS
     DestinationPosition.ld6,   # RIX QRIXS
     DestinationPosition.ld8,   # TMO IP1
-    DestinationPosition.ld9,   # Laser Lab
-    DestinationPosition.ld10,  # TMO IP2
+    DestinationPosition.ld9,   # Laser Lab 1
+    DestinationPosition.ld10,  # TMO IP2 (DREAM)
+    DestinationPosition.ld11,  # Laser Lab 2
+    DestinationPosition.ld12,  # TXI
     DestinationPosition.ld14,  # XPP
 )
 
