@@ -300,12 +300,12 @@ class DestinationPosition(str, enum.Enum):
         # NOTE: Add new descriptions here.
         return {
             DestinationPosition.ld1: "Diagnostics",
-            DestinationPosition.ld2: "RIX IP3",
+            DestinationPosition.ld2: "RIX 3RIX",
             DestinationPosition.ld4: "RIX ChemRIXS",
             DestinationPosition.ld6: "RIX QRIXS",
             DestinationPosition.ld8: "TMO IP1",
             DestinationPosition.ld9: "Laser Lab 1",
-            DestinationPosition.ld10: "TMO IP2",
+            DestinationPosition.ld10: "TMO IP2 (DREAM)",
             DestinationPosition.ld11: "Laser Lab 2",
             DestinationPosition.ld12: "TXI",
             DestinationPosition.ld14: "XPP",
