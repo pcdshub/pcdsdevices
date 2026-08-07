@@ -1523,6 +1523,18 @@ class MotorDisabledError(Exception):
     pass
 
 
+def _set_long_name(signal, long_name):
+    """
+    Assign ``long_name`` to a component signal if it exists.
+
+    Subclasses may remove unsupported components by setting the corresponding
+    Component to None. This helper skips those so that ``__init__`` long-name
+    assignments do not raise AttributeError.
+    """
+    if signal is not None:
+        signal.long_name = long_name
+
+
 class SmarActOpenLoop(Device):
     """
     Class containing the open loop PVs used to control an un-encoded SmarAct
@@ -1569,16 +1581,16 @@ class SmarActOpenLoop(Device):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Long name shenanigans
-        self.step_voltage.long_name = 'Step Voltage'
-        self.step_freq.long_name = 'Step Frequency'
-        self.jog_step_size.long_name = 'Jog Step Size'
-        self.jog_fwd.long_name = 'Jog Forward'
-        self.jog_rev.long_name = 'Jog Backward'
-        self.total_step_count.long_name = 'Total Step Count'
-        self.step_clear_cmd.long_name = 'Clear Step Count'
-        self.scan_move.long_name = 'Scan Voltage'
-        self.channel_temp.long_name = 'Channel Temp. (°C)'
-        self.module_temp.long_name = 'Module Temp. (°C)'
+        _set_long_name(self.step_voltage, 'Step Voltage')
+        _set_long_name(self.step_freq, 'Step Frequency')
+        _set_long_name(self.jog_step_size, 'Jog Step Size')
+        _set_long_name(self.jog_fwd, 'Jog Forward')
+        _set_long_name(self.jog_rev, 'Jog Backward')
+        _set_long_name(self.total_step_count, 'Total Step Count')
+        _set_long_name(self.step_clear_cmd, 'Clear Step Count')
+        _set_long_name(self.scan_move, 'Scan Voltage')
+        _set_long_name(self.channel_temp, 'Channel Temp. (°C)')
+        _set_long_name(self.module_temp, 'Module Temp. (°C)')
 
 
 class SmarActTipTilt(Device):
@@ -1676,37 +1688,37 @@ class SmarAct(EpicsMotorInterface):
         super().__init__(*args, **kwargs)
         # Long name shenanigans
         # Motor Record long name overrides
-        self.velocity.long_name = 'Velocity'
-        self.velocity_base.long_name = 'Velocity Min'
-        self.velocity_max.long_name = 'Velocity Max'
-        self.acceleration.long_name = 'Acceleration'
-        self.motor_stop.long_name = 'Stop Motor'
-        self.motor_is_moving.long_name = 'Actively Moving'
-        self.dial_position.long_name = 'Dial Position'
-        self.direction_of_travel.long_name = 'Direction of Travel'
-        self.home_forward.long_name = 'Home Forward'
-        self.home_reverse.long_name = 'Home Backward'
-        self.low_limit_switch.long_name = 'Low Limit Switch'
-        self.high_limit_switch.long_name = 'High Limit Switch'
-        self.high_limit_travel.long_name = 'High Limit Travel'
-        self.low_limit_travel.long_name = 'Low Limit Travel'
-        self.user_setpoint.long_name = 'Setpoint'
-        self.user_offset.long_name = 'User Offset'
-        self.user_offset_dir.long_name = 'User Offset Direction'
-        self.motor_egu.long_name = 'EGU'
-        self.description.long_name = 'Description'
+        _set_long_name(self.velocity, 'Velocity')
+        _set_long_name(self.velocity_base, 'Velocity Min')
+        _set_long_name(self.velocity_max, 'Velocity Max')
+        _set_long_name(self.acceleration, 'Acceleration')
+        _set_long_name(self.motor_stop, 'Stop Motor')
+        _set_long_name(self.motor_is_moving, 'Actively Moving')
+        _set_long_name(self.dial_position, 'Dial Position')
+        _set_long_name(self.direction_of_travel, 'Direction of Travel')
+        _set_long_name(self.home_forward, 'Home Forward')
+        _set_long_name(self.home_reverse, 'Home Backward')
+        _set_long_name(self.low_limit_switch, 'Low Limit Switch')
+        _set_long_name(self.high_limit_switch, 'High Limit Switch')
+        _set_long_name(self.high_limit_travel, 'High Limit Travel')
+        _set_long_name(self.low_limit_travel, 'Low Limit Travel')
+        _set_long_name(self.user_setpoint, 'Setpoint')
+        _set_long_name(self.user_offset, 'User Offset')
+        _set_long_name(self.user_offset_dir, 'User Offset Direction')
+        _set_long_name(self.motor_egu, 'EGU')
+        _set_long_name(self.description, 'Description')
         # SmarAct specific long names
-        self.pos_type.long_name = 'Positioner Type'
-        self.needs_calib.long_name = 'Needs Calibration?'
-        self.do_calib.long_name = 'Calibrate'
-        self.log_scale_offset.long_name = 'Logical Scale Offset'
-        self.def_range_min.long_name = 'Default Range Min.'
-        self.def_range_max.long_name = 'Default Range Max'
-        self.log_scale_inv.long_name = 'Logical Scale Inversion'
-        self.dist_code_inv.long_name = 'Distance Code Inversion'
-        self.channel_temp.long_name = 'Channel Temp. (°C)'
-        self.module_temp.long_name = 'Module Temp. (°C)'
-        self.channel_state_raw.long_name = 'Channel State'
+        _set_long_name(self.pos_type, 'Positioner Type')
+        _set_long_name(self.needs_calib, 'Needs Calibration?')
+        _set_long_name(self.do_calib, 'Calibrate')
+        _set_long_name(self.log_scale_offset, 'Logical Scale Offset')
+        _set_long_name(self.def_range_min, 'Default Range Min.')
+        _set_long_name(self.def_range_max, 'Default Range Max')
+        _set_long_name(self.log_scale_inv, 'Logical Scale Inversion')
+        _set_long_name(self.dist_code_inv, 'Distance Code Inversion')
+        _set_long_name(self.channel_temp, 'Channel Temp. (°C)')
+        _set_long_name(self.module_temp, 'Module Temp. (°C)')
+        _set_long_name(self.channel_state_raw, 'Channel State')
 
 
 class SmarActEncodedTipTilt(Device):
@@ -1722,6 +1734,182 @@ class SmarActEncodedTipTilt(Device):
         self._tip_pv = tip_pv
         self._tilt_pv = tilt_pv
         super().__init__(prefix, **kwargs)
+
+
+class SmarActChannelState(Device):
+    """
+    Decoded SmarAct MCS2 channel-state flags exposed over EtherCAT.
+
+    Each flag mirrors one bit of the raw channel-state bitmask as a separate
+    read-only pytmc record, suitable for Typhos status indicators. The raw
+    bitmask remains available on the parent as ``channel_state_raw``.
+    """
+    moving = Cpt(PytmcSignal, ':MOVING', io='i', kind='normal',
+                 doc='Actively moving')
+    closed_loop = Cpt(PytmcSignal, ':CLOSED_LOOP', io='i', kind='normal',
+                      doc='Closed loop active')
+    calibrating = Cpt(PytmcSignal, ':CALIBRATING', io='i', kind='normal',
+                      doc='Calibrating')
+    referencing = Cpt(PytmcSignal, ':REFERENCING', io='i', kind='normal',
+                      doc='Referencing')
+    move_delayed = Cpt(PytmcSignal, ':MOVE_DELAYED', io='i', kind='normal',
+                       doc='Move delayed')
+    sensor_present = Cpt(PytmcSignal, ':SENSOR_PRESENT', io='i', kind='normal',
+                         doc='Sensor present')
+    calibrated = Cpt(PytmcSignal, ':CALIBRATED', io='i', kind='normal',
+                     doc='Is calibrated')
+    referenced = Cpt(PytmcSignal, ':REFERENCED', io='i', kind='normal',
+                     doc='Is referenced')
+    end_stop = Cpt(PytmcSignal, ':END_STOP', io='i', kind='normal',
+                   doc='End stop reached')
+    range_limit = Cpt(PytmcSignal, ':RANGE_LIMIT', io='i', kind='normal',
+                      doc='Range limit reached')
+    following_limit = Cpt(PytmcSignal, ':FOLLOWING_LIMIT', io='i',
+                          kind='normal', doc='Following limit reached')
+    move_failed = Cpt(PytmcSignal, ':MOVE_FAILED', io='i', kind='normal',
+                      doc='Movement failed')
+    streaming = Cpt(PytmcSignal, ':STREAMING', io='i', kind='normal',
+                    doc='Is streaming')
+    overload = Cpt(PytmcSignal, ':OVERLOAD', io='i', kind='normal',
+                   doc='Positioner overload')
+    over_temp = Cpt(PytmcSignal, ':OVER_TEMP', io='i', kind='normal',
+                    doc='Over temperature')
+    ref_mark = Cpt(PytmcSignal, ':REF_MARK', io='i', kind='normal',
+                   doc='Reference mark')
+    phased = Cpt(PytmcSignal, ':PHASED', io='i', kind='normal',
+                 doc='Is phased')
+    fault = Cpt(PytmcSignal, ':FAULT', io='i', kind='normal',
+                doc='Positioner fault')
+    amp_enabled = Cpt(PytmcSignal, ':AMP_ENABLED', io='i', kind='normal',
+                      doc='Amplifier enabled')
+    in_position = Cpt(PytmcSignal, ':IN_POSITION', io='i', kind='normal',
+                      doc='In position')
+    brake_enabled = Cpt(PytmcSignal, ':BRAKE_ENABLED', io='i', kind='normal',
+                        doc='Brake enabled')
+
+
+class SmarActEtherCATOpenLoop(SmarActOpenLoop):
+    """
+    Open-loop (step mode) PVs for a SmarAct MCS2 stage driven over EtherCAT.
+
+    The DS402 interface exposes step mode through pytmc records that differ
+    from the serial IOC: readbacks carry the ``_RBV`` suffix. Forward and
+    reverse jog commands set the step-count sign in the PLC, and a signed
+    step-move command is also available. The step-count reset and scan mode
+    have no DS402 backing and are removed, as does the module temperature.
+    Channel temperature is backed by an SDO and kept.
+    """
+    step_voltage = Cpt(PytmcSignal, ':STEP_VOLTAGE', io='io', kind='omitted',
+                       doc='Voltage for sawtooth (0-100V)')
+    step_freq = Cpt(PytmcSignal, ':STEP_FREQ', io='io', kind='config',
+                    doc='Sawtooth drive frequency')
+    jog_step_size = Cpt(PytmcSignal, ':STEP_COUNT', io='io', kind='normal',
+                        doc='Signed number of steps per move command')
+    # A single signed-count move command replaces the FWD/REV jog commands
+    step_move = Cpt(PytmcSignal, ':STEP_MOVE', io='io', kind='normal',
+                    doc='Execute a signed open-loop step move')
+    set_metadata(step_move, dict(variety='command-proc', value=1))
+    # Forward/reverse jog the step count magnitude; the PLC applies the sign
+    jog_fwd = Cpt(PytmcSignal, ':STEP_FORWARD', io='io', kind='normal',
+                  doc='Jog one step count forward')
+    set_metadata(jog_fwd, dict(variety='command-proc', value=1))
+    jog_rev = Cpt(PytmcSignal, ':STEP_REVERSE', io='io', kind='normal',
+                  doc='Jog one step count backward')
+    set_metadata(jog_rev, dict(variety='command-proc', value=1))
+    # Channel temperature is backed by DS402 SDO 0x2026
+    channel_temp = Cpt(PytmcSignal, ':CHANTEMP', io='i', kind='normal',
+                       doc='Channel temperature (0x2026)')
+    # No DS402 backing for these
+    total_step_count = None
+    step_clear_cmd = None
+    scan_move = None
+    module_temp = None
+
+
+class SmarActEtherCAT(SmarAct, BeckhoffAxis):
+    """
+    SmarAct MCS2 stage driven through a Beckhoff EtherCAT DS402 PLC.
+
+    This combines the SmarAct-specific configuration and diagnostics with the
+    BeckhoffAxis motor record, PLC error handling, and homing. The DS402
+    interface exposes fewer objects than the serial MCS2 IOC, so unsupported
+    components (module temperature, default range, and the need-calibration
+    readback) are removed, and the remaining components are re-pointed to
+    their pytmc record names.
+    """
+    # DS402 has no separate module temperature, default range, or
+    # need-calibration readback
+    needs_calib = None
+    def_range_min = None
+    def_range_max = None
+    module_temp = None
+
+    # Per-channel diagnostics/config backed by DS402 SDOs
+    channel_temp = Cpt(PytmcSignal, ':CHANTEMP', io='i', kind='normal',
+                       doc='Channel temperature (0x2026)')
+    dist_code_inv = Cpt(PytmcSignal, ':DCIN', io='io', kind='config',
+                        doc='Distance code inverted (0x2029)')
+    movement_type = Cpt(PytmcSignal, ':MOVE_TYPE', io='i', kind='config',
+                        doc='Movement type (0x2003)')
+    base_unit = Cpt(PytmcSignal, ':BASE_UNIT', io='i', kind='config',
+                    doc='Base unit (0x2005)')
+    base_resolution = Cpt(PytmcSignal, ':BASE_RES', io='i', kind='config',
+                          doc='Base resolution (0x2006)')
+    pos_control_opt = Cpt(PytmcSignal, ':POS_CTRL_OPT', io='io', kind='config',
+                          doc='Positioner control options (0x2027)')
+    actuator_mode = Cpt(PytmcSignal, ':ACT_MODE', io='io', kind='config',
+                        doc='Actuator mode (0x2028)')
+    motor_load_protection = Cpt(PytmcSignal, ':MOTOR_LOAD_PROT', io='io',
+                                kind='config',
+                                doc='Motor load protection threshold (0x202B)')
+
+    # Calibrate command is a plain bo record, not a .PROC field
+    do_calib = Cpt(PytmcSignal, ':DO_CALIB', io='io', kind='config',
+                   doc='Calibrate command')
+    set_metadata(do_calib, dict(variety='command-proc', value=1))
+
+    # NVRAM config: pytmc exposes X / X_RBV rather than X / SET_X
+    log_scale_offset = Cpt(PytmcSignal, ':LSCO', io='io', kind='omitted',
+                           doc='Logical Scale Offset')
+    log_scale_inv = Cpt(PytmcSignal, ':LSCI', io='io', kind='omitted',
+                        doc='Logical Scale Inversion')
+
+    # Raw channel-state bitmask is nested under the chanState struct
+    channel_state_raw = Cpt(PytmcSignal, ':chanState:STATE', io='i',
+                            kind='omitted',
+                            doc='Channel state bitmask represented as raw int')
+    # Decoded channel-state bits for named indicators
+    channel_state = Cpt(SmarActChannelState, ':chanState', kind='normal',
+                        doc='Decoded channel state flags')
+
+    # Open-loop step mode over EtherCAT
+    open_loop = Cpt(SmarActEtherCATOpenLoop, '', kind='omitted')
+
+    # Additional DS402 configuration objects (SDOs/PDOs)
+    step_egu = Cpt(PytmcSignal, ':STEP_EGU', io='io', kind='config',
+                   doc='Step scale factor')
+    hold_time = Cpt(PytmcSignal, ':HOLD_TIME', io='io', kind='config',
+                    doc='Closed-loop hold time')
+    max_close_loop_freq = Cpt(PytmcSignal, ':MAX_CLF', io='io', kind='config',
+                              doc='Maximum closed-loop frequency')
+    calibration_opt = Cpt(PytmcSignal, ':CAL_OPT', io='io', kind='config',
+                          doc='Calibration options')
+    sensor_mode = Cpt(PytmcSignal, ':SENSOR_MODE', io='io', kind='config',
+                      doc='Sensor power mode')
+    referencing_opt = Cpt(PytmcSignal, ':REF_OPT', io='io', kind='config',
+                          doc='Referencing options')
+    reference_type = Cpt(PytmcSignal, ':REF_TYPE', io='i', kind='config',
+                         doc='Reference type')
+    safe_direction = Cpt(PytmcSignal, ':SAFE_DIR', io='io', kind='config',
+                         doc='Safe direction')
+    motor_load = Cpt(PytmcSignal, ':MOTOR_LOAD', io='i', kind='normal',
+                     doc='Motor load')
+    channel_type = Cpt(PytmcSignal, ':CHAN_TYPE', io='io', kind='config',
+                       doc='Channel type')
+    op_mode_req = Cpt(EpicsSignal, ':OPMODE_REQ', kind='config',
+                      doc='DS402 operation mode request')
+    home_mode = Cpt(PytmcSignal, ':HOME_MODE', io='i', kind='config',
+                    doc='Vendor homing mode')
 
 
 class SmarActPicoscale(SmarAct):
