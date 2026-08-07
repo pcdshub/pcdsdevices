@@ -1862,6 +1862,14 @@ class SmarActEtherCAT(SmarAct, BeckhoffAxis):
     motor_load_protection = Cpt(PytmcSignal, ':MOTOR_LOAD_PROT', io='io',
                                 kind='config',
                                 doc='Motor load protection threshold (0x202B)')
+    diag_closed_loop_freq_max = Cpt(PytmcSignal, ':DIAG_CLF_MAX', io='i',
+                                    kind='normal',
+                                    doc='Diagnostic closed-loop frequency, '
+                                        'max (0x202A:1)')
+    diag_closed_loop_freq_avg = Cpt(PytmcSignal, ':DIAG_CLF_AVG', io='i',
+                                    kind='normal',
+                                    doc='Diagnostic closed-loop frequency, '
+                                        'avg (0x202A:2)')
 
     # Calibrate command is a plain bo record, not a .PROC field
     do_calib = Cpt(PytmcSignal, ':DO_CALIB', io='io', kind='config',
@@ -1901,7 +1909,12 @@ class SmarActEtherCAT(SmarAct, BeckhoffAxis):
     reference_type = Cpt(PytmcSignal, ':REF_TYPE', io='i', kind='config',
                          doc='Reference type')
     safe_direction = Cpt(PytmcSignal, ':SAFE_DIR', io='io', kind='config',
-                         doc='Safe direction')
+                         doc='Safe direction (0x200C). For positioners '
+                             'referenced by a mechanical end stop, homing and '
+                             'calibration ignore the requested start direction '
+                             'and use this plus the logical scale inversion. '
+                             'FORWARD=0, BACKWARD=1. Stored in NVRAM; '
+                             're-calibrate after changing.')
     motor_load = Cpt(PytmcSignal, ':MOTOR_LOAD', io='i', kind='normal',
                      doc='Motor load')
     channel_type = Cpt(PytmcSignal, ':CHAN_TYPE', io='io', kind='config',

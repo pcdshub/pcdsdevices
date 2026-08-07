@@ -6,7 +6,7 @@ import re
 from pydm import Display
 from pydm.widgets import (PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel,
                           PyDMLineEdit, PyDMPushButton, PyDMSlider)
-from qtpy import QtCore, QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 from typhos import utils
 
 logger = logging.getLogger(__name__)
@@ -123,6 +123,7 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         Add any other init-esque shenanigans you need here.
         """
         self.fix_pvs()
+        self.maybe_fix_ethercat_pvs()
         self.maybe_add_pico()
         self.add_tool_tips()
 
@@ -145,6 +146,125 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         self.egu_set.set_channel(f'sig://{self.device.name}_motor_egu')
         self.scan_move_set._minimum = 0
         self.scan_move_set._maximum = 65535
+
+    def maybe_fix_ethercat_pvs(self):
+        """
+        Adapt the serial detailed screen for EtherCAT SmarAct stages.
+
+        The screen targets the serial MCS2 IOC. The EtherCAT DS402 stage,
+        detected here by its decoded ``channel_state`` device, exposes a
+        reduced object set with pytmc naming. Re-point the widgets whose PV
+        only changed name, and hide the widgets whose object has no DS402
+        backing so they do not sit disconnected.
+        """
+        if not hasattr(self.device, 'channel_state'):
+            return
+        prefix = self.device.prefix
+
+        # Widgets whose PV exists but under a different pytmc name.
+        repoint = {
+            # Status-bar bits: serial mbbiDirect .Bn -> decoded booleans
+            'has_encoder_bool': ':chanState:SENSOR_PRESENT',
+            'calibrated_bool': ':chanState:CALIBRATED',
+            'referenced_bool': ':chanState:REFERENCED',
+            # Raw state bitmask lives under the chanState struct
+            'channel_states': ':chanState:STATE_RBV',
+            # Commands write the pytmc bo record directly, no .PROC field
+            'jog_rev_button': ':STEP_REVERSE',
+            'do_calib_button': ':DO_CALIB',
+            # Read-only diagnostics: pytmc appends _RBV
+            'channel_temp_rbv': ':CHANTEMP_RBV',
+            'motor_load_rbv': ':MOTOR_LOAD_RBV',
+            # Diagnostic closed-loop frequency (0x202A:1 max, 0x202A:2 avg)
+            'diag_closed_loop_freq_max_rbv': ':DIAG_CLF_MAX_RBV',
+            'diag_closed_loop_freq_avg_rbv': ':DIAG_CLF_AVG_RBV',
+            # NVRAM config: pytmc uses X / X_RBV instead of X / SET_X
+            'log_scale_offset_rbv': ':LSCO_RBV',
+            'log_scale_offset_set': ':LSCO',
+            'log_scale_inversion_set': ':LSCI',
+            'dist_code_inversion_set': ':DCIN',
+        }
+        for name, suffix in repoint.items():
+            widget = getattr(self, name, None)
+            if widget is not None:
+                widget.set_channel(f'ca://{prefix}{suffix}')
+
+        # Widgets whose object has no DS402 backing at all.
+        hide = [
+            # Open loop: no step counter, reset, or scan over DS402
+            'total_step_count_rbv', 'total_step_count_label',
+            'step_clear_cmd_button', 'step_clear_cmd_label',
+            'scan_move_rbv', 'scan_move_set', 'scan_move_label',
+            # MCS2 homes via home_mode (AUTOZERO / CURRENT_POSITION_METHOD)
+            # and cmd_home. The .HOMF/.HOMR directional buttons are hidden:
+            # for an end-stop stage the reference direction is the configured
+            # safe direction, not whichever button is pressed.
+            'home_forward_button', 'home_forward_label',
+            'home_reverse_button', 'home_reverse_label',
+            # Diagnostics: no module temp, channel error, or CLF diagnostics
+            'module_temp_rbv', 'module_temp_label', 'module_temp_units',
+            'chan_error_rbv', 'chan_error_label',
+            # Only the timebase has no DS402 backing; max/avg are re-pointed
+            'diag_closed_loop_freq_timebase_rbv',
+            'diag_closed_loop_freq_timebase_set',
+            'diag_closed_loop_freq_timebase_label',
+            # Config: no TTZV or default range
+            'ttzv_rbv', 'ttzv_set', 'ttzv_label',
+            'ttzv_threshold_rbv', 'ttzv_threshold_set', 'ttzv_threshold_label',
+            'def_range_min_rbv', 'def_range_min_set', 'def_range_min_label',
+            'def_range_max_rbv', 'def_range_max_set', 'def_range_max_label',
+        ]
+        for name in hide:
+            widget = getattr(self, name, None)
+            if widget is not None:
+                widget.hide()
+
+        # DS402 has no NEED_CALIB record; the channel-state struct carries a
+        # CALIBRATED flag instead. Point the indicator at it and flip the
+        # sense so a lit green LED reads as calibrated.
+        led = getattr(self, 'needs_calib_led', None)
+        if led is not None:
+            led.set_channel(f'ca://{prefix}:chanState:CALIBRATED')
+            led.onColor = QtGui.QColor(0, 255, 0)
+            led.labels = ['Calibrated']
+
+        # Safe direction (0x200C) is EtherCAT-only, so the serial .ui has no
+        # widget for it. Add a row to the Configuration tab so operators can
+        # set the end-stop homing/calibration reference direction.
+        self._add_safe_direction_row(prefix)
+
+    def _add_safe_direction_row(self, prefix: str):
+        """
+        Append a Safe Direction row to the Configuration tab grid.
+
+        ``safe_direction`` (SDO 0x200C) exists only on the EtherCAT DS402
+        stage, so the shared serial ``.ui`` carries no widget for it. Build the
+        label / readback / setpoint trio at runtime and drop it into
+        ``config_grid_layout`` below the existing rows.
+        """
+        grid = self.findChild(QtWidgets.QGridLayout, 'config_grid_layout')
+        if grid is None or hasattr(self, 'safe_direction_set'):
+            return
+        row = grid.rowCount()
+
+        label = QtWidgets.QLabel('Safe Direction', self)
+        label.setObjectName('safe_direction_label')
+        rbv = PyDMLabel(self, init_channel=f'ca://{prefix}:SAFE_DIR_RBV')
+        rbv.setObjectName('safe_direction_rbv')
+        rbv.setAlignment(QtCore.Qt.AlignCenter)
+        rbv.showUnits = False
+        rbv.precisionFromPV = True
+        set_box = PyDMEnumComboBox(self, init_channel=f'ca://{prefix}:SAFE_DIR')
+        set_box.setObjectName('safe_direction_set')
+
+        grid.addWidget(label, row, 0, QtCore.Qt.AlignLeft)
+        grid.addWidget(rbv, row, 1)
+        grid.addWidget(set_box, row, 2)
+
+        # Register as attributes so add_tool_tips() can find the label.
+        self.safe_direction_label = label
+        self.safe_direction_rbv = rbv
+        self.safe_direction_set = set_box
 
     def add_tool_tips(self):
         """
