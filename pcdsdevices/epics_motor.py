@@ -1908,13 +1908,16 @@ class SmarActEtherCAT(SmarAct, BeckhoffAxis):
                           doc='Referencing options')
     reference_type = Cpt(PytmcSignal, ':REF_TYPE', io='i', kind='config',
                          doc='Reference type')
-    safe_direction = Cpt(PytmcSignal, ':SAFE_DIR', io='io', kind='config',
+    safe_direction = Cpt(PytmcSignal, ':SAFE_DIR', io='i', kind='config',
                          doc='Safe direction (0x200C). For positioners '
                              'referenced by a mechanical end stop, homing and '
                              'calibration ignore the requested start direction '
                              'and use this plus the logical scale inversion. '
-                             'FORWARD=0, BACKWARD=1. Stored in NVRAM; '
-                             're-calibrate after changing.')
+                             'FORWARD=0, BACKWARD=1. Read-only here: this is an '
+                             'R(W)* object, writable only in the Pre-Op ESM '
+                             'state, so configure it via the CoE startup list '
+                             'or vendor software. Stored in NVRAM; re-calibrate '
+                             'after changing.')
     motor_load = Cpt(PytmcSignal, ':MOTOR_LOAD', io='i', kind='normal',
                      doc='Motor load')
     channel_type = Cpt(PytmcSignal, ':CHAN_TYPE', io='io', kind='config',

@@ -229,21 +229,22 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             led.labels = ['Calibrated']
 
         # Safe direction (0x200C) is EtherCAT-only, so the serial .ui has no
-        # widget for it. Add a row to the Configuration tab so operators can
-        # set the end-stop homing/calibration reference direction.
+        # widget for it. Add a read-only row to the Configuration tab so
+        # operators can see the end-stop homing/calibration reference direction.
         self._add_safe_direction_row(prefix)
 
     def _add_safe_direction_row(self, prefix: str):
         """
-        Append a Safe Direction row to the Configuration tab grid.
+        Append a read-only Safe Direction row to the Configuration tab grid.
 
         ``safe_direction`` (SDO 0x200C) exists only on the EtherCAT DS402
-        stage, so the shared serial ``.ui`` carries no widget for it. Build the
-        label / readback / setpoint trio at runtime and drop it into
-        ``config_grid_layout`` below the existing rows.
+        stage, so the shared serial ``.ui`` carries no widget for it. It is an
+        R(W)* object (writable only in the Pre-Op ESM state), so it is set via
+        the CoE startup list or vendor software, not from EPICS. Show the
+        readback only.
         """
         grid = self.findChild(QtWidgets.QGridLayout, 'config_grid_layout')
-        if grid is None or hasattr(self, 'safe_direction_set'):
+        if grid is None or hasattr(self, 'safe_direction_rbv'):
             return
         row = grid.rowCount()
 
@@ -254,17 +255,13 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         rbv.setAlignment(QtCore.Qt.AlignCenter)
         rbv.showUnits = False
         rbv.precisionFromPV = True
-        set_box = PyDMEnumComboBox(self, init_channel=f'ca://{prefix}:SAFE_DIR')
-        set_box.setObjectName('safe_direction_set')
 
         grid.addWidget(label, row, 0, QtCore.Qt.AlignLeft)
         grid.addWidget(rbv, row, 1)
-        grid.addWidget(set_box, row, 2)
 
         # Register as attributes so add_tool_tips() can find the label.
         self.safe_direction_label = label
         self.safe_direction_rbv = rbv
-        self.safe_direction_set = set_box
 
     def add_tool_tips(self):
         """
