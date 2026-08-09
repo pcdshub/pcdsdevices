@@ -96,6 +96,7 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
     ui: _SmarActDetailedUI
 
     def __init__(self, parent=None, ui_filename='SmarAct.detailed.ui', **kwargs):
+        logger.warning("SMARACT-DIAG: SmarActDetailedWidget.__init__ (ui_filename=%s)", ui_filename)
         super().__init__(parent=parent, ui_filename=ui_filename)
 
     @property
@@ -122,6 +123,11 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         Up some of the signals and maybe add new widgets to the display.
         Add any other init-esque shenanigans you need here.
         """
+        logger.warning(
+            "SMARACT-DIAG: post_typhos_init for device=%s (type=%s)",
+            getattr(self.device, 'name', None),
+            type(self.device).__name__,
+        )
         self.fix_pvs()
         self.maybe_fix_ethercat_pvs()
         self.maybe_add_pico()
@@ -158,7 +164,12 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         backing so they do not sit disconnected.
         """
         if not hasattr(self.device, 'channel_state'):
+            logger.warning(
+                "SMARACT-DIAG: maybe_fix_ethercat_pvs early-return, "
+                "device has no channel_state (serial device?)"
+            )
             return
+        logger.warning("SMARACT-DIAG: maybe_fix_ethercat_pvs applying EtherCAT tweaks")
         prefix = self.device.prefix
 
         # Widgets whose PV exists but under a different pytmc name.
