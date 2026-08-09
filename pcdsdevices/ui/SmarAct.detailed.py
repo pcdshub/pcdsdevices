@@ -221,9 +221,11 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             'diag_closed_loop_freq_timebase_rbv',
             'diag_closed_loop_timebase_set',
             'diag_closed_loop_freq_timebase_label',
-            # Config: no TTZV or default range
+            # Config: no TTZV or default range. The "TTZV Threshold" caption
+            # carries the generic object name 'label' in the .ui, not
+            # 'ttzv_threshold_label', so hide 'label' to drop the orphan.
             'ttzv_rbv', 'ttzv_set', 'ttzv_label',
-            'ttzv_threshold_rbv', 'ttzv_threshold_set', 'ttzv_threshold_label',
+            'ttzv_threshold_rbv', 'ttzv_threshold_set', 'label',
             'def_range_min_rbv', 'def_range_min_set', 'def_range_min_label',
             'def_range_max_rbv', 'def_range_max_set', 'def_range_max_label',
         ]
