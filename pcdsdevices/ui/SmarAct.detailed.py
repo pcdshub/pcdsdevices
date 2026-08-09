@@ -175,9 +175,9 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         # Widgets whose PV exists but under a different pytmc name.
         repoint = {
             # Status-bar bits: serial mbbiDirect .Bn -> decoded booleans
-            'has_encoder_bool': ':chanState:SENSOR_PRESENT',
-            'calibrated_bool': ':chanState:CALIBRATED',
-            'referenced_bool': ':chanState:REFERENCED',
+            'has_encoder_bool': ':chanState:SENSOR_PRESENT_RBV',
+            'calibrated_bool': ':chanState:CALIBRATED_RBV',
+            'referenced_bool': ':chanState:REFERENCED_RBV',
             # Raw state bitmask lives under the chanState struct
             'channel_states': ':chanState:STATE_RBV',
             # Commands write the pytmc bo record directly, no .PROC field
@@ -209,7 +209,9 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             # MCS2 homes via home_mode (AUTOZERO / CURRENT_POSITION_METHOD)
             # and cmd_home. The .HOMF/.HOMR directional buttons are hidden:
             # for an end-stop stage the reference direction is the configured
-            # safe direction, not whichever button is pressed.
+            # safe direction, not whichever button is pressed. The "Home"
+            # section header is dropped too since only its buttons lived under it.
+            'home_label',
             'home_forward_button', 'home_forward_label',
             'home_reverse_button', 'home_reverse_label',
             # Diagnostics: no module temp, channel error, or CLF diagnostics
@@ -217,7 +219,7 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             'chan_error_rbv', 'chan_error_label',
             # Only the timebase has no DS402 backing; max/avg are re-pointed
             'diag_closed_loop_freq_timebase_rbv',
-            'diag_closed_loop_freq_timebase_set',
+            'diag_closed_loop_timebase_set',
             'diag_closed_loop_freq_timebase_label',
             # Config: no TTZV or default range
             'ttzv_rbv', 'ttzv_set', 'ttzv_label',
@@ -235,7 +237,7 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         # sense so a lit green LED reads as calibrated.
         led = getattr(self, 'needs_calib_led', None)
         if led is not None:
-            led.set_channel(f'ca://{prefix}:chanState:CALIBRATED')
+            led.set_channel(f'ca://{prefix}:chanState:CALIBRATED_RBV')
             led.onColor = QtGui.QColor(0, 255, 0)
             led.labels = ['Calibrated']
 
