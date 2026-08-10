@@ -1922,7 +1922,7 @@ class SmarActEtherCAT(SmarAct, BeckhoffAxis):
                      doc='Motor load')
     channel_type = Cpt(PytmcSignal, ':CHAN_TYPE', io='io', kind='config',
                        doc='Channel type')
-    op_mode_req = Cpt(EpicsSignal, ':OPMODE_REQ', kind='config',
+    op_mode_req = Cpt(PytmcSignal, ':OPMODE_REQ', io='io', kind='config',
                       doc='DS402 operation mode request')
     home_mode = Cpt(PytmcSignal, ':HOME_MODE', io='i', kind='config',
                     doc='Vendor homing mode')
