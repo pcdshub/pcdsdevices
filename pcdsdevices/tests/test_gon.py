@@ -5,7 +5,8 @@ import numpy as np
 import pytest
 from ophyd.sim import make_fake_device
 
-from ..gon import BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, SimKappa
+from ..gon import (BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, SimKappa,
+                   XYZStage)
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +46,8 @@ def test_gon_init():
             prefix_rot='rot', prefix_tip='tip', prefix_tilt='tilt',
             prefix_detver='detver', prefix_dettilt='dettilt',
             prefix_2theta='2theta')
+    FakeGon = make_fake_device(XYZStage)
+    FakeGon(name='test', prefix_x='x', prefix_y='y', prefix_z='z')
     FakeGon = make_fake_device(SamPhi)
     FakeGon(name='test', prefix_samz='samz', prefix_samphi='samphi')
     FakeGon = make_fake_device(Kappa)
@@ -60,6 +63,7 @@ def test_gon_disconnected():
                   prefix_rot='rot', prefix_tip='tip', prefix_tilt='tilt',
                   prefix_detver='detver', prefix_dettilt='dettilt',
                   prefix_2theta='2theta')
+    XYZStage(name='test3', prefix_x='x', prefix_y='y', prefix_z='z')
     SamPhi(name='test4', prefix_samz='samz', prefix_samphi='samphi')
     Kappa(name='test5', prefix='TST:KAPPA5')
 
