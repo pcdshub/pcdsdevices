@@ -202,7 +202,7 @@ def Goniometer(**kwargs):
         return BaseGon(**kwargs)
 
 
-class XYZStage(BaseInterface, Device):
+class XYZStage(BaseInterface, GroupDevice):
     """
     Sample XYZ stage.
 
@@ -232,6 +232,18 @@ class XYZStage(BaseInterface, Device):
         self._prefix_y = prefix_y
         self._prefix_z = prefix_z
         super().__init__('', name=name, **kwargs)
+
+    def format_status_info(self, status_info):
+        """Override status info handler to render the `XYZStage`."""
+        x = get_status_float(status_info, 'x', 'position')
+        y = get_status_float(status_info, 'y', 'position')
+        z = get_status_float(status_info, 'z', 'position')
+        units = get_status_value(status_info, 'x', 'user_setpoint', 'units')
+
+        return f"""\
+XYZStage
+X, Y, Z: {x}, {y}, {z} [{units}]
+"""
 
 
 class SamPhi(BaseInterface, GroupDevice):
