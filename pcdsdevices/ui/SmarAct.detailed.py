@@ -9,7 +9,7 @@ from pydm.widgets import (PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel,
 from qtpy import QtCore, QtGui, QtWidgets
 from typhos import utils
 
-from ..epics_motor import SmarActEtherCAT
+from pcdsdevices.epics_motor import SmarActEtherCAT
 
 logger = logging.getLogger(__name__)
 
