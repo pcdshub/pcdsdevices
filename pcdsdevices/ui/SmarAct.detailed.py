@@ -9,6 +9,8 @@ from pydm.widgets import (PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel,
 from qtpy import QtCore, QtGui, QtWidgets
 from typhos import utils
 
+from ..epics_motor import SmarActEtherCAT
+
 logger = logging.getLogger(__name__)
 
 
@@ -152,12 +154,12 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         Adapt the serial detailed screen for EtherCAT SmarAct stages.
 
         The screen targets the serial MCS2 IOC. The EtherCAT DS402 stage,
-        detected here by its decoded ``channel_state`` device, exposes a
-        reduced object set with pytmc naming. Re-point the widgets whose PV
-        only changed name, and hide the widgets whose object has no DS402
-        backing so they do not sit disconnected.
+        identified here by an ``isinstance`` check against `SmarActEtherCAT`,
+        exposes a reduced object set with pytmc naming. Re-point the widgets
+        whose PV only changed name, and hide the widgets whose object has no
+        DS402 backing so they do not sit disconnected.
         """
-        if not hasattr(self.device, 'channel_state'):
+        if not isinstance(self.device, SmarActEtherCAT):
             return
         prefix = self.device.prefix
 
