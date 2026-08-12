@@ -226,28 +226,30 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
                 widget.hide()
 
         # DS402 has no NEED_CALIB record; the channel-state struct carries a
-        # CALIBRATED flag instead. Point the indicator at it and flip the
-        # sense so a lit green LED reads as calibrated.
+        # CALIBRATED flag instead. This row reads "needs calibration", so show
+        # the inverse of CALIBRATED: red when the bit is 0 (calibration needed,
+        # hit Calibrate) and green once the channel reports calibrated.
         led = getattr(self, 'needs_calib_led', None)
         if led is not None:
             led.set_channel(f'ca://{prefix}:chanState:CALIBRATED_RBV')
-            led.onColor = QtGui.QColor(0, 255, 0)
-            led.labels = ['Calibrated']
+            led.onColor = QtGui.QColor(0, 255, 0)    # calibrated
+            led.offColor = QtGui.QColor(255, 0, 0)   # needs calibration
+            led.labels = ['Needs Calibration']
 
         # Safe direction (0x200C) is EtherCAT-only, so the serial .ui has no
-        # widget for it. Add a read-only row to the Configuration tab so
-        # operators can see the end-stop homing/calibration reference direction.
+        # widget for it. Add a row to the Configuration tab so operators can
+        # see and set the end-stop homing/calibration reference direction.
         self._add_safe_direction_row(prefix)
 
     def _add_safe_direction_row(self, prefix: str):
         """
-        Append a read-only Safe Direction row to the Configuration tab grid.
+        Append a Safe Direction row to the Configuration tab grid.
 
         ``safe_direction`` (SDO 0x200C) exists only on the EtherCAT DS402
         stage, so the shared serial ``.ui`` carries no widget for it. It is an
-        R(W)* object (writable only in the Pre-Op ESM state), so it is set via
-        the CoE startup list or vendor software, not from EPICS. Show the
-        readback only.
+        R(W)* object, writable only in the Pre-Op ESM state; the PLC applies a
+        new setpoint while the drive is in Pre-Op. Show the readback plus a
+        write combo so operators can request a direction.
         """
         grid = self.findChild(QtWidgets.QGridLayout, 'config_grid_layout')
         if grid is None or hasattr(self, 'safe_direction_rbv'):
@@ -261,13 +263,18 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         rbv.setAlignment(QtCore.Qt.AlignCenter)
         rbv.showUnits = False
         rbv.precisionFromPV = True
+        set_widget = PyDMEnumComboBox(
+            self, init_channel=f'ca://{prefix}:SAFE_DIR')
+        set_widget.setObjectName('safe_direction_set')
 
         grid.addWidget(label, row, 0, QtCore.Qt.AlignLeft)
         grid.addWidget(rbv, row, 1)
+        grid.addWidget(set_widget, row, 2)
 
         # Register as attributes so add_tool_tips() can find the label.
         self.safe_direction_label = label
         self.safe_direction_rbv = rbv
+        self.safe_direction_set = set_widget
 
     def add_tool_tips(self):
         """
