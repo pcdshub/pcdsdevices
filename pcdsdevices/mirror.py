@@ -1302,10 +1302,7 @@ class FFMirrorZ(FFMirror):
 
     name : str
         Alias for the device.
-    """
-    # Coating States not implemented yet.
-    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
-                  doc='Control of the coating states via saved positions.') 
+    """ 
     # Motor components: can read/write positions
     z = Cpt(BeckhoffAxisNoOffset, ':MMS:Z', kind='hinted')
 
