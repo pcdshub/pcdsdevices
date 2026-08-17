@@ -46,7 +46,7 @@ class TemperatureSensor(BaseInterface, Device):
     """
     input_name = FCpt(EpicsSignalRO, '{prefix}:GET_INNAME_{channel}', kind='config')
     temp = FCpt(EpicsSignalRO, '{prefix}:GET_TEMP_{channel}', kind='normal')
-    units = FCpt(EpicsSignal, '{prefix}:GET_UNITS_{channel}', write_pv=':PUT_UNITS_{channel}', kind='normal')
+    units = FCpt(EpicsSignal, '{prefix}:GET_UNITS_{channel}', write_pv='{prefix}:PUT_UNITS_{channel}', kind='normal')
     sensor_type = FCpt(EpicsSignalRO, '{prefix}:GET_SENSOR_{channel}', kind='normal')
 
     tab_component_names = True
@@ -91,7 +91,7 @@ class Lakeshore336(BaseInterface, Device):
     temp_D = Cpt(TemperatureSensor, '', channel='D', kind='normal')
 
     # device control mode
-    mode = Cpt(EpicsSignal, 'GET_MODE', write_pv='PUT_MODE', kind='normal', doc='control mode')
+    mode = Cpt(EpicsSignal, ':GET_MODE', write_pv=':PUT_MODE', kind='normal', doc='control mode')
 
     # read only
     loop_ramp_1 = Cpt(EpicsSignalRO, ':GET_RAMP_1', kind='normal')

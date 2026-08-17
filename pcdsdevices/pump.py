@@ -234,6 +234,53 @@ class Ebara_EV_A03_1(PROPLC):
     reset_di = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='omitted')
 
 
+class Kashiyama_G(Device):
+    """
+    Class for the Kashiyama Neo Dry G-Series
+    Does not inherit from PROPLC as some PVs are unused in the implementation
+    """
+    switch_pump_on = Cpt(EpicsSignal, ':RUN_SW', kind='omitted')
+    interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
+                       doc='interlock is ok when true')
+    run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='omitted')
+    reset = Cpt(EpicsSignal, ':RESET_SW', kind='normal')
+    reset_do = Cpt(EpicsSignalRO, ':RESET_DO_RBV', kind='normal')
+    low_speed = Cpt(EpicsSignal, ':LSPD_SW', kind='normal')
+    low_speed_do = Cpt(EpicsSignalRO, ':LSPD_DO_RBV', kind='omitted')
+    remote = Cpt(EpicsSignal, ':REMOTE_SW', kind='normal')
+    remote_do = Cpt(EpicsSignalRO, ':REM_DO_RBV', kind='omitted')
+    alarm = Cpt(EpicsSignalRO, ':ALARM_OK_RBV', kind='normal')  # NORMALLY CLOSED 0 = OK | 1 = ALARM
+    state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal')
+
+
+class Kashiyama_G_Serial(Device):
+    """Class for the Kashiyama Neo Dry G-Series IOC"""
+    run_cmd = Cpt(EpicsSignal, ':CMD', kind='normal')
+    run = Cpt(EpicsSignalRO, ':RUN_RBV', kind='normal')
+    mode_cmd = Cpt(EpicsSignal, ':OPMODE', kind='normal')
+    mode_cmd_rbv = Cpt(EpicsSignalRO, ':OPMODE_RBV', kind='normal')
+    freq = Cpt(EpicsSignalRO, ':FREQ_HZ', kind='normal')
+    freq_cpm = Cpt(EpicsSignal, ':FREQSET', kind='normal')  # cpm
+    freq_cpm_rbv = Cpt(EpicsSignalRO, ':FREQSET_RBV', kind='normal')  # cpm
+    lspd_freq_cpm_rbv = Cpt(EpicsSignalRO, ':LOWFREQSET_RBV', kind='normal')  # cpm
+    current = Cpt(EpicsSignalRO, ':CURR_RBV', kind='normal')
+    voltage = Cpt(EpicsSignalRO, ':VOLT_RBV', kind='normal')
+    power = Cpt(EpicsSignalRO, ':PWR_RBV', kind='normal')
+    motor_temp = Cpt(EpicsSignalRO, ':MTRTEMP_RBV', kind='normal')
+    driver_temp = Cpt(EpicsSignalRO, ':DRVTEMP_RBV', kind='omitted')
+    ipm_temp = Cpt(EpicsSignalRO, ':IPMTEMP_RBV', kind='omitted')
+    warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal')
+    alarm = Cpt(EpicsSignalRO, ':ALM_RBV', kind='normal')
+    error_count = Cpt(EpicsSignalRO, ':ERRCNT_RBV', kind='omitted')
+    error_reset = Cpt(EpicsSignal, ':ERRRST', kind='normal')
+    valve_status = Cpt(EpicsSignalRO, ':VALVE_RBV', kind='normal')
+    fan_status = Cpt(EpicsSignalRO, ':FAN_RBV', kind='normal')
+    overhaul_one = Cpt(EpicsSignalRO, ':OVHL1_RBV', kind='omitted')
+    overaul_two = Cpt(EpicsSignalRO, ':OVHL2_RBV', kind='omitted')
+    run_time = Cpt(EpicsSignalRO, ':RTIME_RBV', kind='omitted')  # hours
+    run_time_post_overhaul = Cpt(EpicsSignalRO, ':RTIME_OH_RBV', kind='omitted')  # hours
+
+
 class AgilentSerial(Device):
     """Class for Agilent Turbo Pump controlled via serial."""
     run = Cpt(EpicsSignal, ':RUN', kind='omitted')
@@ -333,6 +380,65 @@ class PIPSerial(Device):
     pname = Cpt(EpicsSignalRO, ':PNAME_RBV', kind='normal')
     pnamedes = Cpt(EpicsSignal, ':PNAMEDES', kind='omitted')
     vpcname = Cpt(EpicsSignal, ':VPCNAME', kind='omitted')
+
+
+class PIPCombined(Device):
+    """
+    Combined PVs for Gamma QPCe pump with serial and PLC interface
+    """
+    imon = Cpt(EpicsSignalRO, ':IMON', kind='omitted')
+    pmon = Cpt(EpicsSignalRO, ':PMON', kind='normal')
+    vmon = Cpt(EpicsSignalRO, ':VMON', kind='normal')
+    status = Cpt(EpicsSignalRO, ':STATUS', kind='normal')
+    pumpsizedes = Cpt(EpicsSignal, ':PUMPSIZEDES', kind='omitted')
+    pumpsize = Cpt(EpicsSignal, ':PUMPSIZE', kind='omitted')
+    aomodedes = Cpt(EpicsSignal, ':AOMODEDES', kind='omitted')
+    aomode = Cpt(EpicsSignal, ':AOMODE', kind='omitted')
+    statedes = Cpt(EpicsSignal, ':STATEDES', kind='omitted')
+    pname = Cpt(EpicsSignalRO, ':PNAME', kind='normal')
+    pnamedes = Cpt(EpicsSignal, ':PNAMEDES', kind='omitted')
+    vpcname = Cpt(EpicsSignal, ':VPCNAME', kind='omitted')
+
+    pressure = Cpt(EpicsSignalRO, ':PRESS_RBV', kind='hinted',
+                   doc='pressure reading')
+    high_voltage_do = Cpt(EpicsSignalRO, ':HV_DO_RBV', kind='normal',
+                          doc='high voltage digital output')
+    high_voltage_in = Cpt(EpicsSignalRO, ':HV_DI_RBV', kind='normal',
+                          doc='high voltage digital input')
+    interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
+                       doc='interlock  is ok when true')
+    protection_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='config',
+                              doc='Protection/At Vacuum Setpoint')
+    setpoint_hysteresis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='config',
+                              doc='Protection Setpoint Hysteresis')
+    pump_on_status = Cpt(EpicsSignalRO, ':HV_DI_RBV', kind='normal',
+                         doc='ion pump output state')
+    pump_state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='hinted')
+    at_vac_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='omitted',
+                          doc='at vacuum set point')
+    high_voltage_switch = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='config',
+                              doc='epics command to switch on the '
+                              'high voltage')
+    plc_ai_offset = Cpt(EpicsSignalRO, ':AI_Offset_RBV', kind='config',
+                        doc=('Analog input offset must match ion pump '
+                             'analog ouput offset. Default: 13'))
+    auto_on = Cpt(EpicsSignalWithRBV, ':Auto_On', kind='config',
+                  doc=('Setting to automatically turn on the ion pump when the'
+                       'reference gauge pressure is below protection '
+                       'setpoint'))
+    override_status = Cpt(EpicsSignalRO, ':OVRD_ON', kind='omitted',
+                          doc='Regional Override Status')
+    override_force_on = Cpt(EpicsSignalWithRBV, ':FORCE_START', kind='omitted',
+                            doc='Force Ion Pump to turn on')
+    qpc_name = Cpt(EpicsSignalRO, ':VPCNAME', kind='config',
+                   doc='Quad Ion Pump Controller Name')
+    qpc_pumpsize = Cpt(EpicsSignalRO, ':PUMPSIZE', kind='config',
+                       doc='Ion Pump Size (L/s)')
+    interlock_device = Cpt(EpicsSignalRO, ':ILK_DEVICE_RBV', kind='config',
+                           string=True,
+                           doc='Vacuum device used for interlocking this pump')
+    autoOn_countdown = Cpt(EpicsSignalRO, ':AutoOn_timer_RBV', kind='normal',
+                           doc='Timer count down to turn on the ion pump ')
 
 
 # factory function for IonPumps

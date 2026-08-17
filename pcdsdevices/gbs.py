@@ -1,3 +1,4 @@
+import numpy as np
 from ophyd import Component as Cpt
 
 from .device import GroupDevice
@@ -40,3 +41,64 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
 
     rtd1 = Cpt(TwinCATTempSensor, ':RTD:01', kind='normal', doc='First RTD.')
     rtd2 = Cpt(TwinCATTempSensor, ':RTD:02', kind='normal', doc='Second RTD.')
+
+    def get_current_grating_period(self) -> float | None:
+        """
+        Get the grating period based on current grating target position.
+
+        Returns
+        -------
+        float, none
+            Current target grating in mm or None if target is in out/unknown state.
+        """
+
+        return self.get_grating_period(self.target.position)
+
+    def get_grating_period(self, target_pos: str) -> float | None:
+        """
+        Get the grating period associated with a given target position based on hardcoded
+        table provided by Haoyuan.
+
+        Returns
+        -------
+        float, none
+            Target grating in mm or None if target is in out/unknown state.
+
+        Raises
+        ------
+        ValueError
+            If input target is invalid.
+        """
+
+        # map between targets and motor position values
+        target_map = {}
+
+        for state in self.target.config.component_names:
+            state_obj = getattr(self.target.config, state)
+            target_name = state_obj.state_name.get()
+            setpoint = state_obj.setpoint.get()
+            target_map[target_name] = np.abs(setpoint)
+
+        # check if target exists
+        if target_pos not in target_map.keys():
+            raise ValueError(f"{target_pos} not in list, possible targets are: {list(target_map.keys())}")
+
+        grating_y_position = target_map[target_pos]
+
+        # grating period 650nm motor positions
+        positions_650 = np.array([33.105, 44.776, 56.120])
+
+        # grating period 980nm motor positions
+        positions_980 = np.array([31.605, 43.264, 54.618])
+
+        if np.any(np.abs(grating_y_position - positions_980) <= 1):
+            grating_period = 980e-6  # mm
+
+        elif np.any(np.abs(grating_y_position - positions_650) <= 1):
+            grating_period = 650e-6  # mm
+
+        else:
+            # Set a grating period for the no-grating case.
+            grating_period = None
+
+        return grating_period

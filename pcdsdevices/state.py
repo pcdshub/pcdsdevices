@@ -17,6 +17,7 @@ from ophyd.status import SubscriptionStatus
 from ophyd.status import wait as status_wait
 
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
@@ -515,6 +516,29 @@ class TwinCATStateConfigOne(Device):
                   doc='True if a move to this state is allowed.')
 
 
+class TwinCATMalStateConfigOne(TwinCATStateConfigOne):
+    """
+    Configuration of a single state position in the new TwinCAT state format.
+
+    Like `TwinCATStateConfigOne`, but for the newer ``lcls-twincat-motion``
+    state format where **motion parameters are not part of the state.**
+    Velocity, acceleration, deceleration, and jerk are owned by the drive
+    layer (``FB_MotionStageNC``, exposed via ``MotionCmd``), not by
+    ``ST_PositionState``.
+
+    Compared to `TwinCATStateConfigOne` this only:
+
+    - removes the ``:VELO`` field, and
+    - makes the setpoint read-only (``:SETPOINT_RBV``).
+
+    ``state_name`` and ``move_ok`` are inherited unchanged.
+    """
+    # Motion parameters are owned by the drive layer, not the state.
+    velo = None
+    # Setpoint is read-only in the new format (only :SETPOINT_RBV exists).
+    setpoint = UpCpt(io='i')
+
+
 class TwinCATStateConfigDynamic(Device):
     """
     Configuration of a variable number of TwinCAT states.
@@ -608,6 +632,38 @@ class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
 # This is needed because the make_fake_device won't find our
 # dynamic subclasses.
 fake_device_cache[TwinCATStateConfigDynamic] = FakeTwinCATStateConfigDynamic
+
+
+class TwinCATMalStateConfigDynamic(TwinCATStateConfigDynamic):
+    """
+    Dynamic states config for the new TwinCAT state format (no motion params).
+
+    Identical to `TwinCATStateConfigDynamic` except that each state uses
+    `TwinCATMalStateConfigOne`, which omits the ``:VELO`` field.
+    """
+    _state_config_registry: ClassVar[
+        dict[tuple[int, int], TwinCATMalStateConfigDynamic]
+    ] = {}
+    _config_cls: ClassVar[type] = TwinCATMalStateConfigOne
+    _class_prefix: ClassVar[str] = 'MalStateConfig'
+
+
+class FakeTwinCATMalStateConfigDynamic(TwinCATMalStateConfigDynamic):
+    """
+    Proper fake device class for TwinCATMalStateConfigDynamic.
+
+    Useful in test suites.
+    """
+    _state_config_registry: ClassVar[
+        dict[int, FakeTwinCATMalStateConfigDynamic]
+    ] = {}
+    _config_cls: ClassVar[type] = make_fake_device(TwinCATMalStateConfigOne)
+    _class_prefix: ClassVar[str] = 'FakeMalStateConfig'
+
+
+fake_device_cache[TwinCATMalStateConfigDynamic] = (
+    FakeTwinCATMalStateConfigDynamic
+)
 
 
 def get_dynamic_state_attr(
@@ -877,6 +933,64 @@ class TwinCATStatePositioner(StatePositioner):
 
     def clear_error(self):
         self.reset_cmd.put(1)
+
+
+class TwinCATMalStatePositioner(TwinCATStatePositioner):
+    """
+    A `TwinCATStatePositioner` for the new-format ``lcls-twincat-motion`` states.
+
+    Identical to `TwinCATStatePositioner` (same ``:GET_RBV`` / ``:SET`` state
+    interface, error/reset PVs, and per-state ``:NAME`` enum sourcing), except
+    that it reflects the newer state PV format where **motion parameters are
+    not part of the state.** Velocity, acceleration, deceleration, and jerk are
+    owned by the drive layer (``FB_MotionStageNC``, exposed via ``MotionCmd``),
+    not by ``ST_PositionState``.
+
+    Concretely, compared to `TwinCATStatePositioner` this class:
+
+    - drops the aggregated ``state_velo`` signal, and
+    - swaps ``config`` for `TwinCATMalStateConfigDynamic`, whose per-state
+      config has no ``:VELO`` field and exposes the setpoint as read-only
+      (``:SETPOINT_RBV``).
+
+    Does not need to be subclassed to be used, unless you would like to
+    customize the number of states/motors by adjusting the config's
+    ``state_count`` and ``motor_count``.
+
+    ``states_list`` does not have to be provided in a subclass.
+    """
+    # Motion parameters (velocity, acceleration, deceleration, jerk) are owned
+    # by the drive layer, not by the state. Remove the velocity summary signal.
+    state_velo = None
+
+    # Per-state config has no :VELO and a read-only :SETPOINT_RBV. Kept omitted
+    # like the base class: the state names/setpoints are still reachable for
+    # scripting via ``config`` (e.g. ``dev.config.m1_state01.setpoint.get()``).
+    config = Cpt(
+        TwinCATMalStateConfigDynamic,
+        '',
+        state_count=TWINCAT_MAX_STATES,
+        motor_count=1,
+        kind='omitted',
+        doc='Configuration of state positions (no motion params).',
+    )
+
+    def __init_subclass__(cls, **kwargs):
+        # Adjust the state enum_attrs if state_count/motor_count was updated.
+        # Unlike the parent, there is no state_velo to keep in sync.
+        state_count = cls.config.kwargs['state_count']
+        parent_state_count = cls.mro()[1].config.kwargs['state_count']
+        motor_count = cls.config.kwargs['motor_count']
+        parent_motor_count = cls.mro()[1].config.kwargs['motor_count']
+        if state_count != parent_state_count or motor_count != parent_motor_count:
+            cls.state = copy.deepcopy(cls.state)
+            cls.state.kwargs['enum_attrs'] = (
+                state_config_dotted_names(state_count=state_count, motor_count=motor_count)
+            )
+        # Skip TwinCATStatePositioner.__init_subclass__ (which manages the now
+        # removed state_velo) and defer to StatePositioner's, which wires up the
+        # state metadata subscription.
+        super(TwinCATStatePositioner, cls).__init_subclass__(**kwargs)
 
 
 class StateStatus(SubscriptionStatus):

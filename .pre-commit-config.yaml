@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 exclude: |
   (?x)^(
-    pcdsdevices/_version.py|
+    pcdsdevices/_version.py|pcdsdevices/tests/test_lens_sets/test
   )$
 
 repos:
