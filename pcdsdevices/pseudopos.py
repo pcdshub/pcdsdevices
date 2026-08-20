@@ -223,8 +223,8 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         hangs and blocks other operations.
 
         The solution is to have the PseudoPositioner object track the axis it
-        asked to move, instead of instead of trusting which object the callback
-        reports as done.
+        asked to move, instead of trusting which object the callback reports 
+        as done.
         """
         self._real_waiting.extend(self._real)
 
