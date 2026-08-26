@@ -26,6 +26,7 @@ from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutCptMixin
 from .keithley import IM3L0_K2700
 from .pmps import TwinCATStatePMPS
+from .pneumatic import PneumaticActuator
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal, UnitConversionDerivedSignal
 from .state import StatePositioner
@@ -609,3 +610,10 @@ class PPMCoolSwitch(PPM):
     """
     flow_switch = Cpt(J120K, '', kind='normal',
                       doc='Device that indicates nominal PCW Flow Rate.')
+
+
+class PF1K0_PM(BaseInterface, Device):
+    tab_component_names = True
+    pneumatic_actuator = Cpt(PneumaticActuator, ':MPA:01', kind='normal')
+    power_meter = Cpt(PPMPowerMeter, ':PM', kind='normal',
+                      doc='Device that measures power of incident beam.')
