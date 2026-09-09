@@ -7,7 +7,7 @@ This module contains classes related to the TMO-DREAM Motion System
 from ophyd import Component as Cpt
 
 from .device import GroupDevice
-from .epics_motor import BeckhoffAxis, SmarAct
+from .epics_motor import BeckhoffAxis, SmarAct, SmarActEtherCAT
 from .interface import BaseInterface
 
 
@@ -48,7 +48,7 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
     Parameters
     ----------
     prefix : str
-        TMO:DREAM:MCS2:01
+        DREAM:
     name : str, keyword-only
         Alias for the device
     """
@@ -57,10 +57,10 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
     tab_component_names = True
 
     # Motor components
-    top = Cpt(SmarAct, ':m7', kind='normal')
-    bottom = Cpt(SmarAct, ':m12', kind='normal')
-    north = Cpt(SmarAct, ':m9', kind='normal')
-    south = Cpt(SmarAct, ':m8', kind='normal')
+    top = Cpt(SmarActEtherCAT, ':SL3K4:MMT:Y1', kind='normal')
+    bottom = Cpt(SmarActEtherCAT, ':SL3K4:MMT:Y2', kind='normal')
+    north = Cpt(SmarActEtherCAT, ':SL3K4:MMT:X1', kind='normal')
+    south = Cpt(SmarActEtherCAT, ':SL3K4:MMT:X2', kind='normal')
 
 
 class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
@@ -71,7 +71,7 @@ class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
     Parameters
     ----------
     prefix : str
-        TMO:DREAM:MCS2:01
+        DREAM:
     name : str, keyword-only
         Alias for the device
     """
@@ -79,10 +79,10 @@ class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
     _icon = 'fa.minus-square'
     tab_component_names = True
     # Motor components
-    x = Cpt(SmarAct, ':m2', kind='normal')
-    y = Cpt(SmarAct, ':m1', kind='normal')
-    z = Cpt(SmarAct, ':m4', kind='normal')
-    ret = Cpt(SmarAct, ':m3', kind='normal')
+    x = Cpt(SmarActEtherCAT, ':DGPD:MMT:X', kind='normal')
+    y = Cpt(SmarActEtherCAT, ':DGPD:MMT:Y', kind='normal')
+    z = Cpt(SmarActEtherCAT, ':DGPD:MMT:Z', kind='normal')
+    ret = Cpt(SmarActEtherCAT, ':DGPD:MMT:RET', kind='normal')
 
 
 class DREAM_Gas_Jet_Slits(BaseInterface, GroupDevice):
