@@ -1,0 +1,91 @@
+name: ECS Pixi Testing
+
+# The standard build, assuming the python repo uses pixi.
+# This full template will:
+# - Run pre-commit
+# - Run unit tests with pixi
+# - Build the package with uv for distributions
+# - Upload the distribution to pypi on tag
+# - Build the docs with pixi for github pages
+# - Upload the docs to github-pages on tag
+#
+# To skip a section, simply remove it from the workflow.
+# When you apply this to a repo for the first time,
+# replace the "sha" in each "uses" line with the actual full SHA of the latest tag.
+
+on:
+  push:
+    branches:
+      - "master"
+    tags:
+      - "v*"
+  pull_request:
+
+jobs:
+  # Checks the pre-commit rules. Configure this by editing .pre-commit-config.yaml in your repo.
+  pre-commit:
+    permissions:
+      contents: read
+    uses: pcdshub/pcds-ci-helpers/.github/workflows/pre-commit.yml@sha
+
+  # Runs the unit tests. Configure this by customizing what happens when we call "pixi run test", e.g. the "test" task.
+  unit-tests:
+    permissions:
+      contents: read
+    uses: pcdshub/pcds-ci-helpers/.github/workflows/python-pixi-test.yml@sha
+
+  # Creates the files that we would upload to pypi and makes sure they work. "package-name" should be correct to validate the builds.
+  pypi-build:
+    permissions:
+      contents: read
+    uses: pcdshub/pcds-ci-helpers/.github/workflows/python-uv-build.yml@sha
+    with:
+      package-name: "import_name_goes_here"
+
+  # On tag, uploads the files from pypi-build to pypi. Requires trusted publishing to be set up.
+  # This cannot include the central workflow like the others, it unfortunately needs to be copied into the file here.
+  # This is because of how pypi trusted publishing from github is set up: only a local workflow has the permissions.
+  pypi-upload:
+    permissions:
+      id-token: write
+    needs: pypi-build
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@sha
+      with:
+        # Lock version to what we use in prod
+        version: "0.11.18"
+
+    - name: Download distributions artifact
+      uses: actions/download-artifact@sha
+      with:
+        name: dist
+        path: dist/
+
+    - name: Publish
+      run: uv publish
+
+  # Builds the documentation html files that should be uploaded to github pages. Configure by editing the result of "make html" in the docs folder.
+  docs-build:
+    permissions:
+      contents: read
+    uses: pcdshub/pcds-ci-helpers/.github/workflows/python-pixi-docs-build.yml@sha
+
+  # Uploads the documentation html files from docs-build. Requires the "github-pages" environment to be set up.
+  docs-upload:
+    permissions:
+      pages: write
+      id-token: write
+    needs: docs-build
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    uses: pcdshub/pcds-ci-helpers/.github/workflows/docs-upload.yml@sha
