@@ -1,0 +1,15 @@
+[workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+exclude-newer = "7d"
+
+[tasks]
+test = "pytest"
+
+[dependencies]
+python = "==3.12.12"
+numpy = ">=2.4.6,<3"
+pyqt = "==5.15.9"
+
+[pypi-dependencies]
+pcdsdevices = { path = ".", editable = true, extras = ["doc", "test"] }
