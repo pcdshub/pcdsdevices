@@ -4,10 +4,10 @@ from ophyd.sim import make_fake_device
 from ..pneumatic import BeckhoffPneumatic
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_stopper():
     FakeStopper = make_fake_device(BeckhoffPneumatic)
-    stopper = FakeStopper('TST:ST1', name="Test Stopper")
+    stopper = FakeStopper("TST:ST1", name="Test Stopper")
     stopper.insert_ok.sim_put(1)
     stopper.retract_ok.sim_put(1)
     stopper.done.sim_put(1)

@@ -13,9 +13,9 @@ vls_grating_lower = (-1.74, 51.8462)
 vls_grating_upper = (1.2, 3.5410)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def vls():
-    return VLSOpticsSim(name='vls')
+    return VLSOpticsSim(name="vls")
 
 
 # Example vals only accurate to 2 decimal places at worst

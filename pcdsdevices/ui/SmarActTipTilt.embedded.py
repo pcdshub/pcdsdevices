@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 class _SmarActTipTiltEmbeddedUI(QtWidgets.QWidget):
     """Annotations helper for SmarActTipTilt.embedded.ui. Do not instantiate."""
+
     dpad_label: QtWidgets.QLabel
     tip_forward: pydm.widgets.pushbutton.PyDMPushButton
     tip_reverse: pydm.widgets.pushbutton.PyDMPushButton
@@ -29,12 +30,18 @@ class _SmarActTipTiltEmbeddedUI(QtWidgets.QWidget):
 
 class SmarActTipTiltWidget(Display, utils.TyphosBase):
     """Custom widget for controlling a tip-tilt with d-pad buttons"""
+
     ui: _SmarActTipTiltEmbeddedUI
 
-    def __init__(self, parent=None, ui_filename='SmarActTipTilt.embedded.ui', **kwargs,):
+    def __init__(
+        self,
+        parent=None,
+        ui_filename="SmarActTipTilt.embedded.ui",
+        **kwargs,
+    ):
         super().__init__(parent=parent, ui_filename=ui_filename)
 
-        self._omit_names = ['jog_fwd', 'jog_rev']
+        self._omit_names = ["jog_fwd", "jog_rev"]
         self.ui.extended_signal_panel = None
 
         self.ui.settings_button.clicked.connect(self._expand_layout)
@@ -100,31 +107,34 @@ class SmarActTipTiltWidget(Display, utils.TyphosBase):
         Once we have the tip-tilt device, set the TIP and TILT channels to
         the buttons and labels.
         """
+
         def set_open_loop(self, axis: str):
             """
             A wrapper to set the open-loop widget channels.
             Ironically more lines than just hard coding it.
             """
             _prefix = getattr(self.device, axis).prefix
-            _open_loop_dict = {'forward': '_jog_fwd',
-                               'reverse': '_jog_rev',
-                               'step_count': ':TOTAL_STEP_COUNT',
-                               'step_size': ':STEP_COUNT'}
+            _open_loop_dict = {
+                "forward": "_jog_fwd",
+                "reverse": "_jog_rev",
+                "step_count": ":TOTAL_STEP_COUNT",
+                "step_size": ":STEP_COUNT",
+            }
             for obj, _suffix in _open_loop_dict.items():
-                _widget = getattr(self.ui, f'{axis}_{obj}')
+                _widget = getattr(self.ui, f"{axis}_{obj}")
                 if isinstance(_widget, pydm.widgets.pushbutton.PyDMPushButton):
                     # Set the slots for the jog buttons
-                    _signal = getattr(self, f'_{axis}{_suffix}')
+                    _signal = getattr(self, f"_{axis}{_suffix}")
                     _widget.clicked.connect(_signal)
                 else:
-                    _widget.set_channel(f'ca://{_prefix}{_suffix}')
+                    _widget.set_channel(f"ca://{_prefix}{_suffix}")
 
         if self.device is None:
-            print('No device set!')
+            print("No device set!")
             return
 
-        set_open_loop(self, axis='tip')
-        set_open_loop(self, axis='tilt')
+        set_open_loop(self, axis="tip")
+        set_open_loop(self, axis="tilt")
 
     def _jog_wrapper(self, axis: str, direction: str):
         """
@@ -139,37 +149,37 @@ class SmarActTipTiltWidget(Display, utils.TyphosBase):
         direction: str
             Direction of move, i.e. 'tip' or 'tilt'
         """
-        invert = getattr(self.ui, f'invert_{axis}').isChecked()
+        invert = getattr(self.ui, f"invert_{axis}").isChecked()
         stage = getattr(self.device, axis)
-        _fwd = getattr(stage, 'jog_fwd')
-        _rev = getattr(stage, 'jog_rev')
+        _fwd = stage.jog_fwd
+        _rev = stage.jog_rev
 
-        if direction == 'Forward':
+        if direction == "Forward":
             _jog = _rev if invert else _fwd
             _jog.put(1)
-        if direction == 'Reverse':
+        if direction == "Reverse":
             _jog = _fwd if invert else _rev
             _jog.put(1)
 
     @QtCore.Slot()
     def _tip_jog_fwd(self):
         """Jog tip axis forward by tip.jog_step_size"""
-        self._jog_wrapper(axis='tip', direction='Forward')
+        self._jog_wrapper(axis="tip", direction="Forward")
 
     @QtCore.Slot()
     def _tip_jog_rev(self):
         """Jog tip axis backwards by tip.jog_step_size"""
-        self._jog_wrapper(axis='tip', direction='Reverse')
+        self._jog_wrapper(axis="tip", direction="Reverse")
 
     @QtCore.Slot()
     def _tilt_jog_fwd(self):
         """Jog tilt axis forward by tilt.jog_step_size"""
-        self._jog_wrapper(axis='tilt', direction='Forward')
+        self._jog_wrapper(axis="tilt", direction="Forward")
 
     @QtCore.Slot()
     def _tilt_jog_rev(self):
         """Jog tilt axis backwards by tilt.jog_step_size"""
-        self._jog_wrapper(axis='tilt', direction='Reverse')
+        self._jog_wrapper(axis="tilt", direction="Reverse")
 
     def get_names_to_omit(self) -> list[str]:
         """
@@ -183,7 +193,7 @@ class SmarActTipTiltWidget(Display, utils.TyphosBase):
         if device is None:
             return []
 
-        to_omit = set(['jog_fwd', 'jog_rev'])
+        to_omit = set(["jog_fwd", "jog_rev"])
 
         # TODO: move these to a Qt designable property
         for name in self.omitNames:
@@ -196,8 +206,9 @@ class SmarActTipTiltWidget(Display, utils.TyphosBase):
         return sorted(to_omit)
 
 
-class _StageSettingsUI():
+class _StageSettingsUI:
     """helper for the stages basic settings. Do not instantiate."""
+
     tip_label: QtWidgets.QLabel
     tilt_label: QtWidgets.QLabel
     step_size_label: QtWidgets.QLabel
@@ -218,6 +229,7 @@ class SettingsPanel(QtWidgets.QWidget):
     """
     Container class for basic settings that accompany open-loop movement for SmarAct tip-tilts. Largely lifted from TyphosPositionerRow
     """
+
     mirror: SmarActTipTiltWidget
     resize_timer: QtCore.QTimer
 
@@ -227,10 +239,10 @@ class SettingsPanel(QtWidgets.QWidget):
         self.mirror = mirror
         # Make the subdevice labels
         self.tip_label = QtWidgets.QLabel()
-        self.format_label(self.tip_label, 'Tip')
+        self.format_label(self.tip_label, "Tip")
 
         self.tilt_label = QtWidgets.QLabel()
-        self.format_label(self.tilt_label, 'Tilt')
+        self.format_label(self.tilt_label, "Tilt")
 
         # Then add panels, widgets, devices, and scroll areas
         self.tip_panel = TyphosSignalPanel()
@@ -275,9 +287,7 @@ class SettingsPanel(QtWidgets.QWidget):
         _font = _label.font()
         _font.setPointSize(_font.pointSize() + 4)
         _label.setFont(_font)
-        _label.setMaximumHeight(
-            QtGui.QFontMetrics(_font).boundingRect(_label.text()).height()
-        )
+        _label.setMaximumHeight(QtGui.QFontMetrics(_font).boundingRect(_label.text()).height())
 
     def format_scroll_area(self, panel, panel_scroll_area):
         """Format the scroll area for each subdevice"""
@@ -293,7 +303,7 @@ class SettingsPanel(QtWidgets.QWidget):
         Shamelessly stolen from TyphosPositionerRow.
         """
         button = self.mirror.ui.settings_button
-        button.PyDMIcon = 'SP_ToolBarHorizontalExtensionButton'
+        button.PyDMIcon = "SP_ToolBarHorizontalExtensionButton"
         return super().hideEvent(event)
 
     def showEvent(self, event: QtGui.QShowEvent):
@@ -302,13 +312,14 @@ class SettingsPanel(QtWidgets.QWidget):
         Shamelessly stolen from TyphosPositionerRow.
         """
         button = self.mirror.ui.settings_button
-        button.PyDMIcon = 'SP_ToolBarVerticalExtensionButton'
+        button.PyDMIcon = "SP_ToolBarVerticalExtensionButton"
         offset = button.mapToGlobal(QtCore.QPoint(0, 0))
         self.move(
             button.mapToGlobal(
                 QtCore.QPoint(
                     button.pos().x() + button.width(),
-                    button.pos().y() + button.height()
+                    button.pos().y()
+                    + button.height()
                     + self.style().pixelMetric(QtWidgets.QStyle.PM_TitleBarHeight)
                     - offset.y(),
                 )
@@ -331,13 +342,17 @@ class SettingsPanel(QtWidgets.QWidget):
         --------------------------------------------------------------------
         Also shamelessly stolen from TyphosPositionerRow
         """
-        if (self.tip_panel.minimumWidth() <= self.tip_panel.original_panel_min_width or
-                self.tilt_panel.minimumWidth() <= self.tilt_panel.original_panel_min_width):
+        if (
+            self.tip_panel.minimumWidth() <= self.tip_panel.original_panel_min_width
+            or self.tilt_panel.minimumWidth() <= self.tilt_panel.original_panel_min_width
+        ):
             # No change
             self.resize_timer.start()
             return
-        elif (self.tip_panel.last_resize_width != self.tip_panel.minimumWidth() or
-                self.tilt_panel.last_resize_width != self.tilt_panel.minimumWidth()):
+        elif (
+            self.tip_panel.last_resize_width != self.tip_panel.minimumWidth()
+            or self.tilt_panel.last_resize_width != self.tilt_panel.minimumWidth()
+        ):
             # We are not stable yet!
             self.tip_panel.last_resize_width = self.tip_panel.minimumWidth()
             self.tilt_panel.last_resize_width = self.tilt_panel.minimumWidth()

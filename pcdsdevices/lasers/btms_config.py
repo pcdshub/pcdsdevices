@@ -31,6 +31,7 @@ class _PositionDiagram:
 
     Used by BtmsState.
     """
+
     COL_WIDTH = 3
     STAGE_CHAR = "*"
     BEAM_CHAR_UP = "^"
@@ -46,9 +47,7 @@ class _PositionDiagram:
                 return lineno, line.index(text)
         raise ValueError(f"{text} not found")
 
-    def _fill(
-        self, character: str, first_line: int, last_line: int, col1: int, col2: int
-    ) -> str:
+    def _fill(self, character: str, first_line: int, last_line: int, col1: int, col2: int) -> str:
         """Fill lines first_line to last_line from col1 to col2 with ``character``."""
         assert len(character) == 1
         results = []
@@ -64,9 +63,7 @@ class _PositionDiagram:
             results.append(line)
         return "\n".join(results)
 
-    def add_source(
-        self, source: SourcePosition, dest: DestinationPosition, beam_status: bool
-    ) -> None:
+    def add_source(self, source: SourcePosition, dest: DestinationPosition, beam_status: bool) -> None:
         """
         Add a source to the diagram.
 
@@ -100,9 +97,7 @@ class _PositionDiagram:
             beam_line = source_line + 1
             dest_line -= 1
             beam_char = self.BEAM_CHAR_DOWN
-        self.text = self._fill(
-            beam_char, beam_line, dest_line, dest_col, dest_col + self.COL_WIDTH
-        )
+        self.text = self._fill(beam_char, beam_line, dest_line, dest_col, dest_col + self.COL_WIDTH)
 
     def __str__(self):
         return self.text
@@ -135,7 +130,7 @@ class SourcePosition(str, enum.Enum):
 
     @classmethod
     def from_index(cls, index: int) -> SourcePosition:
-        """"
+        """ "
         Get a SourcePosition given its integer index.
         """
         try:
@@ -145,7 +140,7 @@ class SourcePosition(str, enum.Enum):
 
     @property
     def index(self) -> int:
-        """"
+        """ "
         Get an integer index from the source position.
         """
         return int(self.name.lstrip("ls"))
@@ -265,20 +260,20 @@ class DestinationPosition(str, enum.Enum):
         {POSITION_DIAGRAM}
     """
     # Left-right destination ports
-    ld8 = "LD8"    # top
-    ld1 = "LD1"    # bottom
-    ld9 = "LD9"    # top
-    ld2 = "LD2"    # bottom
+    ld8 = "LD8"  # top
+    ld1 = "LD1"  # bottom
+    ld9 = "LD9"  # top
+    ld2 = "LD2"  # bottom
     ld10 = "LD10"  # top
-    ld3 = "LD3"    # bottom
+    ld3 = "LD3"  # bottom
     ld11 = "LD11"  # top
-    ld4 = "LD4"    # bottom
+    ld4 = "LD4"  # bottom
     ld12 = "LD12"  # top
-    ld5 = "LD5"    # bottom
+    ld5 = "LD5"  # bottom
     ld13 = "LD13"  # top
-    ld6 = "LD6"    # bottom
+    ld6 = "LD6"  # bottom
     ld14 = "LD14"  # top
-    ld7 = "LD7"    # bottom
+    ld7 = "LD7"  # bottom
 
     def __str__(self) -> str:
         return self.value
@@ -313,7 +308,7 @@ class DestinationPosition(str, enum.Enum):
 
     @classmethod
     def from_index(cls, index: int) -> DestinationPosition:
-        """"
+        """ "
         Get a DestinationPosition given its integer index.
         """
         try:
@@ -323,14 +318,12 @@ class DestinationPosition(str, enum.Enum):
 
     @property
     def index(self) -> int:
-        """"
+        """ "
         Get an integer index from the source position.
         """
         return int(self.name.lstrip("ld"))
 
-    def path_to(
-        self, target: DestinationPosition
-    ) -> tuple[DestinationPosition, ...]:
+    def path_to(self, target: DestinationPosition) -> tuple[DestinationPosition, ...]:
         """
         Get crossed destinations on the path from ``self`` to ``target``.
 
@@ -345,7 +338,7 @@ class DestinationPosition(str, enum.Enum):
 
         if idx1 < idx2:
             # Direction: right (self ... target)
-            return ALL_DESTINATIONS[idx1 + 1:idx2 + 1]
+            return ALL_DESTINATIONS[idx1 + 1 : idx2 + 1]
 
         # Direction: left (target ... self)
         return ALL_DESTINATIONS[idx2:idx1][::-1]
@@ -384,12 +377,12 @@ valid_sources: tuple[SourcePosition, ...] = (
 )
 # PV destination index (bay) to installed LD port
 valid_destinations: tuple[DestinationPosition, ...] = (
-    DestinationPosition.ld1,   # Diagnostics box
-    DestinationPosition.ld2,   # RIX 3RIX
-    DestinationPosition.ld4,   # RIX ChemRIXS
-    DestinationPosition.ld6,   # RIX QRIXS
-    DestinationPosition.ld8,   # TMO IP1
-    DestinationPosition.ld9,   # Laser Lab 1
+    DestinationPosition.ld1,  # Diagnostics box
+    DestinationPosition.ld2,  # RIX 3RIX
+    DestinationPosition.ld4,  # RIX ChemRIXS
+    DestinationPosition.ld6,  # RIX QRIXS
+    DestinationPosition.ld8,  # TMO IP1
+    DestinationPosition.ld9,  # Laser Lab 1
     DestinationPosition.ld10,  # TMO IP2 (DREAM)
     DestinationPosition.ld11,  # Laser Lab 2
     DestinationPosition.ld12,  # TXI
@@ -399,11 +392,13 @@ valid_destinations: tuple[DestinationPosition, ...] = (
 
 class MoveError(Exception):
     """Cannot move according to the request."""
+
     ...
 
 
 class PositionInvalidError(MoveError):
     """Source is not at a recognized position for BTMS to function properly."""
+
     #: The source that is not in a good position.
     source: SourcePosition
 
@@ -422,6 +417,7 @@ class MaintenanceModeActiveError(MoveError):
 
 class DestinationInUseError(MoveError):
     """The target destination is already in use."""
+
     #: The source at this destination.
     source: SourcePosition
     destination: DestinationPosition
@@ -458,11 +454,13 @@ class PathCrossedError(MoveError):
 
 class MovingActiveSource(MoveError):
     """The source is currently in use and should not be moved."""
+
     ...
 
 
 class DestinationInControlError(MoveError):
     """The destination has not yielded control and does not want the source to be moved."""
+
     ...
 
 
@@ -481,6 +479,7 @@ class BtmsSourceState:
     beam_status : bool
         Indicates if the beam is active for the given source.
     """
+
     source: SourcePosition
     destination: DestinationPosition | None
     beam_status: bool
@@ -497,6 +496,7 @@ class BtmsDestinationState:
         If the destination user has acknowledged that the source it is using
         may be moved: i.e., yielding control to others.
     """
+
     yields_control: bool = True
 
 
@@ -514,14 +514,10 @@ class BtmsState:
     maintenance_mode : bool
         System-level maintenance mode setting.
     """
-    sources: dict[SourcePosition, BtmsSourceState] = dataclasses.field(
-        default_factory=dict
-    )
+
+    sources: dict[SourcePosition, BtmsSourceState] = dataclasses.field(default_factory=dict)
     destinations: dict[DestinationPosition, BtmsDestinationState] = dataclasses.field(
-        default_factory=lambda: {
-            pos: BtmsDestinationState()
-            for pos in DestinationPosition
-        }
+        default_factory=lambda: {pos: BtmsDestinationState() for pos in DestinationPosition}
     )
     maintenance_mode: bool = False
 
@@ -531,11 +527,7 @@ class BtmsState:
         """
         errors = []
         if self.maintenance_mode:
-            errors.append(
-                MaintenanceModeActiveError(
-                    "Maintenance mode is active"
-                )
-            )
+            errors.append(MaintenanceModeActiveError("Maintenance mode is active"))
 
         for pos, source in self.sources.items():
             if source.destination is None:
@@ -581,10 +573,7 @@ class BtmsState:
         if closest_destination is None:
             closest_destination = self.sources[moving_source].destination
 
-        dest_to_source = {
-            source.destination: source.source
-            for source in self.sources.values()
-        }
+        dest_to_source = {source.destination: source.source for source in self.sources.values()}
 
         for other_source in self.sources:
             if other_source == moving_source:
@@ -604,10 +593,7 @@ class BtmsState:
         if self.sources[moving_source].beam_status:
             dest = self.sources[moving_source].destination or "unknown"
             errors.append(
-                MovingActiveSource(
-                    f"{moving_source} is actively sending beam to "
-                    f"{dest} and should not be moved"
-                )
+                MovingActiveSource(f"{moving_source} is actively sending beam to {dest} and should not be moved")
             )
 
         if closest_destination == target_destination:
@@ -682,9 +668,7 @@ class BtmsState:
         MoveError
             Raises specific ``MoveError`` subclass based on the reason.
         """
-        conflicts = self.check_move_all(
-            moving_source, closest_destination, target_destination
-        )
+        conflicts = self.check_move_all(moving_source, closest_destination, target_destination)
         # If there are any conflicts, just raise the first one for now.
         if conflicts:
             raise conflicts[0]

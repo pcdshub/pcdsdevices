@@ -1,6 +1,7 @@
 """
 Module for the SXR Test Absorbers.
 """
+
 from __future__ import annotations
 
 from ophyd.device import Component as Cpt
@@ -12,8 +13,7 @@ from .interface import BaseInterface, LightpathInOutCptMixin
 from .signal import PytmcSignal
 
 
-class ST3K4AutoError(RuntimeError):
-    ...
+class ST3K4AutoError(RuntimeError): ...
 
 
 class SxrTestAbsorberStates(TwinCATInOutPositioner):
@@ -24,7 +24,7 @@ class SxrTestAbsorberStates(TwinCATInOutPositioner):
     Accordingly, it has a configuration parameter for enabling/disabling this.
     """
 
-    st3k4_auto = Cpt(PytmcSignal, ':ST3K4_AUTO', io='io', kind='config')
+    st3k4_auto = Cpt(PytmcSignal, ":ST3K4_AUTO", io="io", kind="config")
 
 
 class SxrTestAbsorber(BaseInterface, LightpathInOutCptMixin):
@@ -44,9 +44,8 @@ class SxrTestAbsorber(BaseInterface, LightpathInOutCptMixin):
 
     tab_component_names = True
 
-    state = Cpt(SxrTestAbsorberStates, ':MMS:STATE', kind='hinted')
-    absorber_vert = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
-    flow_switch = Cpt(J120K, '', kind='normal',
-                      doc='Device that indicates nominal PCW Flow Rate.')
+    state = Cpt(SxrTestAbsorberStates, ":MMS:STATE", kind="hinted")
+    absorber_vert = Cpt(BeckhoffAxisNoOffset, ":MMS:01", kind="normal")
+    flow_switch = Cpt(J120K, "", kind="normal", doc="Device that indicates nominal PCW Flow Rate.")
 
-    lightpath_cpts = ['state']
+    lightpath_cpts = ["state"]

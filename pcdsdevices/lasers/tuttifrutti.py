@@ -13,25 +13,38 @@ from pcdsdevices.lasers.qmini import QminiSpectrometer
 from pcdsdevices.lasers.thorlabsWFS import ThorlabsWfs40
 
 
-def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
-                   diode=False, em=False, qc=False, pd=False, wfs=False,
-                   ell=False, ellch=1, misc=[]):
+def TuttiFruttiCls(
+    prefix,
+    name,
+    nf=False,
+    ff=False,
+    spec=False,
+    pm=False,
+    diode=False,
+    em=False,
+    qc=False,
+    pd=False,
+    wfs=False,
+    ell=False,
+    ellch=1,
+    misc=[],
+):
     """
     Generate a TuttiFrutti class. See TuttiFrutti function for more details.
     """
     cpts = {}
     if nf:
-        cpt = Cpt(LasBasler, '_NF1:', kind='normal')
-        cpts['nf_camera'] = cpt
+        cpt = Cpt(LasBasler, "_NF1:", kind="normal")
+        cpts["nf_camera"] = cpt
     if nf:
-        cpt = Cpt(LasBasler, '_FF1:', kind='normal')
-        cpts['ff_camera'] = cpt
+        cpt = Cpt(LasBasler, "_FF1:", kind="normal")
+        cpts["ff_camera"] = cpt
     if spec:
-        cpt = Cpt(QminiSpectrometer, '_SP1', kind='normal')
-        cpts['spectrometer'] = cpt
+        cpt = Cpt(QminiSpectrometer, "_SP1", kind="normal")
+        cpts["spectrometer"] = cpt
     if pm:
-        cpt = Cpt(El3174AiCh, '_PM1', kind='normal')
-        cpts['power_meter'] = cpt
+        cpt = Cpt(El3174AiCh, "_PM1", kind="normal")
+        cpts["power_meter"] = cpt
     if diode:
         raise NotImplementedError("Diode is not yet implemented")
     if em:
@@ -41,24 +54,36 @@ def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
     if pd:
         raise NotImplementedError("Pulse duration is not yet implemented")
     if wfs:
-        cpt = Cpt(ThorlabsWfs40, '_WF1:', kind='normal')
-        cpts['wfs'] = cpt
+        cpt = Cpt(ThorlabsWfs40, "_WF1:", kind="normal")
+        cpts["wfs"] = cpt
     if ell:
-        cpt = Cpt(Ell6, '_SL1:ELL', channel=ellch, kind='normal')
-        cpts['slider'] = cpt
+        cpt = Cpt(Ell6, "_SL1:ELL", channel=ellch, kind="normal")
+        cpts["slider"] = cpt
     if misc:  # This feels kind of hacky, but also kind of cool.
         for cptname, cpt in misc.items():
             cpts[cptname] = cpt
-    cls_name = prefix.replace(':', '_') + '_TuttiFrutti'
-    cls = create_device_from_components(cls_name, base_class=Device,
-                                        class_kwargs=None, **cpts)
+    cls_name = prefix.replace(":", "_") + "_TuttiFrutti"
+    cls = create_device_from_components(cls_name, base_class=Device, class_kwargs=None, **cpts)
 
     return cls
 
 
-def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
-                diode=False, em=False, qc=False, pd=False, wfs=False,
-                ell=False, ellch=1, misc=[]):
+def TuttiFrutti(
+    prefix,
+    name,
+    nf=False,
+    ff=False,
+    spec=False,
+    pm=False,
+    diode=False,
+    em=False,
+    qc=False,
+    pd=False,
+    wfs=False,
+    ell=False,
+    ellch=1,
+    misc=[],
+):
     """
     Factory function for Tuttifrutti diagnostic stack device. Returns a device
     based on the specified components.
@@ -144,9 +169,22 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
     ttf = TuttiFrutti('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True,
                            misc=dmisc)
     """
-    cls = TuttiFruttiCls(prefix, name, nf=nf, ff=ff, spec=spec, pm=pm,
-                         diode=diode, em=em, qc=qc, pd=pd, wfs=wfs, ell=ell,
-                         ellch=ellch, misc=misc)
+    cls = TuttiFruttiCls(
+        prefix,
+        name,
+        nf=nf,
+        ff=ff,
+        spec=spec,
+        pm=pm,
+        diode=diode,
+        em=em,
+        qc=qc,
+        pd=pd,
+        wfs=wfs,
+        ell=ell,
+        ellch=ellch,
+        misc=misc,
+    )
     dev = cls(prefix, name=name)
 
     return dev

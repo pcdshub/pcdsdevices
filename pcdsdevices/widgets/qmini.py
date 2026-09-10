@@ -9,8 +9,7 @@ from functools import partial
 
 import qtawesome as qta
 from ophyd import Device
-from pydm.widgets import (PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel,
-                          PyDMLineEdit, PyDMPushButton)
+from pydm.widgets import PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel, PyDMLineEdit, PyDMPushButton
 from pydm.widgets.waveformplot import PyDMWaveformPlot, WaveformCurveItem
 from qtpy.QtCore import QTimer
 from qtpy.QtWidgets import QColorDialog, QFileDialog, QPushButton, QWidget
@@ -20,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class _QminiBaseUI(QWidget):
     """Annotations helper for QminiSpectrometerEmbedded. Do not instantiate"""
+
     plot: PyDMWaveformPlot
     hide_fit_button: QPushButton
     recolor_graph_button: QPushButton
@@ -32,6 +32,7 @@ class QminiBase:
     """
     Base functionality for QMiniSpectrometer uis
     """
+
     ui: _QminiBaseUI
     devices: list[Device]
 
@@ -39,16 +40,16 @@ class QminiBase:
         super().__init__(*args, **kwargs)
 
         self.ui.save_spectra_button.clicked.connect(self.save_data)
-        for plot in ['graph', 'fit']:
-            _button = getattr(self.ui, f'recolor_{plot}_button')
-            _button.setIcon(qta.icon('msc.symbol-color'))
-            if plot == 'graph':
-                _button.clicked.connect(partial(self.recolor_graph, 'Spectrum'))
+        for plot in ["graph", "fit"]:
+            _button = getattr(self.ui, f"recolor_{plot}_button")
+            _button.setIcon(qta.icon("msc.symbol-color"))
+            if plot == "graph":
+                _button.clicked.connect(partial(self.recolor_graph, "Spectrum"))
             else:
-                _button.clicked.connect(partial(self.recolor_graph, 'Fit'))
+                _button.clicked.connect(partial(self.recolor_graph, "Fit"))
 
         # Some properties to help us mess with the fitted curve later
-        self._fit_color = 'red'
+        self._fit_color = "red"
         self.ui.toggle_fit_button.clicked.connect(self.toggle_fit)
         self._fit_toggle = 1
 
@@ -80,18 +81,17 @@ class QminiBase:
         indicators.
         """
         if not self.device:
-            print('No device set!')
+            print("No device set!")
             return
 
         def expand_prefix(chan_address: str) -> str:
             """
             Factory function for macro expansion on `${prefix}`
             """
-            result = ''
+            result = ""
 
-            if re.search(r'\{prefix\}', chan_address):
-                result = chan_address.replace('${prefix}',
-                                              self.device.prefix)
+            if re.search(r"\{prefix\}", chan_address):
+                result = chan_address.replace("${prefix}", self.device.prefix)
             return result
 
         object_names = self.find_pydm_names()
@@ -103,25 +103,25 @@ class QminiBase:
             # explicitly set the x and y channels. `addChannel` adds a curve??
             if isinstance(widget, PyDMWaveformPlot):
                 widget.addChannel(
-                    y_channel=f'ca://{self.device.prefix}:SPECTRUM',
-                    x_channel=f'ca://{self.device.prefix}:WAVELENGTHS',
-                    color='black',
+                    y_channel=f"ca://{self.device.prefix}:SPECTRUM",
+                    x_channel=f"ca://{self.device.prefix}:WAVELENGTHS",
+                    color="black",
                     lineStyle=1,
                     lineWidth=2,
                     redraw_mode=WaveformCurveItem.REDRAW_ON_Y,
-                    yAxisName='Spectrum',
-                    name='Intensity (a.u.)'
+                    yAxisName="Spectrum",
+                    name="Intensity (a.u.)",
                 )
 
                 widget.addChannel(
-                    y_channel=f'ca://{self.device.prefix}:FIT_SPECTRUM',
-                    x_channel=f'ca://{self.device.prefix}:FIT_WAVELENGTHS',
+                    y_channel=f"ca://{self.device.prefix}:FIT_SPECTRUM",
+                    x_channel=f"ca://{self.device.prefix}:FIT_WAVELENGTHS",
                     color=self._fit_color,
                     lineStyle=1,
                     lineWidth=2,
                     redraw_mode=WaveformCurveItem.REDRAW_ON_Y,
-                    yAxisName='Fit',
-                    name='Fit Intensity (a.u.)',
+                    yAxisName="Fit",
+                    name="Fit Intensity (a.u.)",
                 )
 
                 # Toggle this off since the fit spectrum causes issues
@@ -134,10 +134,10 @@ class QminiBase:
 
             # standard channel macro expansion
             else:
-                channel = getattr(widget, 'channel')
+                channel = widget.channel
 
                 if not channel:
-                    channel = ''
+                    channel = ""
 
                 widget.set_channel(expand_prefix(channel))
 
@@ -150,15 +150,14 @@ class QminiBase:
         result : list[str]
             1D list of object names
         """
-        pydm_widgets = [PyDMPushButton, PyDMByteIndicator, PyDMLabel,
-                        PyDMLineEdit, PyDMEnumComboBox, PyDMWaveformPlot]
+        pydm_widgets = [PyDMPushButton, PyDMByteIndicator, PyDMLabel, PyDMLineEdit, PyDMEnumComboBox, PyDMWaveformPlot]
 
         result = []
 
         for obj_type in pydm_widgets:
             result += [obj.objectName() for obj in self.findChildren(obj_type)]
 
-        _omit = ['save_spectra']
+        _omit = ["save_spectra"]
 
         return [obj for obj in result if obj not in _omit]
 
@@ -203,7 +202,7 @@ class QminiBase:
 
         try:
             plot.setMinYRange(y_min)
-            plot.setMaxYRange(1.1*y_max)
+            plot.setMaxYRange(1.1 * y_max)
         except RuntimeError:
             # We must've deleted the plot without unsubscribing, do it!
             self.device.spectrum.unsubscribe(self._autorange_cid)
@@ -220,24 +219,31 @@ class QminiBase:
             # We got cold feet, abort!
             return
 
-        self.device.log.info('Saving spectrum to disk...')
+        self.device.log.info("Saving spectrum to disk...")
         # Let's format to JSON for the science folk with sinful f-string mangling
-        settings = ['sensitivity_cal', 'correct_prnu', 'correct_nonlinearity',
-                    'normalize_exposure', 'adjust_offset', 'subtract_dark',
-                    'remove_bad_pixels', 'remove_temp_bad_pixels']
+        settings = [
+            "sensitivity_cal",
+            "correct_prnu",
+            "correct_nonlinearity",
+            "normalize_exposure",
+            "adjust_offset",
+            "subtract_dark",
+            "remove_bad_pixels",
+            "remove_temp_bad_pixels",
+        ]
 
-        data = {'timestamp': time.strftime("%Y-%m-%d %H:%M:%S"),
-                'exposure (us)': self.device.exposure.get(),
-                'averages': self.device.exposures_to_average.get(),
-                # Lets do some sneaky conversion to bool from int
-                'settings': {f"{sig}": bool(getattr(self.device, sig).get())
-                             for sig in settings},
-                'wavelength (nm)': [str(x) for x in self.device.wavelengths.get()],
-                'intensity (a.u.)': [str(y) for y in self.device.spectrum.get()]
-                }
+        data = {
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "exposure (us)": self.device.exposure.get(),
+            "averages": self.device.exposures_to_average.get(),
+            # Lets do some sneaky conversion to bool from int
+            "settings": {f"{sig}": bool(getattr(self.device, sig).get()) for sig in settings},
+            "wavelength (nm)": [str(x) for x in self.device.wavelengths.get()],
+            "intensity (a.u.)": [str(y) for y in self.device.spectrum.get()],
+        }
 
         # and let's assume you have permission to save your file where you want to
-        with open(file, 'w') as _f:
+        with open(file, "w") as _f:
             _f.write(json.dumps(data, indent=4))
 
     def file_dialog(self) -> str:
@@ -251,10 +257,11 @@ class QminiBase:
 
         """
         dialog = QFileDialog(self)
-        filename = dialog.getSaveFileName(caption='Select name for file',
-                                          dir=os.getcwd(),
-                                          filter='Text files (*.txt, *.csv)',
-                                          )
+        filename = dialog.getSaveFileName(
+            caption="Select name for file",
+            dir=os.getcwd(),
+            filter="Text files (*.txt, *.csv)",
+        )
         # We don't care about the filter info, just give us the filename bro
         return filename[0]
 
@@ -293,10 +300,7 @@ class QminiBase:
                     _new_color = _old_color
 
                 self._fit_color = curve.color = _new_color
-                plot.getPlotItem().setLabel(yAxisName,
-                                            text='Intensity',
-                                            units='a.u.',
-                                            color=_new_color)
+                plot.getPlotItem().setLabel(yAxisName, text="Intensity", units="a.u.", color=_new_color)
 
     def toggle_fit(self):
         """
@@ -305,15 +309,15 @@ class QminiBase:
         plot = self.ui.plot
 
         if self._fit_toggle > 0:
-            self.ui.toggle_fit_button.setText('show')
+            self.ui.toggle_fit_button.setText("show")
             temp = 0
         else:
-            self.ui.toggle_fit_button.setText('hide')
+            self.ui.toggle_fit_button.setText("hide")
             temp = 1
 
         for curve in plot._curves:
-            if curve.y_axis_name == 'Fit':
+            if curve.y_axis_name == "Fit":
                 curve.lineStyle = temp
-                curve.lineWidth = 2*temp
+                curve.lineWidth = 2 * temp
 
         self._fit_toggle = temp

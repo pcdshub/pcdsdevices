@@ -1,6 +1,7 @@
 """
 Module for `Attenuator` and related classes.
 """
+
 import enum
 import functools
 import logging
@@ -24,13 +25,11 @@ from .device import UnrelatedComponent as UCpt
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
 from .inout import InOutPositioner, TwinCATInOutPositioner
-from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
-                        LightpathMixin)
+from .interface import BaseInterface, FltMvInterface, LightpathInOutCptMixin, LightpathMixin
 from .pmps import TwinCATStatePMPS
 from .pv_positioner import PVPositionerNoInterrupt
 from .sensors import TwinCATTempSensor
-from .signal import (InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO,
-                     PytmcSignal)
+from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO, PytmcSignal
 from .type_hints import OphydDataType, SignalToValue
 from .utils import get_status_float, get_status_value
 from .valve import VCN, VVC
@@ -82,11 +81,11 @@ class Filter(InOutPositioner):
     can instantiate these classes via the :func:`Attenuator` factory function.
     """
 
-    status = Cpt(InternalSignal, kind='normal')
-    state = Cpt(EpicsSignal, ':STATE', write_pv=':GO', kind='normal')
-    stuck = Cpt(EpicsSignal, ':IS_STUCK', kind='normal')
-    thickness = Cpt(EpicsSignal, ':THICK', kind='config')
-    material = Cpt(EpicsSignal, ':MATERIAL', kind='config')
+    status = Cpt(InternalSignal, kind="normal")
+    state = Cpt(EpicsSignal, ":STATE", write_pv=":GO", kind="normal")
+    stuck = Cpt(EpicsSignal, ":IS_STUCK", kind="normal")
+    thickness = Cpt(EpicsSignal, ":THICK", kind="config")
+    material = Cpt(EpicsSignal, ":MATERIAL", kind="config")
 
     tab_component_names = True
 
@@ -121,12 +120,12 @@ class Filter(InOutPositioner):
 class FeeFilter(InOutPositioner):
     """A single attenuation blade, as implemented in the FEE."""
 
-    status = Cpt(InternalSignal, kind='normal')
-    state = Cpt(EpicsSignal, ':STATE', write_pv=':CMD')
+    status = Cpt(InternalSignal, kind="normal")
+    state = Cpt(EpicsSignal, ":STATE", write_pv=":CMD")
 
-    states_list = ['IN', 'OUT', 'FAIL']
-    _invalid_states = ['FAIL']
-    _unknown = 'XSTN'
+    states_list = ["IN", "OUT", "FAIL"]
+    _invalid_states = ["FAIL"]
+    _unknown = "XSTN"
 
     @state.sub_value
     def _status_update(self, *args, value, **kwargs):
@@ -149,35 +148,33 @@ class AttBase(FltMvInterface, PVPositionerNoInterrupt):
     vary. You should not instantiate this class directly, but instead use the
     :func:`Attenuator` factory function.
     """
+
     # fundamental frequency components
     # Positioner Signals
-    setpoint = Cpt(EpicsSignal, ':COM:R_DES', auto_monitor=True,
-                   kind='normal')
-    readback = Cpt(EpicsSignalRO, ':COM:R_CUR', auto_monitor=True,
-                   kind='hinted')
-    actuate = Cpt(EpicsSignal, ':COM:GO', kind='omitted')
-    done = Cpt(EpicsSignalRO, ':COM:STATUS', auto_monitor=True,
-               kind='omitted')
+    setpoint = Cpt(EpicsSignal, ":COM:R_DES", auto_monitor=True, kind="normal")
+    readback = Cpt(EpicsSignalRO, ":COM:R_CUR", auto_monitor=True, kind="hinted")
+    actuate = Cpt(EpicsSignal, ":COM:GO", kind="omitted")
+    done = Cpt(EpicsSignalRO, ":COM:STATUS", auto_monitor=True, kind="omitted")
 
     # Attenuator Signals
-    energy = Cpt(EpicsSignalRO, ':COM:T_CALC.VALE', kind='normal')
-    trans_ceil = Cpt(EpicsSignalRO, ':COM:R_CEIL', kind='omitted')
-    trans_floor = Cpt(EpicsSignalRO, ':COM:R_FLOOR', kind='omitted')
-    user_energy = Cpt(EpicsSignal, ':COM:EDES', kind='omitted')
-    eget_cmd = Cpt(EpicsSignal, ':COM:EACT.SCAN', kind='omitted')
+    energy = Cpt(EpicsSignalRO, ":COM:T_CALC.VALE", kind="normal")
+    trans_ceil = Cpt(EpicsSignalRO, ":COM:R_CEIL", kind="omitted")
+    trans_floor = Cpt(EpicsSignalRO, ":COM:R_FLOOR", kind="omitted")
+    user_energy = Cpt(EpicsSignal, ":COM:EDES", kind="omitted")
+    eget_cmd = Cpt(EpicsSignal, ":COM:EACT.SCAN", kind="omitted")
 
     # Aux Signals
-    calcpend = Cpt(EpicsSignalRO, ':COM:CALCP', kind='omitted')
+    calcpend = Cpt(EpicsSignalRO, ":COM:CALCP", kind="omitted")
 
-    egu = ''  # Transmission is a unitless ratio
+    egu = ""  # Transmission is a unitless ratio
     done_value = 0
 
     # QIcon for UX
-    _icon = 'fa.barcode'
+    _icon = "fa.barcode"
     # Subscription Types
-    SUB_STATE = 'state'
+    SUB_STATE = "state"
     # Tab complete whitelist
-    tab_whitelist = ['set_energy']
+    tab_whitelist = ["set_energy"]
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
@@ -185,7 +182,7 @@ class AttBase(FltMvInterface, PVPositionerNoInterrupt):
         self._has_subscribed_state = False
         for i in range(1, MAX_FILTERS + 1):
             try:
-                self.filters.append(getattr(self, f'filter{i}'))
+                self.filters.append(getattr(self, f"filter{i}"))
             except AttributeError:
                 break
 
@@ -230,11 +227,10 @@ class AttBase(FltMvInterface, PVPositionerNoInterrupt):
         """
 
         if energy is None:
-            logger.debug('Setting %s to use live energy', self.name or self)
+            logger.debug("Setting %s to use live energy", self.name or self)
             self.eget_cmd.put(6)
         else:
-            logger.debug('Setting %s to use energy=%s',
-                         self.name, energy)
+            logger.debug("Setting %s to use energy=%s", self.name, energy)
             self.eget_cmd.put(0, use_complete=True)
             self.user_energy.put(energy)
 
@@ -318,8 +314,8 @@ class AttBase(FltMvInterface, PVPositionerNoInterrupt):
         return cid
 
     def _run_filt_state(self, *args, **kwargs):
-        kwargs.pop('sub_type')
-        kwargs.pop('obj')
+        kwargs.pop("sub_type")
+        kwargs.pop("obj")
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
     def format_status_info(self, status_info):
@@ -344,30 +340,23 @@ class AttBase(FltMvInterface, PVPositionerNoInterrupt):
         blade_states = []
         for i in range(1, MAX_FILTERS + 1):
             try:
-                filter_info = status_info[f'filter{i}']
+                filter_info = status_info[f"filter{i}"]
             except KeyError:
                 break
-            status = get_status_value(filter_info, 'status', 'value')
+            status = get_status_value(filter_info, "status", "value")
             blade_states.append(status)
 
-        states = '\n'.join(render_ascii_att(blade_states))
+        states = "\n".join(render_ascii_att(blade_states))
 
-        energy = get_status_float(
-            status_info, 'energy', 'value', scale=1e-3, precision=3)
-        energy_3rd = get_status_float(
-            status_info, 'energy_3rd', 'value', scale=1e-3, precision=3)
-        trans = get_status_float(
-            status_info, 'position', precision=4, format='E')
-        trans_3rd = get_status_float(
-            status_info, 'readback_3rd', 'value', precision=4, format='E')
+        energy = get_status_float(status_info, "energy", "value", scale=1e-3, precision=3)
+        energy_3rd = get_status_float(status_info, "energy_3rd", "value", scale=1e-3, precision=3)
+        trans = get_status_float(status_info, "position", precision=4, format="E")
+        trans_3rd = get_status_float(status_info, "readback_3rd", "value", precision=4, format="E")
 
-        if energy_3rd != 'N/A':
-            status_3rd = (
-                f'Transmission for 3rd harmonic (E={energy_3rd} keV): '
-                f'{trans_3rd}'
-            )
+        if energy_3rd != "N/A":
+            status_3rd = f"Transmission for 3rd harmonic (E={energy_3rd} keV): {trans_3rd}"
         else:
-            status_3rd = ''
+            status_3rd = ""
 
         return f"""\
 {states}
@@ -384,15 +373,16 @@ class AttBaseWith3rdHarmonic(AttBase):
     You should not instantiate this class directly, but instead use the
     :func:`Attenuator` factory function.
     """
+
     # Positioner Signals
-    setpoint_3rd = Cpt(EpicsSignal, ':COM:R3_DES', kind='normal')
-    readback_3rd = Cpt(EpicsSignalRO, ':COM:R3_CUR', kind='hinted')
+    setpoint_3rd = Cpt(EpicsSignal, ":COM:R3_DES", kind="normal")
+    readback_3rd = Cpt(EpicsSignalRO, ":COM:R3_CUR", kind="hinted")
 
     # Attenuator Signals
-    energy_3rd = Cpt(EpicsSignalRO, ':COM:T_CALC.VALH', kind='normal')
-    trans_ceil_3rd = Cpt(EpicsSignalRO, ':COM:R3_CEIL', kind='omitted')
-    trans_floor_3rd = Cpt(EpicsSignalRO, ':COM:R3_FLOOR', kind='omitted')
-    user_energy_3rd = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
+    energy_3rd = Cpt(EpicsSignalRO, ":COM:T_CALC.VALH", kind="normal")
+    trans_ceil_3rd = Cpt(EpicsSignalRO, ":COM:R3_CEIL", kind="omitted")
+    trans_floor_3rd = Cpt(EpicsSignalRO, ":COM:R3_FLOOR", kind="omitted")
+    user_energy_3rd = Cpt(EpicsSignal, ":COM:E3DES", kind="omitted")
 
 
 class AttBaseWith3rdHarmonicLP(AttBaseWith3rdHarmonic, LightpathInOutCptMixin):
@@ -402,43 +392,45 @@ class AttBaseWith3rdHarmonicLP(AttBaseWith3rdHarmonic, LightpathInOutCptMixin):
     You should not instantiate this class directly, but instead use the
     :func:`Attenuator` factory function.
     """
+
     # dummy component list to satisfy Mixin checks
-    lightpath_cpts = ['dummy']
+    lightpath_cpts = ["dummy"]
 
 
 class FeeAtt(AttBase, PVPositionerPC, LightpathInOutCptMixin):
     """Old attenuator IOC in the FEE."""
+
     # Positioner Signals
-    setpoint = Cpt(EpicsSignal, ':RDES', kind='normal')
-    readback = Cpt(EpicsSignal, ':RACT', kind='hinted')
-    actuate = Cpt(EpicsSignal, ':GO', kind='omitted')
+    setpoint = Cpt(EpicsSignal, ":RDES", kind="normal")
+    readback = Cpt(EpicsSignal, ":RACT", kind="hinted")
+    actuate = Cpt(EpicsSignal, ":GO", kind="omitted")
     done = None
 
     # Attenuator Signals
-    energy = Cpt(EpicsSignalRO, ':ETOA.E', kind='normal')
-    trans_ceil = Cpt(EpicsSignalRO, ':R_CEIL', kind='omitted')
-    trans_floor = Cpt(EpicsSignalRO, ':R_FLOOR', kind='omitted')
-    user_energy = Cpt(EpicsSignal, ':EDES', kind='omitted')
-    eget_cmd = Cpt(EpicsSignal, ':EACT.SCAN', kind='omitted')
+    energy = Cpt(EpicsSignalRO, ":ETOA.E", kind="normal")
+    trans_ceil = Cpt(EpicsSignalRO, ":R_CEIL", kind="omitted")
+    trans_floor = Cpt(EpicsSignalRO, ":R_FLOOR", kind="omitted")
+    user_energy = Cpt(EpicsSignal, ":EDES", kind="omitted")
+    eget_cmd = Cpt(EpicsSignal, ":EACT.SCAN", kind="omitted")
 
     # status = None
     calcpend = Cpt(Signal, value=0)
 
     # Hardcode filters for FEE, because there is only one.
-    filter1 = FCpt(FeeFilter, '{self._filter_prefix}1')
-    filter2 = FCpt(FeeFilter, '{self._filter_prefix}2')
-    filter3 = FCpt(FeeFilter, '{self._filter_prefix}3')
-    filter4 = FCpt(FeeFilter, '{self._filter_prefix}4')
-    filter5 = FCpt(FeeFilter, '{self._filter_prefix}5')
-    filter6 = FCpt(FeeFilter, '{self._filter_prefix}6')
-    filter7 = FCpt(FeeFilter, '{self._filter_prefix}7')
-    filter8 = FCpt(FeeFilter, '{self._filter_prefix}8')
-    filter9 = FCpt(FeeFilter, '{self._filter_prefix}9')
+    filter1 = FCpt(FeeFilter, "{self._filter_prefix}1")
+    filter2 = FCpt(FeeFilter, "{self._filter_prefix}2")
+    filter3 = FCpt(FeeFilter, "{self._filter_prefix}3")
+    filter4 = FCpt(FeeFilter, "{self._filter_prefix}4")
+    filter5 = FCpt(FeeFilter, "{self._filter_prefix}5")
+    filter6 = FCpt(FeeFilter, "{self._filter_prefix}6")
+    filter7 = FCpt(FeeFilter, "{self._filter_prefix}7")
+    filter8 = FCpt(FeeFilter, "{self._filter_prefix}8")
+    filter9 = FCpt(FeeFilter, "{self._filter_prefix}9")
     num_att = 9
 
-    lightpath_cpts = [f'filter{x}' for x in range(1, 10)]
+    lightpath_cpts = [f"filter{x}" for x in range(1, 10)]
 
-    def __init__(self, prefix='SATT:FEE1:320', *, name='FeeAtt', **kwargs):
+    def __init__(self, prefix="SATT:FEE1:320", *, name="FeeAtt", **kwargs):
         self._filter_prefix = prefix[:-1]
         super().__init__(prefix, name=name, **kwargs)
 
@@ -449,24 +441,20 @@ def _make_att_classes(max_filters, base_with_3rd_harmonic, name):
     for i in range(1, max_filters + 1):
         att_ns = {}
         for n in range(1, i + 1):
-            comp = Cpt(Filter, f':{n:02}')
-            att_ns[f'filter{n}'] = comp
+            comp = Cpt(Filter, f":{n:02}")
+            att_ns[f"filter{n}"] = comp
 
         if issubclass(base_with_3rd_harmonic, LightpathInOutCptMixin):
-            att_ns['lightpath_cpts'] = [
-                f'filter{i}' for i in range(1, i + 1)
-            ]
-        cls_name = f'{name}{i}'
+            att_ns["lightpath_cpts"] = [f"filter{i}" for i in range(1, i + 1)]
+        cls_name = f"{name}{i}"
         cls = type(cls_name, (base_with_3rd_harmonic,), att_ns)
         cls.num_att = i
         att_classes[i] = cls
     return att_classes
 
 
-_att_classes = _make_att_classes(
-    MAX_FILTERS, AttBaseWith3rdHarmonic, 'Attenuator')
-_lightpath_att_classes = _make_att_classes(
-    MAX_FILTERS, AttBaseWith3rdHarmonicLP, 'Attenuator')
+_att_classes = _make_att_classes(MAX_FILTERS, AttBaseWith3rdHarmonic, "Attenuator")
+_lightpath_att_classes = _make_att_classes(MAX_FILTERS, AttBaseWith3rdHarmonicLP, "Attenuator")
 
 
 def Attenuator(prefix, n_filters, *, name, **kwargs):
@@ -490,14 +478,14 @@ def Attenuator(prefix, n_filters, *, name, **kwargs):
     name : str
         An identifying name for the attenuator.
     """
-    if 'input_branches' in kwargs:
+    if "input_branches" in kwargs:
         cls = _lightpath_att_classes[n_filters]
     else:
         cls = _att_classes[n_filters]
     return cls(prefix, name=name, **kwargs)
 
 
-'''
+"""
 # WIP
 def set_combined_attenuation(attenuation, *attenuators):
     for i in range(len(attenuators)):
@@ -505,7 +493,7 @@ def set_combined_attenuation(attenuation, *attenuators):
             attenuators[i].actuate_value(force_ceil=True)
         else:
             attenuators[i].actuate_value()
-'''
+"""
 
 
 class FEESolidAttenuatorStates(TwinCATInOutPositioner):
@@ -515,6 +503,7 @@ class FEESolidAttenuatorStates(TwinCATInOutPositioner):
     Defines the state count as 2 (OUT and IN) to limit the number of
     config PVs we connect to.
     """
+
     config = UpCpt(state_count=2)
 
 
@@ -525,6 +514,7 @@ class SXRLadderAttenuatorStates(TwinCATInOutPositioner):
     Defines the state count as 9 (OUT and 8 targets) to limit the
     number of config PVs we connect to.
     """
+
     config = UpCpt(state_count=9)
 
 
@@ -534,8 +524,9 @@ class FEESolidAttenuatorBlade(BaseInterface, Device):
 
     This includes the binary in/out state and a raw motor.
     """
-    state = Cpt(FEESolidAttenuatorStates, ':STATE')
-    motor = Cpt(BeckhoffAxisNoOffset, '')
+
+    state = Cpt(FEESolidAttenuatorStates, ":STATE")
+    motor = Cpt(BeckhoffAxisNoOffset, "")
 
 
 class SXRLadderAttenuatorBlade(FEESolidAttenuatorBlade):
@@ -544,7 +535,8 @@ class SXRLadderAttenuatorBlade(FEESolidAttenuatorBlade):
 
     This includes the out/8 targets state and a raw motor.
     """
-    state = Cpt(SXRLadderAttenuatorStates, ':STATE')
+
+    state = Cpt(SXRLadderAttenuatorStates, ":STATE")
 
 
 class GasAttenuator(BaseInterface, Device):
@@ -565,43 +557,50 @@ class GasAttenuator(BaseInterface, Device):
     represents the gas attenuators present at this time.
     """
 
-    not_implemented = Cpt(SignalRO, name="Not Implemented",
-                          value="Not Implemented", kind='normal')
+    not_implemented = Cpt(SignalRO, name="Not Implemented", value="Not Implemented", kind="normal")
 
 
 class AttenuatorCalculatorFilter(BaseInterface, Device):
-    material = Cpt(
-        EpicsSignal, 'Material', kind='hinted', string=True,
-        doc='The material formula (e.g., Si, C)'
-    )
+    material = Cpt(EpicsSignal, "Material", kind="hinted", string=True, doc="The material formula (e.g., Si, C)")
     thickness = Cpt(
-        EpicsSignal, 'Thickness', kind='hinted',
-        doc='Thickness in micron',
+        EpicsSignal,
+        "Thickness",
+        kind="hinted",
+        doc="Thickness in micron",
     )
     active = Cpt(
-        EpicsSignal, 'Active', kind='normal',
-        doc='Should the filter be used in calculations?',
+        EpicsSignal,
+        "Active",
+        kind="normal",
+        doc="Should the filter be used in calculations?",
     )
     is_stuck = Cpt(
-        EpicsSignal, 'IsStuck', kind='hinted',
-        doc='Is the filter stuck / unusable?',
+        EpicsSignal,
+        "IsStuck",
+        kind="hinted",
+        doc="Is the filter stuck / unusable?",
     )
     closest_energy = Cpt(
-        EpicsSignalRO, 'ClosestEnergy_RBV', kind='config',
-        doc='Closest tabulated energy available to the requested one',
+        EpicsSignalRO,
+        "ClosestEnergy_RBV",
+        kind="config",
+        doc="Closest tabulated energy available to the requested one",
     )
-    transmission = Cpt(EpicsSignalRO, 'Transmission_RBV', kind='normal',
-                       doc='Normalized transmission at the reported energy',
-                       )
-    set_metadata(transmission, dict(variety='scalar',
-                                    display_format='exponential'))
+    transmission = Cpt(
+        EpicsSignalRO,
+        "Transmission_RBV",
+        kind="normal",
+        doc="Normalized transmission at the reported energy",
+    )
+    set_metadata(transmission, dict(variety="scalar", display_format="exponential"))
 
     transmission_3omega = Cpt(
-        EpicsSignalRO, 'Transmission3Omega_RBV', kind='normal',
-        doc='Normalized transmission at 3 * the reported energy',
+        EpicsSignalRO,
+        "Transmission3Omega_RBV",
+        kind="normal",
+        doc="Normalized transmission at 3 * the reported energy",
     )
-    set_metadata(transmission_3omega, dict(variety='scalar',
-                                           display_format='exponential'))
+    set_metadata(transmission_3omega, dict(variety="scalar", display_format="exponential"))
 
     def __init__(self, *args, index, **kwargs):
         super().__init__(*args, **kwargs)
@@ -612,119 +611,153 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
     """Base class for new-style caproto IOC attenuator calculator devices."""
 
     # QIcon for UX
-    _icon = 'fa.barcode'
+    _icon = "fa.barcode"
 
     calc_mode = Cpt(
-        EpicsSignal, ':SYS:CalcMode', kind='config', string=True,
-        doc='Floor or Ceiling calculation',
+        EpicsSignal,
+        ":SYS:CalcMode",
+        kind="config",
+        string=True,
+        doc="Floor or Ceiling calculation",
     )
 
     energy_source = Cpt(
-        EpicsSignal, ':SYS:EnergySource', kind='config', string=True,
-        doc='Use beamline photon energy or custom energy?',
+        EpicsSignal,
+        ":SYS:EnergySource",
+        kind="config",
+        string=True,
+        doc="Use beamline photon energy or custom energy?",
     )
 
     energy_custom = Cpt(
-        EpicsSignal, ':SYS:CustomPhotonEnergy', kind='config',
-        doc='Custom energy to use for calculations [eV]',
+        EpicsSignal,
+        ":SYS:CustomPhotonEnergy",
+        kind="config",
+        doc="Custom energy to use for calculations [eV]",
     )
 
     energy_actual = Cpt(
-        EpicsSignalRO, ':SYS:ActualPhotonEnergy_RBV', kind='normal',
-        doc='The reported beamline photon energy [eV]',
+        EpicsSignalRO,
+        ":SYS:ActualPhotonEnergy_RBV",
+        kind="normal",
+        doc="The reported beamline photon energy [eV]",
     )
 
     actual_transmission = Cpt(
-        EpicsSignalRO, ':SYS:ActualTransmission_RBV', kind='normal',
-        doc='Actual normalized transmission value',
+        EpicsSignalRO,
+        ":SYS:ActualTransmission_RBV",
+        kind="normal",
+        doc="Actual normalized transmission value",
     )
-    set_metadata(actual_transmission,
-                 dict(variety='scalar', display_format='exponential'))
+    set_metadata(actual_transmission, dict(variety="scalar", display_format="exponential"))
 
     actual_transmission_3omega = Cpt(
-        EpicsSignalRO, ':SYS:Actual3OmegaTransmission_RBV', kind='normal',
-        doc='Actual 3 omega normalized transmission value',
+        EpicsSignalRO,
+        ":SYS:Actual3OmegaTransmission_RBV",
+        kind="normal",
+        doc="Actual 3 omega normalized transmission value",
     )
-    set_metadata(actual_transmission_3omega,
-                 dict(variety='scalar', display_format='exponential'))
+    set_metadata(actual_transmission_3omega, dict(variety="scalar", display_format="exponential"))
 
     desired_transmission = Cpt(
-        EpicsSignal, ':SYS:DesiredTransmission', kind='normal',
-        doc='Desired normalized transmission value',
+        EpicsSignal,
+        ":SYS:DesiredTransmission",
+        kind="normal",
+        doc="Desired normalized transmission value",
     )
-    set_metadata(desired_transmission, dict(variety='scalar',
-                                            display_format='exponential'))
+    set_metadata(desired_transmission, dict(variety="scalar", display_format="exponential"))
 
     last_energy = Cpt(
-        EpicsSignalRO, ':SYS:LastPhotonEnergy_RBV', kind='config',
-        doc=('The photon energy used for the previous calculation; i.e., '
-             'the one that goes along with `best_config`.'),
+        EpicsSignalRO,
+        ":SYS:LastPhotonEnergy_RBV",
+        kind="config",
+        doc=("The photon energy used for the previous calculation; i.e., the one that goes along with `best_config`."),
     )
 
     # NOTE: this variant exists as well but duplicates the bitmask information:
     best_config = Cpt(
-        EpicsSignalRO, ':SYS:BestConfiguration_RBV', kind='normal',
-        doc='The best configuration of filters for the desired transmission',
+        EpicsSignalRO,
+        ":SYS:BestConfiguration_RBV",
+        kind="normal",
+        doc="The best configuration of filters for the desired transmission",
     )
     # set_metadata(best_config, dict(variety='array-nd'))
     # # TODO: array-tabular would be nice, but does not work in typhos yet
 
     best_config_bitmask = Cpt(
-        EpicsSignalRO, ':SYS:BestConfigurationBitmask_RBV', kind='normal',
-        doc='The best configuration of filters for the desired transmission.',
+        EpicsSignalRO,
+        ":SYS:BestConfigurationBitmask_RBV",
+        kind="normal",
+        doc="The best configuration of filters for the desired transmission.",
     )
-    set_metadata(best_config_bitmask, dict(variety='bitmask', bits=18))
+    set_metadata(best_config_bitmask, dict(variety="bitmask", bits=18))
     # TODO: array-tabular would be nice, but does not work in typhos yet
 
     best_config_error = Cpt(
-        EpicsSignalRO, ':SYS:BestConfigError_RBV', kind='normal',
-        doc='Desired to calculated transmission error',
+        EpicsSignalRO,
+        ":SYS:BestConfigError_RBV",
+        kind="normal",
+        doc="Desired to calculated transmission error",
     )
 
     # NOTE: this variant exists as well but duplicates the bitmask information:
     active_config = Cpt(
-        EpicsSignalRO, ':SYS:ActiveConfiguration_RBV', kind='omitted',
-        doc='Where the filters are now',
+        EpicsSignalRO,
+        ":SYS:ActiveConfiguration_RBV",
+        kind="omitted",
+        doc="Where the filters are now",
     )
     # set_metadata(active_config, dict(variety='array-nd'))
     # TODO: array-tabular would be nice, but does not work in typhos yet
 
     active_config_bitmask = Cpt(
-        EpicsSignalRO, ':SYS:ActiveConfigurationBitmask_RBV', kind='normal',
-        doc='Where the filters are now (as an integer)',
+        EpicsSignalRO,
+        ":SYS:ActiveConfigurationBitmask_RBV",
+        kind="normal",
+        doc="Where the filters are now (as an integer)",
     )
-    set_metadata(active_config_bitmask, dict(variety='bitmask', bits=18))
+    set_metadata(active_config_bitmask, dict(variety="bitmask", bits=18))
 
     # NOTE: this variant exists as well but duplicates the bitmask information:
     filters_moving = Cpt(
-        EpicsSignalRO, ':SYS:FiltersMoving_RBV', kind='normal',
-        doc='Filter-by-filter motion status (1 if moving)',
+        EpicsSignalRO,
+        ":SYS:FiltersMoving_RBV",
+        kind="normal",
+        doc="Filter-by-filter motion status (1 if moving)",
     )
     # set_metadata(filters_moving, dict(variety='array-nd'))
 
     filters_moving_bitmask = Cpt(
-        EpicsSignalRO, ':SYS:FiltersMovingBitmask_RBV', kind='normal',
-        doc='Filter-by-filter motion status as a bitmask',
+        EpicsSignalRO,
+        ":SYS:FiltersMovingBitmask_RBV",
+        kind="normal",
+        doc="Filter-by-filter motion status as a bitmask",
     )
-    set_metadata(filters_moving_bitmask, dict(variety='bitmask', bits=18))
+    set_metadata(filters_moving_bitmask, dict(variety="bitmask", bits=18))
 
     run_calculation = Cpt(
-        EpicsSignal, ':SYS:Run', kind='config',
-        doc='Start the calculation',
+        EpicsSignal,
+        ":SYS:Run",
+        kind="config",
+        doc="Start the calculation",
     )
-    set_metadata(run_calculation, dict(variety='command-proc', value=1))
+    set_metadata(run_calculation, dict(variety="command-proc", value=1))
 
     apply_config = Cpt(
-        EpicsSignal, ':SYS:ApplyConfiguration', kind='config',
-        doc='Apply the best configuration (i.e., move the filters)',
+        EpicsSignal,
+        ":SYS:ApplyConfiguration",
+        kind="config",
+        doc="Apply the best configuration (i.e., move the filters)",
     )
-    set_metadata(apply_config, dict(variety='command-proc', value=1))
+    set_metadata(apply_config, dict(variety="command-proc", value=1))
 
     moving = Cpt(
-        EpicsSignalRO, ':SYS:Moving_RBV', kind='config',
-        doc='Are filters being moved in/out?',
+        EpicsSignalRO,
+        ":SYS:Moving_RBV",
+        kind="config",
+        doc="Are filters being moved in/out?",
     )
-    set_metadata(moving, dict(variety='bitmask', bits=1))
+    set_metadata(moving, dict(variety="bitmask", bits=1))
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
@@ -734,8 +767,7 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
             filter_parent = self
 
         self.filters_by_index = {
-            index: getattr(filter_parent, attr)
-            for index, attr in self._filter_index_to_attr.items()
+            index: getattr(filter_parent, attr) for index, attr in self._filter_index_to_attr.items()
         }
 
     def get_active_config(self, **kwargs):
@@ -772,12 +804,12 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
         """
 
         if energy is not None:
-            self.energy_source.put('Custom')
+            self.energy_source.put("Custom")
             self.energy_custom.put(float(energy))
         else:
-            self.energy_source.put('Actual')
+            self.energy_source.put("Actual")
 
-        self.calc_mode.put('Floor' if use_floor else 'Ceiling')
+        self.calc_mode.put("Floor" if use_floor else "Ceiling")
         self.desired_transmission.put(transmission)
         self.run_calculation.put(1, wait=True)
         return self.get_best_config(use_monitor=False)
@@ -800,20 +832,16 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
     first_filter = 2
     num_filters = 18
     # "filters" DDC holds all the individual components:
-    _filter_parent = 'filters'
-    _filter_index_to_attr = {
-        idx: f'filter_{idx:02d}' for idx in range(first_filter,
-                                                  num_filters + first_filter)
-    }
+    _filter_parent = "filters"
+    _filter_index_to_attr = {idx: f"filter_{idx:02d}" for idx in range(first_filter, num_filters + first_filter)}
 
     # Creates filters from 2 to num_filters, with attributes filter_02 and so
     # on.
     filters = DDC(
-        {attr: (AttenuatorCalculatorFilter,
-                f':FILTER:{idx:02d}:',
-                {'index': idx})
-         for idx, attr in _filter_index_to_attr.items()
-         }
+        {
+            attr: (AttenuatorCalculatorFilter, f":FILTER:{idx:02d}:", {"index": idx})
+            for idx, attr in _filter_index_to_attr.items()
+        }
     )
 
     def format_status_info(self, status_info):
@@ -821,17 +849,17 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
         Override status info handler to render the attenuator.
         """
         table = utils.format_status_table(
-            status_info.get('filters', {}),
+            status_info.get("filters", {}),
             row_to_key=self._filter_index_to_attr,
             column_to_key={
-                'Active': 'active',
-                'Material': 'material',
-                'Thickness [um]': 'thickness',
-                'Stuck': 'is_stuck',
-                'Transmission': 'transmission',
-                'Transmission 3 Omega': 'transmission_3omega',
+                "Active": "active",
+                "Material": "material",
+                "Thickness [um]": "thickness",
+                "Stuck": "is_stuck",
+                "Transmission": "transmission",
+                "Transmission 3 Omega": "transmission_3omega",
             },
-            row_identifier='Filter',
+            row_identifier="Filter",
         )
 
         return str(table)
@@ -842,70 +870,67 @@ class AttenuatorCalculatorSXR_Blade(AttenuatorCalculatorFilter):
     """
     A single blade, holding up to 8 filters.
     """
+
     tab_component_names = True
-    filter_01 = Cpt(AttenuatorCalculatorFilter, 'FILTER:01:', index=1)
-    filter_02 = Cpt(AttenuatorCalculatorFilter, 'FILTER:02:', index=2)
-    filter_03 = Cpt(AttenuatorCalculatorFilter, 'FILTER:03:', index=3)
-    filter_04 = Cpt(AttenuatorCalculatorFilter, 'FILTER:04:', index=4)
-    filter_05 = Cpt(AttenuatorCalculatorFilter, 'FILTER:05:', index=5)
-    filter_06 = Cpt(AttenuatorCalculatorFilter, 'FILTER:06:', index=6)
-    filter_07 = Cpt(AttenuatorCalculatorFilter, 'FILTER:07:', index=7)
-    filter_08 = Cpt(AttenuatorCalculatorFilter, 'FILTER:08:', index=8)
-    inserted_filter_index = Cpt(EpicsSignalRO, 'InsertedFilter_RBV',
-                                kind='normal')
+    filter_01 = Cpt(AttenuatorCalculatorFilter, "FILTER:01:", index=1)
+    filter_02 = Cpt(AttenuatorCalculatorFilter, "FILTER:02:", index=2)
+    filter_03 = Cpt(AttenuatorCalculatorFilter, "FILTER:03:", index=3)
+    filter_04 = Cpt(AttenuatorCalculatorFilter, "FILTER:04:", index=4)
+    filter_05 = Cpt(AttenuatorCalculatorFilter, "FILTER:05:", index=5)
+    filter_06 = Cpt(AttenuatorCalculatorFilter, "FILTER:06:", index=6)
+    filter_07 = Cpt(AttenuatorCalculatorFilter, "FILTER:07:", index=7)
+    filter_08 = Cpt(AttenuatorCalculatorFilter, "FILTER:08:", index=8)
+    inserted_filter_index = Cpt(EpicsSignalRO, "InsertedFilter_RBV", kind="normal")
 
     _filter_index_to_attr = {
-        1: 'filter_01',
-        2: 'filter_02',
-        3: 'filter_03',
-        4: 'filter_04',
-        5: 'filter_05',
-        6: 'filter_06',
-        7: 'filter_07',
-        8: 'filter_08',
+        1: "filter_01",
+        2: "filter_02",
+        3: "filter_03",
+        4: "filter_04",
+        5: "filter_05",
+        6: "filter_06",
+        7: "filter_07",
+        8: "filter_08",
     }
 
     def format_status_info(self, status_info):
         """
         Override status info handler to render the attenuator blade.
         """
-        inserted_filter = get_status_value(
-            status_info, 'inserted_filter_index', 'value')
-        material = get_status_value(status_info, 'material', 'value')
-        thickness = get_status_value(status_info, 'thickness', 'value')
-        transmission = get_status_value(
-            status_info, 'transmission', 'value', default_value=0.0)
-        transmission3 = get_status_value(
-            status_info, 'transmission_3omega', 'value', default_value=0.0)
+        inserted_filter = get_status_value(status_info, "inserted_filter_index", "value")
+        material = get_status_value(status_info, "material", "value")
+        thickness = get_status_value(status_info, "thickness", "value")
+        transmission = get_status_value(status_info, "transmission", "value", default_value=0.0)
+        transmission3 = get_status_value(status_info, "transmission_3omega", "value", default_value=0.0)
         table = utils.format_status_table(
             status_info,
             row_to_key=self._filter_index_to_attr,
             column_to_key={
-                'Active': 'active',
-                'Material': 'material',
-                'Thickness [um]': 'thickness',
-                'Stuck': 'is_stuck',
-                'Transmission': 'transmission',
-                'Transmission 3 Omega': 'transmission_3omega',
+                "Active": "active",
+                "Material": "material",
+                "Thickness [um]": "thickness",
+                "Stuck": "is_stuck",
+                "Transmission": "transmission",
+                "Transmission 3 Omega": "transmission_3omega",
             },
-            row_identifier='Filter',
+            row_identifier="Filter",
         )
 
         if inserted_filter is not None and inserted_filter > 1:
             # Subtract 1 from the filter to match state -> filter index
             inserted_info = (
-                f'Inserted filter: #{inserted_filter - 1} ('
-                f'{material} {thickness} um T={transmission} '
-                f'T3={transmission3})'
+                f"Inserted filter: #{inserted_filter - 1} ("
+                f"{material} {thickness} um T={transmission} "
+                f"T3={transmission3})"
             )
         else:
-            inserted_info = 'Inserted filter: None'
+            inserted_info = "Inserted filter: None"
 
-        return f'''\
+        return f"""\
 {inserted_info}
 
 {table}
-'''
+"""
 
 
 class AttenuatorCalculatorSXR_TwoBlade(AttenuatorCalculatorBase):
@@ -927,19 +952,21 @@ class AttenuatorCalculatorSXR_TwoBlade(AttenuatorCalculatorBase):
     # Not using "DDC" here, so the parent is `self`:
     _filter_parent = None
     _filter_index_to_attr = {
-        1: 'blade_01',
-        2: 'blade_02',
+        1: "blade_01",
+        2: "blade_02",
     }
 
-    blade_01 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:01:', index=1)
-    blade_02 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:02:', index=2)
+    blade_01 = Cpt(AttenuatorCalculatorSXR_Blade, ":AXIS:01:", index=1)
+    blade_02 = Cpt(AttenuatorCalculatorSXR_Blade, ":AXIS:02:", index=2)
 
     def format_status_info(self, status_info):
         """
         Override status info handler to render the attenuator.
         """
         return utils.combine_status_info(
-            self, status_info, self._filter_index_to_attr.values(),
+            self,
+            status_info,
+            self._filter_index_to_attr.values(),
         )
 
 
@@ -962,28 +989,29 @@ class AttenuatorCalculatorSXR_FourBlade(AttenuatorCalculatorBase):
     # Not using "DDC" here, so the parent is `self`:
     _filter_parent = None
     _filter_index_to_attr = {
-        1: 'blade_01',
-        2: 'blade_02',
-        3: 'blade_03',
-        4: 'blade_04',
+        1: "blade_01",
+        2: "blade_02",
+        3: "blade_03",
+        4: "blade_04",
     }
 
-    blade_01 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:01:', index=1)
-    blade_02 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:02:', index=2)
-    blade_03 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:03:', index=3)
-    blade_04 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:04:', index=4)
+    blade_01 = Cpt(AttenuatorCalculatorSXR_Blade, ":AXIS:01:", index=1)
+    blade_02 = Cpt(AttenuatorCalculatorSXR_Blade, ":AXIS:02:", index=2)
+    blade_03 = Cpt(AttenuatorCalculatorSXR_Blade, ":AXIS:03:", index=3)
+    blade_04 = Cpt(AttenuatorCalculatorSXR_Blade, ":AXIS:04:", index=4)
 
     def format_status_info(self, status_info):
         """
         Override status info handler to render the attenuator.
         """
         return utils.combine_status_info(
-            self, status_info, self._filter_index_to_attr.values(),
+            self,
+            status_info,
+            self._filter_index_to_attr.values(),
         )
 
 
-class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
-                           LightpathMixin):
+class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC, LightpathMixin):
     """
     Ladder-style solid attenuator variant from the LCLS-II L2SI project.
 
@@ -1004,24 +1032,23 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
     """
 
     # QIcon for UX
-    _icon = 'fa.barcode'
+    _icon = "fa.barcode"
     tab_component_names = True
 
     # Register that all blades are needed for lightpath calc
-    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 5)]
+    lightpath_cpts = [f"blade_{idx:02}.state.state" for idx in range(1, 5)]
 
     # Summary for lightpath view
-    num_in = Cpt(InternalSignal, kind='hinted')
-    num_out = Cpt(InternalSignal, kind='hinted')
+    num_in = Cpt(InternalSignal, kind="hinted")
+    num_out = Cpt(InternalSignal, kind="hinted")
 
     calculator = UCpt(AttenuatorCalculatorSXR_FourBlade)
-    blade_01 = Cpt(SXRLadderAttenuatorBlade, ':MMS:01')
-    blade_02 = Cpt(SXRLadderAttenuatorBlade, ':MMS:02')
-    blade_03 = Cpt(SXRLadderAttenuatorBlade, ':MMS:03')
-    blade_04 = Cpt(SXRLadderAttenuatorBlade, ':MMS:04')
+    blade_01 = Cpt(SXRLadderAttenuatorBlade, ":MMS:01")
+    blade_02 = Cpt(SXRLadderAttenuatorBlade, ":MMS:02")
+    blade_03 = Cpt(SXRLadderAttenuatorBlade, ":MMS:03")
+    blade_04 = Cpt(SXRLadderAttenuatorBlade, ":MMS:04")
 
-    flow_meter = Cpt(FDQ, '', kind='normal',
-                     doc='Device that measures PCW Flow Rate.')
+    flow_meter = Cpt(FDQ, "", kind="normal", doc="Device that measures PCW Flow Rate.")
 
     def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
@@ -1062,8 +1089,8 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
             lp_sigs = self.lightpath_summary._signals.keys()
             for sig in lp_sigs:
                 # want to get name of blade_0x from dev_blade_0x_state_state
-                cpt_name = sig.name.removeprefix(self.name + '_')
-                cpt_name = cpt_name.removesuffix('_state_state')
+                cpt_name = sig.name.removeprefix(self.name + "_")
+                cpt_name = cpt_name.removesuffix("_state_state")
                 lightpath_kwargs[cpt_name] = sig.get()
 
             self._cached_state = self.calc_lightpath_state(**lightpath_kwargs)
@@ -1082,14 +1109,9 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
                 # This would prevent make check_inserted, etc. fail
                 if self._retry_lightpath:
                     self._retry_lightpath = False
-                    utils.schedule_task(self._calc_cache_lightpath_state,
-                                        delay=2.0)
+                    utils.schedule_task(self._calc_cache_lightpath_state, delay=2.0)
 
-                return LightpathState(
-                    inserted=True,
-                    removed=True,
-                    output={self.output_branches[0]: 1}
-                )
+                return LightpathState(inserted=True, removed=True, output={self.output_branches[0]: 1})
 
             self._retry_lightpath = True
             # get state of the InOutPositioner and check status
@@ -1098,51 +1120,54 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
             trans_check.append(obj.check_transmission(sig_value))
         self._inserted = any(in_check)
         self._removed = all(out_check)
-        self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
+        self._transmission = functools.reduce(lambda a, b: a * b, trans_check)
 
         self.num_in.put(in_check.count(True), force=True)
         self.num_out.put(out_check.count(True), force=True)
         return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: self._transmission}
+            inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: self._transmission}
         )
 
     def format_status_info(self, status_info):
         """
         Override status info handler to render the attenuator.
         """
-        calc_status = status_info.get('calculator', {})
+        calc_status = status_info.get("calculator", {})
         transmission = get_status_float(
-            calc_status, 'actual_transmission', 'value',
-            format='E', precision=3,
+            calc_status,
+            "actual_transmission",
+            "value",
+            format="E",
+            precision=3,
         )
         transmission_3 = get_status_float(
-            calc_status, 'actual_transmission_3omega', 'value',
-            format='E', precision=3,
+            calc_status,
+            "actual_transmission_3omega",
+            "value",
+            format="E",
+            precision=3,
         )
         energy = get_status_float(
-            calc_status, 'energy_actual', 'value',
+            calc_status,
+            "energy_actual",
+            "value",
             scale=1e-3,
         )
         energy_3 = get_status_float(
-            calc_status, 'energy_actual', 'value',
+            calc_status,
+            "energy_actual",
+            "value",
             scale=3 * 1e-3,
         )
-        blade_names = [cpt.split('.', 1)[0] for cpt in self.lightpath_cpts]
+        blade_names = [cpt.split(".", 1)[0] for cpt in self.lightpath_cpts]
         cpt_states = [
-            get_status_value(
-                status_info, cpt, 'state', 'state', 'value',
-                default_value=0
-            )
-            for cpt in blade_names
+            get_status_value(status_info, cpt, "state", "state", "value", default_value=0) for cpt in blade_names
         ]
 
         table = prettytable.PrettyTable()
-        table.field_names = ['State'] + list(blade_names)
+        table.field_names = ["State"] + list(blade_names)
         for state in LadderBladeState:
-            row = [state.name] + ['X' if cpt_state == state.value else ''
-                                  for cpt_state in cpt_states]
+            row = [state.name] + ["X" if cpt_state == state.value else "" for cpt_state in cpt_states]
             table.add_row(row)
 
         return f"""
@@ -1152,8 +1177,7 @@ Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
 """
 
 
-class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
-                                      LightpathMixin):
+class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC, LightpathMixin):
     """
     Ladder-style solid attenuator variant from the LCLS-II L2SI project.
 
@@ -1175,24 +1199,23 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
     """
 
     # QIcon for UX
-    _icon = 'fa.barcode'
+    _icon = "fa.barcode"
     tab_component_names = True
 
     # Register that all blades are needed for lightpath calc
-    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 4)]
+    lightpath_cpts = [f"blade_{idx:02}.state.state" for idx in range(1, 4)]
 
     # Summary for lightpath view
-    num_in = Cpt(InternalSignal, kind='hinted')
-    num_out = Cpt(InternalSignal, kind='hinted')
+    num_in = Cpt(InternalSignal, kind="hinted")
+    num_out = Cpt(InternalSignal, kind="hinted")
 
     calculator = UCpt(AttenuatorCalculatorSXR_TwoBlade)
-    blade_01 = Cpt(SXRLadderAttenuatorBlade, ':MMS:01')
-    blade_02 = Cpt(SXRLadderAttenuatorBlade, ':MMS:02')
+    blade_01 = Cpt(SXRLadderAttenuatorBlade, ":MMS:01")
+    blade_02 = Cpt(SXRLadderAttenuatorBlade, ":MMS:02")
     # LBD Stage
-    blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
+    blade_03 = Cpt(FEESolidAttenuatorBlade, ":MMS:03")
 
-    flow_meter = Cpt(FDQ, '', kind='normal',
-                     doc='Device that measures PCW Flow Rate.')
+    flow_meter = Cpt(FDQ, "", kind="normal", doc="Device that measures PCW Flow Rate.")
 
     def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
@@ -1233,8 +1256,8 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
             lp_sigs = self.lightpath_summary._signals.keys()
             for sig in lp_sigs:
                 # want to get name of blade_0x from dev_blade_0x_state_state
-                cpt_name = sig.name.removeprefix(self.name + '_')
-                cpt_name = cpt_name.removesuffix('_state_state')
+                cpt_name = sig.name.removeprefix(self.name + "_")
+                cpt_name = cpt_name.removesuffix("_state_state")
                 lightpath_kwargs[cpt_name] = sig.get()
 
             self._cached_state = self.calc_lightpath_state(**lightpath_kwargs)
@@ -1253,14 +1276,9 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
                 # This would prevent make check_inserted, etc. fail
                 if self._retry_lightpath:
                     self._retry_lightpath = False
-                    utils.schedule_task(self._calc_cache_lightpath_state,
-                                        delay=2.0)
+                    utils.schedule_task(self._calc_cache_lightpath_state, delay=2.0)
 
-                return LightpathState(
-                    inserted=True,
-                    removed=True,
-                    output={self.output_branches[0]: 1}
-                )
+                return LightpathState(inserted=True, removed=True, output={self.output_branches[0]: 1})
 
             self._retry_lightpath = True
             # get state of the InOutPositioner and check status
@@ -1269,51 +1287,54 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
             trans_check.append(obj.check_transmission(sig_value))
         self._inserted = any(in_check)
         self._removed = all(out_check)
-        self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
+        self._transmission = functools.reduce(lambda a, b: a * b, trans_check)
 
         self.num_in.put(in_check.count(True), force=True)
         self.num_out.put(out_check.count(True), force=True)
         return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: self._transmission}
+            inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: self._transmission}
         )
 
     def format_status_info(self, status_info):
         """
         Override status info handler to render the attenuator.
         """
-        calc_status = status_info.get('calculator', {})
+        calc_status = status_info.get("calculator", {})
         transmission = get_status_float(
-            calc_status, 'actual_transmission', 'value',
-            format='E', precision=3,
+            calc_status,
+            "actual_transmission",
+            "value",
+            format="E",
+            precision=3,
         )
         transmission_3 = get_status_float(
-            calc_status, 'actual_transmission_3omega', 'value',
-            format='E', precision=3,
+            calc_status,
+            "actual_transmission_3omega",
+            "value",
+            format="E",
+            precision=3,
         )
         energy = get_status_float(
-            calc_status, 'energy_actual', 'value',
+            calc_status,
+            "energy_actual",
+            "value",
             scale=1e-3,
         )
         energy_3 = get_status_float(
-            calc_status, 'energy_actual', 'value',
+            calc_status,
+            "energy_actual",
+            "value",
             scale=3 * 1e-3,
         )
-        blade_names = [cpt.split('.', 1)[0] for cpt in self.lightpath_cpts]
+        blade_names = [cpt.split(".", 1)[0] for cpt in self.lightpath_cpts]
         cpt_states = [
-            get_status_value(
-                status_info, cpt, 'state', 'state', 'value',
-                default_value=0
-            )
-            for cpt in blade_names
+            get_status_value(status_info, cpt, "state", "state", "value", default_value=0) for cpt in blade_names
         ]
 
         table = prettytable.PrettyTable()
-        table.field_names = ['State'] + list(blade_names)
+        table.field_names = ["State"] + list(blade_names)
         for state in LadderBladeState:
-            row = [state.name] + ['X' if cpt_state == state.value else ''
-                                  for cpt_state in cpt_states]
+            row = [state.name] + ["X" if cpt_state == state.value else "" for cpt_state in cpt_states]
             table.add_row(row)
 
         return f"""
@@ -1342,6 +1363,7 @@ class AT1K4(AttenuatorSXR_Ladder):
     calculator_prefix : str
         The prefix for the calculator PVs.
     """
+
     flow_meter = None
 
 
@@ -1408,7 +1430,8 @@ class AT3K2(AttenuatorSXR_LadderTwoBladeLBD):
     calculator_prefix : str
         The prefix for the calculator PVs.
     """
-    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 3)]
+
+    lightpath_cpts = [f"blade_{idx:02}.state.state" for idx in range(1, 3)]
     flow_meter = None
     blade_03 = None
 
@@ -1431,16 +1454,16 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
     """
 
     # QIcon for UX
-    _icon = 'fa.barcode'
+    _icon = "fa.barcode"
     tab_component_names = True
-    tab_whitelist = ['clear_errors', 'reset_errors']
+    tab_whitelist = ["clear_errors", "reset_errors"]
 
     # Register that all blades are needed for lightpath calc
-    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 20)]
+    lightpath_cpts = [f"blade_{idx:02}.state.state" for idx in range(1, 20)]
 
     # Summary for lightpath view
-    num_in = Cpt(InternalSignal, kind='hinted')
-    num_out = Cpt(InternalSignal, kind='hinted')
+    num_in = Cpt(InternalSignal, kind="hinted")
+    num_out = Cpt(InternalSignal, kind="hinted")
 
     def _get_blade_error_attrs() -> Generator[str, None, None]:
         """Get the blade attribute names used for checking errors."""
@@ -1451,9 +1474,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
             yield f"blade_{index:02d}.motor.plc.err_code"
             yield f"blade_{index:02d}.motor.user_readback"
 
-    def _check_errors(
-        self, mds: MultiDerivedSignal, items: SignalToValue
-    ) -> str:
+    def _check_errors(self, mds: MultiDerivedSignal, items: SignalToValue) -> str:
         """check for errors, return a string indicating any errors verbally"""
         errors = []
         # sort out .motor from .motor.plc signals
@@ -1473,13 +1494,11 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
         MultiDerivedSignalRO,
         calculate_on_get=_check_errors,
         attrs=list(_get_blade_error_attrs()),
-        doc='summarize the errors at any time on any blade via a string',
+        doc="summarize the errors at any time on any blade via a string",
     )
-    set_metadata(error_summary, dict(variety='text-multiline'))
+    set_metadata(error_summary, dict(variety="text-multiline"))
 
-    def _check_errors_bitmask(
-        self, mds: MultiDerivedSignal, items: SignalToValue
-    ) -> int:
+    def _check_errors_bitmask(self, mds: MultiDerivedSignal, items: SignalToValue) -> int:
         """check for errors, return an array of binaries 1=error, 0=no error"""
         errors = []
         blade_errors = []
@@ -1495,7 +1514,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
         step = 5
         # first blade errors not reported in bit array
         start_index = step
-        end_index = 2*step
+        end_index = 2 * step
         for _ in range(1, 19):
             error_count = sum(blade_errors[start_index:end_index])
             errors.append(1 if error_count >= 1 else 0)
@@ -1512,9 +1531,9 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
         MultiDerivedSignalRO,
         calculate_on_get=_check_errors_bitmask,
         attrs=list(_get_blade_error_attrs()),
-        doc='summarize errors at any time on any blade via a bitmask',
+        doc="summarize errors at any time on any blade via a bitmask",
     )
-    set_metadata(error_summary_bitmask, dict(variety='bitmask', bits=18))
+    set_metadata(error_summary_bitmask, dict(variety="bitmask", bits=18))
 
     def clear_errors(self):
         """Reset all attenuator errors, making the device ready to move."""
@@ -1523,10 +1542,8 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
     def _empty_get(self, mds: MultiDerivedSignal, items: SignalToValue) -> int:
         return 0
 
-    def _reset_errors(
-        self, mds: MultiDerivedSignal, value: OphydDataType
-    ) -> SignalToValue:
-        return {sig: 1 for sig in self.reset_errors.signals}
+    def _reset_errors(self, mds: MultiDerivedSignal, value: OphydDataType) -> SignalToValue:
+        return dict.fromkeys(self.reset_errors.signals, 1)
 
     reset_errors = Cpt(
         MultiDerivedSignal,
@@ -1543,31 +1560,31 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
             [],
         ),
     )
-    set_metadata(reset_errors, dict(variety='command-proc', value=1))
+    set_metadata(reset_errors, dict(variety="command-proc", value=1))
 
     calculator = UCpt(AttenuatorCalculator_AT2L0)
-    blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
-    blade_02 = Cpt(FEESolidAttenuatorBlade, ':MMS:02')
-    blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
-    blade_04 = Cpt(FEESolidAttenuatorBlade, ':MMS:04')
-    blade_05 = Cpt(FEESolidAttenuatorBlade, ':MMS:05')
-    blade_06 = Cpt(FEESolidAttenuatorBlade, ':MMS:06')
-    blade_07 = Cpt(FEESolidAttenuatorBlade, ':MMS:07')
-    blade_08 = Cpt(FEESolidAttenuatorBlade, ':MMS:08')
-    blade_09 = Cpt(FEESolidAttenuatorBlade, ':MMS:09')
-    blade_10 = Cpt(FEESolidAttenuatorBlade, ':MMS:10')
-    blade_11 = Cpt(FEESolidAttenuatorBlade, ':MMS:11')
-    blade_12 = Cpt(FEESolidAttenuatorBlade, ':MMS:12')
-    blade_13 = Cpt(FEESolidAttenuatorBlade, ':MMS:13')
-    blade_14 = Cpt(FEESolidAttenuatorBlade, ':MMS:14')
-    blade_15 = Cpt(FEESolidAttenuatorBlade, ':MMS:15')
-    blade_16 = Cpt(FEESolidAttenuatorBlade, ':MMS:16')
-    blade_17 = Cpt(FEESolidAttenuatorBlade, ':MMS:17')
-    blade_18 = Cpt(FEESolidAttenuatorBlade, ':MMS:18')
-    blade_19 = Cpt(FEESolidAttenuatorBlade, ':MMS:19')
+    blade_01 = Cpt(FEESolidAttenuatorBlade, ":MMS:01")
+    blade_02 = Cpt(FEESolidAttenuatorBlade, ":MMS:02")
+    blade_03 = Cpt(FEESolidAttenuatorBlade, ":MMS:03")
+    blade_04 = Cpt(FEESolidAttenuatorBlade, ":MMS:04")
+    blade_05 = Cpt(FEESolidAttenuatorBlade, ":MMS:05")
+    blade_06 = Cpt(FEESolidAttenuatorBlade, ":MMS:06")
+    blade_07 = Cpt(FEESolidAttenuatorBlade, ":MMS:07")
+    blade_08 = Cpt(FEESolidAttenuatorBlade, ":MMS:08")
+    blade_09 = Cpt(FEESolidAttenuatorBlade, ":MMS:09")
+    blade_10 = Cpt(FEESolidAttenuatorBlade, ":MMS:10")
+    blade_11 = Cpt(FEESolidAttenuatorBlade, ":MMS:11")
+    blade_12 = Cpt(FEESolidAttenuatorBlade, ":MMS:12")
+    blade_13 = Cpt(FEESolidAttenuatorBlade, ":MMS:13")
+    blade_14 = Cpt(FEESolidAttenuatorBlade, ":MMS:14")
+    blade_15 = Cpt(FEESolidAttenuatorBlade, ":MMS:15")
+    blade_16 = Cpt(FEESolidAttenuatorBlade, ":MMS:16")
+    blade_17 = Cpt(FEESolidAttenuatorBlade, ":MMS:17")
+    blade_18 = Cpt(FEESolidAttenuatorBlade, ":MMS:18")
+    blade_19 = Cpt(FEESolidAttenuatorBlade, ":MMS:19")
 
     def print_errors(self):
-        """prints the error summary """
+        """prints the error summary"""
         print(self.error_summary.get())
 
     @property
@@ -1593,8 +1610,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
         self.calculator.run_calculation.put(1, wait=True)
         return super()._setup_move(position)
 
-    def __init__(self, *args, limits=None, calculator_prefix='AT2L0:CALC',
-                 **kwargs):
+    def __init__(self, *args, limits=None, calculator_prefix="AT2L0:CALC", **kwargs):
         UCpt.collect_prefixes(self, dict(calculator_prefix=calculator_prefix))
         limits = limits or (0.0, 1.0)
         super().__init__(*args, limits=limits, **kwargs)
@@ -1610,8 +1626,8 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
             lp_sigs = self.lightpath_summary._signals.keys()
             for sig in lp_sigs:
                 # want to get name of blade_0x from dev_blade_0x_state_state
-                cpt_name = sig.name.removeprefix(self.name + '_')
-                cpt_name = cpt_name.removesuffix('_state_state')
+                cpt_name = sig.name.removeprefix(self.name + "_")
+                cpt_name = cpt_name.removesuffix("_state_state")
                 lightpath_kwargs[cpt_name] = sig.get()
 
             self._cached_state = self.calc_lightpath_state(**lightpath_kwargs)
@@ -1629,14 +1645,9 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
                 # This would prevent make check_inserted, etc. fail
                 if self._retry_lightpath:
                     self._retry_lightpath = False
-                    utils.schedule_task(self._calc_cache_lightpath_state,
-                                        delay=2.0)
+                    utils.schedule_task(self._calc_cache_lightpath_state, delay=2.0)
 
-                return LightpathState(
-                    inserted=True,
-                    removed=True,
-                    output={self.output_branches[0]: 1}
-                )
+                return LightpathState(inserted=True, removed=True, output={self.output_branches[0]: 1})
 
             self._retry_lightpath = True
             # get state of the InOutPositioner and check status
@@ -1645,48 +1656,55 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
             trans_check.append(obj.check_transmission(sig_value))
         self._inserted = any(in_check)
         self._removed = all(out_check)
-        self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
+        self._transmission = functools.reduce(lambda a, b: a * b, trans_check)
 
         self.num_in.put(in_check.count(True), force=True)
         self.num_out.put(out_check.count(True), force=True)
         return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: self._transmission}
+            inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: self._transmission}
         )
 
     def format_status_info(self, status_info):
         """Override status info handler to render the attenuator."""
-        calc_status = status_info.get('calculator', {})
+        calc_status = status_info.get("calculator", {})
         transmission = get_status_float(
-            calc_status, 'actual_transmission', 'value',
-            format='E', precision=3,
+            calc_status,
+            "actual_transmission",
+            "value",
+            format="E",
+            precision=3,
         )
         transmission_3 = get_status_float(
-            calc_status, 'actual_transmission_3omega', 'value',
-            format='E', precision=3,
+            calc_status,
+            "actual_transmission_3omega",
+            "value",
+            format="E",
+            precision=3,
         )
         energy = get_status_float(
-            calc_status, 'energy_actual', 'value',
+            calc_status,
+            "energy_actual",
+            "value",
             scale=1e-3,
         )
         energy_3 = get_status_float(
-            calc_status, 'energy_actual', 'value',
+            calc_status,
+            "energy_actual",
+            "value",
             scale=3 * 1e-3,
         )
         error_sum = get_status_value(
-            status_info, 'error_summary', 'value',
-            default_value='No Errors',
+            status_info,
+            "error_summary",
+            "value",
+            default_value="No Errors",
         )
         cpt_states = [
-            get_status_value(
-                status_info, cpt.split('.', 1)[0], 'state', 'state', 'value',
-                default_value=0
-            )
+            get_status_value(status_info, cpt.split(".", 1)[0], "state", "state", "value", default_value=0)
             for cpt in self.lightpath_cpts
         ]
 
-        table = '\n'.join(render_ascii_att(cpt_states, start_index=1))
+        table = "\n".join(render_ascii_att(cpt_states, start_index=1))
 
         return f"""
 {table}
@@ -1710,27 +1728,28 @@ class BladeStateEnum(enum.IntEnum):
     def as_out_row(self) -> str:
         """Returns ASCII information for "out" row representation."""
         return {
-            BladeStateEnum.OUT: 'X',
-            BladeStateEnum.IN: '',
-            BladeStateEnum.STUCK_OUT: 'S',
-            BladeStateEnum.STUCK_IN: '',
-        }.get(self, '?')
+            BladeStateEnum.OUT: "X",
+            BladeStateEnum.IN: "",
+            BladeStateEnum.STUCK_OUT: "S",
+            BladeStateEnum.STUCK_IN: "",
+        }.get(self, "?")
 
     @property
     def as_in_row(self) -> str:
         """Returns ASCII information for "in" row representation."""
         return {
-            BladeStateEnum.OUT: '',
-            BladeStateEnum.IN: 'X',
-            BladeStateEnum.STUCK_OUT: '',
-            BladeStateEnum.STUCK_IN: 'S',
-        }.get(self, '?')
+            BladeStateEnum.OUT: "",
+            BladeStateEnum.IN: "X",
+            BladeStateEnum.STUCK_OUT: "",
+            BladeStateEnum.STUCK_IN: "S",
+        }.get(self, "?")
 
 
 class LadderBladeState(enum.IntEnum):
     """
     SXR attenuator ladder motion states.
     """
+
     # 'Moving' is also: "unknown" or "between states"
     Moving = 0
 
@@ -1767,39 +1786,32 @@ class LadderBladeState(enum.IntEnum):
 
 class SXRGasAtt(BaseInterface, GroupDevice):
     tab_component_names = True
-    tab_whitelist = ['setup_mode']
+    tab_whitelist = ["setup_mode"]
 
-    transmission = Cpt(EpicsSignal, ':TRANS_RBV', write_pv=':TRANS_SP', kind='hinted',
-                       doc='Transmission')
-    arb_req = Cpt(EpicsSignalRO, ':TRANS_REQ_RBV', kind='hinted',
-                  doc='Requested transmission')
-    pressure = Cpt(EpicsSignal, ':GCM:82:PRESS_RBV', write_pv=':CNTRL:SP', kind='hinted',
-                   doc='Pressure')
-    pressure_setpoint_rbv = Cpt(EpicsSignalRO, ':CNTRL:SP_RBV', kind='omitted',
-                                doc='Pressure setpoint')
-    mode = Cpt(EpicsSignal, ':MODE_RBV', write_pv=':MODE', string=True, kind='hinted',
-               doc='PMPS mode')
-    control_enable = Cpt(EpicsSignal, ':CNTRL:ON_RBV', write_pv=':CNTRL:ON', kind='hinted',
-                         doc='')
-    pressure_control_enable = Cpt(EpicsSignal, ':MODE:PressureControl_RBV', write_pv=':MODE:PressureControl', kind='hinted',
-                                  doc='Pressure control mode')
-    gas_type = Cpt(EpicsSignalRO, ':GAS_TYPE_RBV', string=True, kind='hinted',
-                   doc='Selected gas')
-    at_target = Cpt(EpicsSignalRO, ':AtTarget_RBV', string=True, kind='hinted',
-                    doc='At target')
-    moving = Cpt(EpicsSignalRO, ':Moving_RBV', string=True, kind='hinted',
-                 doc='Moving')
-    gas_att_ok = Cpt(EpicsSignalRO, ':OK_RBV', string=True, kind='hinted',
-                     doc='Ok')
-    transmission_setpoint_rbv = Cpt(EpicsSignalRO, ':TRANS_SP_RBV', kind='omitted',
-                                    doc='Transmission setpoint')
-    pressure_control_valve = Cpt(EpicsSignalRO, ':VCN:70:POS_REQ_RBV', kind='omitted',
-                                 doc='Requested position')
-    valve_n2 = Cpt(VVC, ':VVC:72', kind='hinted', doc='Valve n2')
-    valve_ar = Cpt(VVC, ':VVC:71', kind='hinted', doc='Valve ar')
-    valve_pressure_control = Cpt(VCN, ':VCN:70', kind='omitted', doc='Pressure control valve')
+    transmission = Cpt(EpicsSignal, ":TRANS_RBV", write_pv=":TRANS_SP", kind="hinted", doc="Transmission")
+    arb_req = Cpt(EpicsSignalRO, ":TRANS_REQ_RBV", kind="hinted", doc="Requested transmission")
+    pressure = Cpt(EpicsSignal, ":GCM:82:PRESS_RBV", write_pv=":CNTRL:SP", kind="hinted", doc="Pressure")
+    pressure_setpoint_rbv = Cpt(EpicsSignalRO, ":CNTRL:SP_RBV", kind="omitted", doc="Pressure setpoint")
+    mode = Cpt(EpicsSignal, ":MODE_RBV", write_pv=":MODE", string=True, kind="hinted", doc="PMPS mode")
+    control_enable = Cpt(EpicsSignal, ":CNTRL:ON_RBV", write_pv=":CNTRL:ON", kind="hinted", doc="")
+    pressure_control_enable = Cpt(
+        EpicsSignal,
+        ":MODE:PressureControl_RBV",
+        write_pv=":MODE:PressureControl",
+        kind="hinted",
+        doc="Pressure control mode",
+    )
+    gas_type = Cpt(EpicsSignalRO, ":GAS_TYPE_RBV", string=True, kind="hinted", doc="Selected gas")
+    at_target = Cpt(EpicsSignalRO, ":AtTarget_RBV", string=True, kind="hinted", doc="At target")
+    moving = Cpt(EpicsSignalRO, ":Moving_RBV", string=True, kind="hinted", doc="Moving")
+    gas_att_ok = Cpt(EpicsSignalRO, ":OK_RBV", string=True, kind="hinted", doc="Ok")
+    transmission_setpoint_rbv = Cpt(EpicsSignalRO, ":TRANS_SP_RBV", kind="omitted", doc="Transmission setpoint")
+    pressure_control_valve = Cpt(EpicsSignalRO, ":VCN:70:POS_REQ_RBV", kind="omitted", doc="Requested position")
+    valve_n2 = Cpt(VVC, ":VVC:72", kind="hinted", doc="Valve n2")
+    valve_ar = Cpt(VVC, ":VVC:71", kind="hinted", doc="Valve ar")
+    valve_pressure_control = Cpt(VCN, ":VCN:70", kind="omitted", doc="Pressure control valve")
 
-    def setup_mode(self, mode, control_type='transmission', gas_type=None):
+    def setup_mode(self, mode, control_type="transmission", gas_type=None):
         """
         Setup gas attenuator to work in "PMPS" or "Local" mode, with either "transmission control" or "pressure control"
 
@@ -1813,35 +1825,35 @@ class SXRGasAtt(BaseInterface, GroupDevice):
             Change gas type to "N2" or "Ar". The default is None.If None is passed the attenuator uses the current gas.
 
         """
-        if mode is not ('PMPS' or 'Local'):
+        if mode is not ("PMPS" or "Local"):
             print('unrecognizied mode, options are "PMPS" or "Local"')
             return
         elif mode == "Local":
-            if control_type is not ('transmission' or 'pressure'):
+            if control_type is not ("transmission" or "pressure"):
                 print('unrecognizied control type, options are "transmission" or "pressure"')
                 return
-        if gas_type is not ('N2' or 'Ar' or None):
+        if gas_type is not ("N2" or "Ar" or None):
             print('unrecognizied gas type, options are "N2", "Ar", or None')
             return
 
-        if mode == 'PMPS':
-            self.mode.put('PMPS')
-        elif mode == 'Local':
-            self.mode.put('Local')
+        if mode == "PMPS":
+            self.mode.put("PMPS")
+        elif mode == "Local":
+            self.mode.put("Local")
 
         if gas_type is not None:
             self.valve_ar.open_command.put(0)
             self.valve_n2.open_command.put(0)
-            if gas_type == 'N2':
+            if gas_type == "N2":
                 self.valve_n2.open_command.put(1)
-            elif gas_type == 'Ar':
+            elif gas_type == "Ar":
                 self.valve_ar.open_command.put(1)
 
-        elif mode == 'Local':
-            if control_type == 'transmission':
+        elif mode == "Local":
+            if control_type == "transmission":
                 self.transmission.put(1)
                 self.control_enable.put(1)
-            elif control_type == 'pressure':
+            elif control_type == "pressure":
                 self.pressure_control_enable.put(1)
                 self.control_enable.put(1)
                 self.pressure.put(0)
@@ -1872,9 +1884,9 @@ def render_ascii_att(blade_states, *, start_index=0):
         The lines that should be printed to the screen.
     """
 
-    filter_line = ['filter # ']
-    out_line = [' OUT     ']
-    in_line = [' IN      ']
+    filter_line = ["filter # "]
+    out_line = [" OUT     "]
+    in_line = [" IN      "]
 
     for idx, state in enumerate(blade_states, start_index):
         index_str = str(idx)
@@ -1883,134 +1895,179 @@ def render_ascii_att(blade_states, *, start_index=0):
         out_line.append(state_enum.as_out_row.center(len(index_str)))
         in_line.append(state_enum.as_in_row.center(len(index_str)))
 
-    separator = '|'
-    return [separator.join(filter_line + ['']),
-            separator.join(out_line + ['']),
-            separator.join(in_line + [''])]
+    separator = "|"
+    return [separator.join(filter_line + [""]), separator.join(out_line + [""]), separator.join(in_line + [""])]
 
 
 class HE_SATT_Filter(BaseInterface, Device):
-    filter_name = Cpt(PytmcSignal, ':Name', io='io', kind='normal', doc='Name of filter', string=True)
-    help_config_start_pos = Cpt(PytmcSignal, ':HelpConfigStartPos', io='i', kind='normal', doc='Help information for configuration of start position', string=True)
-    help_config_end_pos = Cpt(PytmcSignal, ':HelpConfigEndPos', io='i', kind='normal', doc='Help information for configuration of end position', string=True)
-    material = Cpt(PytmcSignal, ':Material', io='io', kind='normal', doc='Material of filter', string=True)
-    start_pos = Cpt(PytmcSignal, ':StartPos', io='io', kind='normal', doc='Start position of filter in holder in axis coordinates')
-    end_pos = Cpt(PytmcSignal, ':EndPos', io='io', kind='normal', doc='End position of filter in holder in axis coordinates')
-    status = Cpt(PytmcSignal, ':Status', io='io', kind='normal', doc='Status of filter', string=True)
+    filter_name = Cpt(PytmcSignal, ":Name", io="io", kind="normal", doc="Name of filter", string=True)
+    help_config_start_pos = Cpt(
+        PytmcSignal,
+        ":HelpConfigStartPos",
+        io="i",
+        kind="normal",
+        doc="Help information for configuration of start position",
+        string=True,
+    )
+    help_config_end_pos = Cpt(
+        PytmcSignal,
+        ":HelpConfigEndPos",
+        io="i",
+        kind="normal",
+        doc="Help information for configuration of end position",
+        string=True,
+    )
+    material = Cpt(PytmcSignal, ":Material", io="io", kind="normal", doc="Material of filter", string=True)
+    start_pos = Cpt(
+        PytmcSignal, ":StartPos", io="io", kind="normal", doc="Start position of filter in holder in axis coordinates"
+    )
+    end_pos = Cpt(
+        PytmcSignal, ":EndPos", io="io", kind="normal", doc="End position of filter in holder in axis coordinates"
+    )
+    status = Cpt(PytmcSignal, ":Status", io="io", kind="normal", doc="Status of filter", string=True)
 
 
 class HE_SATT_FilterWedge(HE_SATT_Filter):
-    start_thickness = Cpt(PytmcSignal, ':ThickAtStartPos', io='io', kind='normal',
-                          doc='Thickness of filter at start position in mm.')
-    end_thickness = Cpt(PytmcSignal, ':ThickAtEndPos', io='io', kind='normal',
-                        doc='Thickness of filter at end position in mm.')
-    target_thickness = Cpt(PytmcSignal, ':TargetThick', io='i', kind='normal',
-                           doc='Thickness of filter target in mm.')
-    target_pos = Cpt(PytmcSignal, ':TargetPos', io='i', kind='normal',
-                     doc='Position of filter target in axis units.')
-    target_pos_tolerance = Cpt(PytmcSignal, ':TargetPosTol', io='io', kind='normal',
-                               doc='Allowable range of manual motion around target position.')
+    start_thickness = Cpt(
+        PytmcSignal, ":ThickAtStartPos", io="io", kind="normal", doc="Thickness of filter at start position in mm."
+    )
+    end_thickness = Cpt(
+        PytmcSignal, ":ThickAtEndPos", io="io", kind="normal", doc="Thickness of filter at end position in mm."
+    )
+    target_thickness = Cpt(PytmcSignal, ":TargetThick", io="i", kind="normal", doc="Thickness of filter target in mm.")
+    target_pos = Cpt(PytmcSignal, ":TargetPos", io="i", kind="normal", doc="Position of filter target in axis units.")
+    target_pos_tolerance = Cpt(
+        PytmcSignal,
+        ":TargetPosTol",
+        io="io",
+        kind="normal",
+        doc="Allowable range of manual motion around target position.",
+    )
 
 
 class HE_SATT_FilterConstantThickness(HE_SATT_Filter):
-    thickness = Cpt(PytmcSignal, ':Thickness', io='io', kind='normal',
-                    doc='Thickness of filter in mm.')
-    target_pos = Cpt(PytmcSignal, ':TargetPos', io='io', kind='normal',
-                     doc='Position of filter target in axis units.')
+    thickness = Cpt(PytmcSignal, ":Thickness", io="io", kind="normal", doc="Thickness of filter in mm.")
+    target_pos = Cpt(PytmcSignal, ":TargetPos", io="io", kind="normal", doc="Position of filter target in axis units.")
 
 
 class HE_SATT_Sequence(BaseInterface, Device):
-    state = Cpt(PytmcSignal, ':State', io='i', kind='normal',
-                doc='Current solid attenuator sequence state.', string=True)
-    curr_trans = Cpt(PytmcSignal, ':CurTransOverall', io='i', kind='normal',
-                     doc='Current transmission through all holders.')
-    curr_trans_3rd = Cpt(PytmcSignal, ':CurTrans3rdOverall', io='i', kind='normal',
-                         doc='Current third harmonic transmission through all holders.')
-    trans_error = Cpt(PytmcSignal, ':TransError', io='i', kind='config', doc='Transmission error')
-    curr_safe_power = Cpt(PytmcSignal, ':CurSafePowerOverall', io='i', kind='normal',
-                          doc='Current overall safe power accounting for attenuation.')
-    chosen_filters_active = Cpt(PytmcSignal, ':ChosenFiltersActive', io='i', kind='normal',
-                                doc='False if chosen filters moved off of.', string=True)
-    optimal_filter_1 = Cpt(HE_SATT_FilterConstantThickness, ':Optimal:01', kind='normal')
-    optimal_filter_2 = Cpt(HE_SATT_FilterConstantThickness, ':Optimal:02', kind='normal')
-    optimal_filter_3 = Cpt(HE_SATT_FilterWedge, ':Optimal:03', kind='normal')
-    optimal_filter_4 = Cpt(HE_SATT_FilterWedge, ':Optimal:04', kind='normal')
+    state = Cpt(
+        PytmcSignal, ":State", io="i", kind="normal", doc="Current solid attenuator sequence state.", string=True
+    )
+    curr_trans = Cpt(
+        PytmcSignal, ":CurTransOverall", io="i", kind="normal", doc="Current transmission through all holders."
+    )
+    curr_trans_3rd = Cpt(
+        PytmcSignal,
+        ":CurTrans3rdOverall",
+        io="i",
+        kind="normal",
+        doc="Current third harmonic transmission through all holders.",
+    )
+    trans_error = Cpt(PytmcSignal, ":TransError", io="i", kind="config", doc="Transmission error")
+    curr_safe_power = Cpt(
+        PytmcSignal,
+        ":CurSafePowerOverall",
+        io="i",
+        kind="normal",
+        doc="Current overall safe power accounting for attenuation.",
+    )
+    chosen_filters_active = Cpt(
+        PytmcSignal,
+        ":ChosenFiltersActive",
+        io="i",
+        kind="normal",
+        doc="False if chosen filters moved off of.",
+        string=True,
+    )
+    optimal_filter_1 = Cpt(HE_SATT_FilterConstantThickness, ":Optimal:01", kind="normal")
+    optimal_filter_2 = Cpt(HE_SATT_FilterConstantThickness, ":Optimal:02", kind="normal")
+    optimal_filter_3 = Cpt(HE_SATT_FilterWedge, ":Optimal:03", kind="normal")
+    optimal_filter_4 = Cpt(HE_SATT_FilterWedge, ":Optimal:04", kind="normal")
 
 
 class HE_SATT_Commands(BaseInterface, Device):
-    permit_move = Cpt(PytmcSignal, ':CmdPermitMove', io='io', kind='normal',
-                      doc='Permit attenuator to move.', string=True)
-    reset = Cpt(PytmcSignal, ':CmdReset', io='io', kind='normal',
-                doc='Reset attenuator sequence.')
-    request_trans = Cpt(PytmcSignal, ':CmdReqTrans', io='io', kind='normal',
-                        doc='Request transmission.')
-    request_atten = Cpt(PytmcSignal, ':CmdReqAtten', io='io', kind='normal',
-                        doc='Request attenuation.')
-    requested_trans = Cpt(PytmcSignal, ':Trans', io='io', kind='normal',
-                          doc='Requested transmission value.')
-    requested_atten = Cpt(PytmcSignal, ':Atten', io='io', kind='normal',
-                          doc='Requested attenuation value.')
-    trans_rounding_mode = Cpt(PytmcSignal, ':TransRoundMode', io='io', kind='normal',
-                              doc='Requested transmission rounding mode.')
-    atten_rounding_mode = Cpt(PytmcSignal, ':AttenRoundMode', io='io', kind='normal',
-                              doc='Requested attenuation rounding mode.')
+    permit_move = Cpt(
+        PytmcSignal, ":CmdPermitMove", io="io", kind="normal", doc="Permit attenuator to move.", string=True
+    )
+    reset = Cpt(PytmcSignal, ":CmdReset", io="io", kind="normal", doc="Reset attenuator sequence.")
+    request_trans = Cpt(PytmcSignal, ":CmdReqTrans", io="io", kind="normal", doc="Request transmission.")
+    request_atten = Cpt(PytmcSignal, ":CmdReqAtten", io="io", kind="normal", doc="Request attenuation.")
+    requested_trans = Cpt(PytmcSignal, ":Trans", io="io", kind="normal", doc="Requested transmission value.")
+    requested_atten = Cpt(PytmcSignal, ":Atten", io="io", kind="normal", doc="Requested attenuation value.")
+    trans_rounding_mode = Cpt(
+        PytmcSignal, ":TransRoundMode", io="io", kind="normal", doc="Requested transmission rounding mode."
+    )
+    atten_rounding_mode = Cpt(
+        PytmcSignal, ":AttenRoundMode", io="io", kind="normal", doc="Requested attenuation rounding mode."
+    )
 
 
 class HE_SATT_FilterHolder(BaseInterface, Device):
-    holder_name = Cpt(PytmcSignal, ':Name', io='io', kind='normal',
-                      doc='Name of filter.', string=True)
-    enabled = Cpt(PytmcSignal, ':Enabled', io='io', kind='normal',
-                  doc='Filter enabled for transmission requests.', string=True)
-    curr_trans = Cpt(PytmcSignal, ':CurTrans', io='i', kind='normal',
-                     doc='Current transmission through this holder.')
-    curr_trans_3rd = Cpt(PytmcSignal, ':CurTrans3rd', io='i', kind='normal',
-                         doc='Current third harmonic transmission through this holder.')
-    curr_safe_power = Cpt(PytmcSignal, ':CurSafePower', io='i', kind='normal',
-                          doc='Current safe power for this holder in watts.')
-    out_position = Cpt(PytmcSignal, ':OutPos', io='io', kind='normal',
-                       doc='Out position for holder in axis units.')
-    active_filter = Cpt(PytmcSignal, ':ActiveFiltName', io='i', kind='normal',
-                        doc='Name of active filter in this holder or None.', string=True)
-    rtd1 = Cpt(TwinCATTempSensor, ':RTD:01', kind='normal', doc='First thermocouple.')
-    rtd2 = Cpt(TwinCATTempSensor, ':RTD:02', kind='normal', doc='Second thermocouple.')
+    holder_name = Cpt(PytmcSignal, ":Name", io="io", kind="normal", doc="Name of filter.", string=True)
+    enabled = Cpt(
+        PytmcSignal, ":Enabled", io="io", kind="normal", doc="Filter enabled for transmission requests.", string=True
+    )
+    curr_trans = Cpt(PytmcSignal, ":CurTrans", io="i", kind="normal", doc="Current transmission through this holder.")
+    curr_trans_3rd = Cpt(
+        PytmcSignal,
+        ":CurTrans3rd",
+        io="i",
+        kind="normal",
+        doc="Current third harmonic transmission through this holder.",
+    )
+    curr_safe_power = Cpt(
+        PytmcSignal, ":CurSafePower", io="i", kind="normal", doc="Current safe power for this holder in watts."
+    )
+    out_position = Cpt(PytmcSignal, ":OutPos", io="io", kind="normal", doc="Out position for holder in axis units.")
+    active_filter = Cpt(
+        PytmcSignal,
+        ":ActiveFiltName",
+        io="i",
+        kind="normal",
+        doc="Name of active filter in this holder or None.",
+        string=True,
+    )
+    rtd1 = Cpt(TwinCATTempSensor, ":RTD:01", kind="normal", doc="First thermocouple.")
+    rtd2 = Cpt(TwinCATTempSensor, ":RTD:02", kind="normal", doc="Second thermocouple.")
 
 
 class HE_SATT_Wedge_Holder(HE_SATT_FilterHolder):
-    wedge1 = Cpt(HE_SATT_FilterWedge, ':Filter:01', kind='normal')
-    wedge2 = Cpt(HE_SATT_FilterWedge, ':Filter:02', kind='normal')
+    wedge1 = Cpt(HE_SATT_FilterWedge, ":Filter:01", kind="normal")
+    wedge2 = Cpt(HE_SATT_FilterWedge, ":Filter:02", kind="normal")
 
 
 class HE_SATT_ConstantThickness_Holder(HE_SATT_FilterHolder):
-    filter1 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:01', kind='normal')
-    filter2 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:02', kind='normal')
-    filter3 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:03', kind='normal')
-    filter4 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:04', kind='normal')
-    filter5 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:05', kind='normal')
-    filter6 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:06', kind='normal')
-    filter7 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:07', kind='normal')
-    filter8 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:08', kind='normal')
-    filter9 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:09', kind='normal')
-    filter10 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:10', kind='normal')
-    filter11 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:11', kind='normal')
-    filter12 = Cpt(HE_SATT_FilterConstantThickness, ':Filter:12', kind='normal')
+    filter1 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:01", kind="normal")
+    filter2 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:02", kind="normal")
+    filter3 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:03", kind="normal")
+    filter4 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:04", kind="normal")
+    filter5 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:05", kind="normal")
+    filter6 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:06", kind="normal")
+    filter7 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:07", kind="normal")
+    filter8 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:08", kind="normal")
+    filter9 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:09", kind="normal")
+    filter10 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:10", kind="normal")
+    filter11 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:11", kind="normal")
+    filter12 = Cpt(HE_SATT_FilterConstantThickness, ":Filter:12", kind="normal")
 
 
 class HE_SATT(BaseInterface, Device):
-    max_beam_power = Cpt(PytmcSignal, ':MaxBeamPower', io='io', kind='normal', doc='Max expected beam power')
-    sequence = Cpt(HE_SATT_Sequence, ':Seq', kind='normal')
-    commands = Cpt(HE_SATT_Commands, '', kind='normal')
-    holder1 = Cpt(HE_SATT_ConstantThickness_Holder, ':Holder:01', kind='normal')
-    holder1_axis = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
-    holder1_velo = Cpt(PytmcSignal, ':MMSOOP:04:fVelocity', io='io', kind='normal')
-    holder2 = Cpt(HE_SATT_ConstantThickness_Holder, ':Holder:02', kind='normal')
-    holder2_axis = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
-    holder2_velo = Cpt(PytmcSignal, ':MMSOOP:02:fVelocity', io='io', kind='normal')
-    holder3 = Cpt(HE_SATT_Wedge_Holder, ':Holder:03', kind='normal')
-    holder3_axis = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
-    holder3_velo = Cpt(PytmcSignal, ':MMSOOP:03:fVelocity', io='io', kind='normal')
-    holder4 = Cpt(HE_SATT_Wedge_Holder, ':Holder:04', kind='normal')
-    holder4_axis = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
-    holder4_velo = Cpt(PytmcSignal, ':MMSOOP:01:fVelocity', io='io', kind='normal')
+    max_beam_power = Cpt(PytmcSignal, ":MaxBeamPower", io="io", kind="normal", doc="Max expected beam power")
+    sequence = Cpt(HE_SATT_Sequence, ":Seq", kind="normal")
+    commands = Cpt(HE_SATT_Commands, "", kind="normal")
+    holder1 = Cpt(HE_SATT_ConstantThickness_Holder, ":Holder:01", kind="normal")
+    holder1_axis = Cpt(BeckhoffAxis, ":MMS:04", kind="normal")
+    holder1_velo = Cpt(PytmcSignal, ":MMSOOP:04:fVelocity", io="io", kind="normal")
+    holder2 = Cpt(HE_SATT_ConstantThickness_Holder, ":Holder:02", kind="normal")
+    holder2_axis = Cpt(BeckhoffAxis, ":MMS:02", kind="normal")
+    holder2_velo = Cpt(PytmcSignal, ":MMSOOP:02:fVelocity", io="io", kind="normal")
+    holder3 = Cpt(HE_SATT_Wedge_Holder, ":Holder:03", kind="normal")
+    holder3_axis = Cpt(BeckhoffAxis, ":MMS:03", kind="normal")
+    holder3_velo = Cpt(PytmcSignal, ":MMSOOP:03:fVelocity", io="io", kind="normal")
+    holder4 = Cpt(HE_SATT_Wedge_Holder, ":Holder:04", kind="normal")
+    holder4_axis = Cpt(BeckhoffAxis, ":MMS:01", kind="normal")
+    holder4_velo = Cpt(PytmcSignal, ":MMSOOP:01:fVelocity", io="io", kind="normal")
 
     def __call__(self, transmission):
         self.commands.reset.put(1)
@@ -2022,11 +2079,11 @@ class HE_SATT(BaseInterface, Device):
         self.commands.permit_move.put(1)
 
     def format_status_info(self, status_info):
-        curr_trans = get_status_float(status_info, 'sequence', 'curr_trans', 'value')
-        curr_trans_3rd = get_status_float(status_info, 'sequence', 'curr_trans_3rd', 'value')
-        requested_trans = get_status_float(status_info, 'commands', 'requested_trans', 'value')
-        curr_safe_power = get_status_float(status_info, 'sequence', 'curr_safe_power', 'value')
-        state = get_status_value(status_info, 'sequence', 'state', 'value')
+        curr_trans = get_status_float(status_info, "sequence", "curr_trans", "value")
+        curr_trans_3rd = get_status_float(status_info, "sequence", "curr_trans_3rd", "value")
+        requested_trans = get_status_float(status_info, "commands", "requested_trans", "value")
+        curr_safe_power = get_status_float(status_info, "sequence", "curr_safe_power", "value")
+        state = get_status_value(status_info, "sequence", "state", "value")
         return f"""{self.prefix} Status
          Current transmission: {curr_trans}
          Current 3rd harmonic: {curr_trans_3rd}

@@ -11,10 +11,21 @@ from ophyd.status import wait as status_wait
 from ophyd.utils.epics_pvs import AlarmSeverity, AlarmStatus
 from ophyd.utils.errors import LimitError
 
-from ..epics_motor import (IMS, MMC100, PMC100, BeckhoffAxis, EpicsMotor,
-                           EpicsMotorInterface, Motor, MotorDisabledError,
-                           Newport, OffsetIMSWithPreset, OffsetMotor,
-                           PCDSMotorBase, SmarActEtherCAT)
+from ..epics_motor import (
+    IMS,
+    MMC100,
+    PMC100,
+    BeckhoffAxis,
+    EpicsMotor,
+    EpicsMotorInterface,
+    Motor,
+    MotorDisabledError,
+    Newport,
+    OffsetIMSWithPreset,
+    OffsetMotor,
+    PCDSMotorBase,
+    SmarActEtherCAT,
+)
 from ..twincat_motor import TwinCATAxis, TwinCATAxisEPS, TwinCATMotorInterface
 
 logger = logging.getLogger(__name__)
@@ -30,9 +41,7 @@ def fake_class_setup(cls):
     # Recover subscription decorator behavior on motor class
     for name, cpt in FakeClass._sig_attrs.items():
         source_cpt = getattr(FakeClass.mro()[1], name)
-        cpt._subscriptions.update(
-            source_cpt._subscriptions
-        )
+        cpt._subscriptions.update(source_cpt._subscriptions)
     return FakeClass
 
 
@@ -49,11 +58,11 @@ def motor_setup(motor):
 
     if isinstance(motor, PCDSMotorBase):
         motor.motor_spg.sim_put(2)
-        motor.motor_spg.sim_set_enum_strs(['Stop', 'Pause', 'Go'])
+        motor.motor_spg.sim_set_enum_strs(["Stop", "Pause", "Go"])
 
     if isinstance(motor, IMS):
         motor.bit_status.sim_put(0)
-        motor.part_number.sim_put('PN123')
+        motor.part_number.sim_put("PN123")
         motor.error_severity.sim_put(0)
         motor.reinit_command.sim_put(0)
 
@@ -70,12 +79,12 @@ def motor_setup(motor):
         motor.positive_dir_enabled.sim_put(1)
 
 
-def fake_motor(cls, name='test_motor'):
+def fake_motor(cls, name="test_motor"):
     """
     Given a real class, lets get a fake motor
     """
     FakeCls = fake_class_setup(cls)
-    motor = FakeCls('TST:MTR', name=name)
+    motor = FakeCls("TST:MTR", name=name)
     motor_setup(motor)
     return motor
 
@@ -83,75 +92,82 @@ def fake_motor(cls, name='test_motor'):
 # Here I set up fixtures that test each level's overrides
 # Test in subclasses too to make sure we didn't break it!
 
-@pytest.fixture(scope='function',
-                params=[
-                    EpicsMotorInterface, PCDSMotorBase, IMS, Newport,
-                    MMC100, PMC100, BeckhoffAxis, SmarActEtherCAT,
-                    TwinCATMotorInterface, TwinCATAxis, TwinCATAxisEPS
-                ])
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        EpicsMotorInterface,
+        PCDSMotorBase,
+        IMS,
+        Newport,
+        MMC100,
+        PMC100,
+        BeckhoffAxis,
+        SmarActEtherCAT,
+        TwinCATMotorInterface,
+        TwinCATAxis,
+        TwinCATAxisEPS,
+    ],
+)
 def fake_epics_motor(request):
     """
     Test EpicsMotorInterface and subclasses
     """
-    return fake_motor(request.param, name=f'mot_{request.node.name}')
+    return fake_motor(request.param, name=f"mot_{request.node.name}")
 
 
-@pytest.fixture(scope='function',
-                params=[PCDSMotorBase, IMS, Newport, MMC100, PMC100])
+@pytest.fixture(scope="function", params=[PCDSMotorBase, IMS, Newport, MMC100, PMC100])
 def fake_pcds_motor(request):
     """
     Test PCDSMotorBase and subclasses
     """
-    return fake_motor(request.param, name=f'mot_{request.node.name}')
+    return fake_motor(request.param, name=f"mot_{request.node.name}")
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_ims(request):
     """
     Test IMS-specific overrides
     """
-    return fake_motor(IMS, name=f'mot_{request.node.name}')
+    return fake_motor(IMS, name=f"mot_{request.node.name}")
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_beckhoff(request):
     """
     Test Beckhoff-specific overrides
     """
-    return fake_motor(BeckhoffAxis, name=f'mot_{request.node.name}')
+    return fake_motor(BeckhoffAxis, name=f"mot_{request.node.name}")
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_smaract_ethercat(request):
     """
     Test SmarActEtherCAT
     """
-    return fake_motor(SmarActEtherCAT, name=f'mot_{request.node.name}')
+    return fake_motor(SmarActEtherCAT, name=f"mot_{request.node.name}")
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_twincat_motor(request):
     """Fixture for all TwinCAT motor device classes."""
-    return fake_motor(TwinCATAxis, name=f'mot_{request.node.name}')
+    return fake_motor(TwinCATAxis, name=f"mot_{request.node.name}")
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_offset_ims():
-    off_ims = make_fake_device(OffsetMotor)('FAKE:OFFSET:IMS',
-                                            motor_prefix='MOTOR:PREFIX',
-                                            name='fake_offset_ims')
+    off_ims = make_fake_device(OffsetMotor)("FAKE:OFFSET:IMS", motor_prefix="MOTOR:PREFIX", name="fake_offset_ims")
     motor_setup(off_ims.motor)
     # start with motor position at 1
     off_ims.motor.user_readback.sim_put(1)
     return off_ims
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_offset_ims_with_preset():
     off_ims = make_fake_device(OffsetIMSWithPreset)(
-        'OFFSET:IMS:WITH:PRESET',
-        motor_prefix='MOTOR:PREFIX',
-        name='fake_offset_ims_with_preset')
+        "OFFSET:IMS:WITH:PRESET", motor_prefix="MOTOR:PREFIX", name="fake_offset_ims_with_preset"
+    )
 
     motor_setup(off_ims.motor)
     # start with motor position at 1
@@ -168,15 +184,15 @@ def test_epics_motor_soft_limits(fake_epics_motor):
     - Simulates readback changes and verifies that the device prevents setting invalid limits depending on current position.
     - Ensures setting and checking new, in-range limits works for all classes.
     """
-    logger.debug('test_epics_motor_soft_limits')
+    logger.debug("test_epics_motor_soft_limits")
 
     m = fake_epics_motor
 
     # Common way to get and set position for all device types
-    readback_signal = getattr(m, 'readback', getattr(m, 'user_readback', None))
+    readback_signal = getattr(m, "readback", getattr(m, "user_readback", None))
 
     # Access limits as a tuple always
-    limits_tuple = getattr(m, 'limits', lambda: (m.get_low_limit(), m.get_high_limit()))
+    limits_tuple = getattr(m, "limits", lambda: (m.get_low_limit(), m.get_high_limit()))
     low_limit = limits_tuple[0]
     high_limit = limits_tuple[1]
 
@@ -215,8 +231,8 @@ def test_epics_motor_soft_limits(fake_epics_motor):
     m.check_value(42)
 
     # For assertion, if get_low_limit/get_high_limit exist, use them; otherwise, use .limits
-    low_after = getattr(m, 'get_low_limit', lambda: m.limits[0])()
-    high_after = getattr(m, 'get_high_limit', lambda: m.limits[1])()
+    low_after = getattr(m, "get_low_limit", lambda: m.limits[0])()
+    high_after = getattr(m, "get_high_limit", lambda: m.limits[1])()
     assert low_after == -110
     assert high_after == 110
 
@@ -236,7 +252,7 @@ def test_clearing_limits(fake_epics_motor):
     if is_twincat_motor:
         # TwinCAT Motor: uses .limits tuple
         assert m.limits[0] == -100  # current low limit
-        assert m.limits[1] == 100   # current high limit
+        assert m.limits[1] == 100  # current high limit
     else:
         # Legacy motor: uses getter methods
         assert m.get_low_limit() == -100
@@ -260,7 +276,7 @@ def test_limits_update_from_epics(cls):
     Test high/low limit updates via PV for EpicsMotorInterface and TwinCATMotorInterface.
     """
     FakeCls = make_fake_device(cls)
-    mot = FakeCls('TST:MTR', name=f"{cls.__name__}_limits_update")
+    mot = FakeCls("TST:MTR", name=f"{cls.__name__}_limits_update")
     # Standard setup for both
     mot.high_limit_travel.put(100)
     mot.low_limit_travel.put(-100)
@@ -287,16 +303,16 @@ def test_limits_update_from_epics(cls):
             with pytest.raises(exc_type):
                 mot.check_value(num)
                 # debug only hit if the check_value doesn't raise
-                logger.debug(f'{low} < {num} < {high}')
-                logger.debug(f'limits are {mot.limits}')
-                logger.debug(f'LLM={mot.low_limit_travel.get()}')
-                logger.debug(f'HLM={mot.high_limit_travel.get()}')
+                logger.debug(f"{low} < {num} < {high}")
+                logger.debug(f"limits are {mot.limits}")
+                logger.debug(f"LLM={mot.low_limit_travel.get()}")
+                logger.debug(f"HLM={mot.high_limit_travel.get()}")
                 if setpoint is not None:
-                    logger.debug(f'md={setpoint.metadata}')
+                    logger.debug(f"md={setpoint.metadata}")
 
 
 def test_epics_motor_tdir(fake_pcds_motor):
-    logger.debug('test_epics_motor_tdir')
+    logger.debug("test_epics_motor_tdir")
     m = fake_pcds_motor
     # Simulate a moving motor
     m._pos_changed(value=-1.0, old_value=0.0)
@@ -306,7 +322,7 @@ def test_epics_motor_tdir(fake_pcds_motor):
 
 
 def test_ims_clear_flag(fake_ims):
-    logger.debug('test_ims_clear_flag')
+    logger.debug("test_ims_clear_flag")
     m = fake_ims
     # Already cleared
     m.clear_all_flags()
@@ -324,7 +340,7 @@ def test_ims_clear_flag(fake_ims):
 
 
 def test_ims_reinitialize(fake_ims):
-    logger.debug('test_ims_reinitialize')
+    logger.debug("test_ims_reinitialize")
     m = fake_ims
     # Do not reinitialize on auto-setup
     m.auto_setup()
@@ -344,7 +360,7 @@ def test_ims_reinitialize(fake_ims):
 
 
 def test_ims_stage_in_plan(fake_ims):
-    logger.debug('test_ims_stage_in_plan')
+    logger.debug("test_ims_stage_in_plan")
     RE = RunEngine()
     m = fake_ims
 
@@ -358,20 +374,20 @@ def test_ims_stage_in_plan(fake_ims):
 
 
 def test_spg_resume_pause_stop(fake_pcds_motor):
-    logger.debug('test_resume_pause_stop')
+    logger.debug("test_resume_pause_stop")
     m = fake_pcds_motor
     m.spg_stop()
-    assert m.motor_spg.get(as_string=True) == 'Stop'
+    assert m.motor_spg.get(as_string=True) == "Stop"
     with pytest.raises(MotorDisabledError):
         m.check_value(10)
     with pytest.raises(MotorDisabledError):
         m.move(10, wait=False)
     m.spg_pause()
-    assert m.motor_spg.get(as_string=True) == 'Pause'
+    assert m.motor_spg.get(as_string=True) == "Pause"
     with pytest.raises(MotorDisabledError):
         m.move(10, wait=False)
     m.spg_go()
-    assert m.motor_spg.get(as_string=True) == 'Go'
+    assert m.motor_spg.get(as_string=True) == "Go"
     # Test staging
     m.motor_spg.put(0)
     m.stage()
@@ -382,7 +398,7 @@ def test_spg_resume_pause_stop(fake_pcds_motor):
 
 
 def test_disable(fake_pcds_motor):
-    logger.debug('test_disable')
+    logger.debug("test_disable")
     m = fake_pcds_motor
     m.disable()
     with pytest.raises(MotorDisabledError):
@@ -396,7 +412,7 @@ def test_disable(fake_pcds_motor):
 @pytest.mark.parametrize("cls", [BeckhoffAxis, TwinCATAxis])
 def test_beckhoff_error_clear(cls):
     FakeCls = make_fake_device(cls)
-    m = FakeCls('TST:MTR', name=f"{cls.__name__}_error_clear")
+    m = FakeCls("TST:MTR", name=f"{cls.__name__}_error_clear")
     m.clear_error()
     assert m.plc.cmd_err_reset.get() == 1
     m.stage()
@@ -409,7 +425,7 @@ def test_beckhoff_velo_error(cls):
     Test that velocity=0 moves always raise RuntimeError for Beckhoff/TwinCAT axes.
     """
     FakeCls = make_fake_device(cls)
-    mot = FakeCls('TST:MTR', name=f"{cls.__name__}_velo_error")
+    mot = FakeCls("TST:MTR", name=f"{cls.__name__}_velo_error")
     # Zero velo move fails silently if we don't catch it here
     mot.velocity.sim_put(0)
     low_limit = mot.low_limit_travel.get()
@@ -428,13 +444,13 @@ def test_beckhoff_error_status(cls):
     Test error reporting on completed moves for both Beckhoff/TwinCAT axes.
     """
     FakeCls = make_fake_device(cls)
-    m = FakeCls('TST:MTR', name=f"{cls.__name__}_error_status")
+    m = FakeCls("TST:MTR", name=f"{cls.__name__}_error_status")
 
     user_readback = getattr(m, "user_readback", getattr(m, "readback", None))
     user_setpoint = getattr(m, "user_setpoint", getattr(m, "setpoint", None))
     motor_done_move = getattr(m, "motor_done_move", getattr(m, "done", None))
 
-    def sim_move(dest: float, error: str = '', code: int = 0) -> MoveStatus:
+    def sim_move(dest: float, error: str = "", code: int = 0) -> MoveStatus:
         status = m.move(dest, wait=False)
         assert user_setpoint.get() == dest
         motor_done_move.sim_put(0)
@@ -478,7 +494,7 @@ def test_beckhoff_error_status(cls):
     user_readback.alarm_severity = AlarmSeverity.NO_ALARM
 
     # Yes error, message preserved
-    msg = 'test_error'
+    msg = "test_error"
     status = sim_move(dest=4, error=msg)
     with pytest.raises(RuntimeError):
         status.wait(timeout=1)
@@ -496,19 +512,19 @@ def test_beckhoff_error_status(cls):
 
 
 def test_motor_factory():
-    m = Motor('TST:MY:MMS:01', name='test_motor')
+    m = Motor("TST:MY:MMS:01", name="test_motor")
     assert isinstance(m, IMS)
-    m = Motor('TST:RANDOM:MTR:01', name='test_motor')
+    m = Motor("TST:RANDOM:MTR:01", name="test_motor")
     assert isinstance(m, EpicsMotor)
-    m = TwinCATAxis('TST:TWINCAT:MTR:01', name='test_motor')
+    m = TwinCATAxis("TST:TWINCAT:MTR:01", name="test_motor")
     assert isinstance(m, TwinCATMotorInterface)
 
 
 def test_fake_offset_ims(fake_offset_ims):
     off_ims = fake_offset_ims
     # with motor position at 1
-    logger.debug('Motor position: %d', off_ims.motor.position)
-    logger.debug('User Offset: %d', off_ims.user_offset.get())
+    logger.debug("Motor position: %d", off_ims.motor.position)
+    logger.debug("User Offset: %d", off_ims.user_offset.get())
     # set offset to 3
     off_ims.user_offset.sim_put(3)
     # pseudo_motor pos => real_pos.motor - self.user_offset.get()
@@ -519,9 +535,9 @@ def test_fake_offset_ims(fake_offset_ims):
     off_ims.set_current_position(5)
     # new_offset = position - self.position[0]
     # new_offset = 5 - 1 => 4
-    logger.debug('New Offset: %d', off_ims.user_offset.get())
+    logger.debug("New Offset: %d", off_ims.user_offset.get())
     assert off_ims.user_offset.get() == 4
-    logger.debug('Motor position %d', off_ims.motor.position)
+    logger.debug("Motor position %d", off_ims.motor.position)
     # if new offset 4, motor pos == 1
     # pseudo pos = real_pos.motor - self.user_offset.get()
     # 1 - (4) = -3
@@ -551,11 +567,11 @@ def test_offset_ims_with_preset(fake_offset_ims_with_preset):
     off_ims.set_current_position(5)
     # new_offset = position - self.position[0]
     # new_offset = 5 - 1 => 4
-    logger.debug('New Offset: %d', off_ims.user_offset.get())
+    logger.debug("New Offset: %d", off_ims.user_offset.get())
     assert off_ims.user_offset.get() == 4
     # because use_ims_preset == True we should have the _SET pv with same value
     assert off_ims.offset_set_pv.get() == 4
-    logger.debug('Motor position %d', off_ims.motor.position)
+    logger.debug("Motor position %d", off_ims.motor.position)
     # if new offset 4, motor pos == 1
     # pseudo pos = real_pos.motor - self.user_offset.get()
     # 1 - (4) = -3
@@ -569,10 +585,10 @@ def test_motion_error_filter(fake_epics_motor, caplog):
     """
 
     # Use getattr to support both Epics and TwinCAT attribute names
-    readback = getattr(fake_epics_motor, 'user_readback', getattr(fake_epics_motor, 'readback', None))
-    setpoint = getattr(fake_epics_motor, 'user_setpoint', getattr(fake_epics_motor, 'setpoint', None))
-    motor_is_moving = getattr(fake_epics_motor, 'motor_is_moving')
-    motor_done_move = getattr(fake_epics_motor, 'motor_done_move', getattr(fake_epics_motor, 'done', None))
+    readback = getattr(fake_epics_motor, "user_readback", getattr(fake_epics_motor, "readback", None))
+    setpoint = getattr(fake_epics_motor, "user_setpoint", getattr(fake_epics_motor, "setpoint", None))
+    motor_is_moving = fake_epics_motor.motor_is_moving
+    motor_done_move = getattr(fake_epics_motor, "motor_done_move", getattr(fake_epics_motor, "done", None))
 
     # Quick utilities for changing our state
     def sim_do_move(mot):
@@ -598,20 +614,18 @@ def test_motion_error_filter(fake_epics_motor, caplog):
         return num
 
     def generate_filtered_logs(mot):
-        mot.log.warning('fake log alarm warning')
-        mot.log.error('fake log alarm error')
+        mot.log.warning("fake log alarm warning")
+        mot.log.error("fake log alarm error")
         return 2
 
     def generate_unfiltered_logs(mot):
-        mot.log.warning('fake log warning')
-        mot.log.error('fake log error')
+        mot.log.warning("fake log warning")
+        mot.log.error("fake log error")
         return 2
 
     def get_logs():
         # Only log messages for ophyd.objects (same as before)
-        return list(
-            tup for tup in caplog.record_tuples if tup[0] == 'ophyd.objects'
-        )
+        return list(tup for tup in caplog.record_tuples if tup[0] == "ophyd.objects")
 
     def assert_real_test(mot):
         # Cause a move and check how many logs at end
@@ -656,18 +670,18 @@ def test_motion_error_filter(fake_epics_motor, caplog):
     assert_real_test(fake_epics_motor)
 
 
-@pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, MMC100,
-                                 PMC100, BeckhoffAxis, SmarActEtherCAT,
-                                 EpicsMotor, TwinCATAxis])
+@pytest.mark.parametrize(
+    "cls", [PCDSMotorBase, IMS, Newport, MMC100, PMC100, BeckhoffAxis, SmarActEtherCAT, EpicsMotor, TwinCATAxis]
+)
 @pytest.mark.timeout(5)
 def test_disconnected_motors(cls):
-    cls('MOTOR', name='motor')
+    cls("MOTOR", name="motor")
 
 
 @pytest.mark.parametrize("cls", [OffsetMotor, OffsetIMSWithPreset])
 @pytest.mark.timeout(5)
 def test_disconnected_offset_motors(cls):
-    cls('MOTOR', motor_prefix='MOTOR:PREFIX', name='motor')
+    cls("MOTOR", motor_prefix="MOTOR:PREFIX", name="motor")
 
 
 class LimSetterMotor(fake_class_setup(EpicsMotorInterface)):
@@ -676,9 +690,10 @@ class LimSetterMotor(fake_class_setup(EpicsMotorInterface)):
 
     Simulates some common motor ioc limit setting constraints
     """
+
     # Redirect these signals in a way that gives us easy control
-    low_limit_travel = Cpt(AttributeSignal, '_lim_low')
-    high_limit_travel = Cpt(AttributeSignal, '_lim_high')
+    low_limit_travel = Cpt(AttributeSignal, "_lim_low")
+    high_limit_travel = Cpt(AttributeSignal, "_lim_high")
 
     def __init__(self, *args, **kwargs):
         self._sim_limits = [0, 0]
@@ -720,7 +735,7 @@ class LimSetterMotor(fake_class_setup(EpicsMotorInterface)):
 
 
 def test_limits_setter():
-    mot = LimSetterMotor('', name='mot')
+    mot = LimSetterMotor("", name="mot")
 
     def lims():
         return (mot.low_limit_travel.get(), mot.high_limit_travel.get())

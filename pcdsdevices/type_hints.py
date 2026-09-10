@@ -14,16 +14,11 @@ OphydBaseType = Union[
     bool,
     float,
 ]
-OphydDataType = Union[
-    OphydBaseType,
-    list[OphydBaseType],
-    npt.NDArray[OphydBaseType]
-]
+OphydDataType = Union[OphydBaseType, list[OphydBaseType], npt.NDArray[OphydBaseType]]
 
 
 class OphydCallback(Protocol):
-    def __call__(**kwargs) -> None:
-        ...
+    def __call__(**kwargs) -> None: ...
 
 
 SignalToValue = dict[ophyd.Signal, OphydDataType]
@@ -32,16 +27,12 @@ SignalToValue = dict[ophyd.Signal, OphydDataType]
 @runtime_checkable
 class MdsOnGetFunction(Protocol):
     """Calculation handler for MultiDerivedSignal."""
-    def __call__(
-        self, mds: ophyd.Signal, items: SignalToValue
-    ) -> OphydDataType:
-        ...
+
+    def __call__(self, mds: ophyd.Signal, items: SignalToValue) -> OphydDataType: ...
 
 
 @runtime_checkable
 class MdsOnPutFunction(Protocol):
     """Put handler for MultiDerivedSignal."""
-    def __call__(
-        self, mds: ophyd.Signal, value: OphydDataType
-    ) -> SignalToValue | None:
-        ...
+
+    def __call__(self, mds: ophyd.Signal, value: OphydDataType) -> SignalToValue | None: ...

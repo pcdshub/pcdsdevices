@@ -14,28 +14,32 @@ from ..epics_motor import SmarAct
 from ..interface import BaseInterface
 from ..signal import PytmcSignal
 from . import btms_config as btms
-from .btms_config import (BtmsSourceState, BtmsState, DestinationPosition,
-                          MoveError, SourcePosition, valid_destinations,
-                          valid_sources)
+from .btms_config import (
+    BtmsSourceState,
+    BtmsState,
+    DestinationPosition,
+    MoveError,
+    SourcePosition,
+    valid_destinations,
+    valid_sources,
+)
 
 
 class BtpsVGC(VGC):
     """
     VGC subclass with 'valve_position' component added.
     """
+
     # TODO: this may be pushed into ValveBase, but need to check with others
     # first
     valve_position = Cpt(
-        EpicsSignalRO,
-        ':POS_STATE_RBV',
-        kind='hinted',
-        string=True,
-        doc='Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F'
+        EpicsSignalRO, ":POS_STATE_RBV", kind="hinted", string=True, doc="Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F"
     )
 
 
 class RangeComparison(BaseInterface, Device):
     """BTPS single value range comparison check."""
+
     value = Cpt(
         PytmcSignal,
         "Value",
@@ -110,29 +114,16 @@ class RangeComparison(BaseInterface, Device):
 
 class CentroidConfig(BaseInterface, Device):
     """BTPS camera centroid range comparison."""
-    centroid_x = Cpt(
-        RangeComparison,
-        "CenterX:",
-        kind="normal",
-        doc="Centroid X range"
-    )
-    centroid_y = Cpt(
-        RangeComparison,
-        "CenterY:",
-        kind="normal",
-        doc="Centroid Y range"
-    )
+
+    centroid_x = Cpt(RangeComparison, "CenterX:", kind="normal", doc="Centroid X range")
+    centroid_y = Cpt(RangeComparison, "CenterY:", kind="normal", doc="Centroid Y range")
 
 
 class SourceToDestinationConfig(BaseInterface, Device):
     """BTPS per-(source, destination) configuration settings and state."""
 
     def __init__(
-        self,
-        prefix: str,
-        source_pos: SourcePosition,
-        destination_pos: btms.DestinationPosition | None = None,
-        **kwargs
+        self, prefix: str, source_pos: SourcePosition, destination_pos: btms.DestinationPosition | None = None, **kwargs
     ):
         self.source_pos = source_pos
         super().__init__(prefix, **kwargs)
@@ -141,10 +132,7 @@ class SourceToDestinationConfig(BaseInterface, Device):
             try:
                 destination_pos = self.parent.destination_pos
             except AttributeError:
-                raise RuntimeError(
-                    "destination_pos must be passed as a kwarg or available "
-                    "on the parent device"
-                )
+                raise RuntimeError("destination_pos must be passed as a kwarg or available on the parent device")
 
         assert isinstance(destination_pos, DestinationPosition)
         self.destination_pos = destination_pos
@@ -161,24 +149,9 @@ class SourceToDestinationConfig(BaseInterface, Device):
         doc="Source name",
         string=True,
     )
-    far_field = Cpt(
-        CentroidConfig,
-        "BTPS:FF",
-        kind="normal",
-        doc="Far field centroid"
-    )
-    near_field = Cpt(
-        CentroidConfig,
-        "BTPS:NF",
-        kind="normal",
-        doc="Near field centroid"
-    )
-    goniometer = Cpt(
-        RangeComparison,
-        "BTPS:Goniometer:",
-        kind="normal",
-        doc="Goniometer stage"
-    )
+    far_field = Cpt(CentroidConfig, "BTPS:FF", kind="normal", doc="Far field centroid")
+    near_field = Cpt(CentroidConfig, "BTPS:NF", kind="normal", doc="Near field centroid")
+    goniometer = Cpt(RangeComparison, "BTPS:Goniometer:", kind="normal", doc="Goniometer stage")
     linear = Cpt(
         RangeComparison,
         "BTPS:Linear:",
@@ -199,23 +172,14 @@ class SourceToDestinationConfig(BaseInterface, Device):
         doc="Entry valve is open and ready",
     )
 
-    checks_ok = Cpt(
-        PytmcSignal, "BTPS:ChecksOK", io="input", kind="normal",
-        doc="Check summary"
-    )
-    data_valid = Cpt(
-        PytmcSignal, "BTPS:Valid", io="input", kind="normal",
-        doc="Data validity summary"
-    )
+    checks_ok = Cpt(PytmcSignal, "BTPS:ChecksOK", io="input", kind="normal", doc="Check summary")
+    data_valid = Cpt(PytmcSignal, "BTPS:Valid", io="input", kind="normal", doc="Data validity summary")
     in_position = Cpt(
         PytmcSignal,
         "BTPS:InPosition",
         io="input",
         kind="normal",
-        doc=(
-            "Set if the mirror assembly for this source is in position for "
-            "this laser destination"
-        ),
+        doc=("Set if the mirror assembly for this source is in position for this laser destination"),
     )
 
     def summarize_checks(self) -> list[str]:
@@ -229,16 +193,13 @@ class SourceToDestinationConfig(BaseInterface, Device):
         if not self.connected:
             return ["Disconnected"]
 
-        result = [
-            f"Checks for {self.source_pos.name_and_desc} -> {self.destination_pos.name_and_desc}:"
-        ]
+        result = [f"Checks for {self.source_pos.name_and_desc} -> {self.destination_pos.name_and_desc}:"]
 
         if not self.checks_ok.get():
             result.append("One or more checks performed by the BTPS PLC are not OK.")
         if not self.data_valid.get():
             result.append(
-                "Some data on the PLC is not valid.  "
-                "This could be due to a disconnected PV, unhomed motor, etc."
+                "Some data on the PLC is not valid.  This could be due to a disconnected PV, unhomed motor, etc."
             )
 
         for desc, check in [
@@ -252,9 +213,7 @@ class SourceToDestinationConfig(BaseInterface, Device):
         ]:
             check = cast(RangeComparison, check)
             if not check.input_valid.get():
-                result.append(
-                    f"{desc} data is not valid."
-                )
+                result.append(f"{desc} data is not valid.")
             elif not check.in_range.get():
                 low = check.low.get()
                 high = check.high.get()
@@ -262,42 +221,23 @@ class SourceToDestinationConfig(BaseInterface, Device):
                 nominal = check.nominal.get()
                 inclusive = check.inclusive.get()
                 less_than = "<=" if inclusive else "<"
-                range_desc = (
-                    f"{low} {less_than} value {less_than} {high}.  "
-                    f"The nominal value is {nominal}."
-                )
+                range_desc = f"{low} {less_than} value {less_than} {high}.  The nominal value is {nominal}."
                 if low >= high:
-                    result.append(
-                        f"{desc} range is not properly configured: {range_desc}"
-                    )
+                    result.append(f"{desc} range is not properly configured: {range_desc}")
                 else:
-                    result.append(
-                        f"{desc} value {value} is not in range: {range_desc}"
-                    )
+                    result.append(f"{desc} value {value} is not in range: {range_desc}")
 
         if not self.entry_valve_ready.get():
-            result.append(
-                f"The PLC reports the entry valve for {self.source_pos.name_and_desc} "
-                f"is not ready"
-            )
+            result.append(f"The PLC reports the entry valve for {self.source_pos.name_and_desc} is not ready")
 
         if not self.in_position.get():
-            result.append(
-                f"The PLC reports {self.source_pos.name_and_desc} "
-                f"is not in position"
-            )
+            result.append(f"The PLC reports {self.source_pos.name_and_desc} is not in position")
 
         if not self.parent.exit_valve_ready.get():
-            result.append(
-                f"The PLC reports the exit valve for {self.destination_pos.name_and_desc} "
-                f"is not ready"
-            )
+            result.append(f"The PLC reports the exit valve for {self.destination_pos.name_and_desc} is not ready")
 
         if not self.parent.yields_control.get():
-            result.append(
-                f"The user at {self.destination_pos.name_and_desc} "
-                f"has not yielded control of the source"
-            )
+            result.append(f"The user at {self.destination_pos.name_and_desc} has not yielded control of the source")
 
         if len(result) == 1:
             result.append("All checks are OK.")
@@ -308,9 +248,7 @@ class SourceToDestinationConfig(BaseInterface, Device):
 class DestinationConfig(BaseInterface, Device):
     """BTPS per-destination configuration settings and state."""
 
-    def __init__(
-        self, prefix: str, destination_pos: btms.DestinationPosition, **kwargs
-    ):
+    def __init__(self, prefix: str, destination_pos: btms.DestinationPosition, **kwargs):
         self.destination_pos = destination_pos
         super().__init__(prefix, **kwargs)
 
@@ -374,8 +312,7 @@ class DestinationConfig(BaseInterface, Device):
         source_pos=SourcePosition.ls8,
         doc="Settings for source LS8 (bay 4) to this destination",
     )
-    exit_valve = Cpt(BtpsVGC, "VGC:01", kind="normal",
-                     doc="Destination exit valve")
+    exit_valve = Cpt(BtpsVGC, "VGC:01", kind="normal", doc="Destination exit valve")
 
     @property
     def sources(self) -> dict[SourcePosition, SourceToDestinationConfig]:
@@ -386,24 +323,18 @@ class DestinationConfig(BaseInterface, Device):
         Dict[SourcePosition, SourceToDestinationConfig]
 
         """
-        return {
-            source.source_pos: source
-            for source in (self.ls1, self.ls3, self.ls4, self.ls5, self.ls6,
-                           self.ls8)
-        }
+        return {source.source_pos: source for source in (self.ls1, self.ls3, self.ls4, self.ls5, self.ls6, self.ls8)}
 
 
 class GlobalConfig(BaseInterface, Device):
     """BTPS global configuration settings."""
+
     max_frame_time = Cpt(
         PytmcSignal,
         "MaxFrameTime",
         io="io",
         kind="normal",
-        doc=(
-            "Maximum time between frame updates in seconds to be considered "
-            "'valid' data"
-        ),
+        doc=("Maximum time between frame updates in seconds to be considered 'valid' data"),
     )
 
     min_pixel_sum_change = Cpt(
@@ -411,10 +342,7 @@ class GlobalConfig(BaseInterface, Device):
         "MinPixelChange",
         io="io",
         kind="normal",
-        doc=(
-            "Minimal change (in pixels) for camera image sum to be considered "
-            "valid"
-        ),
+        doc=("Minimal change (in pixels) for camera image sum to be considered valid"),
     )
 
     maintenance_mode = Cpt(
@@ -428,6 +356,7 @@ class GlobalConfig(BaseInterface, Device):
 
 class LssShutterStatus(BaseInterface, Device):
     """BTPS per-source shutter status per the laser safety system."""
+
     open_request = Cpt(
         PytmcSignal,
         "REQ",
@@ -453,7 +382,9 @@ class LssShutterStatus(BaseInterface, Device):
     )
 
     permission = Cpt(
-        PytmcSignal, "LSS", io="i",
+        PytmcSignal,
+        "LSS",
+        io="i",
         kind="normal",
         doc="Shutter open permission status",
     )
@@ -626,10 +557,7 @@ class BtpsState(BaseInterface, Device):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         try:
-            self.sources = {
-                source: getattr(self, source.name)
-                for source in valid_sources
-            }
+            self.sources = {source: getattr(self, source.name) for source in valid_sources}
         except AttributeError as ex:
             raise RuntimeError(
                 "Missing a component for a source.  If adding a new valid "
@@ -638,10 +566,7 @@ class BtpsState(BaseInterface, Device):
             ) from ex
 
         try:
-            self.destinations = {
-                dest: getattr(self, dest.name)
-                for dest in valid_destinations
-            }
+            self.destinations = {dest: getattr(self, dest.name) for dest in valid_destinations}
         except AttributeError as ex:
             raise RuntimeError(
                 "Missing a component for a destination.  If adding a new valid "
@@ -665,7 +590,7 @@ class BtpsState(BaseInterface, Device):
         linear_prefix="LAS:BTS:MCS2:01:m1",
         rotary_prefix="LAS:BTS:MCS2:01:m2",
         goniometer_prefix="LAS:BTS:MCS2:01:m3",
-        doc="Source status for LS1 (Bay 1)"
+        doc="Source status for LS1 (Bay 1)",
     )
     ls3 = Cpt(
         BtpsSourceStatus,
@@ -674,7 +599,7 @@ class BtpsState(BaseInterface, Device):
         linear_prefix="LAS:BTS:MCS2:01:m15",
         rotary_prefix="LAS:BTS:MCS2:01:m14",
         goniometer_prefix="LAS:BTS:MCS2:01:m13",
-        doc="Source status for LS3 (Bay 2)"
+        doc="Source status for LS3 (Bay 2)",
     )
     ls4 = Cpt(
         BtpsSourceStatus,
@@ -683,7 +608,7 @@ class BtpsState(BaseInterface, Device):
         linear_prefix="LAS:BTS:MCS2:01:m10",
         rotary_prefix="LAS:BTS:MCS2:01:m12",
         goniometer_prefix="LAS:BTS:MCS2:01:m11",
-        doc="Source status for LS3 (Bay 2)"
+        doc="Source status for LS3 (Bay 2)",
     )
     ls5 = Cpt(
         BtpsSourceStatus,
@@ -692,7 +617,7 @@ class BtpsState(BaseInterface, Device):
         linear_prefix="LAS:BTS:MCS2:01:m4",
         rotary_prefix="LAS:BTS:MCS2:01:m6",
         goniometer_prefix="LAS:BTS:MCS2:01:m5",
-        doc="Source status for LS5 (Bay 3)"
+        doc="Source status for LS5 (Bay 3)",
     )
     ls6 = Cpt(
         BtpsSourceStatus,
@@ -701,7 +626,7 @@ class BtpsState(BaseInterface, Device):
         linear_prefix="LAS:BTS:MCS2:01:m16",
         rotary_prefix="LAS:BTS:MCS2:01:m17",
         goniometer_prefix="LAS:BTS:MCS2:01:m18",
-        doc="Source status for LS3 (Bay 3)"
+        doc="Source status for LS3 (Bay 3)",
     )
     ls8 = Cpt(
         BtpsSourceStatus,
@@ -710,7 +635,7 @@ class BtpsState(BaseInterface, Device):
         linear_prefix="LAS:BTS:MCS2:01:m7",
         rotary_prefix="LAS:BTS:MCS2:01:m8",
         goniometer_prefix="LAS:BTS:MCS2:01:m9",
-        doc="Source status for LS8 (Bay 4)"
+        doc="Source status for LS8 (Bay 4)",
     )
 
     # NOTE: Commented-out destinations are not currently installed:
@@ -759,18 +684,8 @@ class BtpsState(BaseInterface, Device):
         doc="Destination LD10",
         destination_pos=DestinationPosition.ld10,
     )
-    ld11 = Cpt(
-        DestinationConfig,
-        "LTLHN:LD11:",
-        doc="Destination LD11",
-        destination_pos=DestinationPosition.ld1
-    )
-    ld12 = Cpt(
-        DestinationConfig,
-        "LTLHN:LD12:",
-        doc="Destination LD12",
-        destination_pos=DestinationPosition.ld12
-    )
+    ld11 = Cpt(DestinationConfig, "LTLHN:LD11:", doc="Destination LD11", destination_pos=DestinationPosition.ld1)
+    ld12 = Cpt(DestinationConfig, "LTLHN:LD12:", doc="Destination LD12", destination_pos=DestinationPosition.ld12)
     # ld13 = Cpt(DestinationConfig, "LTLHN:LD13:", doc="Destination LD13", destination_pos=DestinationPosition.ld13)
     ld14 = Cpt(
         DestinationConfig,
@@ -779,9 +694,7 @@ class BtpsState(BaseInterface, Device):
         destination_pos=DestinationPosition.ld14,
     )
 
-    def set_source_to_destination(
-        self, source: SourcePosition, dest: DestinationPosition
-    ) -> AndStatus:
+    def set_source_to_destination(self, source: SourcePosition, dest: DestinationPosition) -> AndStatus:
         """
         Move ``source`` to the target destination ``dest`` and return a combined
         status object.
@@ -808,9 +721,7 @@ class BtpsState(BaseInterface, Device):
         state = btms.BtmsState()
         for source in self.sources.values():
             try:
-                dest_pos = DestinationPosition.from_index(
-                    source.current_destination.get()
-                )
+                dest_pos = DestinationPosition.from_index(source.current_destination.get())
             except ValueError:
                 dest_pos = None
 
@@ -834,9 +745,7 @@ class BtpsState(BaseInterface, Device):
 
         for dest in self.destinations.values():
             dest_state = state.destinations[dest.destination_pos]
-            dest_state.yields_control = bool(
-                dest.yields_control.get()
-            )
+            dest_state.yields_control = bool(dest.yields_control.get())
 
         state.maintenance_mode = bool(self.config.maintenance_mode.get())
         return state

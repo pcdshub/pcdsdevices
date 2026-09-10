@@ -22,6 +22,7 @@ def make_new_bts(old_bts):
             return old_bts(st1)
         except UnicodeDecodeError:
             return st1.decode("utf-8", "ignore")
+
     return new_bts
 
 

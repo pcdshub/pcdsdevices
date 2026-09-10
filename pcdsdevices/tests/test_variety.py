@@ -5,8 +5,7 @@ import pytest
 import schema
 
 from .. import tags
-from ..variety import (expand_dotted_dict, get_metadata, set_metadata,
-                       validate_metadata)
+from ..variety import expand_dotted_dict, get_metadata, set_metadata, validate_metadata
 
 # A sentinel indicating the validated metadata should match the provided
 # metadata exactly
@@ -19,267 +18,176 @@ def test_empty_md():
 
 def test_no_variety():
     with pytest.raises(ValueError):
-        validate_metadata({'test': 'a'})
+        validate_metadata({"test": "a"})
 
 
-text_defaults = dict(delimiter='\n', encoding='utf-8', format='plain')
+text_defaults = dict(delimiter="\n", encoding="utf-8", format="plain")
 
 
 @pytest.mark.parametrize(
-    'md, expected',
+    "md, expected",
     [
         # ** command **
         pytest.param(
-            dict(variety='command'),
-            dict(variety='command', value=1),  # <-- picks up default
-            id='command-default-value',
+            dict(variety="command"),
+            dict(variety="command", value=1),  # <-- picks up default
+            id="command-default-value",
         ),
-
         pytest.param(
-            dict(variety='command', value=0, enum_strings=['a', 'b', 'c']),
+            dict(variety="command", value=0, enum_strings=["a", "b", "c"]),
             SAME,
-            id='command-with-enum-strs',
+            id="command-with-enum-strs",
         ),
-
         pytest.param(
-            dict(variety='command', value='a', enum_strings=['a', 'b', 'c']),
+            dict(variety="command", value="a", enum_strings=["a", "b", "c"]),
             SAME,
-            id='command-str-with-enum-strs',
+            id="command-str-with-enum-strs",
         ),
-
         pytest.param(
-            dict(variety='command-proc'),
-            dict(variety='command-proc', value=1),  # <-- picks up default
-            id='command-proc',
+            dict(variety="command-proc"),
+            dict(variety="command-proc", value=1),  # <-- picks up default
+            id="command-proc",
         ),
-
         pytest.param(
-            dict(variety='command-enum', value=0),
-            dict(variety='command-enum', value=0),
-            id='command-enum',
+            dict(variety="command-enum", value=0),
+            dict(variety="command-enum", value=0),
+            id="command-enum",
         ),
-
         pytest.param(
-            dict(variety='command-setpoint-tracks-readback', value=0),
-            dict(variety='command-setpoint-tracks-readback', value=0),
-            id='command-setpoint-tracks-readback',
+            dict(variety="command-setpoint-tracks-readback", value=0),
+            dict(variety="command-setpoint-tracks-readback", value=0),
+            id="command-setpoint-tracks-readback",
         ),
-
         # ** tweakable **
         pytest.param(
-            {'variety': 'scalar-tweakable',
-             'display_format': 'default',
-             'delta': {'value': 3,
-                       'adds_to': 'setpoint',
-                       'source': 'value',
-                       }},
+            {
+                "variety": "scalar-tweakable",
+                "display_format": "default",
+                "delta": {
+                    "value": 3,
+                    "adds_to": "setpoint",
+                    "source": "value",
+                },
+            },
             SAME,
-            id='tweakable-delta',
+            id="tweakable-delta",
         ),
-
         pytest.param(
-            {'variety': 'scalar-tweakable',
-             'display_format': 'default',
-             'delta': {'value': 3,
-                       'adds_to': 'setpoint',
-                       'source': 'value',
-                       'range': [-1, 10]}},
+            {
+                "variety": "scalar-tweakable",
+                "display_format": "default",
+                "delta": {"value": 3, "adds_to": "setpoint", "source": "value", "range": [-1, 10]},
+            },
             SAME,
-            id='tweakable-good-range',
+            id="tweakable-good-range",
         ),
-
         pytest.param(
-            {'variety': 'scalar-tweakable',
-             'delta': {'value': 3,
-                       'range': -1}},
+            {"variety": "scalar-tweakable", "delta": {"value": 3, "range": -1}},
             schema.SchemaError,
-            id='tweakable-bad-range',
+            id="tweakable-bad-range",
         ),
-
         pytest.param(
-            dict(variety='scalar-tweakable', delta={'value': 3,
-                                                    'range': [-1, 'q']}),
+            dict(variety="scalar-tweakable", delta={"value": 3, "range": [-1, "q"]}),
             schema.SchemaError,
-            id='tweakable-bad-range-type',
+            id="tweakable-bad-range-type",
         ),
-
         # ** arrays / waveforms **
-        pytest.param(
-            dict(variety='array-tabular'),
-            SAME,
-            id='array-tabular'
-        ),
-
-        pytest.param(
-            dict(variety='array-timeseries'),
-            SAME,
-            id='array-timeseries'
-        ),
-
-        pytest.param(
-            dict(variety='array-histogram'),
-            SAME,
-            id='array-histogram'
-        ),
-
-        pytest.param(
-            dict(variety='array-image'),
-            SAME,
-            id='array-image'
-        ),
-
-        pytest.param(
-            dict(variety='array-nd'),
-            SAME,
-            id='array-nd'
-        ),
-
-        pytest.param(
-            dict(variety='array-nd', dimension=2, shape=(512, 512)),
-            SAME,
-            id='array-2d'
-        ),
-
-        pytest.param(
-            dict(variety='array-nd', dimension=3, shape=(512, 512, 512)),
-            SAME,
-            id='array-3d'
-        ),
-
-        pytest.param(
-            dict(variety='array-nd', shape=()),
-            schema.SchemaError,
-            id='array-bad-shape'
-        ),
-
+        pytest.param(dict(variety="array-tabular"), SAME, id="array-tabular"),
+        pytest.param(dict(variety="array-timeseries"), SAME, id="array-timeseries"),
+        pytest.param(dict(variety="array-histogram"), SAME, id="array-histogram"),
+        pytest.param(dict(variety="array-image"), SAME, id="array-image"),
+        pytest.param(dict(variety="array-nd"), SAME, id="array-nd"),
+        pytest.param(dict(variety="array-nd", dimension=2, shape=(512, 512)), SAME, id="array-2d"),
+        pytest.param(dict(variety="array-nd", dimension=3, shape=(512, 512, 512)), SAME, id="array-3d"),
+        pytest.param(dict(variety="array-nd", shape=()), schema.SchemaError, id="array-bad-shape"),
         # ** scalar - numeric **
+        pytest.param(dict(variety="scalar"), dict(variety="scalar", display_format="default"), id="scalar"),
+        pytest.param(dict(variety="scalar-range", display_format="default"), SAME, id="scalar-range"),
         pytest.param(
-            dict(variety='scalar'),
-            dict(variety='scalar', display_format='default'),
-            id='scalar'
-        ),
-
-        pytest.param(
-            dict(variety='scalar-range', display_format='default'),
+            {
+                "variety": "scalar-range",
+                "display_format": "exponential",
+                "range": {"source": "use_limits"},
+            },
             SAME,
-            id='scalar-range'
+            id="scalar-use_limits",
         ),
-
         pytest.param(
-            {'variety': 'scalar-range',
-             'display_format': 'exponential',
-             'range': {'source': 'use_limits'},
-             },
+            {"variety": "scalar-range", "range": dict(source="value"), "display_format": "default"},
             SAME,
-            id='scalar-use_limits'
+            id="scalar-custom",
         ),
-
         pytest.param(
-            {'variety': 'scalar-range',
-             'range': dict(source='value'),
-             'display_format': 'default'
-             },
+            {
+                "variety": "scalar-range",
+                "range": dict(source="value", value=[0, 5]),
+                "display_format": "default",
+            },
             SAME,
-            id='scalar-custom'
+            id="scalar-custom-range",
         ),
-
         pytest.param(
-            {'variety': 'scalar-range',
-             'range': dict(source='value',
-                           value=[0, 5]),
-             'display_format': 'default',
-             },
-            SAME,
-            id='scalar-custom-range'
-        ),
-
-        pytest.param(
-            {'variety': 'scalar-range',
-             'range': dict(source='value', value=[0]),
-             },
+            {
+                "variety": "scalar-range",
+                "range": dict(source="value", value=[0]),
+            },
             schema.SchemaError,
-            id='scalar-bad-range'
+            id="scalar-bad-range",
         ),
-
         # ** text **
+        pytest.param(dict(variety="text", enum_strings=["a", "b", "c"], **text_defaults), SAME, id="text-enum_strings"),
+        pytest.param(dict(variety="text-enum", enum_strings=["a", "b", "c"], **text_defaults), SAME, id="text-enum"),
         pytest.param(
-            dict(variety='text', enum_strings=['a', 'b', 'c'],
-                 **text_defaults),
-            SAME,
-            id='text-enum_strings'
+            dict(variety="text-multiline", enum_strings=["a", "b", "c"], **text_defaults), SAME, id="text-multiline"
         ),
-
-        pytest.param(
-            dict(variety='text-enum', enum_strings=['a', 'b', 'c'],
-                 **text_defaults),
-            SAME,
-            id='text-enum'
-        ),
-
-        pytest.param(
-            dict(variety='text-multiline', enum_strings=['a', 'b', 'c'],
-                 **text_defaults),
-            SAME,
-            id='text-multiline'
-        ),
-
-        pytest.param(
-            dict(variety='text', range_source='custom', range=[0]),
-            schema.SchemaError,
-            id='text-bad-keys'
-        ),
-
+        pytest.param(dict(variety="text", range_source="custom", range=[0]), schema.SchemaError, id="text-bad-keys"),
         # ** bitmask **
         pytest.param(
-            dict(variety='bitmask'),
-            dict(variety='bitmask', bits=8, orientation='horizontal',
-                 first_bit='most-significant',
-                 meaning=None,
-                 style=dict(on_color='green', off_color='gray',
-                            shape='rectangle')
-                 ),
-            id='bitmask-defaults',
+            dict(variety="bitmask"),
+            dict(
+                variety="bitmask",
+                bits=8,
+                orientation="horizontal",
+                first_bit="most-significant",
+                meaning=None,
+                style=dict(on_color="green", off_color="gray", shape="rectangle"),
+            ),
+            id="bitmask-defaults",
         ),
-
         pytest.param(
-            dict(variety='bitmask', bits=32, first_bit='least-significant'),
-            dict(variety='bitmask', bits=32,
-                 orientation='horizontal', first_bit='least-significant',
-                 meaning=None,
-                 style=dict(shape='rectangle', on_color='green',
-                            off_color='gray'),
-                 ),
-            id='bitmask-custom',
+            dict(variety="bitmask", bits=32, first_bit="least-significant"),
+            dict(
+                variety="bitmask",
+                bits=32,
+                orientation="horizontal",
+                first_bit="least-significant",
+                meaning=None,
+                style=dict(shape="rectangle", on_color="green", off_color="gray"),
+            ),
+            id="bitmask-custom",
         ),
-
         # ** general enum **
         pytest.param(
-            dict(variety='enum', enum_strings=['a', 'b', 'c']),
+            dict(variety="enum", enum_strings=["a", "b", "c"]),
             SAME,
-            id='enum-basic',
+            id="enum-basic",
         ),
-
         pytest.param(
-            dict(variety='enum', enum_strings=['a', 'b', 'c'],
-                 tags={'protected'}),
+            dict(variety="enum", enum_strings=["a", "b", "c"], tags={"protected"}),
             SAME,
-            id='enum-basic-with-tags',
+            id="enum-basic-with-tags",
         ),
-
         pytest.param(
-            dict(variety='enum', enum_strings='a'),
+            dict(variety="enum", enum_strings="a"),
             schema.SchemaError,
-            id='enum-not-a-list',
+            id="enum-not-a-list",
         ),
-
         pytest.param(
-            dict(variety='enum', enum_strings=['a', 'b', 'c'],
-                 tags={'this-is-an-unknown-tag'}),
+            dict(variety="enum", enum_strings=["a", "b", "c"], tags={"this-is-an-unknown-tag"}),
             schema.SchemaError,
-            id='enum-basic-with-bad-tag',
+            id="enum-basic-with-bad-tag",
         ),
-
-    ]
+    ],
 )
 def test_schemas(md, expected):
     if expected is SAME:
@@ -293,14 +201,14 @@ def test_schemas(md, expected):
 
 
 def test_component():
-    md = dict(variety='command', value=5)
+    md = dict(variety="command", value=5)
 
     class MyDevice(ophyd.Device):
         cpt = ophyd.Component(ophyd.Signal)
         set_metadata(cpt, md)
 
     assert get_metadata(MyDevice.cpt) == md
-    assert get_metadata(MyDevice(name='dev').cpt) == md
+    assert get_metadata(MyDevice(name="dev").cpt) == md
 
 
 def test_component_empty_md():
@@ -318,7 +226,7 @@ def test_tag_explain():
         print(tag, tags.explain_tag(tag))
 
     with pytest.raises(KeyError):
-        tags.explain_tag('this-is-a-bad-tag')
+        tags.explain_tag("this-is-a-bad-tag")
 
 
 @pytest.mark.parametrize(

@@ -1,16 +1,19 @@
 """
 Module to define ophyd Signal subclass utilities.
 """
+
 from __future__ import annotations
 
 # Catch semi-frequent issue with scripts accidentally run from inside module
-if __name__ != 'pcdsdevices.signal':
-    raise RuntimeError('A script tried to import pcdsdevices.signal '
-                       'instead of the signal built-in module. This '
-                       'usually happens when a script is run from '
-                       'inside the pcdsdevices directory and can cause '
-                       'extremely confusing bugs. Please run your script '
-                       'elsewhere for better results.')
+if __name__ != "pcdsdevices.signal":
+    raise RuntimeError(
+        "A script tried to import pcdsdevices.signal "
+        "instead of the signal built-in module. This "
+        "usually happens when a script is run from "
+        "inside the pcdsdevices directory and can cause "
+        "extremely confusing bugs. Please run your script "
+        "elsewhere for better results."
+    )
 import contextlib
 import dataclasses
 import inspect
@@ -24,16 +27,22 @@ from typing import Any, Generator, Mapping, Optional, Union
 import numpy as np
 import ophyd
 from ophyd.device import Device
-from ophyd.signal import (DEFAULT_WRITE_TIMEOUT, DerivedSignal, EpicsSignal,
-                          EpicsSignalBase, EpicsSignalRO, Signal, SignalRO)
+from ophyd.signal import (
+    DEFAULT_WRITE_TIMEOUT,
+    DerivedSignal,
+    EpicsSignal,
+    EpicsSignalBase,
+    EpicsSignalRO,
+    Signal,
+    SignalRO,
+)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
 from ophyd.status import Status
 from ophyd.utils import ReadOnlyError
 from pytmc.pragmas import normalize_io
 
 from . import utils
-from .type_hints import (MdsOnGetFunction, MdsOnPutFunction, Number,
-                         OphydCallback, OphydDataType)
+from .type_hints import MdsOnGetFunction, MdsOnPutFunction, Number, OphydCallback, OphydDataType
 from .utils import convert_unit
 
 logger = logging.getLogger(__name__)
@@ -53,25 +62,25 @@ class PytmcSignal(EpicsSignalBase):
     """
 
     def __new__(cls, prefix, io=None, **kwargs):
-        new_cls = select_pytmc_class(io=io, prefix=prefix,
-                                     write_cls=PytmcSignalRW,
-                                     read_only_cls=PytmcSignalRO)
+        new_cls = select_pytmc_class(io=io, prefix=prefix, write_cls=PytmcSignalRW, read_only_cls=PytmcSignalRO)
         return super().__new__(new_cls)
 
     def __init__(self, prefix, *, io, **kwargs):
         self.pytmc_pv = prefix
         self.pytmc_io = io
-        super().__init__(prefix + '_RBV', **kwargs)
+        super().__init__(prefix + "_RBV", **kwargs)
 
 
 def select_pytmc_class(io=None, *, prefix, write_cls, read_only_cls):
     """Return the class to use for PytmcSignal's constructor."""
     if io is None:
         # Provide a better error here than "__new__ missing an arg"
-        raise ValueError('Must provide an "io" argument to PytmcSignal. '
-                         f'This is missing for signal with pv {prefix}. '
-                         'Feel free to copy the io field from the '
-                         'pytmc pragma.')
+        raise ValueError(
+            'Must provide an "io" argument to PytmcSignal. '
+            f"This is missing for signal with pv {prefix}. "
+            "Feel free to copy the io field from the "
+            "pytmc pragma."
+        )
     if pytmc_writable(io):
         return write_cls
     else:
@@ -81,37 +90,38 @@ def select_pytmc_class(io=None, *, prefix, write_cls, read_only_cls):
 def pytmc_writable(io):
     """Returns `True` if the pytmc io arg represents a writable PV."""
     norm = normalize_io(io)
-    if norm == 'output':
+    if norm == "output":
         return True
-    elif norm == 'input':
+    elif norm == "input":
         return False
     else:
         # Should never get here unless pytmc's API changes
-        raise ValueError(f'Invalid io specifier {io}')
+        raise ValueError(f"Invalid io specifier {io}")
 
 
 class PytmcSignalRW(PytmcSignal, EpicsSignal):
     """Read-write connection to a pytmc-generated EPICS record."""
+
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, write_pv=prefix, **kwargs)
 
 
 class PytmcSignalRO(PytmcSignal, EpicsSignalRO):
     """Read-only connection to a pytmc-generated EPICS record."""
+
     pass
 
 
 # Make sure an acceptable fake class is set for PytmcSignal
 class FakePytmcSignal(FakeEpicsSignal):
     """A suitable fake class for PytmcSignal."""
+
     def __new__(cls, prefix, io=None, **kwargs):
-        new_cls = select_pytmc_class(io=io, prefix=prefix,
-                                     write_cls=FakePytmcSignalRW,
-                                     read_only_cls=FakePytmcSignalRO)
+        new_cls = select_pytmc_class(io=io, prefix=prefix, write_cls=FakePytmcSignalRW, read_only_cls=FakePytmcSignalRO)
         return super().__new__(new_cls)
 
     def __init__(self, prefix, io=None, **kwargs):
-        super().__init__(prefix + '_RBV', **kwargs)
+        super().__init__(prefix + "_RBV", **kwargs)
 
 
 class FakePytmcSignalRW(FakePytmcSignal, FakeEpicsSignal):
@@ -136,6 +146,7 @@ class _AggregateSignalState:
     It includes a cache of the last value, connectivity status, and callback
     identifiers from ophyd.
     """
+
     #: The signal itself
     signal: Signal
     #: Is the signal connected according to its metadata callback?
@@ -180,9 +191,7 @@ class AggregateSignal(Signal):
             The result of the calculation.
         """
 
-        raise NotImplementedError(
-            'Subclasses must implement _calc_readback'
-        )  # pragma nocover
+        raise NotImplementedError("Subclasses must implement _calc_readback")  # pragma nocover
 
     def _insert_value(self, signal, value):
         """Update the cache with one value and recalculate."""
@@ -194,9 +203,7 @@ class AggregateSignal(Signal):
     @property
     def _have_values(self) -> bool:
         """Is the value cache populated?"""
-        return all(
-            siginfo.value is not None for siginfo in self._signals.values()
-        )
+        return all(siginfo.value is not None for siginfo in self._signals.values())
 
     def _update_readback(self) -> Optional[OphydDataType]:
         """
@@ -234,9 +241,7 @@ class AggregateSignal(Signal):
             return self._update_readback()
 
     def put(self, value, **kwargs):
-        raise NotImplementedError(
-            'put should be overridden in a subclass'
-        )  # pragma nocover
+        raise NotImplementedError("put should be overridden in a subclass")  # pragma nocover
 
     def subscribe(self, cb, event_type=None, run=True):
         cid = super().subscribe(cb, event_type=event_type, run=run)
@@ -280,18 +285,16 @@ class AggregateSignal(Signal):
         self._setup_subscriptions()
         return super().wait_for_connection(*args, **kwargs)
 
-    def _signal_meta_callback(
-        self, *, connected: bool = False, obj: Signal, **kwargs
-    ) -> None:
+    def _signal_meta_callback(self, *, connected: bool = False, obj: Signal, **kwargs) -> None:
         """This is a SUB_META callback from one of the aggregated signals."""
         with self._check_connectivity():
             self._signals[obj].connected = connected
 
     def _signal_value_callback(self, *, obj: Signal, **kwargs):
         """This is a SUB_VALUE callback from one of the aggregated signals."""
-        kwargs.pop('sub_type')
-        kwargs.pop('old_value')
-        value = kwargs['value']
+        kwargs.pop("sub_type")
+        kwargs.pop("old_value")
+        value = kwargs["value"]
         with self._lock:
             old_value = self._readback
             # Update just one value and assume the rest are cached
@@ -304,8 +307,7 @@ class AggregateSignal(Signal):
                 # connectivity check above did it already
                 return
             if value != old_value or not self._update_only_on_change:
-                self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value,
-                               old_value=old_value)
+                self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value, old_value=old_value)
 
     @property
     def connected(self) -> bool:
@@ -314,10 +316,7 @@ class AggregateSignal(Signal):
             return False
 
         if self._has_subscribed:
-            return all(
-                siginfo.connected and siginfo.value is not None
-                for siginfo in self._signals.values()
-            )
+            return all(siginfo.connected and siginfo.value is not None for siginfo in self._signals.values())
 
         # Only check connectivity status of the signal; cross fingers that it
         # reflects both being connected and having a not-None value.
@@ -393,20 +392,16 @@ class AggregateSignal(Signal):
             If called after .subscribe() or used without a parent Device.
         """
         if self._has_subscribed:
-            raise RuntimeError(
-                "Cannot add signals to an AggregateSignal after it has been "
-                "subscribed to."
-            )
+            raise RuntimeError("Cannot add signals to an AggregateSignal after it has been subscribed to.")
 
         sig = self.parent
 
         if sig is None:
             raise RuntimeError(
-                "Cannot use an AggregateSignal with attribute names outside "
-                "of a Device/Component hierarchy."
+                "Cannot use an AggregateSignal with attribute names outside of a Device/Component hierarchy."
             )
 
-        for part in name.split('.'):
+        for part in name.split("."):
             sig = getattr(sig, part)
 
         # Add if not yet there; but do not subscribe just yet.
@@ -436,6 +431,7 @@ class SummarySignal(AggregateSignal):
     in any downstream calculations.  Use the signal/PV you actually
     care about instead.
     """
+
     def _calc_readback(self):
         values = tuple(sig.get() for sig in self._signals)
         # We return a hash here, rather than the tuple, to always provide
@@ -449,9 +445,8 @@ class PVStateSignal(AggregateSignal):
 
     See `AggregateSignal` for more information.
     """
-    _metadata_keys = Signal._core_metadata_keys + (
-        'enum_strs',
-    )
+
+    _metadata_keys = Signal._core_metadata_keys + ("enum_strs",)
 
     def __init__(self, *, name, **kwargs):
         super().__init__(name=name, **kwargs)
@@ -473,10 +468,10 @@ class PVStateSignal(AggregateSignal):
         # Base description information
         sub_sigs = [sig.name for sig in self._signals]
         desc = {
-            'source': 'SUM:{}'.format(','.join(sub_sigs)),
-            'dtype': 'string',
-            'shape': [],
-            'enum_strs': self.enum_strs,
+            "source": "SUM:{}".format(",".join(sub_sigs)),
+            "dtype": "string",
+            "shape": [],
+            "enum_strs": self.enum_strs,
         }
         return {self.name: desc}
 
@@ -494,14 +489,11 @@ class PVStateSignal(AggregateSignal):
         """
         # Do some one-time setup here
         # Convenient because we only hit this block when signals are ready
-        if (
-            self._metadata['enum_strs'] is None
-            and self.parent._state_initialized
-        ):
+        if self._metadata["enum_strs"] is None and self.parent._state_initialized:
             # One time setup of the enum strs
             # Defined by class definition, not by EPICS
             # Not necessarily available during init though, so do it now
-            self._metadata['enum_strs'] = self.enum_strs
+            self._metadata["enum_strs"] = self.enum_strs
             self._run_metadata_callbacks()
         if not self._has_setpoint_md:
             # One time setup of the setpoint signal's metadata
@@ -516,9 +508,7 @@ class PVStateSignal(AggregateSignal):
             self._has_setpoint_md = True
 
         state_value = None
-        for states, sig_info in zip(
-            self.parent._state_logic.values(), self._signals.values()
-        ):
+        for states, sig_info in zip(self.parent._state_logic.values(), self._signals.values()):
             # Get state information from last cached value
             try:
                 signal_state = states[sig_info.value]
@@ -527,7 +517,7 @@ class PVStateSignal(AggregateSignal):
                 state_value = self.parent._unknown
                 break
             # Associate readback with device state
-            if signal_state != 'defer':
+            if signal_state != "defer":
                 if state_value:
                     # Handle inconsistent readbacks
                     if signal_state != state_value:
@@ -536,19 +526,14 @@ class PVStateSignal(AggregateSignal):
                 else:
                     # Set state to first non-deferred value
                     state_value = signal_state
-                    if self.parent._state_logic_mode == 'ALL':
+                    if self.parent._state_logic_mode == "ALL":
                         continue
-                    elif self.parent._state_logic_mode == 'FIRST':
+                    elif self.parent._state_logic_mode == "FIRST":
                         break
         # If all states deferred, report as unknown
         return state_value or self.parent._unknown
 
-    def _setpoint_md_update(
-        self,
-        *args,
-        write_access: Optional[bool] = None,
-        **kwargs
-    ) -> None:
+    def _setpoint_md_update(self, *args, write_access: Optional[bool] = None, **kwargs) -> None:
         """
         Metadata callback for us to keep track of write access permissions.
 
@@ -557,7 +542,7 @@ class PVStateSignal(AggregateSignal):
         first.
         """
         if write_access is not None:
-            self._metadata['write_access'] = write_access
+            self._metadata["write_access"] = write_access
             self._run_metadata_callbacks()
 
     def put(self, value: Union[int, str], **kwargs) -> None:
@@ -612,16 +597,14 @@ class MultiDerivedSignal(AggregateSignal):
         calculate_on_put: Optional[MdsOnPutFunction] = None,
         timeout: Optional[Number] = None,
         settle_time: Optional[Number] = None,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.timeout = timeout
         self.settle_time = settle_time
 
         if calculate_on_get is not None:
-            self.calculate_on_get = utils.maybe_make_method(
-                calculate_on_get, owner=self.parent
-            )
+            self.calculate_on_get = utils.maybe_make_method(calculate_on_get, owner=self.parent)
         elif not hasattr(self, "calculate_on_get"):
             raise ValueError(
                 "The `calculate_on_get` argument must be provided for "
@@ -640,10 +623,7 @@ class MultiDerivedSignal(AggregateSignal):
                     f"use MultiDerivedSignal instead of MultiDerivedSignalRO?"
                 )
 
-            self.calculate_on_put = utils.maybe_make_method(
-                calculate_on_put,
-                owner=self.parent
-            )
+            self.calculate_on_put = utils.maybe_make_method(calculate_on_put, owner=self.parent)
         elif type(self) is MultiDerivedSignal:
             self._metadata["write_access"] = False
             self.calculate_on_put = None
@@ -683,9 +663,7 @@ class MultiDerivedSignal(AggregateSignal):
                 f"{func_name}{sig}"
             )
 
-    def _check_calculate_on_put_signature(
-        self, func: Optional[MdsOnGetFunction]
-    ):
+    def _check_calculate_on_put_signature(self, func: Optional[MdsOnGetFunction]):
         """Ensure the ``calculate_on_put`` signature is correct."""
         if func is None:
             return
@@ -721,7 +699,7 @@ class MultiDerivedSignal(AggregateSignal):
         callback: Optional[OphydCallback] = None,
         timeout: Union[Number, object] = DEFAULT_WRITE_TIMEOUT,
         settle_time: Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> ophyd.status.StatusBase:
         """
         calculate_on_get new values for the given derived signals and write.
@@ -752,11 +730,7 @@ class MultiDerivedSignal(AggregateSignal):
         return st
 
     def set(
-        self,
-        value: OphydDataType,
-        *,
-        timeout: Optional[float] = None,
-        settle_time: Optional[float] = None
+        self, value: OphydDataType, *, timeout: Optional[float] = None, settle_time: Optional[float] = None
     ) -> ophyd.status.StatusBase:
         if self.calculate_on_put is None:
             raise ReadOnlyError(
@@ -773,12 +747,12 @@ class MultiDerivedSignal(AggregateSignal):
                 f"{type(to_write).__name__}.  Please contact your POC to get "
                 f"this issue fixed."
             )
-        return utils.set_many(to_write, owner=self,
-                              timeout=timeout, settle_time=settle_time)
+        return utils.set_many(to_write, owner=self, timeout=timeout, settle_time=settle_time)
 
 
 class MultiDerivedSignalRO(SignalRO, MultiDerivedSignal):
     """Read-only variant of a MultiDerivedSignal."""
+
     ...
 
 
@@ -884,8 +858,8 @@ class NotImplementedSignal(SignalRO):
     """Dummy signal for a not implemented feature."""
 
     def __init__(self, *args, **kwargs):
-        kwargs.pop('value', None)
-        super().__init__(value='Not implemented', **kwargs)
+        kwargs.pop("value", None)
+        super().__init__(value="Not implemented", **kwargs)
 
 
 class InternalSignal(SignalRO):
@@ -922,8 +896,7 @@ class _OptionalEpicsSignal(Signal):
     def __init__(self, read_pv, write_pv=None, *, name, parent=None, kind=None, **kwargs):
         self._saw_connection = False
         self._epics_signal = EpicsSignal(
-            read_pv=read_pv, write_pv=write_pv, parent=self, name=name,
-            kind=kind, **kwargs
+            read_pv=read_pv, write_pv=write_pv, parent=self, name=name, kind=kind, **kwargs
         )
         super().__init__(name=name, parent=parent, kind=kind, attr_name=kwargs.get("attr_name", ""))
         self._epics_signal.subscribe(
@@ -933,8 +906,7 @@ class _OptionalEpicsSignal(Signal):
 
     def _epics_value_update(self, **kwargs):
         """The EpicsSignal value updated."""
-        super().put(value=kwargs['value'], timestamp=kwargs['timestamp'],
-                    force=True)
+        super().put(value=kwargs["value"], timestamp=kwargs["timestamp"], force=True)
         # Note: the above internally calls run_subs
         # self._run_subs(**kwargs)
 
@@ -943,7 +915,7 @@ class _OptionalEpicsSignal(Signal):
         self._metadata.update(**kwargs)
         self._run_subs(sub_type=self.SUB_META, **kwargs)
 
-        if not self._saw_connection and kwargs.get('connected', False):
+        if not self._saw_connection and kwargs.get("connected", False):
             self._epics_signal.subscribe(self._epics_value_update)
             self._saw_connection = True
 
@@ -972,23 +944,23 @@ class _OptionalEpicsSignal(Signal):
         """
 
         def method_selector(self, *args, **kwargs):
-            owner = (self._epics_signal if self.should_use_epics_signal()
-                     else super())
+            owner = self._epics_signal if self.should_use_epics_signal() else super()
             return getattr(owner, method_name)(*args, **kwargs)
 
         return method_selector
 
-    describe = _proxy_method('describe')
-    describe_configuration = _proxy_method('describe_configuration')
-    get = _proxy_method('get')
-    put = _proxy_method('put')
-    set = _proxy_method('set')
-    read = _proxy_method('read')
-    read_configuration = _proxy_method('read_configuration')
-    wait_for_connection = _proxy_method('wait_for_connection')
+    describe = _proxy_method("describe")
+    describe_configuration = _proxy_method("describe_configuration")
+    get = _proxy_method("get")
+    put = _proxy_method("put")
+    set = _proxy_method("set")
+    read = _proxy_method("read")
+    read_configuration = _proxy_method("read_configuration")
+    wait_for_connection = _proxy_method("wait_for_connection")
 
     def _proxy_property(prop_name, value):  # noqa
         """Read-only property proxy for the internal EPICS Signal."""
+
         def getter(self):
             if self.should_use_epics_signal():
                 return getattr(self._epics_signal, prop_name)
@@ -997,12 +969,12 @@ class _OptionalEpicsSignal(Signal):
         # Only support read-only properties for now.
         return property(getter)
 
-    connected = _proxy_property('connected', True)
-    read_access = _proxy_property('read_access', True)
-    write_access = _proxy_property('write_access', True)
-    precision = _proxy_property('precision', 4)
-    enum_strs = _proxy_property('enum_strs', ())
-    limits = _proxy_property('limits', (0, 0))
+    connected = _proxy_property("connected", True)
+    read_access = _proxy_property("read_access", True)
+    write_access = _proxy_property("write_access", True)
+    precision = _proxy_property("precision", 4)
+    enum_strs = _proxy_property("enum_strs", ())
+    limits = _proxy_property("limits", (0, 0))
 
     @property
     def kind(self):
@@ -1052,8 +1024,8 @@ class NotepadLinkedSignal(_OptionalEpicsSignal):
 
     @staticmethod
     def create_notepad_metadata(
-            base_metadata, dotted_name, read_pv, write_pv=None, *,
-            attr_name=None, parent=None, name=None, **kwargs):
+        base_metadata, dotted_name, read_pv, write_pv=None, *, attr_name=None, parent=None, name=None, **kwargs
+    ):
         """
         Create the notepad metadata dict for usage by pcdsdevices-notepad.
         For further information, see :class:`NotepadLinkedSignal`.
@@ -1065,48 +1037,47 @@ class NotepadLinkedSignal(_OptionalEpicsSignal):
             name=name,
             owner_type=type(parent).__name__,
             dotted_name=dotted_name,
-            signal_kwargs={key: value
-                           for key, value in kwargs.items()
-                           if isinstance(value, (int, str, float))
-                           },
+            signal_kwargs={key: value for key, value in kwargs.items() if isinstance(value, (int, str, float))},
         )
 
-    def __init__(self, read_pv, write_pv=None, *, notepad_metadata,
-                 attr_name=None, parent=None, name=None, **kwargs):
+    def __init__(self, read_pv, write_pv=None, *, notepad_metadata, attr_name=None, parent=None, name=None, **kwargs):
         # Pre-define some attributes so we can aggregate information:
         self._parent = parent
         self._name = name
         if self.root is self:
             full_dotted_name = attr_name
         else:
-            full_dotted_name = f'{self.root.name}.{attr_name}'
+            full_dotted_name = f"{self.root.name}.{attr_name}"
 
         self.notepad_metadata = self.create_notepad_metadata(
             base_metadata=notepad_metadata,
             dotted_name=full_dotted_name,
-            read_pv=read_pv, write_pv=write_pv, name=name, parent=parent,
-            **kwargs
+            read_pv=read_pv,
+            write_pv=write_pv,
+            name=name,
+            parent=parent,
+            **kwargs,
         )
-        super().__init__(read_pv=read_pv, write_pv=write_pv, parent=parent,
-                         attr_name=attr_name, name=name, **kwargs)
+        super().__init__(read_pv=read_pv, write_pv=write_pv, parent=parent, attr_name=attr_name, name=name, **kwargs)
 
 
 class FakeNotepadLinkedSignal(FakeEpicsSignal):
     """A suitable fake class for NotepadLinkedSignal."""
-    def __init__(self, read_pv, write_pv=None, *, notepad_metadata,
-                 attr_name=None, parent=None, name=None,
-                 **kwargs):
+
+    def __init__(self, read_pv, write_pv=None, *, notepad_metadata, attr_name=None, parent=None, name=None, **kwargs):
         # Pre-define some attributes so we can aggregate information:
         self._parent = parent
         self._attr_name = attr_name
         self.notepad_metadata = NotepadLinkedSignal.create_notepad_metadata(
             base_metadata=notepad_metadata,
-            dotted_name=self.root.name + '.' + self.dotted_name,
-            read_pv=read_pv, write_pv=write_pv, name=name, parent=parent,
-            **kwargs
+            dotted_name=self.root.name + "." + self.dotted_name,
+            read_pv=read_pv,
+            write_pv=write_pv,
+            name=name,
+            parent=parent,
+            **kwargs,
         )
-        super().__init__(read_pv=read_pv, write_pv=write_pv, parent=parent,
-                         attr_name=attr_name, name=name, **kwargs)
+        super().__init__(read_pv=read_pv, write_pv=write_pv, parent=parent, attr_name=attr_name, name=name, **kwargs)
 
 
 # NOTE: This is an *on-import* update of the ophyd "fake" device cache
@@ -1177,37 +1148,35 @@ class UnitConversionDerivedSignal(DerivedSignal):
         original_units: typing.Optional[str] = None,
         user_offset: typing.Optional[numbers.Real] = 0,
         limits: typing.Optional[tuple[numbers.Real, numbers.Real]] = None,
-        **kwargs
+        **kwargs,
     ):
         self.derived_units = derived_units
         self.original_units = original_units
         self._user_offset = user_offset
         self._custom_limits = limits
         super().__init__(derived_from, **kwargs)
-        self._metadata['units'] = derived_units
+        self._metadata["units"] = derived_units
 
         # Ensure that we include units in metadata callbacks, even if the
         # original signal does not include them.
-        if 'units' not in self._metadata_keys:
-            self._metadata_keys = self._metadata_keys + ('units', )
+        if "units" not in self._metadata_keys:
+            self._metadata_keys = self._metadata_keys + ("units",)
 
     def forward(self, value):
-        '''Compute derived signal value -> original signal value'''
+        """Compute derived signal value -> original signal value"""
         if self.user_offset is None:
-            raise ValueError(f'{self.name} must be set to a non-None value.')
-        return convert_unit(value - self.user_offset,
-                            self.derived_units, self.original_units)
+            raise ValueError(f"{self.name} must be set to a non-None value.")
+        return convert_unit(value - self.user_offset, self.derived_units, self.original_units)
 
     def inverse(self, value):
-        '''Compute original signal value -> derived signal value'''
+        """Compute original signal value -> derived signal value"""
         if self.user_offset is None:
-            raise ValueError(f'{self.name} must be set to a non-None value.')
-        return convert_unit(value, self.original_units,
-                            self.derived_units) + self.user_offset
+            raise ValueError(f"{self.name} must be set to a non-None value.")
+        return convert_unit(value, self.original_units, self.derived_units) + self.user_offset
 
     @property
     def limits(self):
-        '''
+        """
         Defaults to limits from the original signal (low, high).
 
         Limit values may be reversed such that ``low <= value <= high`` after
@@ -1215,14 +1184,12 @@ class UnitConversionDerivedSignal(DerivedSignal):
 
         Limits may also be overridden here without affecting the original
         signal.
-        '''
+        """
         if self._custom_limits is not None:
             return self._custom_limits
 
         # Fall back to the superclass derived_from limits:
-        return tuple(
-            sorted(self.inverse(v) for v in self._derived_from.limits)
-        )
+        return tuple(sorted(self.inverse(v) for v in self._derived_from.limits))
 
     @limits.setter
     def limits(self, value):
@@ -1231,7 +1198,7 @@ class UnitConversionDerivedSignal(DerivedSignal):
             return
 
         if len(value) != 2 or value[0] >= value[1]:
-            raise ValueError('Custom limits must be a 2-tuple (low, high)')
+            raise ValueError("Custom limits must be a 2-tuple (low, high)")
 
         self._custom_limits = tuple(value)
 
@@ -1266,19 +1233,19 @@ class UnitConversionDerivedSignal(DerivedSignal):
             self._derived_value_callback(value)
 
     def _derived_metadata_callback(self, *, connected, **kwargs):
-        if connected and 'units' in kwargs:
+        if connected and "units" in kwargs:
             if self.original_units is None:
-                self.original_units = kwargs['units']
+                self.original_units = kwargs["units"]
         # Do not pass through units, as we have our own.
-        kwargs['units'] = self.derived_units
+        kwargs["units"] = self.derived_units
         super()._derived_metadata_callback(connected=connected, **kwargs)
 
     def describe(self):
         full_desc = super().describe()
         desc = full_desc[self.name]
-        desc['units'] = self.derived_units
+        desc["units"] = self.derived_units
         # Note: this should be handled in ophyd:
-        for key in ('lower_ctrl_limit', 'upper_ctrl_limit'):
+        for key in ("lower_ctrl_limit", "upper_ctrl_limit"):
             if key in desc:
                 desc[key] = self.inverse(desc[key])
         return full_desc
@@ -1295,6 +1262,7 @@ class SignalEditMD(Signal):
     Does some minimal checking against the signal's metadata keys and ensures
     the override values always take priority over the normally found values.
     """
+
     def _override_metadata(self, **md):
         """
         Externally override the signal metadata.
@@ -1305,9 +1273,9 @@ class SignalEditMD(Signal):
         for key in md.keys():
             if key not in self._metadata_keys:
                 raise ValueError(
-                    f'Tried to override metadata key {key} in {self.name}, '
-                    'but this is not one of the metadata keys: '
-                    f'{self._metadata_keys}'
+                    f"Tried to override metadata key {key} in {self.name}, "
+                    "but this is not one of the metadata keys: "
+                    f"{self._metadata_keys}"
                 )
         try:
             self._metadata_override.update(**md)
@@ -1327,8 +1295,7 @@ class SignalEditMD(Signal):
 
     # Switch out _metadata for metadata
     def _run_metadata_callbacks(self):
-        self._metadata_thread_ctx.run(self._run_subs, sub_type=self.SUB_META,
-                                      **self.metadata)
+        self._metadata_thread_ctx.run(self._run_subs, sub_type=self.SUB_META, **self.metadata)
 
 
 class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
@@ -1351,6 +1318,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
     ---------
     `ophyd.signal.EpicsSignal` for further parameter information.
     """
+
     _enum_attrs: list[Optional[str]]
     _enum_count: int
     _enum_strings: list[str]
@@ -1368,7 +1336,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         enum_strs: Optional[list[str]] = None,
         parent: Optional[ophyd.ophydobj.OphydObject] = None,
         name: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ):
         self._enum_attrs = list(enum_attrs or [])
         self._pending_signals = set()
@@ -1380,9 +1348,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         self._sent_first_md_callbacks = False
 
         if enum_attrs and enum_strs:
-            raise ValueError(
-                "enum_attrs OR enum_strs may be set, but not both"
-            )
+            raise ValueError("enum_attrs OR enum_strs may be set, but not both")
 
         self._enum_string_override = bool(enum_attrs or enum_strs)
         if self._enum_string_override:
@@ -1397,10 +1363,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
             # -> self.metadata["enum_strs"] => self._enum_strings
             self._metadata_override["enum_strs"] = self._enum_strings
             if parent is None:
-                raise RuntimeError(
-                    "This signal {name!r} must be used in a "
-                    "Device/Component hierarchy."
-                )
+                raise RuntimeError("This signal {name!r} must be used in a Device/Component hierarchy.")
 
         elif enum_strs:
             # Override with strings
@@ -1438,15 +1401,10 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
                 ) from ex
 
             if obj is self:
-                raise RuntimeError(
-                    f"Recursively specified {self.name!r} in the enum_attrs "
-                    "list.  Don't do that."
-                )
+                raise RuntimeError(f"Recursively specified {self.name!r} in the enum_attrs list.  Don't do that.")
             self._enum_signals.append(obj)
             self._pending_signals.add(obj)
-            self._enum_subscriptions[obj] = obj.subscribe(
-                self._enum_string_updated, run=True
-            )
+            self._enum_subscriptions[obj] = obj.subscribe(self._enum_string_updated, run=True)
 
     # Switch out _metadata for metadata where appropriate
     @property
@@ -1462,19 +1420,18 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         3. The user-provided strings in ``enum_strs``.
         """
         if self._enum_string_override:
-            return list(self._enum_strings)[:self._enum_count]
-        return self.metadata['enum_strs']
+            return list(self._enum_strings)[: self._enum_count]
+        return self.metadata["enum_strs"]
 
     @property
     def precision(self):
         """The PV precision as reported by EPICS (or EpicsSignalEditMD)."""
-        return self.metadata['precision']
+        return self.metadata["precision"]
 
     @property
     def limits(self) -> tuple[numbers.Real, numbers.Real]:
         """The PV limits as reported by EPICS (or EpicsSignalEditMD)."""
-        return (self.metadata['lower_ctrl_limit'],
-                self.metadata['upper_ctrl_limit'])
+        return (self.metadata["lower_ctrl_limit"], self.metadata["upper_ctrl_limit"])
 
     def describe(self):
         """
@@ -1488,7 +1445,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
             Dictionary of name and formatted description string
         """
         desc = super().describe()
-        desc[self.name]['units'] = self.metadata['units']
+        desc[self.name]["units"] = self.metadata["units"]
         return desc
 
     @property
@@ -1496,12 +1453,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         """Enum attribute names - the source of each enum string."""
         return list(self._enum_attrs)
 
-    def _enum_string_updated(
-        self,
-        value: str,
-        obj: ophyd.ophydobj.OphydObject,
-        **kwargs
-    ):
+    def _enum_string_updated(self, value: str, obj: ophyd.ophydobj.OphydObject, **kwargs):
         """
         A single Signal from ``enum_signals`` updated its value.
 
@@ -1535,10 +1487,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
 
         self._enum_strings[idx] = str(value)
 
-        self.log.debug(
-            "Got enum %s [%d] = %s from %s",
-            self.name, idx, value, getattr(obj, "pvname", "(no pvname)")
-        )
+        self.log.debug("Got enum %s [%d] = %s from %s", self.name, idx, value, getattr(obj, "pvname", "(no pvname)"))
         try:
             self._pending_signals.remove(obj)
         except KeyError:
@@ -1551,25 +1500,16 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
     @property
     def connected(self) -> bool:
         """Is the signal connected and ready to use?"""
-        return (
-            self._metadata["connected"]
-            and not self._destroyed
-            and not len(self._pending_signals)
-        )
+        return self._metadata["connected"] and not self._destroyed and not len(self._pending_signals)
 
     def _check_signal_metadata(self):
         """Check the original enum strings to compare the attributes."""
         if not self._enum_string_override:
             return
 
-        self._original_enum_strings = self._metadata.get(
-            "enum_strs", None
-        ) or []
+        self._original_enum_strings = self._metadata.get("enum_strs", None) or []
         if not self._original_enum_strings:
-            self.log.error(
-                "No enum strings on %r; was %r used inappropriately?",
-                self.pvname, type(self).__name__
-            )
+            self.log.error("No enum strings on %r; was %r used inappropriately?", self.pvname, type(self).__name__)
             return
 
         if self._enum_count == 0:
@@ -1592,9 +1532,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
             updated_enums = [
                 pick_enum_string(existing, original)
                 for existing, original in itertools.zip_longest(
-                    self._enum_strings,
-                    self._original_enum_strings,
-                    fillvalue=""
+                    self._enum_strings, self._original_enum_strings, fillvalue=""
                 )
             ]
             self._enum_strings[:] = updated_enums
@@ -1624,9 +1562,7 @@ class EpicsSignalROEditMD(EpicsSignalRO, EpicsSignalBaseEditMD):
 
 
 EpicsSignalEditMD.__doc__ = EpicsSignalBaseEditMD.__doc__ + EpicsSignal.__doc__
-EpicsSignalROEditMD.__doc__ = (
-    EpicsSignalBaseEditMD.__doc__ + EpicsSignalRO.__doc__
-)
+EpicsSignalROEditMD.__doc__ = EpicsSignalBaseEditMD.__doc__ + EpicsSignalRO.__doc__
 
 
 class FakeEpicsSignalEditMD(SignalEditMD, FakeEpicsSignal):
@@ -1634,12 +1570,9 @@ class FakeEpicsSignalEditMD(SignalEditMD, FakeEpicsSignal):
     API stand-in for EpicsSignalEditMD
     Add to this if you need it to actually work for your test.
     """
+
     def __init__(
-        self,
-        *args,
-        enum_attrs: Optional[list[Optional[str]]] = None,
-        enum_strs: Optional[list[str]] = None,
-        **kwargs
+        self, *args, enum_attrs: Optional[list[Optional[str]]] = None, enum_strs: Optional[list[str]] = None, **kwargs
     ):
         super().__init__(*args, **kwargs)
         self._enum_attrs = enum_attrs
@@ -1661,8 +1594,8 @@ class FakeEpicsSignalEditMD(SignalEditMD, FakeEpicsSignal):
         If defined in the test, do it like in the real EpicsSignalEditMD.
         Otherwise, be permissive to avoid false test failures.
         """
-        lower = self.metadata['lower_ctrl_limit']
-        upper = self.metadata['upper_ctrl_limit']
+        lower = self.metadata["lower_ctrl_limit"]
+        upper = self.metadata["upper_ctrl_limit"]
         if None in (lower, upper):
             return (0, 0)
         else:

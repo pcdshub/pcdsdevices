@@ -372,10 +372,7 @@ def format_status_table(status_info, row_to_key, column_to_key, row_identifier="
     table = prettytable.PrettyTable()
     table.field_names = [row_identifier] + list(column_to_key)
     for row_name, row_key in row_to_key.items():
-        row = [
-            get_status_value(status_info, row_key, key, "value")
-            for key in column_to_key.values()
-        ]
+        row = [get_status_value(status_info, row_key, key, "value") for key in column_to_key.values()]
         table.add_row([str(row_name)] + row)
 
     return table
@@ -609,10 +606,7 @@ def maybe_make_method(func: Callable | None, owner: object) -> Callable | None:
         return None
 
     if not callable(func):
-        raise ValueError(
-            f"The provided ``func`` is not callable: {func!r} is of "
-            f"type {type(func).__name__}"
-        )
+        raise ValueError(f"The provided ``func`` is not callable: {func!r} is of type {type(func).__name__}")
 
     sig = inspect.signature(func)
     if "self" in sig.parameters and list(sig.parameters)[0] == "self":
@@ -655,9 +649,7 @@ def format_ophyds_to_html(obj, allow_child=False):
             return content
 
         # HelpfulNamespaces tend to lack names, maybe they won't some day
-        parent_default = "Ophyd status: " + ", ".join(
-            "[...]" if isinstance(o, Iterable) else o.name for o in obj
-        )
+        parent_default = "Ophyd status: " + ", ".join("[...]" if isinstance(o, Iterable) else o.name for o in obj)
         parent_name = getattr(obj, "__name__", parent_default[:60] + " ...")
 
         # Wrap in a parent div
@@ -672,11 +664,7 @@ def format_ophyds_to_html(obj, allow_child=False):
 
     # check if parent level ophyd object
     elif callable(getattr(obj, "status", None)) and (
-        (
-            getattr(obj, "parent", None) is None
-            and getattr(obj, "biological_parent", None) is None
-        )
-        or allow_child
+        (getattr(obj, "parent", None) is None and getattr(obj, "biological_parent", None) is None) or allow_child
     ):
         content = ""
         try:
@@ -815,7 +803,7 @@ def _normalize_reorder_list(
                 raise ValueError(
                     f"Received component {obj}, which is not from the device "
                     f"class {cls}. We have components with the following "
-                    f'names: {", ".join(cls._sig_attrs)}'
+                    f"names: {', '.join(cls._sig_attrs)}"
                 ) from exc
         elif isinstance(obj, str):
             output.append(obj)
@@ -897,7 +885,7 @@ def sort_components_by_name(
 
     # Special decorator handling
     def inner(cls: type[Device]) -> type[Device]:
-        alphabetical = list(sorted(cls._sig_attrs, reverse=reverse))
+        alphabetical = sorted(cls._sig_attrs, reverse=reverse)
         reorder_components(cls, start_with=alphabetical)
         return cls
 

@@ -1,6 +1,7 @@
 """
 Module for the liquid jet classes.
 """
+
 from ophyd import Component as Cpt
 
 from .device import GroupDevice
@@ -33,7 +34,7 @@ class Injector(BaseInterface, GroupDevice):
 
     def __init__(self, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
-        super().__init__('', name=name, **kwargs)
+        super().__init__("", name=name, **kwargs)
 
 
 class InjectorWithFine(Injector):
@@ -74,19 +75,20 @@ class BeckhoffJetManipulator(BaseInterface, GroupDevice):
 
     tab_component_names = True
 
-    x = Cpt(BeckhoffAxis, ':X', kind='normal')
-    y = Cpt(BeckhoffAxis, ':Y', kind='normal')
-    z = Cpt(BeckhoffAxis, ':Z', kind='normal')
+    x = Cpt(BeckhoffAxis, ":X", kind="normal")
+    y = Cpt(BeckhoffAxis, ":Y", kind="normal")
+    z = Cpt(BeckhoffAxis, ":Z", kind="normal")
 
 
 class BeckhoffJetSlits(BaseInterface, GroupDevice):
     """Pair of Beckhoff-controlled slits where each blade has X & Y motors."""
+
     tab_component_names = True
 
-    top_x = Cpt(BeckhoffAxis, ':TOP_X', kind='normal')
-    top_y = Cpt(BeckhoffAxis, ':TOP_Y', kind='normal')
-    bot_x = Cpt(BeckhoffAxis, ':BOT_X', kind='normal')
-    bot_y = Cpt(BeckhoffAxis, ':BOT_Y', kind='normal')
+    top_x = Cpt(BeckhoffAxis, ":TOP_X", kind="normal")
+    top_y = Cpt(BeckhoffAxis, ":TOP_Y", kind="normal")
+    bot_x = Cpt(BeckhoffAxis, ":BOT_X", kind="normal")
+    bot_y = Cpt(BeckhoffAxis, ":BOT_Y", kind="normal")
 
 
 class BeckhoffJet(BaseInterface, GroupDevice):
@@ -108,6 +110,6 @@ class BeckhoffJet(BaseInterface, GroupDevice):
 
     tab_component_names = True
 
-    jet = Cpt(BeckhoffJetManipulator, ':JET', kind='normal')
-    ss = Cpt(BeckhoffJetSlits, ':SS', kind='normal')
-    vh_epix_x = Cpt(BeckhoffAxis, ':DET:X', kind='normal')
+    jet = Cpt(BeckhoffJetManipulator, ":JET", kind="normal")
+    ss = Cpt(BeckhoffJetSlits, ":SS", kind="normal")
+    vh_epix_x = Cpt(BeckhoffAxis, ":DET:X", kind="normal")

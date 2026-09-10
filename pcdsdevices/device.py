@@ -59,15 +59,15 @@ class UnrelatedComponent(Component):
 
         device.unrelated_prefixes = {}
         for key, value in list(kwargs.items()):
-            if key.endswith('_prefix'):
+            if key.endswith("_prefix"):
                 device.unrelated_prefixes[key] = value
                 kwargs.pop(key)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Needs to be non-None or it gets ignored
-        self.suffix = ''
-        add_prefix = list(kwargs.get('add_prefix', ['suffix']))
+        self.suffix = ""
+        add_prefix = list(kwargs.get("add_prefix", ["suffix"]))
 
         # Include subdevice UnrelatedComponent
         try:
@@ -78,7 +78,7 @@ class UnrelatedComponent(Component):
 
         for cpt_walk in walk_iterator:
             if isinstance(cpt_walk.item, UnrelatedComponent):
-                name = cpt_walk.dotted_name.replace('.', '_') + '_prefix'
+                name = cpt_walk.dotted_name.replace(".", "_") + "_prefix"
                 add_prefix.append(name)
                 self.kwargs[name] = None
 
@@ -89,16 +89,15 @@ class UnrelatedComponent(Component):
             return suffix
 
         # Primary prefix for UnrelatedComponent
-        if kw == 'suffix':
-            expected_kwarg = self.attr + '_prefix'
+        if kw == "suffix":
+            expected_kwarg = self.attr + "_prefix"
         # Subdevice UnrelatedComponent
         else:
-            expected_kwarg = self.attr + '_' + kw
+            expected_kwarg = self.attr + "_" + kw
         try:
             return instance.unrelated_prefixes[expected_kwarg]
         except KeyError:
-            raise ValueError(f'Missing {expected_kwarg} in __init__ for '
-                             f'{instance.name}.')
+            raise ValueError(f"Missing {expected_kwarg} in __init__ for {instance.name}.")
 
 
 class ObjectComponent(Component):
@@ -136,6 +135,7 @@ class ObjectComponent(Component):
         the kind, leave it as is". If provided, it is up the user to make sure
         they are being consistent with the setting of kinds on their devices.
     """
+
     def __init__(self, obj, kind=None):
         self._override_kind = kind
         if kind is None:
@@ -175,6 +175,7 @@ class InterfaceComponent(Component):
         the kind, leave it as is". If provided, it is up the user to make sure
         they are being consistent with the setting of kinds on their devices.
     """
+
     def __init__(self, cls, kind=None, **kwargs):
         self._override_kind = kind
         if kind is None:
@@ -219,6 +220,7 @@ class InterfaceDevice(Device):
     You can automatically turn a standard `Device` into an `InterfaceDevice`
     using the `to_interface` function.
     """
+
     def __init__(self, *args, **kwargs):
         self._interface_obj = {}
 
@@ -228,13 +230,11 @@ class InterfaceDevice(Device):
                 try:
                     obj = kwargs.pop(cpt_name)
                 except KeyError:
-                    raise TypeError(f'Missing required kwarg {cpt_name}') from None
+                    raise TypeError(f"Missing required kwarg {cpt_name}") from None
                 if isinstance(obj, cpt.cls):
                     self._interface_obj[cpt_name] = obj
                 else:
-                    raise TypeError(
-                        f'{cpt_name} must be of type {cpt.cls}'
-                    )
+                    raise TypeError(f"{cpt_name} must be of type {cpt.cls}")
 
         super().__init__(*args, **kwargs)
 
@@ -264,11 +264,7 @@ def to_interface(device_class):
         cpt = getattr(device_class, cpt_name)
         interface_cpts[cpt_name] = InterfaceComponent(cpt.cls)
 
-    return type(
-        device_class.__name__ + 'Interface',
-        (InterfaceDevice, device_class),
-        interface_cpts
-    )
+    return type(device_class.__name__ + "Interface", (InterfaceDevice, device_class), interface_cpts)
 
 
 class UpdateComponent(Component):
@@ -298,6 +294,7 @@ class UpdateComponent(Component):
     **kwargs: any, optional
         keyword arguments to update
     """
+
     update_kwargs: dict[str, Any]
     copt_cpt: Optional[Component]
 
@@ -320,20 +317,15 @@ class UpdateComponent(Component):
             except AttributeError:
                 continue
         if parent_cpt is None:
-            raise RuntimeError(
-                f"Did not find component {attr_name} "
-                f"on any parent class of {owner}, "
-                "nothing to update!"
-            )
+            raise RuntimeError(f"Did not find component {attr_name} on any parent class of {owner}, nothing to update!")
         self.copy_cpt = copy.deepcopy(parent_cpt)
 
         # Edit this object as per our init args
         for key, value in self.update_kwargs.items():
             # Set the attrs if they exist
-            if key == 'kind':
+            if key == "kind":
                 # Special handling to ensure kind is a Kind
-                value = (Kind[value.lower()] if isinstance(value, str)
-                         else Kind(value))
+                value = Kind[value.lower()] if isinstance(value, str) else Kind(value)
                 self.copy_cpt.kind = value
             elif hasattr(self.copy_cpt, key):
                 setattr(self.copy_cpt, key, value)
@@ -403,6 +395,7 @@ class GroupDevice(Device):
       need to retain their ``parent`` attribute, see
       ``GroupDevice.needs_parent``.
     """
+
     stage_group: list[Component] = None
     needs_parent: list[type[OphydObject]] = [
         AttributeSignal,
@@ -410,7 +403,7 @@ class GroupDevice(Device):
         PluginBase,
         PseudoSingle,
         PVStateSignal,
-        AggregateSignal
+        AggregateSignal,
     ]
 
     def __init__(self, *args, **kwargs):
@@ -430,7 +423,7 @@ class GroupDevice(Device):
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
-        if hasattr(cls, 'set') and cls.stage_group is None:
+        if hasattr(cls, "set") and cls.stage_group is None:
             raise TypeError(
                 f"Must specify a stage_group in {cls.__name__} because it "
                 "is a movable device. See the GroupDevice docs."
@@ -457,13 +450,13 @@ class GroupDevice(Device):
     def stage(self) -> list[OphydObject]:
         staged = [self]
         for obj in self.stage_group_instances():
-            if hasattr(obj, 'stage'):
+            if hasattr(obj, "stage"):
                 staged.extend(obj.stage())
         return staged
 
     def unstage(self) -> list[OphydObject]:
         unstaged = [self]
         for obj in reversed(list(self.stage_group_instances())):
-            if hasattr(obj, 'unstage'):
+            if hasattr(obj, "unstage"):
                 unstaged.extend(obj.unstage())
         return unstaged

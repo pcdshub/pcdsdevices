@@ -6,24 +6,24 @@ from ..he_lodcm import SI111, SI220, HE_LODCMEnergy
 from .test_epics_motor import motor_setup
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_he_lodcmenergy_980():
     cls = make_fake_device(HE_LODCMEnergy)
-    tst_lodcm_980 = cls('TST:LODCM', name='fake_lodcm_energy_980')
-    tst_lodcm_980.beam_splitter.target._late_state_init(enum_strs=['Unknown', 'OUT', 'TARGET1a', 'TARGET1b'])
+    tst_lodcm_980 = cls("TST:LODCM", name="fake_lodcm_energy_980")
+    tst_lodcm_980.beam_splitter.target._late_state_init(enum_strs=["Unknown", "OUT", "TARGET1a", "TARGET1b"])
     tst_lodcm_980.beam_splitter.target.state.sim_put(2)
-    tst_lodcm_980.beam_splitter.target.config.state02.state_name.sim_put('TARGET1a')
+    tst_lodcm_980.beam_splitter.target.config.state02.state_name.sim_put("TARGET1a")
     tst_lodcm_980.beam_splitter.target.config.state02.setpoint.sim_put(31.605)
     return tst_lodcm_980
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_he_lodcmenergy_650():
     cls = make_fake_device(HE_LODCMEnergy)
-    tst_lodcm_650 = cls('TST:LODCM', name='fake_lodcm_energy_650')
-    tst_lodcm_650.beam_splitter.target._late_state_init(enum_strs=['Unknown', 'OUT', 'TARGET1a', 'TARGET1b'])
+    tst_lodcm_650 = cls("TST:LODCM", name="fake_lodcm_energy_650")
+    tst_lodcm_650.beam_splitter.target._late_state_init(enum_strs=["Unknown", "OUT", "TARGET1a", "TARGET1b"])
     tst_lodcm_650.beam_splitter.target.state.sim_put(3)
-    tst_lodcm_650.beam_splitter.target.config.state03.state_name.sim_put('TARGET1b')
+    tst_lodcm_650.beam_splitter.target.config.state03.state_name.sim_put("TARGET1b")
     tst_lodcm_650.beam_splitter.target.config.state03.setpoint.sim_put(33.105)
     return tst_lodcm_650
 

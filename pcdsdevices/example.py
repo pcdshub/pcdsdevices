@@ -2,6 +2,7 @@
 Example devices that don't correspond to any real hardware,
 but may correspond to real IOCs that simulate hardware.
 """
+
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
@@ -21,6 +22,7 @@ class PLCOnlyXPIM(XPIM):
 
     This is part of lcls-plc-example-motion
     """
+
     detector = None
 
 
@@ -30,6 +32,7 @@ class Example3DStates(TwinCATStatePMPS):
 
     This is part of lcls-plc-example-motion
     """
+
     config = UpCpt(state_count=3, motor_count=3)
 
 
@@ -39,6 +42,7 @@ class Example3D(BaseInterface, Device):
 
     This is part of lcls-plc-example-motion
     """
+
     # Standalone setpoints for the top of the demo typhos display
     xsp = Cpt(EpicsSignal, "X.RBV", write_pv="X.VAL")
     ysp = Cpt(EpicsSignal, "Y.RBV", write_pv="Y.VAL")
@@ -58,6 +62,7 @@ class ExampleL2LStates(TwinCATInOutPositioner):
     Note: the limit-to-limit move is implemented on the PLC-side
     This is part of lcls-plc-example-motion
     """
+
     config = UpCpt(state_count=2, motor_count=1)
 
 
@@ -67,6 +72,7 @@ class ExampleL2L(BaseInterface, Device):
 
     This is part of lcls-plc-example-motion
     """
+
     # Standalone setpoints for the top of the demo typhos display
     sp = Cpt(EpicsSignal, "MOT.RBV", write_pv="MOT.VAL")
     # The core states object
@@ -88,6 +94,7 @@ class PLCExampleMotion(BaseInterface, Device):
         from pcdsdevices.example import PLCExampleMotion
         example = PLCExampleMotion()
     """
+
     mot1 = Cpt(BeckhoffAxis, "01")
     mot2 = Cpt(BeckhoffAxis, "02")
     mot3 = Cpt(BeckhoffAxisEPS, "03")
@@ -104,9 +111,7 @@ class PLCExampleMotion(BaseInterface, Device):
 
         This is to help with debugging.
         """
-        return list(
-            walk.item.pvname for walk in self.walk_signals() if hasattr(walk.item, "pvname")
-        )
+        return list(walk.item.pvname for walk in self.walk_signals() if hasattr(walk.item, "pvname"))
 
     def disconnected_pvnames(self) -> list[str]:
         """

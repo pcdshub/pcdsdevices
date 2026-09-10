@@ -1,6 +1,7 @@
 """
 Module for common target stage stack configurations.
 """
+
 import json
 import logging
 import os
@@ -53,9 +54,8 @@ def StageStack(mdict, name):
             cpt = mcls(prefix=mitem, name=mname)
             cpts[mname] = cpt
         else:  # Something is wrong
-            logger.warning("Unrecognized input {}. "
-                           "Skipping axis {}.".format(mitem, mname))
-    cls_name = name + '_StageStack'
+            logger.warning("Unrecognized input {}. Skipping axis {}.".format(mitem, mname))
+    cls_name = name + "_StageStack"
     cls = type(cls_name, (object,), cpts)
 
     dev = cls()
@@ -64,10 +64,11 @@ def StageStack(mdict, name):
 
 
 # Internal class
-class GridAxis():
+class GridAxis:
     """
     Class for axes that move in regularly spaced intervals.
     """
+
     def __init__(self, stage, spacing):
         assert isinstance(spacing, float), "Specify a float target spacing"
         self.stage = stage
@@ -81,11 +82,11 @@ class GridAxis():
         assert nspaces >= 1, "n_targets must be >= 1"
 
         curr_pos = self.stage.wm()
-        next_pos = curr_pos + direction*(nspaces*self.spacing)
+        next_pos = curr_pos + direction * (nspaces * self.spacing)
         self.stage.mv(next_pos, wait=wait)
 
 
-class XYTargetGrid():
+class XYTargetGrid:
     """
     Class methods for managing a target grid oriented normal to the beam, with
     regular X-Y spacing between targets.
@@ -134,9 +135,19 @@ class XYTargetGrid():
                           x_spacing=1.0, y_spacing=1.0, x_comp=0.05,
                           y_comp=0.01)
     """
-    def __init__(self, x=None, y=None, x_init=None, x_spacing=None,
-                 x_comp=0.0, y_init=None, y_spacing=None, y_comp=0.0,
-                 name=None):
+
+    def __init__(
+        self,
+        x=None,
+        y=None,
+        x_init=None,
+        x_spacing=None,
+        x_comp=0.0,
+        y_init=None,
+        y_spacing=None,
+        y_comp=0.0,
+        name=None,
+    ):
 
         self.x_init = x_init
         self.x_spacing = x_spacing
@@ -146,7 +157,7 @@ class XYTargetGrid():
         self.y_spacing = y_spacing
         self.y_comp = y_comp
 
-        d = {'x': x, 'y': y}
+        d = {"x": x, "y": y}
         self._stack = StageStack(d, name)
 
         self.x = self._stack.x
@@ -166,7 +177,7 @@ class XYTargetGrid():
         Return current position of X and Y axes as a dictionary, i.e.
         {x: <x_position>, y: <y_position>}.
         """
-        return {'x': self.x.wm(), 'y': self.y.wm()}
+        return {"x": self.x.wm(), "y": self.y.wm()}
 
     def reset(self, wait=False):
         """
@@ -264,14 +275,14 @@ class XYTargetGrid():
         nyspaces : int (default = 1)
             Number of spaces to move on y-axis.
         """
-        xpos = self.x_init + self.x_spacing*nxspaces + self.x_comp*nyspaces
-        ypos = self.y_init + self.y_spacing*nyspaces + self.y_comp*nxspaces
+        xpos = self.x_init + self.x_spacing * nxspaces + self.x_comp * nyspaces
+        ypos = self.y_init + self.y_spacing * nyspaces + self.y_comp * nxspaces
 
         self.x.mv(xpos, wait=wait)
         self.y.mv(ypos, wait=wait)
 
 
-class XYGridStage():
+class XYGridStage:
     """
     Class that helps support multiple samples on a mount for an XY Grid setup.
 
@@ -325,14 +336,14 @@ class XYGridStage():
         self._path = path
         self._m_points = m_points
         self._n_points = n_points
-        d = {'x': x_motor, 'y': y_motor}
-        self._stack = StageStack(d, 'xy_stage_grid')
+        d = {"x": x_motor, "y": y_motor}
+        self._stack = StageStack(d, "xy_stage_grid")
         self.x = self._stack.x
         self.y = self._stack.y
         # TODO: assert here for a valid path, also valid yaml file
         # assert os.path.exists(path)
         self._coefficients = []
-        self._current_sample = ''
+        self._current_sample = ""
         self._positions_x = []
         self._positions_y = []
 
@@ -373,8 +384,7 @@ class XYGridStage():
         try:
             self._m_points, self._n_points = m_n_values
         except Exception:
-            err_msg = ("Please pass an iterable with two items for m points"
-                       " and n points respectively.")
+            err_msg = "Please pass an iterable with two items for m points and n points respectively."
             raise Exception(err_msg)
 
     @property
@@ -513,22 +523,24 @@ class XYGridStage():
         -0.0000, : -10.0000, scale: 0.1
         """
         # check to see the the presets are setup
-        if not hasattr(self.x.presets, 'add_hutch'):
-            raise AttributeError('No folder setup for motor presets. '
-                                 'Please add a location to save the positions '
-                                 'to, using setup_preset_paths from '
-                                 'pcdsdevices.interface to save the position.')
+        if not hasattr(self.x.presets, "add_hutch"):
+            raise AttributeError(
+                "No folder setup for motor presets. "
+                "Please add a location to save the positions "
+                "to, using setup_preset_paths from "
+                "pcdsdevices.interface to save the position."
+            )
 
-        print('\nSetting coordinates for (0, 0) top left corner: \n')
+        print("\nSetting coordinates for (0, 0) top left corner: \n")
         self.tweak()
         pos = [self.x.position, self.y.position]
-        print('\nSetting coordinates for (0, M) top right corner: \n')
+        print("\nSetting coordinates for (0, M) top right corner: \n")
         self.tweak()
         pos.extend([self.x.position, self.y.position])
-        print('\nSetting coordinates for (N, M) bottom right corner: \n')
+        print("\nSetting coordinates for (N, M) bottom right corner: \n")
         self.tweak()
         pos.extend([self.x.position, self.y.position])
-        print('\nSetting coordinates for (N, 0) bottom left corner: \n')
+        print("\nSetting coordinates for (N, 0) bottom left corner: \n")
         self.tweak()
         pos.extend([self.x.position, self.y.position])
         # create presets
@@ -564,20 +576,16 @@ class XYGridStage():
             (top_left, top_right, bottom_right, bottom_left)
         """
         try:
-            top_left = (self.x.presets.positions.x_top_left.pos,
-                        self.y.presets.positions.y_top_left.pos)
+            top_left = (self.x.presets.positions.x_top_left.pos, self.y.presets.positions.y_top_left.pos)
             # corner (0, M)
-            top_right = (self.x.presets.positions.x_top_right.pos,
-                         self.y.presets.positions.y_top_right.pos)
+            top_right = (self.x.presets.positions.x_top_right.pos, self.y.presets.positions.y_top_right.pos)
             # corner (M, N)
-            bottom_right = (self.x.presets.positions.x_bottom_right.pos,
-                            self.y.presets.positions.y_bottom_right.pos)
+            bottom_right = (self.x.presets.positions.x_bottom_right.pos, self.y.presets.positions.y_bottom_right.pos)
             # corner (N, 0)
-            bottom_left = (self.x.presets.positions.x_bottom_left.pos,
-                           self.y.presets.positions.y_bottom_left.pos)
+            bottom_left = (self.x.presets.positions.x_bottom_left.pos, self.y.presets.positions.y_bottom_left.pos)
             return top_left, top_right, bottom_right, bottom_left
         except Exception:
-            logger.warning('Could not get presets, try to set_presets.')
+            logger.warning("Could not get presets, try to set_presets.")
 
     def get_samples(self, path=None):
         """
@@ -593,7 +601,7 @@ class XYGridStage():
         with os.scandir(path) as entries:
             for entry in entries:
                 if entry.is_file():
-                    samples.append(entry.name.split('.yml')[0])
+                    samples.append(entry.name.split(".yml")[0])
         return samples
 
     @property
@@ -622,25 +630,19 @@ class XYGridStage():
 
     @property
     def status(self):
-        x_index = ''
-        y_index = ''
+        x_index = ""
+        y_index = ""
         x_pos = self.x.position
         y_pos = self.y.position
         data = self.get_sample_data(self.current_sample)
         try:
-            xx = data['xx']
-            yy = data['yy']
+            xx = data["xx"]
+            yy = data["yy"]
 
-            x_index = next(
-                index for (index, d) in enumerate(xx)
-                if np.isclose(d["pos"], x_pos)
-            )
-            y_index = next(
-                index for (index, d) in enumerate(yy)
-                if np.isclose(d["pos"], y_pos)
-            )
+            x_index = next(index for (index, d) in enumerate(xx) if np.isclose(d["pos"], x_pos))
+            y_index = next(index for (index, d) in enumerate(yy) if np.isclose(d["pos"], y_pos))
         except Exception:
-            logger.warning('Could not determine the m n points from position.')
+            logger.warning("Could not determine the m n points from position.")
         n_points = self.m_n_points[1]
 
         x_index += 1
@@ -653,18 +655,18 @@ class XYGridStage():
         else:
             n = 2 * n_points - (res + 1)
 
-        if x_index != '':
+        if x_index != "":
             # to start from 1 instead of 0
             x_index = n
-        if y_index != '':
+        if y_index != "":
             y_index = m
         lines = []
-        sample = f'current_sample: {self.current_sample}'
-        grid = f'grid M x N: {self.m_n_points}'
-        m_n = f'current m, n : {y_index, x_index}'
+        sample = f"current_sample: {self.current_sample}"
+        grid = f"grid M x N: {self.m_n_points}"
+        m_n = f"current m, n : {y_index, x_index}"
         lines.extend([sample, grid, m_n])
 
-        print('\n'.join(lines))
+        print("\n".join(lines))
 
     @property
     def current_sample_path(self):
@@ -676,9 +678,9 @@ class XYGridStage():
         sample: dict
         Dictionary with current sample information.
         """
-        if self._current_sample != '':
-            return os.path.join(self._path, self._current_sample + '.yml')
-        raise ValueError('No current sample loaded, please use load() first.')
+        if self._current_sample != "":
+            return os.path.join(self._path, self._current_sample + ".yml")
+        raise ValueError("No current sample loaded, please use load() first.")
 
     def load(self, sample_name, path=None):
         """
@@ -696,7 +698,7 @@ class XYGridStage():
             Path where the samples yaml file exists.
         """
         path = path or self._path
-        entry = os.path.join(path, sample_name + '.yml')
+        entry = os.path.join(path, sample_name + ".yml")
         m_points, n_points, coeffs = self.get_sample_map_info(str(sample_name), path=entry)
         self.m_n_points = m_points, n_points
         self.coefficients = coeffs
@@ -745,25 +747,23 @@ class XYGridStage():
         yy:
         ...}
         """
-        path = path or os.path.join(self._path, sample_name + '.yml')
+        path = path or os.path.join(self._path, sample_name + ".yml")
         data = None
         with open(path) as sample_file:
             try:
                 data = yaml.safe_load(sample_file)
             except yaml.YAMLError as err:
-                logger.error('Error when loading the samples yaml file: %s',
-                             err)
+                logger.error("Error when loading the samples yaml file: %s", err)
                 raise err
         if data is None:
-            logger.warning('The file is empty, no sample grid yet. '
-                           'Please use `save_presets` to insert grids '
-                           'in the file.')
+            logger.warning(
+                "The file is empty, no sample grid yet. Please use `save_presets` to insert grids in the file."
+            )
             return {}
         try:
             return data[str(sample_name)]
         except Exception:
-            logger.error('The sample %s might not exist in the file.',
-                         sample_name)
+            logger.error("The sample %s might not exist in the file.", sample_name)
             return {}
 
     def get_sample_map_info(self, sample_name, path=None):
@@ -778,22 +778,22 @@ class XYGridStage():
         path : str, optional
             Path to the samples yaml file.
         """
-        path = path or os.path.join(self._path, sample_name + '.yml')
+        path = path or os.path.join(self._path, sample_name + ".yml")
         sample = self.get_sample_data(str(sample_name), path=path)
         coeffs = []
         m_points, n_points = 0, 0
         if sample:
             try:
                 coeffs = sample["coefficients"]
-                m_points = sample['M']
-                n_points = sample['N']
+                m_points = sample["M"]
+                n_points = sample["N"]
             except Exception as ex:
-                logger.error('Something went wrong when getting the '
-                             'information for sample %s. %s', sample_name, ex)
+                logger.error("Something went wrong when getting the information for sample %s. %s", sample_name, ex)
                 raise ex
         else:
-            err_msg = ('This sample probably does not exist. Please call'
-                       ' mapped_samples() to see which ones are available.')
+            err_msg = (
+                "This sample probably does not exist. Please call mapped_samples() to see which ones are available."
+            )
             logger.error(err_msg)
             raise Exception(err_msg)
 
@@ -826,7 +826,7 @@ class XYGridStage():
         >>> save_grid('sample_1')
         """
         path = path or self._path
-        entry = os.path.join(path, sample_name + '.yml')
+        entry = os.path.join(path, sample_name + ".yml")
         now = str(datetime.now())
         top_left, top_right, bottom_right, bottom_left = [], [], [], []
         if self.get_presets():
@@ -842,20 +842,24 @@ class XYGridStage():
             flat_yy = [{"pos": y, "status": False} for y in flat_yy]
         m_points, n_points = self.m_n_points
         coefficients = self.coefficients
-        data = {sample_name: {"time_created": now,
-                              "top_left": list(top_left),
-                              "top_right": list(top_right),
-                              "bottom_right": list(bottom_right),
-                              "bottom_left": list(bottom_left),
-                              "M": m_points,  # number of rows
-                              "N": n_points,  # number of columns
-                              "coefficients": coefficients,
-                              "xx": flat_xx,
-                              "yy": flat_yy}}
+        data = {
+            sample_name: {
+                "time_created": now,
+                "top_left": list(top_left),
+                "top_right": list(top_right),
+                "bottom_right": list(bottom_right),
+                "bottom_left": list(bottom_left),
+                "M": m_points,  # number of rows
+                "N": n_points,  # number of columns
+                "coefficients": coefficients,
+                "xx": flat_xx,
+                "yy": flat_yy,
+            }
+        }
         try:
             jsonschema.validate(data[sample_name], self.sample_schema)
         except jsonschema.exceptions.ValidationError as err:
-            logger.warning('Invalid input: %s', err)
+            logger.warning("Invalid input: %s", err)
             raise err
         # entry = os.path.join(path, sample_name + '.yml')
         # if this is an existing file, overrite the info but keep the statuses
@@ -865,26 +869,22 @@ class XYGridStage():
                 sample = yaml_dict[sample_name]
                 # when overriding the same sample, this is assuming that a
                 # re-calibration was done - so keep the previous statuses.
-                temp_xx = sample['xx']
-                temp_yy = sample['yy']
-                temp_x_status = [i['status'] for i in temp_xx]
-                temp_y_status = [i['status'] for i in temp_yy]
+                temp_xx = sample["xx"]
+                temp_yy = sample["yy"]
+                temp_x_status = [i["status"] for i in temp_xx]
+                temp_y_status = [i["status"] for i in temp_yy]
                 # update the current data statuses with previous ones
-                for xd, status in zip(data[sample_name]['xx'], temp_x_status):
-                    xd.update((k, status)
-                              for k, v in xd.items() if k == 'status')
-                for yd, status in zip(data[sample_name]['yy'], temp_y_status):
-                    yd.update((k, status)
-                              for k, v in yd.items() if k == 'status')
+                for xd, status in zip(data[sample_name]["xx"], temp_x_status):
+                    xd.update((k, status) for k, v in xd.items() if k == "status")
+                for yd, status in zip(data[sample_name]["yy"], temp_y_status):
+                    yd.update((k, status) for k, v in yd.items() if k == "status")
                 yaml_dict.update(data)
-            with open(entry, 'w') as sample_file:
-                yaml.safe_dump(data, sample_file,
-                               sort_keys=False, default_flow_style=False)
+            with open(entry, "w") as sample_file:
+                yaml.safe_dump(data, sample_file, sort_keys=False, default_flow_style=False)
         else:
             # create a new file
-            with open(entry, 'w') as sample_file:
-                yaml.safe_dump(data, sample_file,
-                               sort_keys=False, default_flow_style=False)
+            with open(entry, "w") as sample_file:
+                yaml.safe_dump(data, sample_file, sort_keys=False, default_flow_style=False)
 
     def reset_statuses(self, sample_name, path=None):
         """
@@ -898,28 +898,31 @@ class XYGridStage():
             Path to the `.yml` file. Defaults to the path defined when
             creating this object.
         """
-        path = path or os.path.join(self._path, sample_name + '.yml')
+        path = path or os.path.join(self._path, sample_name + ".yml")
         with open(path) as sample_file:
             yaml_dict = yaml.safe_load(sample_file) or {}
             sample = yaml_dict.get(sample_name)
             if sample:
-                for xd in sample.get('xx'):
-                    xd.update((k, False)
-                              for k, v in xd.items() if k == 'status')
-                for yd in sample.get('yy'):
-                    yd.update((k, False)
-                              for k, v in yd.items() if k == 'status')
+                for xd in sample.get("xx"):
+                    xd.update((k, False) for k, v in xd.items() if k == "status")
+                for yd in sample.get("yy"):
+                    yd.update((k, False) for k, v in yd.items() if k == "status")
                 yaml_dict[sample_name].update(sample)
             else:
-                raise ValueError('Could not find this sample name in the file:'
-                                 f' {sample}')
-        with open(path, 'w') as sample_file:
-            yaml.safe_dump(yaml_dict, sample_file,
-                           sort_keys=False, default_flow_style=False)
+                raise ValueError(f"Could not find this sample name in the file: {sample}")
+        with open(path, "w") as sample_file:
+            yaml.safe_dump(yaml_dict, sample_file, sort_keys=False, default_flow_style=False)
 
-    def map_points(self, snake_like=True, top_left=None, top_right=None,
-                   bottom_right=None, bottom_left=None, m_rows=None,
-                   n_columns=None):
+    def map_points(
+        self,
+        snake_like=True,
+        top_left=None,
+        top_right=None,
+        bottom_right=None,
+        bottom_left=None,
+        m_rows=None,
+        n_columns=None,
+    ):
         """
         Map the points of a quadrilateral.
 
@@ -954,15 +957,12 @@ class XYGridStage():
         bottom_right = bottom_right or self.get_presets()[2]
         bottom_left = bottom_left or self.get_presets()[3]
 
-        if any(v is None for v in [top_left, top_right, bottom_right,
-                                   bottom_left]):
-            raise ValueError('Could not get presets, make sure you set presets'
-                             ' first using the `set_presets` method.')
+        if any(v is None for v in [top_left, top_right, bottom_right, bottom_left]):
+            raise ValueError("Could not get presets, make sure you set presets first using the `set_presets` method.")
         rows = m_rows or self.m_n_points[0]
         columns = n_columns or self.m_n_points[1]
 
-        a_coeffs, b_coeffs = mesh_interpolation(top_left, top_right,
-                                                bottom_right, bottom_left)
+        a_coeffs, b_coeffs = mesh_interpolation(top_left, top_right, bottom_right, bottom_left)
         self.coefficients = a_coeffs.tolist() + b_coeffs.tolist()
         x_points, y_points = [], []
 
@@ -971,16 +971,12 @@ class XYGridStage():
         # return x_points, y_points
         for rowx, rowy in zip(xx, yy):
             for x, y in zip(rowx, rowy):
-                i, j = convert_to_physical(a_coeffs=a_coeffs,
-                                           b_coeffs=b_coeffs,
-                                           logic_x=x, logic_y=y)
+                i, j = convert_to_physical(a_coeffs=a_coeffs, b_coeffs=b_coeffs, logic_x=x, logic_y=y)
                 x_points.append(i)
                 y_points.append(j)
         if snake_like:
-            x_points = snake_grid_list(
-                np.array(x_points).reshape(rows, columns))
-            y_points = snake_grid_list(
-                np.array(y_points).reshape(rows, columns))
+            x_points = snake_grid_list(np.array(x_points).reshape(rows, columns))
+            y_points = snake_grid_list(np.array(y_points).reshape(rows, columns))
         self.positions_x = x_points
         self.positions_y = y_points
         return x_points, y_points
@@ -1008,22 +1004,18 @@ class XYGridStage():
         """
         sample = sample or self.current_sample
         path = path or self.current_sample_path
-        x, y = self.compute_mapped_point(m_row=m,
-                                         n_column=n,
-                                         sample_name=sample, path=path)
+        x, y = self.compute_mapped_point(m_row=m, n_column=n, sample_name=sample, path=path)
 
         data = self.get_sample_data(sample)
-        xx = data.get('xx')
+        xx = data.get("xx")
         x_status = None
         # one value should be enough
         # TODO: this is assuming that none of the points will be the unique.
         if xx is not None:
-            x_status = next((item['status']
-                             for item in xx if item['pos'] == x), None)
+            x_status = next((item["status"] for item in xx if item["pos"] == x), None)
         return x_status
 
-    def compute_mapped_point(self, m_row, n_column, sample_name=None,
-                             path=None, compute_all=False):
+    def compute_mapped_point(self, m_row, n_column, sample_name=None, path=None, compute_all=False):
         """
         For a given sample, compute the x, y position for M and N respecively.
 
@@ -1049,33 +1041,31 @@ class XYGridStage():
         path = path or self._path
         sample_name = sample_name or self.current_sample
 
-        if sample_name is None or sample_name == '':
-            raise ValueError(
-                'Please make sure you provide a sample name or use load()')
+        if sample_name is None or sample_name == "":
+            raise ValueError("Please make sure you provide a sample name or use load()")
         # if we have a current loaded sample, use the current M, N values and
         # current coefficients
-        if self.current_sample != '':
+        if self.current_sample != "":
             m_points, n_points = self.m_n_points
             coeffs = self.coefficients
         else:
             # try to get them from the sample_name file
-            entry = os.path.join(path, sample_name + '.yml')
-            m_points, n_points, coeffs = self.get_sample_map_info(
-                str(sample_name), path=entry)
+            entry = os.path.join(path, sample_name + ".yml")
+            m_points, n_points, coeffs = self.get_sample_map_info(str(sample_name), path=entry)
 
         if any(v is None for v in [m_points, n_points, coeffs]):
-            raise ValueError('Some values are empty, please check the sample '
-                             f'{sample_name} in the has the M and N values as '
-                             'well as coefficients saved')
+            raise ValueError(
+                "Some values are empty, please check the sample "
+                f"{sample_name} in the has the M and N values as "
+                "well as coefficients saved"
+            )
 
         if (m_row > m_points) or (n_column > n_points):
-            raise IndexError('Index out of range, make sure the m and n values'
-                             f' are between ({m_points, n_points})')
+            raise IndexError(f"Index out of range, make sure the m and n values are between ({m_points, n_points})")
         if (m_row or n_column) == 0:
-            raise IndexError('Please start at 1, 1, as the initial points.')
+            raise IndexError("Please start at 1, 1, as the initial points.")
 
-        xx_origin, yy_origin = get_unit_meshgrid(m_rows=m_points,
-                                                 n_columns=n_points)
+        xx_origin, yy_origin = get_unit_meshgrid(m_rows=m_points, n_columns=n_points)
 
         a_coeffs = coeffs[:4]
         b_coeffs = coeffs[4:]
@@ -1090,9 +1080,7 @@ class XYGridStage():
             x_points, y_points = [], []
             for rowx, rowy in zip(xx_origin, yy_origin):
                 for x, y in zip(rowx, rowy):
-                    i, j = convert_to_physical(a_coeffs=a_coeffs,
-                                               b_coeffs=b_coeffs,
-                                               logic_x=x, logic_y=y)
+                    i, j = convert_to_physical(a_coeffs=a_coeffs, b_coeffs=b_coeffs, logic_x=x, logic_y=y)
                     x_points.append(i)
                     y_points.append(j)
             return x_points, y_points
@@ -1132,9 +1120,8 @@ class XYGridStage():
         n : int
             Indicates the column on the grid.
         """
-        entry = os.path.join(self._path, sample + '.yml')
-        n, m = self.compute_mapped_point(m_row=m, n_column=n,
-                                         sample_name=sample, path=entry)
+        entry = os.path.join(self._path, sample + ".yml")
+        n, m = self.compute_mapped_point(m_row=m, n_column=n, sample_name=sample, path=entry)
         self.x.mv(n)
         self.y.mv(m)
 
@@ -1155,47 +1142,38 @@ class XYGridStage():
         """
         assert isinstance(status, bool)
         sample_name = sample_name or self.current_sample
-        path = path or os.path.join(self._path, sample_name + '.yml')
+        path = path or os.path.join(self._path, sample_name + ".yml")
         m_points, n_points = self.m_n_points
 
         if (m > m_points) or (n > n_points):
-            raise IndexError('Index out of range, make sure the m and n values'
-                             f' are between ({m_points, n_points})')
+            raise IndexError(f"Index out of range, make sure the m and n values are between ({m_points, n_points})")
         if (m or n) == 0:
-            raise IndexError('Please start at 1, 1, as the initial points.')
+            raise IndexError("Please start at 1, 1, as the initial points.")
 
         with open(path) as sample_file:
             yaml_dict = yaml.safe_load(sample_file) or {}
             sample = yaml_dict.get(sample_name)
             if sample:
-                xx = sample['xx']
-                yy = sample['yy']
+                xx = sample["xx"]
+                yy = sample["yy"]
 
-                n_pos = next(d['pos'] for (index, d) in enumerate(xx)
-                             if index == n - 1)
+                n_pos = next(d["pos"] for (index, d) in enumerate(xx) if index == n - 1)
 
-                m_pos = next(d['pos'] for (index, d) in enumerate(yy)
-                             if index == m - 1)
+                m_pos = next(d["pos"] for (index, d) in enumerate(yy) if index == m - 1)
 
-                for xd in sample.get('xx'):
+                for xd in sample.get("xx"):
                     for k, v in xd.items():
-                        if k == 'pos' and v == n_pos:
-                            xd.update((st, status)
-                                      for st, vv in xd.items()
-                                      if st == 'status')
-                for yd in sample.get('yy'):
+                        if k == "pos" and v == n_pos:
+                            xd.update((st, status) for st, vv in xd.items() if st == "status")
+                for yd in sample.get("yy"):
                     for k, v in yd.items():
-                        if k == 'pos' and v == m_pos:
-                            yd.update((st, status)
-                                      for st, vv in xd.items()
-                                      if st == 'status')
+                        if k == "pos" and v == m_pos:
+                            yd.update((st, status) for st, vv in xd.items() if st == "status")
                 yaml_dict[sample_name].update(sample)
             else:
-                raise ValueError('Could not find this sample name in the file:'
-                                 f' {sample}')
-        with open(path, 'w') as sample_file:
-            yaml.safe_dump(yaml_dict, sample_file,
-                           sort_keys=False, default_flow_style=False)
+                raise ValueError(f"Could not find this sample name in the file: {sample}")
+        with open(path, "w") as sample_file:
+            yaml.safe_dump(yaml_dict, sample_file, sort_keys=False, default_flow_style=False)
 
 
 def mesh_interpolation(top_left, top_right, bottom_right, bottom_left):
@@ -1246,20 +1224,11 @@ def mesh_interpolation(top_left, top_right, bottom_right, bottom_left):
         transformation. They are used to find x and y.
     """
     # describes the entire point space enclosed by the quadrilateral
-    unit_grid = np.array([[1, 0, 0, 0],
-                          [1, 1, 0, 0],
-                          [1, 1, 1, 1],
-                          [1, 0, 1, 0]])
+    unit_grid = np.array([[1, 0, 0, 0], [1, 1, 0, 0], [1, 1, 1, 1], [1, 0, 1, 0]])
     # x value coordinates for current grid (4 corners)
-    px = np.array([top_left[0],
-                   top_right[0],
-                   bottom_right[0],
-                   bottom_left[0]])
+    px = np.array([top_left[0], top_right[0], bottom_right[0], bottom_left[0]])
     # y value coordinates for current grid (4 corners)
-    py = np.array([top_left[1],
-                   top_right[1],
-                   bottom_right[1],
-                   bottom_left[1]])
+    py = np.array([top_left[1], top_right[1], bottom_right[1], bottom_left[1]])
 
     a_coeffs = np.linalg.solve(unit_grid, px)
     b_coeffs = np.linalg.solve(unit_grid, py)
@@ -1321,11 +1290,9 @@ def convert_to_physical(a_coeffs, b_coeffs, logic_x, logic_y):
         The x and y physical values on the specified grid.
     """
     # x = a(1) + a(2)*l + a(3)*m + a(4)*l*m
-    x = (a_coeffs[0] + a_coeffs[1] * logic_x + a_coeffs[2]
-         * logic_y + a_coeffs[3] * logic_x * logic_y)
+    x = a_coeffs[0] + a_coeffs[1] * logic_x + a_coeffs[2] * logic_y + a_coeffs[3] * logic_x * logic_y
     # y = b(1) + b(2)*l + b(3)*m + b(4)*l*m
-    y = (b_coeffs[0] + b_coeffs[1] * logic_x +
-         b_coeffs[2] * logic_y + b_coeffs[3] * logic_x * logic_y)
+    y = b_coeffs[0] + b_coeffs[1] * logic_x + b_coeffs[2] * logic_y + b_coeffs[3] * logic_x * logic_y
     return x, y
 
 

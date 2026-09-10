@@ -1,6 +1,7 @@
 """
 Module for defining bell-and-whistles movement features.
 """
+
 import functools
 import logging
 import numbers
@@ -38,6 +39,7 @@ except ImportError:
 
 try:
     from elog.utils import get_primary_elog
+
     has_elog = True
 except ImportError:
     has_elog = False
@@ -49,8 +51,7 @@ OphydObject_whitelist = []
 BlueskyInterface_whitelist = []
 Device_whitelist = ["stop"]
 Signal_whitelist = ["value", "put", "get"]
-Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
-                        "position", "moving", "set_current_position"]
+Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move", "position", "moving", "set_current_position"]
 Interface_whitelist = ["screen", "post_elog_status"]
 
 
@@ -88,7 +89,7 @@ class _TabCompletionHelper:
         self._regex = None
 
     def __repr__(self):
-        return f'{self.__class__.__name__}(includes={self._includes})'
+        return f"{self.__class__.__name__}(includes={self._includes})"
 
 
 class TabCompletionHelperClass(_TabCompletionHelper):
@@ -101,7 +102,7 @@ class TabCompletionHelperClass(_TabCompletionHelper):
         Class type object to generate tab completion information from.
     """
 
-    cls: type['BaseInterface']
+    cls: type["BaseInterface"]
 
     def __init__(self, cls):
         self.cls = cls
@@ -112,7 +113,7 @@ class TabCompletionHelperClass(_TabCompletionHelper):
         super().reset()
         whitelist = []
         for parent in self.cls.mro():
-            whitelist.extend(getattr(parent, 'tab_whitelist', []))
+            whitelist.extend(getattr(parent, "tab_whitelist", []))
 
             if getattr(parent, "tab_component_names", False):
                 for cpt_name in parent.component_names:
@@ -121,7 +122,7 @@ class TabCompletionHelperClass(_TabCompletionHelper):
 
         self._includes = set(whitelist)
 
-    def new_instance(self, instance) -> 'TabCompletionHelperInstance':
+    def new_instance(self, instance) -> "TabCompletionHelperInstance":
         """
         Create a new :class:`TabCompletionHelperInstance` for the given object.
 
@@ -147,11 +148,11 @@ class TabCompletionHelperInstance(_TabCompletionHelper):
     """
 
     class_helper: TabCompletionHelperClass
-    instance: 'BaseInterface'
+    instance: "BaseInterface"
     super_dir: typing.Callable[[], list[str]]
 
     def __init__(self, instance, class_helper):
-        assert isinstance(instance, BaseInterface), 'Must mix in BaseInterface'
+        assert isinstance(instance, BaseInterface), "Must mix in BaseInterface"
 
         self.class_helper = class_helper
         self.instance = instance
@@ -168,11 +169,7 @@ class TabCompletionHelperInstance(_TabCompletionHelper):
         if self._regex is None:
             self.build_regex()
 
-        return [
-            elem
-            for elem in self.super_dir()
-            if self._regex.fullmatch(elem)
-        ]
+        return [elem for elem in self.super_dir() if self._regex.fullmatch(elem)]
 
     def get_dir(self) -> list[str]:
         """Get the dir list based on the engineering mode settings."""
@@ -213,7 +210,7 @@ class BaseInterface:
         super().__init_subclass__(**kwargs)
         mro = cls.mro()
         if Device in mro and mro.index(BaseInterface) > mro.index(Device):
-            order = '\n    '.join(mro_cls.__name__ for mro_cls in mro)
+            order = "\n    ".join(mro_cls.__name__ for mro_cls in mro)
             raise RuntimeError(
                 f"{cls.__module__}.{cls.__name__} inherits from "
                 f"`BaseInterface`, but does not correctly mix it in.  Device "
@@ -234,8 +231,8 @@ class BaseInterface:
 
     def __repr__(self):
         """Simplify the ophydobject repr to avoid crazy long represenations."""
-        prefix = getattr(self, 'prefix', None)
-        name = getattr(self, 'name', None)
+        prefix = getattr(self, "prefix", None)
+        name = getattr(self, "name", None)
         return f"{self.__class__.__name__}({prefix}, name={name})"
 
     def _repr_pretty_(self, pp, cycle):
@@ -274,8 +271,7 @@ class BaseInterface:
         try:
             status_text = self.format_status_info(self.status_info())
         except Exception:
-            status_text = (f'{self}: Error showing status information. '
-                           'Check IOC connection and device health.')
+            status_text = f"{self}: Error showing status information. Check IOC connection and device health."
             logger.debug(status_text, exc_info=True)
         pp.text(status_text)
 
@@ -303,58 +299,56 @@ class BaseInterface:
         """
         lines = self._status_info_lines(status_info)
         if lines:
-            return '\n'.join(lines)
+            return "\n".join(lines)
         else:
-            return f'{self.name}: No status available'
+            return f"{self.name}: No status available"
 
-    def _status_info_lines(self, status_info, prefix='', indent=0):
-        full_name = status_info['name']
+    def _status_info_lines(self, status_info, prefix="", indent=0):
+        full_name = status_info["name"]
         if full_name.startswith(prefix):
-            name = full_name.replace(prefix, '', 1)
+            name = full_name.replace(prefix, "", 1)
         else:
             name = full_name
 
-        if status_info['is_device']:
+        if status_info["is_device"]:
             # Set up a tree view
-            header_lines = ['', f'{name}', '-' * len(name)]
+            header_lines = ["", f"{name}", "-" * len(name)]
             data_lines = []
-            extra_keys = ('name', 'kind', 'is_device')
+            extra_keys = ("name", "kind", "is_device")
             for key in extra_keys:
                 status_info.pop(key)
             for key, value in status_info.items():
                 if isinstance(value, dict):
                     # Go recursive
-                    inner = self._status_info_lines(value,
-                                                    prefix=full_name + '_',
-                                                    indent=2)
+                    inner = self._status_info_lines(value, prefix=full_name + "_", indent=2)
                     data_lines.extend(inner)
                 else:
                     # Record extra value
-                    data_lines.append(f'{key}: {value}')
+                    data_lines.append(f"{key}: {value}")
             if data_lines:
                 # Indent the subdevices
                 if indent:
                     for i, line in enumerate(data_lines):
-                        data_lines[i] = ' ' * indent + line
+                        data_lines[i] = " " * indent + line
                 return header_lines + data_lines
             else:
                 # No data = do not print header
                 return []
         else:
             # Show the name/value pair for a signal
-            value = status_info['value']
-            units = status_info.get('units') or ''
+            value = status_info["value"]
+            units = status_info.get("units") or ""
             if units:
-                units = f' [{units}]'
+                units = f" [{units}]"
             value_text = str(value)
-            if '\n' in value_text:
+            if "\n" in value_text:
                 # Multiline values (arrays) need special handling
-                value_lines = value_text.split('\n')
+                value_lines = value_text.split("\n")
                 for i, line in enumerate(value_lines):
-                    value_lines[i] = ' ' * 2 + line
-                return [f'{name}:'] + value_lines
+                    value_lines[i] = " " * 2 + line
+                return [f"{name}:"] + value_lines
             else:
-                return [f'{name}: {value}{units}']
+                return [f"{name}: {value}{units}"]
 
     def status_info(self):
         """
@@ -370,8 +364,9 @@ class BaseInterface:
             If is_device is True, subdevice dictionaries may follow. Otherwise,
             the only other key in the dictionary will be value.
         """
+
         def subdevice_filter(info):
-            return bool(info['kind'] & Kind.normal)
+            return bool(info["kind"] & Kind.normal)
 
         return ophydobj_info(self, subdevice_filter=subdevice_filter)
 
@@ -380,18 +375,17 @@ class BaseInterface:
         Post device status to the primary elog, if possible.
         """
         if not has_elog:
-            logger.info('No primary elog found, cannot post status.')
+            logger.info("No primary elog found, cannot post status.")
             return
 
         try:
             elog = get_primary_elog()
         except ValueError:
-            logger.info('elog exists but has not been registered')
+            logger.info("elog exists but has not been registered")
             return
 
-        final_post = f'<pre>{self.status()}</pre>'
-        elog.post(final_post, tags=['ophyd_status'],
-                  title=f'{self.name} status report')
+        final_post = f"<pre>{self.status()}</pre>"
+        elog.post(final_post, tags=["ophyd_status"], title=f"{self.name} status report")
 
     def screen(self):
         """
@@ -401,18 +395,15 @@ class BaseInterface:
         be overridden for more specialized screens.
         """
 
-        if shutil.which('typhos') is None:
-            logger.error('typhos is not installed, ',
-                         'screen cannot be opened')
+        if shutil.which("typhos") is None:
+            logger.error("typhos is not installed, ", "screen cannot be opened")
             return
 
-        arglist = ['typhos', f'{self.name}']
-        logger.info(f'Opening typhos screen for {self.name}...')
+        arglist = ["typhos", f"{self.name}"]
+        logger.info(f"Opening typhos screen for {self.name}...")
 
         # capture stdout and stderr
-        subprocess.Popen(arglist,
-                         stdout=subprocess.DEVNULL,
-                         stderr=subprocess.DEVNULL)
+        subprocess.Popen(arglist, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def get_name(obj, default):
@@ -443,7 +434,7 @@ def get_value(signal):
 
 
 def get_units(signal):
-    attrs = ('derived_units', 'units', 'egu')
+    attrs = ("derived_units", "units", "egu")
     for attr in attrs:
         try:
             value = getattr(signal, attr, None) or signal.metadata[attr]
@@ -457,8 +448,7 @@ def ophydobj_info(obj, subdevice_filter=None, devices=None):
     if isinstance(obj, Signal):
         return signal_info(obj)
     elif isinstance(obj, Device):
-        return device_info(obj, subdevice_filter=subdevice_filter,
-                           devices=devices)
+        return device_info(obj, subdevice_filter=subdevice_filter, devices=devices)
     elif isinstance(obj, PositionerBase):
         return positionerbase_info(obj)
     else:
@@ -468,7 +458,7 @@ def ophydobj_info(obj, subdevice_filter=None, devices=None):
 def device_info(device, subdevice_filter=None, devices=None):
     if devices is None:
         devices = set()
-    name = get_name(device, default='device')
+    name = get_name(device, default="device")
     kind = get_kind(device)
     info = dict(name=name, kind=kind, is_device=True)
 
@@ -480,30 +470,30 @@ def device_info(device, subdevice_filter=None, devices=None):
         has_presets = False
     if has_presets:
         try:
-            info['preset'] = device.presets.state()
+            info["preset"] = device.presets.state()
         except Exception:
-            info['preset'] = 'ERROR'
+            info["preset"] = "ERROR"
 
     try:
         # Extra key for positioners
         # This has ordered dict priority over everything but the preset state
-        info['position'] = device.position
+        info["position"] = device.position
     except AttributeError:
         pass
     except Exception:
         # Something else went wrong! We have a position but it didn't work
-        info['position'] = 'ERROR'
+        info["position"] = "ERROR"
     else:
         try:
-            if not isinstance(info['position'], numbers.Integral):
+            if not isinstance(info["position"], numbers.Integral):
                 # Give a floating point value, if possible, when not integral
-                info['position'] = float(info['position'])
+                info["position"] = float(info["position"])
         except Exception:
             ...
 
     try:
         # Best-effort try at getting the units
-        info['units'] = get_units(device)
+        info["units"] = get_units(device)
     except Exception:
         pass
 
@@ -526,19 +516,17 @@ def device_info(device, subdevice_filter=None, devices=None):
                 cpt = getattr(device, cpt_name)
             except AttributeError:
                 # Why are we ever in this block?
-                logger.debug(f'Getattr {name}.{cpt_name} failed.',
-                             exc_info=True)
+                logger.debug(f"Getattr {name}.{cpt_name} failed.", exc_info=True)
                 continue
-            cpt_info = ophydobj_info(cpt, subdevice_filter=subdevice_filter,
-                                     devices=devices)
-            if 'position' in info:
+            cpt_info = ophydobj_info(cpt, subdevice_filter=subdevice_filter, devices=devices)
+            if "position" in info:
                 # Drop some potential duplicate keys for positioners
                 try:
                     if cpt.name == cpt.parent.name:
                         continue
                 except AttributeError:
                     pass
-                if cpt_name in ('readback', 'user_readback'):
+                if cpt_name in ("readback", "user_readback"):
                     continue
 
             if not callable(subdevice_filter) or subdevice_filter(cpt_info):
@@ -547,19 +535,17 @@ def device_info(device, subdevice_filter=None, devices=None):
 
 
 def signal_info(signal):
-    name = get_name(signal, default='signal')
+    name = get_name(signal, default="signal")
     kind = get_kind(signal)
     value = get_value(signal)
     units = get_units(signal)
-    return dict(name=name, kind=kind, is_device=False, value=value,
-                units=units)
+    return dict(name=name, kind=kind, is_device=False, value=value, units=units)
 
 
 def positionerbase_info(positioner):
-    name = get_name(positioner, default='positioner')
+    name = get_name(positioner, default="positioner")
     kind = get_kind(positioner)
-    return dict(name=name, kind=kind, is_device=True,
-                position=positioner.position)
+    return dict(name=name, kind=kind, is_device=True, position=positioner.position)
 
 
 def set_engineering_mode(expert):
@@ -614,14 +600,13 @@ class MvInterface(BaseInterface):
         super().__init__(*args, **kwargs)
 
     def _log_move_limit_error(self, position, ex):
-        logger.error('Failed to move %s from %s to %s: %s', self.name,
-                     self.wm(), position, ex)
+        logger.error("Failed to move %s from %s to %s: %s", self.name, self.wm(), position, ex)
 
     def _log_move(self, position):
-        logger.info('Moving %s from %s to %s', self.name, self.wm(), position)
+        logger.info("Moving %s from %s to %s", self.name, self.wm(), position)
 
     def _log_move_end(self):
-        logger.info('%s reached position %s', self.name, self.wm())
+        logger.info("%s reached position %s", self.name, self.wm())
 
     def move(self, *args, **kwargs):
         try:
@@ -629,7 +614,7 @@ class MvInterface(BaseInterface):
         except ophyd.utils.LimitError as ex:
             # Pick out the position either in kwargs or args
             try:
-                position = kwargs['position']
+                position = kwargs["position"]
             except KeyError:
                 position = args[0]
 
@@ -742,8 +727,7 @@ class FltMvInterface(MvInterface):
         Manager for preset positions.
     """
 
-    tab_whitelist = ["mvr", "umv", "umvr", "mv_ginput", "tweak",
-                     "presets", "mv_.*", "wm_.*", "umv_.*"]
+    tab_whitelist = ["mvr", "umv", "umvr", "mv_ginput", "tweak", "presets", "mv_.*", "wm_.*", "umv_.*"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -758,8 +742,7 @@ class FltMvInterface(MvInterface):
         return super().__dir__()
 
     def __getattribute__(self, name: str):
-        if (any((name.startswith(prefix)) for prefix in ['mv_', 'wm_', 'umv_'])
-                and self.presets.sync_needed()):
+        if any((name.startswith(prefix)) for prefix in ["mv_", "wm_", "umv_"]) and self.presets.sync_needed():
             self.presets.sync()
 
         return super().__getattribute__(name)
@@ -872,12 +855,13 @@ class FltMvInterface(MvInterface):
 
         # Importing forces backend selection, so do inside method
         import matplotlib.pyplot as plt  # NOQA
+
         logger.info("Select new motor x-position in current plot by mouseclick")
         if not plt.get_fignums():
             upper_limit = 0
             lower_limit = self.limits[0]
             if self.limits[0] == self.limits[1]:
-                upper_limit = self.limits[0]+100
+                upper_limit = self.limits[0] + 100
             else:
                 upper_limit = self.limits[1]
             limit_plot = []
@@ -970,19 +954,19 @@ class Presets:
         self._methods = []
         self._fd = None
         self._registry.add(self)
-        self.name = device.name + '_presets'
+        self.name = device.name + "_presets"
         self._mtimes = {}
         self.sync()
 
     def _path(self, preset_type) -> Path:
         """Utility function to get the preset file :class:`~pathlib.Path`."""
-        path = self._paths[preset_type] / (self._device.name + '.yml')
-        logger.debug('select presets path %s', path)
+        path = self._paths[preset_type] / (self._device.name + ".yml")
+        logger.debug("select presets path %s", path)
         return path
 
     def _read(self, preset_type):
         """Utility function to get a particular preset's datum dictionary."""
-        logger.debug('read presets for %s', self._device.name)
+        logger.debug("read presets for %s", self._device.name)
         with self._file_open_rlock(preset_type) as f:
             f.seek(0)
             return yaml.full_load(f) or {}
@@ -991,7 +975,7 @@ class Presets:
         """
         Utility function to overwrite a particular preset's datum dictionary.
         """
-        logger.debug('write presets for %s', self._device.name)
+        logger.debug("write presets for %s", self._device.name)
         with self._file_open_rlock(preset_type) as f:
             f.seek(0)
             yaml.dump(data, f, default_flow_style=False)
@@ -1018,7 +1002,7 @@ class Presets:
 
         if self._fd is None:
             path = self._path(preset_type)
-            with open(path, 'r+') as fd:
+            with open(path, "r+") as fd:
                 # Set up file lock timeout with a raising handler
                 # We will need this handler due to PEP 475
                 def interrupt(signum, frame):
@@ -1038,18 +1022,17 @@ class Presets:
                 # Error now if we still can't get the lock.
                 # Getting lock twice is safe.
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                logger.debug('acquired lock for %s', path)
+                logger.debug("acquired lock for %s", path)
                 self._fd = fd
                 yield fd
                 fcntl.flock(fd, fcntl.LOCK_UN)
-                logger.debug('released lock for %s', path)
+                logger.debug("released lock for %s", path)
             self._fd = None
         else:
-            logger.debug('using already open file descriptor')
+            logger.debug("using already open file descriptor")
             yield self._fd
 
-    def _update(self, preset_type, name, value=None, comment=None,
-                active=True):
+    def _update(self, preset_type, name, value=None, comment=None, active=True):
         """
         Utility function to update a preset position.
 
@@ -1058,17 +1041,19 @@ class Presets:
         the history accordingly.
         """
 
-        logger.debug(('call %s presets._update(%s, %s, value=%s, comment=%s, '
-                      'active=%s)'), self._device.name, preset_type, name,
-                     value, comment, active)
+        logger.debug(
+            ("call %s presets._update(%s, %s, value=%s, comment=%s, active=%s)"),
+            self._device.name,
+            preset_type,
+            name,
+            value,
+            comment,
+            active,
+        )
         if not isinstance(name, str):
-            raise TypeError(
-                f"name must be of type <str>, not type {type(name)}"
-            )
+            raise TypeError(f"name must be of type <str>, not type {type(name)}")
         if value is not None and not isinstance(value, numbers.Real):
-            raise TypeError(
-                f"value must be a real numeric type, not type {type(value)}"
-            )
+            raise TypeError(f"value must be a real numeric type, not type {type(value)}")
         try:
             path = self._path(preset_type)
             if not path.exists():
@@ -1077,36 +1062,36 @@ class Presets:
             with self._file_open_rlock(preset_type):
                 data = self._read(preset_type)
                 if value is None and comment is not None:
-                    value = data[name]['value']
+                    value = data[name]["value"]
                 if value is not None:
                     if name not in data:
                         data[name] = {}
-                    ts = time.strftime('%d %b %Y %H:%M:%S')
-                    data[name]['value'] = value
-                    history = data[name].get('history', {})
+                    ts = time.strftime("%d %b %Y %H:%M:%S")
+                    data[name]["value"] = value
+                    history = data[name].get("history", {})
                     if comment:
-                        comment = ' ' + comment
+                        comment = " " + comment
                     else:
-                        comment = ''
-                    history[ts] = f'{value:10.4f}{comment}'
-                    data[name]['history'] = history
+                        comment = ""
+                    history[ts] = f"{value:10.4f}{comment}"
+                    data[name]["history"] = history
                 if active:
-                    data[name]['active'] = True
+                    data[name]["active"] = True
                 else:
-                    data[name]['active'] = False
+                    data[name]["active"] = False
                 self._write(preset_type, data)
         except BlockingIOError:
             self._log_flock_error()
 
     def sync(self, defer_loading: bool = False):
         """Synchronize the presets with the database."""
-        logger.debug('call %s presets.sync()', self._device.name)
+        logger.debug("call %s presets.sync()", self._device.name)
         self._remove_methods()
         self._cache = {}
         self._mtimes = {}
         # only consult files if requested
         if not defer_loading:
-            logger.debug('filling %s cache', self.name)
+            logger.debug("filling %s cache", self.name)
             for preset_type in self._paths.keys():
                 path = self._path(preset_type)
                 if path.exists():
@@ -1116,17 +1101,15 @@ class Presets:
                     except BlockingIOError:
                         self._log_flock_error()
                 else:
-                    logger.debug('No %s preset file for %s',
-                                 preset_type, self._device.name)
+                    logger.debug("No %s preset file for %s", preset_type, self._device.name)
         self._create_methods()
 
     def _log_flock_error(self):
-        logger.error(('Unable to acquire file lock for %s. '
-                      'File may be being edited by another user.'), self.name)
-        logger.debug('', exc_info=True)
+        logger.error(("Unable to acquire file lock for %s. File may be being edited by another user."), self.name)
+        logger.debug("", exc_info=True)
 
     @property
-    def positions(self) -> 'PresetPosition':
+    def positions(self) -> "PresetPosition":
         if self.sync_needed():
             self.sync()
 
@@ -1142,21 +1125,20 @@ class Presets:
         each preset name.
         """
 
-        logger.debug('call %s presets._create_methods()', self._device.name)
+        logger.debug("call %s presets._create_methods()", self._device.name)
         for preset_type in self._paths.keys():
             add, add_here = self._make_add(preset_type)
-            self._register_method(self, 'add_' + preset_type, add)
-            self._register_method(self, 'add_here_' + preset_type, add_here)
+            self._register_method(self, "add_" + preset_type, add)
+            self._register_method(self, "add_here_" + preset_type, add_here)
         for preset_type, data in self._cache.items():
             for name, info in data.items():
-                if info['active']:
+                if info["active"]:
                     mv, umv = self._make_mv_pre(preset_type, name)
                     wm = self._make_wm_pre(preset_type, name)
-                    self._register_method(self._device, 'mv_' + name, mv)
-                    self._register_method(self._device, 'umv_' + name, umv)
-                    self._register_method(self._device, 'wm_' + name, wm)
-                    setattr(self._positions, name,
-                            PresetPosition(self, preset_type, name))
+                    self._register_method(self._device, "mv_" + name, mv)
+                    self._register_method(self._device, "umv_" + name, umv)
+                    self._register_method(self._device, "wm_" + name, wm)
+                    setattr(self._positions, name, PresetPosition(self, preset_type, name))
 
     def _register_method(self, obj, method_name, method):
         """
@@ -1166,10 +1148,10 @@ class Presets:
         object.
         """
 
-        logger.debug('register method %s to %s', method_name, obj.name)
+        logger.debug("register method %s to %s", method_name, obj.name)
         self._methods.append((obj, method_name))
         setattr(obj, method_name, MethodType(method, obj))
-        if hasattr(obj, '_tab'):
+        if hasattr(obj, "_tab"):
             # obj._tab: TabCompletionHelperInstance
             obj._tab.add(method_name)
 
@@ -1200,8 +1182,7 @@ class Presets:
             """
             if value is None:
                 value = self._device.wm()
-            self._update(preset_type, name, value=value,
-                         comment=comment)
+            self._update(preset_type, name, value=value, comment=comment)
             self.sync()
 
         def add_here(self, name, comment=None):
@@ -1248,7 +1229,7 @@ class Presets:
                 returning. Defaults to :keyword:`False`.
             """
 
-            pos = self.presets._cache[preset_type][name]['value']
+            pos = self.presets._cache[preset_type][name]["value"]
             self.mv(pos, timeout=timeout, wait=wait)
 
         def umv_pre(self, timeout=None):
@@ -1263,7 +1244,7 @@ class Presets:
                 default timeout will be use.
             """
 
-            pos = self.presets._cache[preset_type][name]['value']
+            pos = self.presets._cache[preset_type][name]["value"]
             self.umv(pos, timeout=timeout)
 
         mv_pre.__doc__ = mv_pre.__doc__.format(name)
@@ -1290,7 +1271,7 @@ class Presets:
                 is in the positive direction from us.
                 If the current position is unknown, return "Unknown".
             """
-            preset_pos = self.presets._cache[preset_type][name]['value']
+            preset_pos = self.presets._cache[preset_type][name]["value"]
             # here we expect self: FltMvInterface
             curr_pos = self.wm()
             try:
@@ -1306,13 +1287,13 @@ class Presets:
 
     def _remove_methods(self):
         """Remove all methods created in the last call to _create_methods."""
-        logger.debug('call %s presets._remove_methods()', self._device.name)
+        logger.debug("call %s presets._remove_methods()", self._device.name)
         for obj, method_name in self._methods:
             try:
                 delattr(obj, method_name)
             except AttributeError:
                 pass
-            if hasattr(obj, '_tab'):
+            if hasattr(obj, "_tab"):
                 obj._tab.remove(method_name)
         self._methods = []
         self._positions = SimpleNamespace()
@@ -1331,11 +1312,11 @@ class Presets:
         This will be the state string name, or Unknown if we're not at any
         state.
         """
-        state = 'Unknown'
+        state = "Unknown"
         closest = 0.5
         for device, method_name in self._methods:
-            if method_name.startswith('wm_'):
-                state_name = method_name.replace('wm_', '', 1)
+            if method_name.startswith("wm_"):
+                state_name = method_name.replace("wm_", "", 1)
                 wm_state = getattr(device, method_name)
                 state_val = wm_state()
                 if not isinstance(state_val, numbers.Real):
@@ -1391,8 +1372,7 @@ class PresetPosition:
 
         if pos is None:
             pos = self._presets._device.wm()
-        self._presets._update(self._preset_type, self._name, value=pos,
-                              comment=comment)
+        self._presets._update(self._preset_type, self._name, value=pos, comment=comment)
         self._presets.sync()
 
     def update_comment(self, comment):
@@ -1424,14 +1404,14 @@ class PresetPosition:
     @property
     def pos(self):
         """The set position of this preset, returned as a float."""
-        return self.info['value']
+        return self.info["value"]
 
     @property
     def history(self):
         """
         This position history associated with this preset, returned as a dict.
         """
-        return self.info['history']
+        return self.info["history"]
 
     @property
     def path(self):
@@ -1468,8 +1448,8 @@ def tweak_base(*args, scale=0.1):
     shift_down = utils.shift_arrow_down
     plus = utils.plus
     minus = utils.minus
-    abs_status = '{}: {:.4f}'
-    exp_status = '{}: {:.4e}'
+    abs_status = "{}: {:.4f}"
+    exp_status = "{}: {:.4e}"
 
     if len(args) == 1:
         move_keys = (left, right)
@@ -1484,8 +1464,8 @@ def tweak_base(*args, scale=0.1):
         else:
             template = exp_status
         text = [template.format(mot.name, mot.wm()) for mot in args]
-        text.append(f'scale: {scale}')
-        print('\x1b[2K\r' + ', '.join(text), end='')
+        text.append(f"scale: {scale}")
+        print("\x1b[2K\r" + ", ".join(text), end="")
 
     def usage():
         print()  # Newline
@@ -1501,16 +1481,15 @@ def tweak_base(*args, scale=0.1):
             print(" Up: move y motor up")
             print(" + or Shift_Up: scale*2")
             print(" - or Shift_Down: scale/2")
-        print(" Press q to quit."
-              " Press any other key to display this message.")
+        print(" Press q to quit. Press any other key to display this message.")
         print()  # Newline
 
     def edit_scale(scale, direction):
         """Function used to change the scale."""
         if direction in (up, shift_up, plus):
-            scale = scale*2
+            scale = scale * 2
         elif direction in (down, shift_down, minus):
-            scale = scale/2
+            scale = scale / 2
         return scale
 
     def movement(scale, direction):
@@ -1525,18 +1504,18 @@ def tweak_base(*args, scale=0.1):
             elif direction == down:
                 args[1].umvr(-scale, log=False, newline=False)
         except Exception as exc:
-            logger.error('Error in tweak move: %s', exc)
-            logger.debug('', exc_info=True)
+            logger.error("Error in tweak move: %s", exc)
+            logger.debug("", exc_info=True)
 
-    start_text = [f'{mot.name} at {mot.wm():.4f}' for mot in args]
-    logger.info('Started tweak of ' + ', '.join(start_text))
+    start_text = [f"{mot.name} at {mot.wm():.4f}" for mot in args]
+    logger.info("Started tweak of " + ", ".join(start_text))
 
     # Loop takes in user key input and stops when 'q' is pressed
     is_input = True
     while is_input is True:
         show_status()
         inp = utils.get_input()
-        if inp in ('q', None):
+        if inp in ("q", None):
             is_input = False
         elif inp in move_keys:
             movement(scale, inp)
@@ -1545,11 +1524,12 @@ def tweak_base(*args, scale=0.1):
         else:
             usage()
     print()
-    logger.info('Tweak complete')
+    logger.info("Tweak complete")
 
 
 class AbsProgressBar(ProgressBar):
     """Progress bar that displays the absolute position as well."""
+
     def __init__(self, *args, **kwargs):
         self._last_position = None
         self._name = None
@@ -1579,22 +1559,22 @@ class AbsProgressBar(ProgressBar):
             if isinstance(current, typing.Sequence):
                 # Single-valued pseudo positioner values can come through here.
                 assert len(current) == 1
-                current, = current
+                (current,) = current
 
             current = float(current)
 
             # Expand name to include position to display with progress bar
             # TODO: can we get access to the signal's precision?
             if 0.0 < abs(current) < 1e-6:
-                fmt = '{}: ({:.4g})'
+                fmt = "{}: ({:.4g})"
             else:
-                fmt = '{}: ({:.4f})'
+                fmt = "{}: ({:.4f})"
 
             name = fmt.format(name, current)
             self._last_position = current
         except Exception:
             # Fallback if there is no position data at all
-            name = name or self._name or 'motor'
+            name = name or self._name or "motor"
 
         try:
             # Actually draw the bar
@@ -1603,7 +1583,7 @@ class AbsProgressBar(ProgressBar):
                 self.has_updated = True
         except Exception:
             # Print method failure should never print junk to the screen
-            logger.debug('Error in progress bar update', exc_info=True)
+            logger.debug("Error in progress bar update", exc_info=True)
 
     def manual_update(self):
         """Execute a manual update of the progress bar."""
@@ -1629,7 +1609,8 @@ class LegacyLightpathMixin(OphydObject):
     Use this on classes that are not state positioners but would still like to
     be used as a top-level device in lightpath.
     """
-    SUB_STATE = 'state'
+
+    SUB_STATE = "state"
     _default_sub = SUB_STATE
 
     # Component names whose values are relevant for inserted/removed
@@ -1652,7 +1633,7 @@ class LegacyLightpathMixin(OphydObject):
             cls._lightpath_mixin = False
         else:
             if not cls.lightpath_cpts:
-                raise NotImplementedError('Did not implement LightpathMixin')
+                raise NotImplementedError("Did not implement LightpathMixin")
             for cpt_name in cls.lightpath_cpts:
                 cpt = getattr(cls, cpt_name)
                 cpt.sub_default(cls._update_lightpath)
@@ -1662,7 +1643,7 @@ class LegacyLightpathMixin(OphydObject):
         # update self._inserted, self._removed,
         # and optionally self._transmission
         # Should return a dict or None
-        raise NotImplementedError('Did not implement LightpathMixin')
+        raise NotImplementedError("Did not implement LightpathMixin")
 
     def _update_lightpath(self, *args, obj, **kwargs):
         try:
@@ -1681,12 +1662,10 @@ class LegacyLightpathMixin(OphydObject):
                     # Use this when the device wasn't ready to set states
                     kw = dict(obj=obj)
                     kw.update(kwargs)
-                    utils.schedule_task(self._update_lightpath,
-                                        args=args, kwargs=kw, delay=1.0)
+                    utils.schedule_task(self._update_lightpath, args=args, kwargs=kw, delay=1.0)
         except Exception:
             # Without this, callbacks fail silently
-            logger.exception('Error in lightpath update callback for %s.',
-                             self.name)
+            logger.exception("Error in lightpath update callback for %s.", self.name)
 
     @property
     def inserted(self):
@@ -1738,6 +1717,7 @@ class LightpathMixin(Device):
         dev = MyDevice('PREFIX', name='dev', input_branches=['L0'],
                        output_branches=['L0'])
     """
+
     # Component names whose values are relevant for inserted/removed
     # can access sub-components with dot notation
     lightpath_cpts = []
@@ -1746,11 +1726,9 @@ class LightpathMixin(Device):
     _lightpath_mixin = False
 
     # Mixin holds one summary signal that changes with lightpath_cpts
-    lightpath_summary: Signal = Cpt(SummarySignal, name='lightpath_summary',
-                                    kind='omitted')
+    lightpath_summary: Signal = Cpt(SummarySignal, name="lightpath_summary", kind="omitted")
 
-    def __init__(self, *args,
-                 input_branches=[], output_branches=[], **kwargs):
+    def __init__(self, *args, input_branches=[], output_branches=[], **kwargs):
         self._lightpath_ready = False
         self._retry_lightpath = True
         self._summary_initialized = False
@@ -1769,8 +1747,7 @@ class LightpathMixin(Device):
             for sig in self.lightpath_cpts:
                 self.lightpath_summary.add_signal_by_attr_name(sig)
 
-            self.lightpath_summary.subscribe(self._calc_cache_lightpath_state,
-                                             run=False)
+            self.lightpath_summary.subscribe(self._calc_cache_lightpath_state, run=False)
 
             self._summary_initialized = True
 
@@ -1782,8 +1759,7 @@ class LightpathMixin(Device):
         else:
             if not cls.lightpath_cpts:
                 raise NotImplementedError(
-                    'Did not implement LightpathMixin properly.  '
-                    'Must supply a list of components (lightpath_cpts)'
+                    "Did not implement LightpathMixin properly.  Must supply a list of components (lightpath_cpts)"
                 )
 
     def calc_lightpath_state(self, **kwargs) -> LightpathState:
@@ -1802,8 +1778,7 @@ class LightpathMixin(Device):
             a dataclass containing the Lightpath state
         """
         raise NotImplementedError(
-            'Did not implement LightpathMixin properly.  Must define '
-            'a ``calc_lightpath_state`` method.'
+            "Did not implement LightpathMixin properly.  Must define a ``calc_lightpath_state`` method."
         )
 
     def get_lightpath_state(self, use_cache: bool = True) -> LightpathState:
@@ -1816,9 +1791,8 @@ class LightpathMixin(Device):
             a dataclass containing the Lightpath state
         """
         if (not use_cache) or (self._cached_state is None):
-            self.log.debug('calculating new LightpathState')
-            kwargs = {sig.name.removeprefix(self.name + '_'): sig.get()
-                      for sig in self.lightpath_summary._signals}
+            self.log.debug("calculating new LightpathState")
+            kwargs = {sig.name.removeprefix(self.name + "_"): sig.get() for sig in self.lightpath_summary._signals}
             self._cached_state = self.calc_lightpath_state(**kwargs)
 
         return self._cached_state
@@ -1833,13 +1807,12 @@ class LightpathMixin(Device):
     @property
     def md(self):
         if self._md is None:
-            raise AttributeError('Device does not have an attached md, '
-                                 'and was likely not initialized from happi')
+            raise AttributeError("Device does not have an attached md, and was likely not initialized from happi")
         return self._md
 
     @md.setter
     def md(self, new_md):
-        """ initialize lightpath when md is set """
+        """initialize lightpath when md is set"""
         self._md = new_md
         self.input_branches = self.md.input_branches
         self.output_branches = self.md.output_branches
@@ -1855,8 +1828,9 @@ class LightpathInOutMixin(LightpathMixin):
     (check_inserted, check_removed, check_transmission),
     and have a ``state`` signal (which is its only ``lightpath_cpt``).
     """
+
     _lightpath_mixin = True
-    lightpath_cpts = ['state']
+    lightpath_cpts = ["state"]
 
     def __init__(self, *args, retry_delay=2.0, **kwargs):
         self.retry_delay = retry_delay
@@ -1867,27 +1841,19 @@ class LightpathInOutMixin(LightpathMixin):
             # This would prevent make check_inserted, etc. fail
             # if we cannot connect, supply an inconsistent state
             # and queue up the calculation for later
-            self.log.debug('state not initialized, scheduling '
-                           'lightpath calculations for later')
+            self.log.debug("state not initialized, scheduling lightpath calculations for later")
             if self._retry_lightpath:
                 self._retry_lightpath = False
-                utils.schedule_task(self._calc_cache_lightpath_state,
-                                    delay=self.retry_delay)
+                utils.schedule_task(self._calc_cache_lightpath_state, delay=self.retry_delay)
 
-            return LightpathState(
-                inserted=True,
-                removed=True,
-                output={self.output_branches[0]: 1}
-            )
+            return LightpathState(inserted=True, removed=True, output={self.output_branches[0]: 1})
 
         self._retry_lightpath = True
         self._inserted = self.check_inserted(state)
         self._removed = self.check_removed(state)
         self._transmission = self.check_transmission(state)
         return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: self._transmission}
+            inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: self._transmission}
         )
 
 
@@ -1902,6 +1868,7 @@ class LightpathInOutCptMixin(LightpathMixin):
     Often seen valid components are ``TwinCATStatePMPS``,
     ``InOutPositioner``, etc.
     """
+
     # defers the check for lightpath_cpt until next subclass
     _lightpath_mixin = True
 
@@ -1910,9 +1877,9 @@ class LightpathInOutCptMixin(LightpathMixin):
         super().__init__(*args, **kwargs)
 
     def _init_summary_signal(self):
-        """ Change summary signal to only watch .state signals """
+        """Change summary signal to only watch .state signals"""
         for sig in self.lightpath_cpts:
-            self.lightpath_summary.add_signal_by_attr_name(sig + '.state')
+            self.lightpath_summary.add_signal_by_attr_name(sig + ".state")
 
         self.lightpath_summary.subscribe(self._calc_cache_lightpath_state)
 
@@ -1921,7 +1888,7 @@ class LightpathInOutCptMixin(LightpathMixin):
             kwargs = {}
             for sig in self.lightpath_summary._signals:
                 parent = sig.parent or sig.biological_parent
-                sig_name = parent.name.removeprefix(self.name + '_')
+                sig_name = parent.name.removeprefix(self.name + "_")
                 kwargs[sig_name] = sig.get()
 
             state = self.calc_lightpath_state(**kwargs)
@@ -1939,18 +1906,12 @@ class LightpathInOutCptMixin(LightpathMixin):
                 # This would prevent make check_inserted, etc. fail
                 # if we cannot connect, supply an inconsistent state
                 # and queue up the calculation for later
-                self.log.debug('state not initialized, scheduling '
-                               'lightpath calculations for later')
+                self.log.debug("state not initialized, scheduling lightpath calculations for later")
                 if self._retry_lightpath:
                     self._retry_lightpath = False
-                    utils.schedule_task(self._calc_cache_lightpath_state,
-                                        delay=self.retry_delay)
+                    utils.schedule_task(self._calc_cache_lightpath_state, delay=self.retry_delay)
 
-                return LightpathState(
-                    inserted=True,
-                    removed=True,
-                    output={self.output_branches[0]: 1}
-                )
+                return LightpathState(inserted=True, removed=True, output={self.output_branches[0]: 1})
 
             self._retry_lightpath = True
 
@@ -1960,10 +1921,8 @@ class LightpathInOutCptMixin(LightpathMixin):
             trans_check.append(obj.check_transmission(sig_value))
         self._inserted = any(in_check)
         self._removed = all(out_check)
-        self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
+        self._transmission = functools.reduce(lambda a, b: a * b, trans_check)
 
         return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: self._transmission}
+            inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: self._transmission}
         )

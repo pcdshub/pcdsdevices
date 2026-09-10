@@ -12,6 +12,7 @@ the manipulation will be done on the size of the aperture not the position,
 however, if control of the center is desired the ``center`` sub-devices can be
 used.
 """
+
 import logging
 from collections import OrderedDict
 
@@ -31,10 +32,8 @@ from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .digital_signals import J120K
-from .epics_motor import (BeckhoffAxis, BeckhoffAxisNoOffset, EpicsMotor,
-                          PCDSMotorBase)
-from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
-                        LightpathMixin, MvInterface)
+from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset, EpicsMotor, PCDSMotorBase
+from .interface import BaseInterface, FltMvInterface, LightpathInOutCptMixin, LightpathMixin, MvInterface
 from .pmps import TwinCATStatePMPS
 from .sensors import RTD, TwinCATTempSensor
 from .signal import PytmcSignal
@@ -49,18 +48,19 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
     """
     Base class for slit motion interfacing.
     """
+
     # QIcon for UX
-    _icon = 'fa.th-large'
+    _icon = "fa.th-large"
 
     # Mark as parent class for lightpath interface
     _lightpath_mixin = True
-    lightpath_cpts = ['xwidth.user_readback', 'ywidth.user_readback']
+    lightpath_cpts = ["xwidth.user_readback", "ywidth.user_readback"]
 
     # Tab settings
-    tab_whitelist = ['open', 'close', 'block', 'hg', 'ho', 'vg', 'vo']
+    tab_whitelist = ["open", "close", "block", "hg", "ho", "vg", "vo"]
 
     # Just to hold a value
-    nominal_aperture = Cpt(Signal, kind='normal')
+    nominal_aperture = Cpt(Signal, kind="normal")
 
     # Placeholders for each component to override
     # These are expected to be positioners
@@ -107,25 +107,21 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         try:
             md = self.root.md
         except AttributeError:
-            name = f'Slit: {self.prefix}'
+            name = f"Slit: {self.prefix}"
         else:
-            beamline = get_status_value(md, 'beamline')
-            stand = get_status_value(md, 'stand')
+            beamline = get_status_value(md, "beamline")
+            stand = get_status_value(md, "stand")
             if stand is not None:
-                name = f'{beamline} Slit {self.name} on {stand}'
+                name = f"{beamline} Slit {self.name} on {stand}"
             else:
-                name = f'{beamline} Slit {self.name}'
+                name = f"{beamline} Slit {self.name}"
 
-        x_width = get_status_float(status_info, 'xwidth', 'position',
-                                   include_plus_sign=True)
-        y_width = get_status_float(status_info, 'ywidth', 'position',
-                                   include_plus_sign=True)
-        x_center = get_status_float(status_info, 'xcenter', 'position',
-                                    include_plus_sign=True)
-        y_center = get_status_float(status_info, 'ycenter', 'position',
-                                    include_plus_sign=True)
-        w_units = get_status_value(status_info, 'ywidth', 'setpoint', 'units')
-        c_units = get_status_value(status_info, 'ycenter', 'setpoint', 'units')
+        x_width = get_status_float(status_info, "xwidth", "position", include_plus_sign=True)
+        y_width = get_status_float(status_info, "ywidth", "position", include_plus_sign=True)
+        x_center = get_status_float(status_info, "xcenter", "position", include_plus_sign=True)
+        y_center = get_status_float(status_info, "ycenter", "position", include_plus_sign=True)
+        w_units = get_status_value(status_info, "ywidth", "setpoint", "units")
+        c_units = get_status_value(status_info, "ycenter", "setpoint", "units")
 
         return f"""\
 {name}
@@ -133,8 +129,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
 (ho, vo): ({x_center}, {y_center}) [{c_units}]
 """
 
-    def move(self, width, height=None, *, wait=False, moved_cb=None,
-             timeout=None):
+    def move(self, width, height=None, *, wait=False, moved_cb=None, timeout=None):
         """
         Set the dimensions of the width/height of the slits gap.
 
@@ -166,8 +161,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
 
         # Check for missing size
         if width is None and height is None:
-            raise TypeError("move() missing 1 required positional "
-                            "argument: 'width'")
+            raise TypeError("move() missing 1 required positional argument: 'width'")
         elif width is None:
             width = height
         # Check for rectangular setpoint
@@ -264,11 +258,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         Restore the initial values of the aperture position.
         """
         if self._pre_stage_gap is not None:
-            self.move(
-                self._pre_stage_gap[0],
-                self._pre_stage_gap[1],
-                wait=True
-            )
+            self.move(self._pre_stage_gap[0], self._pre_stage_gap[1], wait=True)
         self._pre_stage_gap = None
         return super().unstage()
 
@@ -288,35 +278,27 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         # Avoid making child subscriptions unless a client cares
         if not self._has_subscribed:
             # Subscribe to changes in aperture
-            self.xwidth.readback.subscribe(self._aperture_changed,
-                                           run=False)
-            self.ywidth.readback.subscribe(self._aperture_changed,
-                                           run=False)
+            self.xwidth.readback.subscribe(self._aperture_changed, run=False)
+            self.ywidth.readback.subscribe(self._aperture_changed, run=False)
             self._has_subscribed = True
         return super().subscribe(cb, event_type=event_type, run=run)
 
     def _aperture_changed(self, *args, **kwargs):
         """Callback run when slit size is adjusted."""
         # Avoid duplicate keywords
-        kwargs.pop('sub_type', None)
-        kwargs.pop('obj', None)
+        kwargs.pop("sub_type", None)
+        kwargs.pop("obj", None)
         # Run subscriptions
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
-    def calc_lightpath_state(
-        self,
-        xwidth: float,
-        ywidth: float
-    ) -> LightpathState:
+    def calc_lightpath_state(self, xwidth: float, ywidth: float) -> LightpathState:
         widths = [xwidth, ywidth]
-        self._inserted = (min(widths) < self.nominal_aperture.get())
+        self._inserted = min(widths) < self.nominal_aperture.get()
         self._removed = not self._inserted
         self._transmission = 1.0 if self._inserted else 0.0
 
         return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: self._transmission}
+            inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: self._transmission}
         )
 
     @property
@@ -331,10 +313,8 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
 class BadSlitPositionerBase(FltMvInterface, PVPositioner):
     """Base class for slit positioner with awful PV names."""
 
-    readback = FCpt(EpicsSignalRO, '{prefix}:ACTUAL_{_dirlong}',
-                    auto_monitor=True, kind='normal')
-    setpoint = FCpt(EpicsSignal, '{prefix}:{_dirshort}_REQ',
-                    auto_monitor=True, kind='normal')
+    readback = FCpt(EpicsSignalRO, "{prefix}:ACTUAL_{_dirlong}", auto_monitor=True, kind="normal")
+    setpoint = FCpt(EpicsSignal, "{prefix}:{_dirshort}_REQ", auto_monitor=True, kind="normal")
 
     def __init__(self, prefix, *, slit_type="", limits=None, **kwargs):
         # Private PV names to deal with complex naming schema
@@ -375,7 +355,7 @@ class LusiSlitPositioner(BadSlitPositionerBase):
         SlitPositioner inherits directly from `~ophyd.PVPositioner`.
     """
 
-    done = Cpt(EpicsSignalRO, ':DMOV', auto_monitor=True, kind='omitted')
+    done = Cpt(EpicsSignalRO, ":DMOV", auto_monitor=True, kind="omitted")
 
     @property
     def egu(self):
@@ -386,7 +366,7 @@ class LusiSlitPositioner(BadSlitPositionerBase):
         # This is subclassed because we need `wait` to be set to `False` unlike
         # the default PVPositioner method. `wait` set to `True` will not return
         # until the move has completed
-        logger.debug('%s.setpoint = %s', self.name, position)
+        logger.debug("%s.setpoint = %s", self.name, position)
         self.setpoint.put(position, wait=False)
 
 
@@ -422,25 +402,25 @@ class LusiSlits(SlitsBase):
     """
 
     # Base class overrides
-    xwidth = Cpt(LusiSlitPositioner, '', slit_type='XWIDTH', kind='hinted')
-    ywidth = Cpt(LusiSlitPositioner, '', slit_type='YWIDTH', kind='hinted')
-    xcenter = Cpt(LusiSlitPositioner, '', slit_type='XCENTER', kind='normal')
-    ycenter = Cpt(LusiSlitPositioner, '', slit_type='YCENTER', kind='normal')
+    xwidth = Cpt(LusiSlitPositioner, "", slit_type="XWIDTH", kind="hinted")
+    ywidth = Cpt(LusiSlitPositioner, "", slit_type="YWIDTH", kind="hinted")
+    xcenter = Cpt(LusiSlitPositioner, "", slit_type="XCENTER", kind="normal")
+    ycenter = Cpt(LusiSlitPositioner, "", slit_type="YCENTER", kind="normal")
 
     # Individual blade aliases
-    blade_top = Cpt(PCDSMotorBase, ':TOP', kind='normal')
-    blade_bottom = Cpt(PCDSMotorBase, ':BOTTOM', kind='normal')
-    blade_north = Cpt(PCDSMotorBase, ':NORTH', kind='normal')
-    blade_south = Cpt(PCDSMotorBase, ':SOUTH', kind='normal')
+    blade_top = Cpt(PCDSMotorBase, ":TOP", kind="normal")
+    blade_bottom = Cpt(PCDSMotorBase, ":BOTTOM", kind="normal")
+    blade_north = Cpt(PCDSMotorBase, ":NORTH", kind="normal")
+    blade_south = Cpt(PCDSMotorBase, ":SOUTH", kind="normal")
 
     # Local PVs
-    blocked = Cpt(EpicsSignalRO, ':BLOCKED', kind='omitted')
-    open_cmd = Cpt(EpicsSignal, ':OPEN', kind='omitted')
-    close_cmd = Cpt(EpicsSignal, ':CLOSE', kind='omitted')
-    block_cmd = Cpt(EpicsSignal, ':BLOCK', kind='omitted')
+    blocked = Cpt(EpicsSignalRO, ":BLOCKED", kind="omitted")
+    open_cmd = Cpt(EpicsSignal, ":OPEN", kind="omitted")
+    close_cmd = Cpt(EpicsSignal, ":CLOSE", kind="omitted")
+    block_cmd = Cpt(EpicsSignal, ":BLOCK", kind="omitted")
 
-    tab_whitelist = ['blade_top', 'blade_bottom', 'blade_north', 'blade_south']
-    lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
+    tab_whitelist = ["blade_top", "blade_bottom", "blade_north", "blade_south"]
+    lightpath_cpts = ["xwidth.readback", "ywidth.readback"]
 
     def open(self):
         """Uses the built-in 'OPEN' record to move open the aperture."""
@@ -454,14 +434,9 @@ class LusiSlits(SlitsBase):
         """Overlap the slits to block the beam."""
         self.block_cmd.put(1)
 
-    def calc_lightpath_state(
-        self,
-        xwidth_readback: float,
-        ywidth_readback: float
-    ) -> LightpathState:
+    def calc_lightpath_state(self, xwidth_readback: float, ywidth_readback: float) -> LightpathState:
         """widths have different names due to different positioner class"""
-        return super().calc_lightpath_state(xwidth=xwidth_readback,
-                                            ywidth=ywidth_readback)
+        return super().calc_lightpath_state(xwidth=xwidth_readback, ywidth=ywidth_readback)
 
 
 class Slits(LusiSlits):
@@ -476,12 +451,10 @@ class BeckhoffSlitPositioner(BadSlitPositionerBase):
     This class needs a BeckhoffSlits parent to function properly.
     """
 
-    readback = FCpt(PytmcSignal, BadSlitPositionerBase.readback.suffix,
-                    io='i', auto_monitor=True, kind='normal')
-    setpoint = FCpt(PytmcSignal, BadSlitPositionerBase.setpoint.suffix,
-                    io='io', auto_monitor=True, kind='normal')
-    done = Cpt(Signal, kind='omitted')
-    actuate = Cpt(Signal, kind='omitted')
+    readback = FCpt(PytmcSignal, BadSlitPositionerBase.readback.suffix, io="i", auto_monitor=True, kind="normal")
+    setpoint = FCpt(PytmcSignal, BadSlitPositionerBase.setpoint.suffix, io="io", auto_monitor=True, kind="normal")
+    done = Cpt(Signal, kind="omitted")
+    actuate = Cpt(Signal, kind="omitted")
 
     @actuate.sub_value
     def _execute_move(self, *args, value, **kwargs):
@@ -496,31 +469,29 @@ class BeckhoffSlitPositioner(BadSlitPositionerBase):
 
 class BeckhoffSlits(SlitsBase):
     # Base class overrides
-    xwidth = Cpt(BeckhoffSlitPositioner, '', slit_type='XWIDTH', kind='hinted')
-    ywidth = Cpt(BeckhoffSlitPositioner, '', slit_type='YWIDTH', kind='hinted')
-    xcenter = Cpt(BeckhoffSlitPositioner, '', slit_type='XCENTER',
-                  kind='normal')
-    ycenter = Cpt(BeckhoffSlitPositioner, '', slit_type='YCENTER',
-                  kind='normal')
+    xwidth = Cpt(BeckhoffSlitPositioner, "", slit_type="XWIDTH", kind="hinted")
+    ywidth = Cpt(BeckhoffSlitPositioner, "", slit_type="YWIDTH", kind="hinted")
+    xcenter = Cpt(BeckhoffSlitPositioner, "", slit_type="XCENTER", kind="normal")
+    ycenter = Cpt(BeckhoffSlitPositioner, "", slit_type="YCENTER", kind="normal")
 
     # Slit state commands
-    exec_queue = Cpt(Signal, kind='omitted')
-    exec_move = Cpt(PytmcSignal, ':GO', io='io', kind='omitted')
+    exec_queue = Cpt(Signal, kind="omitted")
+    exec_move = Cpt(PytmcSignal, ":GO", io="io", kind="omitted")
 
     # Slit calculated move dmov
-    done_all = Cpt(Signal, kind='omitted')
-    done_top = Cpt(PytmcSignal, ':TOP:DMOV', io='i', kind='omitted')
-    done_bottom = Cpt(PytmcSignal, ':BOTTOM:DMOV', io='i', kind='omitted')
-    done_north = Cpt(PytmcSignal, ':NORTH:DMOV', io='i', kind='omitted')
-    done_south = Cpt(PytmcSignal, ':SOUTH:DMOV', io='i', kind='omitted')
+    done_all = Cpt(Signal, kind="omitted")
+    done_top = Cpt(PytmcSignal, ":TOP:DMOV", io="i", kind="omitted")
+    done_bottom = Cpt(PytmcSignal, ":BOTTOM:DMOV", io="i", kind="omitted")
+    done_north = Cpt(PytmcSignal, ":NORTH:DMOV", io="i", kind="omitted")
+    done_south = Cpt(PytmcSignal, ":SOUTH:DMOV", io="i", kind="omitted")
 
     # Raw motors
-    top = Cpt(BeckhoffAxisNoOffset, ':MMS:TOP', kind='normal')
-    bottom = Cpt(BeckhoffAxisNoOffset, ':MMS:BOTTOM', kind='normal')
-    north = Cpt(BeckhoffAxisNoOffset, ':MMS:NORTH', kind='normal')
-    south = Cpt(BeckhoffAxisNoOffset, ':MMS:SOUTH', kind='normal')
+    top = Cpt(BeckhoffAxisNoOffset, ":MMS:TOP", kind="normal")
+    bottom = Cpt(BeckhoffAxisNoOffset, ":MMS:BOTTOM", kind="normal")
+    north = Cpt(BeckhoffAxisNoOffset, ":MMS:NORTH", kind="normal")
+    south = Cpt(BeckhoffAxisNoOffset, ":MMS:SOUTH", kind="normal")
 
-    lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
+    lightpath_cpts = ["xwidth.readback", "ywidth.readback"]
 
     def __init__(self, prefix, *, name, **kwargs):
         self._started_move = False
@@ -585,21 +556,13 @@ class BeckhoffSlits(SlitsBase):
         individual done moving boolean in a callback and then call
         this method to update the aggregate done_all signal.
         """
-        done = all((self._top_done,
-                    self._bottom_done,
-                    self._north_done,
-                    self._south_done))
+        done = all((self._top_done, self._bottom_done, self._north_done, self._south_done))
         if done != self.done_all.get():
             self.done_all.put(done)
 
-    def calc_lightpath_state(
-        self,
-        xwidth_readback: float,
-        ywidth_readback: float
-    ) -> LightpathState:
+    def calc_lightpath_state(self, xwidth_readback: float, ywidth_readback: float) -> LightpathState:
         """widths have different names due to different positioner class"""
-        return super().calc_lightpath_state(xwidth=xwidth_readback,
-                                            ywidth=ywidth_readback)
+        return super().calc_lightpath_state(xwidth=xwidth_readback, ywidth=ywidth_readback)
 
 
 class MetaDataDict(dict):
@@ -705,22 +668,22 @@ class SL2K4Slits(BeckhoffSlits):
     _data_source : str
         Area detector stream name. e.g. IMAGE2
     """
+
     def __init__(self, prefix, cam, data_source, *, name, **kwargs):
         self._cam = cam
         self._data_source = data_source
         super().__init__(prefix, name=name, **kwargs)
-        self.md = MetaDataDict({"cam": cam,
-                                "data_source": data_source,
-                                "input_branches": None,
-                                "output_branches": None})
+        self.md = MetaDataDict(
+            {"cam": cam, "data_source": data_source, "input_branches": None, "output_branches": None}
+        )
 
 
 def _rtd_fields(cls, attr_base, range_, **kwargs):
-    padding = max(range_)//10 + 2
+    padding = max(range_) // 10 + 2
     defn = OrderedDict()
     for i in range_:
-        attr = f'{attr_base}{i}'
-        suffix = f':RTD:{str(i).zfill(padding)}'
+        attr = f"{attr_base}{i}"
+        suffix = f":RTD:{str(i).zfill(padding)}"
         defn[attr] = (cls, suffix, kwargs)
     return defn
 
@@ -737,9 +700,8 @@ class PowerSlits(BeckhoffSlits):
         The PV base of the device.
     """
 
-    rtds = DDCpt(_rtd_fields(RTD, 'rtd', range(1, 9)))
-    flow_switch = Cpt(J120K, '', kind='normal',
-                      doc='Device that indicates nominal PCW Flow Rate.')
+    rtds = DDCpt(_rtd_fields(RTD, "rtd", range(1, 9)))
+    flow_switch = Cpt(J120K, "", kind="normal", doc="Device that indicates nominal PCW Flow Rate.")
 
 
 class ExitSlitTarget(TwinCATStatePMPS):
@@ -748,64 +710,58 @@ class ExitSlitTarget(TwinCATStatePMPS):
     Defines the state count as 3 (OUT and 2 targets) to limit the number of
     config PVs we connect to.
     """
+
     config = UpCpt(state_count=3)
 
 
 class ExitSlits(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     tab_component_names = True
 
-    lightpath_cpts = ['target']
-    _icon = 'fa.video-camera'
+    lightpath_cpts = ["target"]
+    _icon = "fa.video-camera"
 
-    target = Cpt(ExitSlitTarget, ':YAG:STATE', kind='hinted',
-                 doc='Control of the YAG  stack via saved positions.')
-    yag_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:YAG', kind='normal',
-                    doc='Direct control of the Yag Stack motor.')
-    gap_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:GAP', kind='normal',
-                    doc='Direct control of the slits gap  motor.')
-    upper_crystal_pitch_motor = Cpt(EpicsMotor, ':MMZ:PITCH:TOP', kind='normal',
-                                    doc='Direct control of the upper slits assembly piezo pitch  motor.')
-    lower_crystal_pitch_motor = Cpt(EpicsMotor, ':MMZ:PITCH:BOTTOM', kind='normal',
-                                    doc='Direct control of the lower slits assembly piezo pitch  motor.')
-    pitch_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:PITCH', kind='normal',
-                      doc='Direct control of the slits assembly pitch  motor.')
-    vert_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:VERT', kind='normal',
-                     doc='Direct control of the slits assembly vertical motor.')
-    roll_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:ROLL', kind='normal',
-                     doc='Direct control of the slits assembly roll motor.')
-    detector = Cpt(PCDSAreaDetectorTyphosTrigger, ':CAM:', kind='normal',
-                   doc='Area detector settings and readbacks.')
-    cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',
-                    doc='Camera power supply controls.')
-    fan_power = Cpt(PytmcSignal, ':FAN:PWR', io='io', kind='config',
-                    doc='Fan power supply controls.')
-    led_power = Cpt(PytmcSignal, ':LED:PWR', io='io', kind='config',
-                    doc='LED power supply controls.')
-    led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config',
-              doc='Percent of light from the dimmable illuminatior.')
-    set_metadata(led, dict(variety='scalar-range',
-                           range={'value': (0, 100),
-                                  'source': 'value'}
-                           ))
-    yag_thermocouple = Cpt(TwinCATTempSensor, ':RTD:YAG', kind='normal',
-                           doc='Thermocouple on the YAG holder.')
+    target = Cpt(ExitSlitTarget, ":YAG:STATE", kind="hinted", doc="Control of the YAG  stack via saved positions.")
+    yag_motor = Cpt(BeckhoffAxisNoOffset, ":MMS:YAG", kind="normal", doc="Direct control of the Yag Stack motor.")
+    gap_motor = Cpt(BeckhoffAxisNoOffset, ":MMS:GAP", kind="normal", doc="Direct control of the slits gap  motor.")
+    upper_crystal_pitch_motor = Cpt(
+        EpicsMotor,
+        ":MMZ:PITCH:TOP",
+        kind="normal",
+        doc="Direct control of the upper slits assembly piezo pitch  motor.",
+    )
+    lower_crystal_pitch_motor = Cpt(
+        EpicsMotor,
+        ":MMZ:PITCH:BOTTOM",
+        kind="normal",
+        doc="Direct control of the lower slits assembly piezo pitch  motor.",
+    )
+    pitch_motor = Cpt(
+        BeckhoffAxisNoOffset, ":MMS:PITCH", kind="normal", doc="Direct control of the slits assembly pitch  motor."
+    )
+    vert_motor = Cpt(
+        BeckhoffAxisNoOffset, ":MMS:VERT", kind="normal", doc="Direct control of the slits assembly vertical motor."
+    )
+    roll_motor = Cpt(
+        BeckhoffAxisNoOffset, ":MMS:ROLL", kind="normal", doc="Direct control of the slits assembly roll motor."
+    )
+    detector = Cpt(PCDSAreaDetectorTyphosTrigger, ":CAM:", kind="normal", doc="Area detector settings and readbacks.")
+    cam_power = Cpt(PytmcSignal, ":CAM:PWR", io="io", kind="config", doc="Camera power supply controls.")
+    fan_power = Cpt(PytmcSignal, ":FAN:PWR", io="io", kind="config", doc="Fan power supply controls.")
+    led_power = Cpt(PytmcSignal, ":LED:PWR", io="io", kind="config", doc="LED power supply controls.")
+    led = Cpt(
+        PytmcSignal, ":CAM:CIL:PCT", io="io", kind="config", doc="Percent of light from the dimmable illuminatior."
+    )
+    set_metadata(led, dict(variety="scalar-range", range={"value": (0, 100), "source": "value"}))
+    yag_thermocouple = Cpt(TwinCATTempSensor, ":RTD:YAG", kind="normal", doc="Thermocouple on the YAG holder.")
     upper_crystal_thermocouple = Cpt(
-        TwinCATTempSensor, ':RTD:CRYSTAL_TOP', kind='normal',
-        doc='Thermocouple on the TOP CRYSTAL.'
+        TwinCATTempSensor, ":RTD:CRYSTAL_TOP", kind="normal", doc="Thermocouple on the TOP CRYSTAL."
     )
     lower_crystal_thermocouple = Cpt(
-        TwinCATTempSensor, ':RTD:CRYSTAL_BOTTOM', kind='normal',
-        doc='Thermocouple on the BOTTOM CRYSTAL.'
+        TwinCATTempSensor, ":RTD:CRYSTAL_BOTTOM", kind="normal", doc="Thermocouple on the BOTTOM CRYSTAL."
     )
-    heatsync_thermocouple = Cpt(
-        TwinCATTempSensor, ':RTD:HeatSync', kind='normal',
-        doc='Thermocouple on the Heat Sync.'
-    )
-    set_metadata(cam_power, dict(variety='command-enum'))
-    flow_meter = Cpt(
-        FDQ, '', kind='normal',
-        doc='Device that measures PCW Flow Rate.'
-    )
+    heatsync_thermocouple = Cpt(TwinCATTempSensor, ":RTD:HeatSync", kind="normal", doc="Thermocouple on the Heat Sync.")
+    set_metadata(cam_power, dict(variety="command-enum"))
+    flow_meter = Cpt(FDQ, "", kind="normal", doc="Device that measures PCW Flow Rate.")
 
     @property
     def y_states(self):
@@ -821,7 +777,7 @@ class SimLusiSlits(LusiSlits):
 
 
 class JJSlits(SlitsBase):
-    '''
+    """
     Beckhoff Controlled AT-C8-HV JJ X-Ray Slits.
     The JJSlits class defines motor components for the specific JJ X-Ray slits
     model AT-C8-HV. This model of JJSlits holds four in-vacuum motors that set
@@ -839,10 +795,10 @@ class JJSlits(SlitsBase):
     prefix : str
        Base PV for the JJ X-RAY PLC System
     name : str, keyword-only
-    '''
+    """
 
     # Motor Components
-    xwidth = Cpt(BeckhoffAxis, ':XWIDTH', kind='normal')
-    ywidth = Cpt(BeckhoffAxis, ':YWIDTH', kind='normal')
-    xcenter = Cpt(BeckhoffAxis, ':XCENTER', kind='normal')
-    ycenter = Cpt(BeckhoffAxis, ':YCENTER', kind='normal')
+    xwidth = Cpt(BeckhoffAxis, ":XWIDTH", kind="normal")
+    ywidth = Cpt(BeckhoffAxis, ":YWIDTH", kind="normal")
+    xcenter = Cpt(BeckhoffAxis, ":XCENTER", kind="normal")
+    ycenter = Cpt(BeckhoffAxis, ":YCENTER", kind="normal")
