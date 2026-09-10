@@ -9,13 +9,10 @@ from ophyd import FormattedComponent as FCpt
 
 from .digital_signals import J120K
 from .epics_motor import BeckhoffAxisNoOffset
-from .inout import InOutPositioner, InOutPVStatePositioner, TwinCATInOutPositioner
-from .interface import (
-    BaseInterface,
-    LightpathInOutCptMixin,
-    LightpathInOutMixin,
-    LightpathMixin,
-)
+from .inout import (InOutPositioner, InOutPVStatePositioner,
+                    TwinCATInOutPositioner)
+from .interface import (BaseInterface, LightpathInOutCptMixin,
+                        LightpathInOutMixin, LightpathMixin)
 
 
 class Commands(IntEnum):
