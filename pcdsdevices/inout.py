@@ -6,6 +6,7 @@ methods such as :meth:`~InOutPositioner.insert` or
 :meth:`~InOutPositioner.remove` and the ability to mark discrete states as in
 the beam or out of the beam.
 """
+
 import math
 
 from ophyd.device import required_for_connection
@@ -15,72 +16,67 @@ from pcdsdevices.interface import LightpathInOutMixin
 
 from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init, insert_remove
-from .state import (CombinedStateRecordPositioner, PVStatePositioner,
-                    StatePositioner, StateRecordPositioner,
-                    TwinCATStatePositioner)
+from .state import (
+    CombinedStateRecordPositioner,
+    PVStatePositioner,
+    StatePositioner,
+    StateRecordPositioner,
+    TwinCATStatePositioner,
+)
 
 
 class InOutPositioner(StatePositioner):
     """
-    Base class for a device that can be inserted and removed from the beam.
+        Base class for a device that can be inserted and removed from the beam.
 
-    This must be subclassed and given a :attr:`state` signal to work properly.
-    You should also update the :attr:`states_list`, :attr:`in_states`, and
-    :attr:`out_states` lists appropriately.
+        This must be subclassed and given a :attr:`state` signal to work properly.
+        You should also update the :attr:`states_list`, :attr:`in_states`, and
+        :attr:`out_states` lists appropriately.
 
-    These devices can be inserted, removed and queried for insertion and
-    removal state. They can also define transmission values for the
-    various states.
-%s
-    Attributes
-    ----------
-    in_states : list of str
-        State values that should be considered 'IN'.
+        These devices can be inserted, removed and queried for insertion and
+        removal state. They can also define transmission values for the
+        various states.
+    %s
+        Attributes
+        ----------
+        in_states : list of str
+            State values that should be considered 'IN'.
 
-    out_states : list of str
-        State values that should be considered 'OUT'.
+        out_states : list of str
+            State values that should be considered 'OUT'.
 
-    _transmission : dict{str: float}
-        Mapping from each state to the transmission ratio. This should be a
-        number from 0 to 1. Default values will be 1 (full transmission) for
-        :attr:`out_states`, 0 (full block) for :attr:`in_states`,
-        and :const:`~math.nan` (no idea!) for unaccounted states.
+        _transmission : dict{str: float}
+            Mapping from each state to the transmission ratio. This should be a
+            number from 0 to 1. Default values will be 1 (full transmission) for
+            :attr:`out_states`, 0 (full block) for :attr:`in_states`,
+            and :const:`~math.nan` (no idea!) for unaccounted states.
 
-    _in_if_not_out : bool
-        If `True`, shorthand for saying "All states not unknown and
-        not in out_states belong in the in_states list."
+        _in_if_not_out : bool
+            If `True`, shorthand for saying "All states not unknown and
+            not in out_states belong in the in_states list."
     """
 
     __doc__ = __doc__ % basic_positioner_init
 
-    states_list = ['IN', 'OUT']
-    in_states = ['IN']
-    out_states = ['OUT']
+    states_list = ["IN", "OUT"]
+    in_states = ["IN"]
+    out_states = ["OUT"]
     _transmission = {}
     _in_if_not_out = False
 
-    tab_whitelist = ['inserted', 'removed', 'insert', 'remove', 'transmission']
+    tab_whitelist = ["inserted", "removed", "insert", "remove", "transmission"]
 
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is InOutPositioner:
-            raise TypeError(
-                'InOutPositioner must be subclassed with at least a state signal'
-            )
+            raise TypeError("InOutPositioner must be subclassed with at least a state signal")
         super().__init__(prefix, name=name, **kwargs)
 
     @required_for_connection
     def _state_init(self):
         super()._state_init()
         if self._in_if_not_out:
-            outish_states = [
-                self.get_state(state).name
-                for state in self.out_states + [self._unknown]
-            ]
-            self.in_states = [
-                state
-                for state in self.states_list
-                if state not in outish_states
-            ]
+            outish_states = [self.get_state(state).name for state in self.out_states + [self._unknown]]
+            self.in_states = [state for state in self.states_list if state not in outish_states]
         self._trans_enum = {}
         self._extend_trans_enum(self.in_states, 0)
         self._extend_trans_enum(self.out_states, 1)
@@ -110,8 +106,7 @@ class InOutPositioner(StatePositioner):
         """
         if self.inserted:
             return NullStatus()
-        return self.move(self.in_states[0], moved_cb=moved_cb,
-                         timeout=timeout, wait=wait)
+        return self.move(self.in_states[0], moved_cb=moved_cb, timeout=timeout, wait=wait)
 
     def remove(self, moved_cb=None, timeout=None, wait=False):
         """
@@ -120,8 +115,7 @@ class InOutPositioner(StatePositioner):
         """
         if self.removed:
             return NullStatus()
-        return self.move(self.out_states[0], moved_cb=moved_cb,
-                         timeout=timeout, wait=wait)
+        return self.move(self.out_states[0], moved_cb=moved_cb, timeout=timeout, wait=wait)
 
     insert.__doc__ += insert_remove
     remove.__doc__ += insert_remove
@@ -176,8 +170,7 @@ class InOutRecordPositioner(StateRecordPositioner, InOutPositioner):
     __doc__ += basic_positioner_init
 
 
-class CombinedInOutRecordPositioner(CombinedStateRecordPositioner,
-                                    InOutPositioner):
+class CombinedInOutRecordPositioner(CombinedStateRecordPositioner, InOutPositioner):
     """
     :class:`InOutPositioner` for a standard combined states record.
 
@@ -189,22 +182,24 @@ class CombinedInOutRecordPositioner(CombinedStateRecordPositioner,
     __doc__ += basic_positioner_init
 
 
-class LightpathInOutRecordPositioner(InOutRecordPositioner,
-                                     LightpathInOutMixin):
+class LightpathInOutRecordPositioner(InOutRecordPositioner, LightpathInOutMixin):
     """Lightpath-compatible InOutRecordPositioner"""
+
     pass
 
 
 class Reflaser(InOutRecordPositioner):
     """Simple ReferenceLaser with In/Out States."""
-    _icon = 'fa.empire'
+
+    _icon = "fa.empire"
     __doc__ += basic_positioner_init
 
 
 class TTReflaser(Reflaser):
     """Motor stack that includes both a timetool and a reflaser."""
-    states_list = ['TT', 'REFL', 'OUT']
-    in_states = ['TT', 'REFL']
+
+    states_list = ["TT", "REFL", "OUT"]
+    in_states = ["TT", "REFL"]
     __doc__ += basic_positioner_init
 
 
@@ -223,9 +218,7 @@ class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
     def __init__(self, *args, **kwargs):
         if self.__class__ is InOutPVStatePositioner:
             raise TypeError(
-                'InOutPVStatePositioner must be subclassed, '
-                'adding signals and filling in the '
-                '_state_logic dict.'
+                "InOutPVStatePositioner must be subclassed, adding signals and filling in the _state_logic dict."
             )
         super().__init__(*args, **kwargs)
 

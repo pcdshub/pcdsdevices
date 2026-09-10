@@ -1,6 +1,7 @@
 """
 Standard classes for LCLS Gate Valves.
 """
+
 import logging
 from enum import IntEnum
 
@@ -17,12 +18,14 @@ logger = logging.getLogger(__name__)
 
 class Commands(IntEnum):
     """Command aliases for opening and closing valves."""
+
     close_valve = 0
     open_valve = 1
 
 
 class InterlockError(PermissionError):
     """Error when request is blocked by interlock logic."""
+
     pass
 
 
@@ -39,40 +42,24 @@ class GateValve(Stopper):
     """
 
     # Limit based states
-    open_limit = Cpt(
-        EpicsSignalRO,
-        ':OPN_DI',
-        kind='normal'
-    )
-    closed_limit = Cpt(
-        EpicsSignalRO,
-        ':CLS_DI',
-        kind='normal'
-    )
+    open_limit = Cpt(EpicsSignalRO, ":OPN_DI", kind="normal")
+    closed_limit = Cpt(EpicsSignalRO, ":CLS_DI", kind="normal")
 
     # Commands and Interlock information
-    command = Cpt(
-        EpicsSignal,
-        ':OPN_SW',
-        kind='omitted'
-    )
+    command = Cpt(EpicsSignal, ":OPN_SW", kind="omitted")
     commands = Commands
-    interlock = Cpt(
-        EpicsSignalRO,
-        ':OPN_OK',
-        kind='normal'
-    )
+    interlock = Cpt(EpicsSignalRO, ":OPN_OK", kind="normal")
 
     # QIcon for UX
-    _icon = 'fa.hourglass'
+    _icon = "fa.hourglass"
 
-    tab_whitelist = ['interlocked']
+    tab_whitelist = ["interlocked"]
 
     def check_value(self, value):
         """Check when removing GateValve interlock is off."""
         value = super().check_value(value)
         if value == self.states_enum.OUT and self.interlocked:
-            raise InterlockError('Valve is currently forced closed')
+            raise InterlockError("Valve is currently forced closed")
         return value
 
     @property
@@ -98,35 +85,14 @@ class ValveBase(Device):
     """
 
     valve_position = Cpt(
-        EpicsSignalRO,
-        ':POS_STATE_RBV',
-        kind='hinted',
-        doc='Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F'
+        EpicsSignalRO, ":POS_STATE_RBV", kind="hinted", doc="Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F"
     )
-    open_command = Cpt(
-        EpicsSignalWithRBV,
-        ':OPN_SW',
-        kind='normal',
-        doc='Epics command to Open valve'
-    )
-    interlock_ok = Cpt(
-        EpicsSignalRO,
-        ':OPN_OK_RBV',
-        kind='normal',
-        doc='Valve is OK to Open interlock '
-    )
+    open_command = Cpt(EpicsSignalWithRBV, ":OPN_SW", kind="normal", doc="Epics command to Open valve")
+    interlock_ok = Cpt(EpicsSignalRO, ":OPN_OK_RBV", kind="normal", doc="Valve is OK to Open interlock ")
     open_do = Cpt(
-        EpicsSignalRO,
-        ':OPN_DO_RBV',
-        kind='normal',
-        doc='PLC Output to Open valve, 1 means 24V on command cable'
+        EpicsSignalRO, ":OPN_DO_RBV", kind="normal", doc="PLC Output to Open valve, 1 means 24V on command cable"
     )
-    error_reset = Cpt(
-        EpicsSignalWithRBV,
-        ':ALM_RST',
-        kind='normal',
-        doc='Reset Error state to valid by toggling this'
-    )
+    error_reset = Cpt(EpicsSignalWithRBV, ":ALM_RST", kind="normal", doc="Reset Error state to valid by toggling this")
 
 
 class VVC(ValveBase):
@@ -138,18 +104,10 @@ class VVC(ValveBase):
 
     All new controlled valve classes should inherit from VVC.
     """
-    override_status = Cpt(
-        EpicsSignalRO,
-        ':OVRD_ON_RBV',
-        kind='omitted',
-        doc='Epics Readback on Override mode'
-    )
+
+    override_status = Cpt(EpicsSignalRO, ":OVRD_ON_RBV", kind="omitted", doc="Epics Readback on Override mode")
     override_force_open = Cpt(
-        EpicsSignalWithRBV,
-        ':FORCE_OPN',
-        kind='omitted',
-        doc=('Epics Command to force open the valve in'
-             'override mode')
+        EpicsSignalWithRBV, ":FORCE_OPN", kind="omitted", doc=("Epics Command to force open the valve inoverride mode")
     )
 
 
@@ -161,18 +119,8 @@ class VGCLegacy(ValveBase):
     This does not correspond to any TwinCAT libraries.
     """
 
-    open_limit = Cpt(
-        EpicsSignalRO,
-        ':OPN_DI_RBV',
-        kind='hinted',
-        doc='Open limit switch digital input'
-    )
-    closed_limit = Cpt(
-        EpicsSignalRO,
-        ':CLS_DI_RBV',
-        kind='hinted',
-        doc='Closed limit switch digital input'
-    )
+    open_limit = Cpt(EpicsSignalRO, ":OPN_DI_RBV", kind="hinted", doc="Open limit switch digital input")
+    closed_limit = Cpt(EpicsSignalRO, ":CLS_DI_RBV", kind="hinted", doc="Closed limit switch digital input")
 
 
 class VRC(VVC, LightpathMixin):
@@ -188,31 +136,14 @@ class VRC(VVC, LightpathMixin):
     """
 
     # Configuration for lightpath
-    lightpath_cpts = ['open_limit', 'closed_limit']
-    _icon = 'fa.hourglass'
+    lightpath_cpts = ["open_limit", "closed_limit"]
+    _icon = "fa.hourglass"
 
-    state = Cpt(
-        EpicsSignalRO,
-        ':STATE_RBV',
-        kind='normal',
-        doc='Valve state'
-    )
-    open_limit = Cpt(
-        EpicsSignalRO,
-        ':OPN_DI_RBV',
-        kind='hinted',
-        doc='Open limit switch digital input'
-    )
-    closed_limit = Cpt(
-        EpicsSignalRO,
-        ':CLS_DI_RBV',
-        kind='hinted',
-        doc='Closed limit switch digital input'
-    )
+    state = Cpt(EpicsSignalRO, ":STATE_RBV", kind="normal", doc="Valve state")
+    open_limit = Cpt(EpicsSignalRO, ":OPN_DI_RBV", kind="hinted", doc="Open limit switch digital input")
+    closed_limit = Cpt(EpicsSignalRO, ":CLS_DI_RBV", kind="hinted", doc="Closed limit switch digital input")
 
-    def calc_lightpath_state(
-        self, open_limit: int, closed_limit: int
-    ) -> LightpathState:
+    def calc_lightpath_state(self, open_limit: int, closed_limit: int) -> LightpathState:
         """Callback for updating inserted/removed for lightpath."""
 
         self._inserted = bool(closed_limit)
@@ -220,11 +151,7 @@ class VRC(VVC, LightpathMixin):
 
         trans = 0.0 if self._inserted else 1.0
 
-        return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: trans}
-        )
+        return LightpathState(inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: trans})
 
 
 class VRCClsLS(VVC):
@@ -234,9 +161,8 @@ class VRCClsLS(VVC):
     This class is just VRC but without open_limit.
     """
 
-    state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal', doc='Valve state')
-    closed_limit = Cpt(EpicsSignalRO, ':CLS_DI_RBV', kind='hinted',
-                       doc='Closed limit switch digital input')
+    state = Cpt(EpicsSignalRO, ":STATE_RBV", kind="normal", doc="Valve state")
+    closed_limit = Cpt(EpicsSignalRO, ":CLS_DI_RBV", kind="hinted", doc="Closed limit switch digital input")
 
 
 class VGC(VRC):
@@ -253,63 +179,29 @@ class VGC(VRC):
 
     This corresponds with ST_VGC in the lcls-twincat-vacuum library.
     """
-    diff_press_ok = Cpt(
-        EpicsSignalRO,
-        ':DP_OK_RBV',
-        kind='normal',
-        doc='Differential pressure interlock ok'
-    )
-    ext_ilk_ok = Cpt(
-        EpicsSignalRO,
-        ':EXT_ILK_OK_RBV',
-        kind='normal',
-        doc='External interlock ok'
-    )
-    at_vac_setpoint = Cpt(
-        EpicsSignalWithRBV,
-        ':AT_VAC_SP',
-        kind='config',
-        doc='AT VAC Set point value'
-    )
-    setpoint_hysterisis = Cpt(
-        EpicsSignalWithRBV,
-        ':AT_VAC_HYS',
-        kind='config',
-        doc='AT VAC Hysteresis'
-    )
-    at_vac = Cpt(
-        EpicsSignalRO,
-        ':AT_VAC_RBV',
-        kind='normal',
-        doc='at vacuum setpoint is reached'
-    )
-    error = Cpt(
-        EpicsSignalRO,
-        ':ERROR_RBV',
-        kind='normal',
-        doc='Error Present'
-    )
+
+    diff_press_ok = Cpt(EpicsSignalRO, ":DP_OK_RBV", kind="normal", doc="Differential pressure interlock ok")
+    ext_ilk_ok = Cpt(EpicsSignalRO, ":EXT_ILK_OK_RBV", kind="normal", doc="External interlock ok")
+    at_vac_setpoint = Cpt(EpicsSignalWithRBV, ":AT_VAC_SP", kind="config", doc="AT VAC Set point value")
+    setpoint_hysterisis = Cpt(EpicsSignalWithRBV, ":AT_VAC_HYS", kind="config", doc="AT VAC Hysteresis")
+    at_vac = Cpt(EpicsSignalRO, ":AT_VAC_RBV", kind="normal", doc="at vacuum setpoint is reached")
+    error = Cpt(EpicsSignalRO, ":ERROR_RBV", kind="normal", doc="Error Present")
     mps_state = Cpt(
-        EpicsSignalRO,
-        ':MPS_FAULT_OK_RBV',
-        kind='omitted',
-        doc=('individual valve MPS state for debugging')
+        EpicsSignalRO, ":MPS_FAULT_OK_RBV", kind="omitted", doc=("individual valve MPS state for debugging")
     )
     interlock_device_upstream = Cpt(
         EpicsSignalRO,
-        ':ILK_DEVICE_US_RBV',
-        kind='config',
+        ":ILK_DEVICE_US_RBV",
+        kind="config",
         string=True,
-        doc='Upstream vacuum device used for'
-            'interlocking this valve'
+        doc="Upstream vacuum device used forinterlocking this valve",
     )
     interlock_device_downstream = Cpt(
         EpicsSignalRO,
-        ':ILK_DEVICE_DS_RBV',
-        kind='config',
+        ":ILK_DEVICE_DS_RBV",
+        kind="config",
         string=True,
-        doc='Downstream vacuum device used for'
-            'interlocking this valve'
+        doc="Downstream vacuum device used forinterlocking this valve",
     )
 
 
@@ -322,79 +214,39 @@ class VGC_2S(VRC):
 
     This corresponds with ST_VGC_2S in the lcls-twincat-vacuum library.
     """
-    diff_press_ok = Cpt(
-        EpicsSignalRO,
-        ':DP_OK_RBV',
-        kind='normal',
-        doc='Differential pressure interlock ok'
-    )
-    ext_ilk_ok = Cpt(
-        EpicsSignalRO,
-        ':EXT_ILK_OK_RBV',
-        kind='normal',
-        doc='External interlock ok'
-    )
+
+    diff_press_ok = Cpt(EpicsSignalRO, ":DP_OK_RBV", kind="normal", doc="Differential pressure interlock ok")
+    ext_ilk_ok = Cpt(EpicsSignalRO, ":EXT_ILK_OK_RBV", kind="normal", doc="External interlock ok")
     at_vac_setpoint_us = Cpt(
-        EpicsSignalWithRBV,
-        ':AT_VAC_SP',
-        kind='config',
-        doc='AT VAC Set point value '
-            'for the upstream gauge'
+        EpicsSignalWithRBV, ":AT_VAC_SP", kind="config", doc="AT VAC Set point value for the upstream gauge"
     )
     setpoint_hysterisis_us = Cpt(
-        EpicsSignalWithRBV,
-        ':AT_VAC_HYS',
-        kind='config',
-        doc='AT VAC Hysteresis for '
-            'the upstream setpoint'
+        EpicsSignalWithRBV, ":AT_VAC_HYS", kind="config", doc="AT VAC Hysteresis for the upstream setpoint"
     )
     at_vac_setpoint_ds = Cpt(
-        EpicsSignalWithRBV,
-        ':AT_VAC_SP_DS',
-        kind='config',
-        doc='AT VAC Set point value '
-            'for the downstream gauge'
+        EpicsSignalWithRBV, ":AT_VAC_SP_DS", kind="config", doc="AT VAC Set point value for the downstream gauge"
     )
     setpoint_hysterisis_ds = Cpt(
-        EpicsSignalWithRBV,
-        ':AT_VAC_HYS_DS',
-        kind='config',
-        doc='AT VAC Hysteresis for '
-            'the downstream setpoint'
+        EpicsSignalWithRBV, ":AT_VAC_HYS_DS", kind="config", doc="AT VAC Hysteresis for the downstream setpoint"
     )
-    at_vac = Cpt(
-        EpicsSignalRO,
-        ':AT_VAC_RBV',
-        kind='normal',
-        doc='at vacuum setpoint is reached'
-    )
-    error = Cpt(
-        EpicsSignalRO,
-        ':ERROR_RBV',
-        kind='normal',
-        doc='Error Present'
-    )
+    at_vac = Cpt(EpicsSignalRO, ":AT_VAC_RBV", kind="normal", doc="at vacuum setpoint is reached")
+    error = Cpt(EpicsSignalRO, ":ERROR_RBV", kind="normal", doc="Error Present")
     mps_state = Cpt(
-        EpicsSignalRO,
-        ':MPS_FAULT_OK_RBV',
-        kind='omitted',
-        doc=('individual valve MPS state for debugging')
+        EpicsSignalRO, ":MPS_FAULT_OK_RBV", kind="omitted", doc=("individual valve MPS state for debugging")
     )
     interlock_device_upstream = Cpt(
         EpicsSignalRO,
-        ':ILK_DEVICE_US_RBV',
-        kind='config',
+        ":ILK_DEVICE_US_RBV",
+        kind="config",
         string=True,
-        doc='Upstream vacuum device used for'
-            'interlocking this valve'
+        doc="Upstream vacuum device used forinterlocking this valve",
     )
     interlock_device_downstream = Cpt(
         EpicsSignalRO,
-        ':ILK_DEVICE_DS_RBV',
-        kind='config',
+        ":ILK_DEVICE_DS_RBV",
+        kind="config",
         string=True,
-        doc='Downstream vacuum device used for'
-            'interlocking this valve'
+        doc="Downstream vacuum device used forinterlocking this valve",
     )
 
 
@@ -412,101 +264,52 @@ class VFS(LightpathMixin):
     """
 
     # Configuration for lightpath
-    lightpath_cpts = ['position_open', 'position_close']
-    _icon = 'fa.shield'
+    lightpath_cpts = ["position_open", "position_close"]
+    _icon = "fa.shield"
 
     valve_position = Cpt(
-        EpicsSignalRO,
-        ':POS_STATE_RBV',
-        kind='hinted',
-        doc='Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F'
+        EpicsSignalRO, ":POS_STATE_RBV", kind="hinted", doc="Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F"
     )
-    vfs_state = Cpt(
-        EpicsSignalRO,
-        ':STATE_RBV',
-        kind='hinted',
-        doc='Fast Shutter Current State'
-    )
+    vfs_state = Cpt(EpicsSignalRO, ":STATE_RBV", kind="hinted", doc="Fast Shutter Current State")
     request_close = Cpt(
         EpicsSignalWithRBV,
-        ':CLS_SW',
-        kind='normal',
-        doc=('Request Fast Shutter to Close. When both close'
-             'and open are requested, VFS will close.')
+        ":CLS_SW",
+        kind="normal",
+        doc=("Request Fast Shutter to Close. When both closeand open are requested, VFS will close."),
     )
     request_open = Cpt(
         EpicsSignalWithRBV,
-        ':OPN_SW',
-        kind='normal',
-        doc=('Request Fast Shutter to Open. Requires a rising'
-             'EPICS signal to open. When both close and'
-             'open are requested, VFS will close.')
+        ":OPN_SW",
+        kind="normal",
+        doc=(
+            "Request Fast Shutter to Open. Requires a rising"
+            "EPICS signal to open. When both close and"
+            "open are requested, VFS will close."
+        ),
     )
     reset_vacuum_fault = Cpt(
         EpicsSignalWithRBV,
-        ':ALM_RST',
-        kind='normal',
-        doc=('Reset Fast Shutter Vacuum Faults: fast'
-             'sensor triggered, fast sensor turned off.'
-             'To open VFS, this needs to be reset to TRUE'
-             'after a vacuum event.')
+        ":ALM_RST",
+        kind="normal",
+        doc=(
+            "Reset Fast Shutter Vacuum Faults: fast"
+            "sensor triggered, fast sensor turned off."
+            "To open VFS, this needs to be reset to TRUE"
+            "after a vacuum event."
+        ),
     )
-    override_mode = Cpt(
-        EpicsSignalWithRBV,
-        ':OVRD_ON',
-        kind='normal',
-        doc='Epics Command to set Override mode'
-    )
+    override_mode = Cpt(EpicsSignalWithRBV, ":OVRD_ON", kind="normal", doc="Epics Command to set Override mode")
     override_force_open = Cpt(
-        EpicsSignalWithRBV,
-        ':FORCE_OPN',
-        kind='normal',
-        doc=('Epics Command to force open'
-             'the valve in override mode')
+        EpicsSignalWithRBV, ":FORCE_OPN", kind="normal", doc=("Epics Command to force openthe valve in override mode")
     )
-    gfs_name = Cpt(
-        EpicsSignalRO,
-        ':GFS_RBV',
-        kind='normal',
-        string=True,
-        doc='Gauge Fast Sensor Name'
-    )
-    gfs_trigger = Cpt(
-        EpicsSignalRO,
-        ':TRIG_RBV',
-        kind='normal',
-        doc='Gauge Fast Sensor Input Trigger'
-    )
-    position_close = Cpt(
-        EpicsSignalRO,
-        ':CLS_DI_RBV',
-        kind='normal',
-        doc='Fast Shutter Closed Valve Position'
-    )
-    position_open = Cpt(
-        EpicsSignalRO,
-        ':OPN_DI_RBV',
-        kind='normal',
-        doc='Fast Shutter Open Valve Position'
-    )
-    vac_fault_ok = Cpt(
-        EpicsSignalRO,
-        ':VAC_FAULT_OK_RBV',
-        kind='normal',
-        doc=('Fast Shutter Vacuum Fault OK Readback')
-    )
-    mps_ok = Cpt(
-        EpicsSignalRO,
-        ':MPS_FAULT_OK_RBV',
-        kind='normal',
-        doc='Fast Shutter Fast Fault Output OK'
-    )
+    gfs_name = Cpt(EpicsSignalRO, ":GFS_RBV", kind="normal", string=True, doc="Gauge Fast Sensor Name")
+    gfs_trigger = Cpt(EpicsSignalRO, ":TRIG_RBV", kind="normal", doc="Gauge Fast Sensor Input Trigger")
+    position_close = Cpt(EpicsSignalRO, ":CLS_DI_RBV", kind="normal", doc="Fast Shutter Closed Valve Position")
+    position_open = Cpt(EpicsSignalRO, ":OPN_DI_RBV", kind="normal", doc="Fast Shutter Open Valve Position")
+    vac_fault_ok = Cpt(EpicsSignalRO, ":VAC_FAULT_OK_RBV", kind="normal", doc=("Fast Shutter Vacuum Fault OK Readback"))
+    mps_ok = Cpt(EpicsSignalRO, ":MPS_FAULT_OK_RBV", kind="normal", doc="Fast Shutter Fast Fault Output OK")
     veto_device = Cpt(
-        EpicsSignalRO,
-        ':VETO_DEVICE_RBV',
-        kind='normal',
-        string=True,
-        doc='Name of device that can veto this VFS'
+        EpicsSignalRO, ":VETO_DEVICE_RBV", kind="normal", string=True, doc="Name of device that can veto this VFS"
     )
 
     def calc_lightpath_state(self, position_open: int, position_close: int):
@@ -517,11 +320,7 @@ class VFS(LightpathMixin):
 
         trans = 0.0 if self._inserted else 1.0
 
-        return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: trans}
-        )
+        return LightpathState(inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: trans})
 
 
 class VVCNO(Device):
@@ -538,37 +337,14 @@ class VVCNO(Device):
     corresponding library elements also do not inherit from the other
     classes.
     """
-    close_command = Cpt(
-        EpicsSignalWithRBV,
-        ':CLS_SW',
-        kind='normal',
-        doc='Epics command to close valve'
-    )
+
+    close_command = Cpt(EpicsSignalWithRBV, ":CLS_SW", kind="normal", doc="Epics command to close valve")
     override_force_close = Cpt(
-        EpicsSignalWithRBV,
-        ':FORCE_CLS',
-        kind='omitted',
-        doc=('Epics Command for close the valve in override '
-             'mode')
+        EpicsSignalWithRBV, ":FORCE_CLS", kind="omitted", doc=("Epics Command for close the valve in override mode")
     )
-    override_on = Cpt(
-        EpicsSignalWithRBV,
-        ':OVRD_ON',
-        kind='omitted',
-        doc='Epics Command to set/reset Override mode'
-    )
-    close_ok = Cpt(
-        EpicsSignalRO,
-        ':CLS_OK_RBV',
-        kind='normal',
-        doc='used for normally open valves'
-    )
-    close_do = Cpt(
-        EpicsSignalRO,
-        ':CLS_DO_RBV',
-        kind='normal',
-        doc='PLC Output to close valve'
-    )
+    override_on = Cpt(EpicsSignalWithRBV, ":OVRD_ON", kind="omitted", doc="Epics Command to set/reset Override mode")
+    close_ok = Cpt(EpicsSignalRO, ":CLS_OK_RBV", kind="normal", doc="used for normally open valves")
+    close_do = Cpt(EpicsSignalRO, ":CLS_DO_RBV", kind="normal", doc="PLC Output to close valve")
 
     @property
     def close_override(self):
@@ -591,34 +367,14 @@ class VRCNO(VVCNO, LightpathMixin):
     """
 
     # Configuration for lightpath
-    lightpath_cpts = ['open_limit', 'closed_limit']
-    _icon = 'fa.hourglass'
+    lightpath_cpts = ["open_limit", "closed_limit"]
+    _icon = "fa.hourglass"
 
-    state = Cpt(
-        EpicsSignalRO,
-        ':STATE_RBV',
-        kind='normal',
-        doc='Valve state'
-    )
+    state = Cpt(EpicsSignalRO, ":STATE_RBV", kind="normal", doc="Valve state")
 
-    error_reset = Cpt(
-        EpicsSignalWithRBV,
-        ':ALM_RST',
-        kind='normal',
-        doc='Reset Error state to valid by toggling this'
-    )
-    open_limit = Cpt(
-        EpicsSignalRO,
-        ':OPN_DI_RBV',
-        kind='hinted',
-        doc='Open limit switch digital input'
-    )
-    closed_limit = Cpt(
-        EpicsSignalRO,
-        ':CLS_DI_RBV',
-        kind='hinted',
-        doc='Closed limit switch digital input'
-    )
+    error_reset = Cpt(EpicsSignalWithRBV, ":ALM_RST", kind="normal", doc="Reset Error state to valid by toggling this")
+    open_limit = Cpt(EpicsSignalRO, ":OPN_DI_RBV", kind="hinted", doc="Open limit switch digital input")
+    closed_limit = Cpt(EpicsSignalRO, ":CLS_DI_RBV", kind="hinted", doc="Closed limit switch digital input")
 
     def calc_lightpath_state(self, open_limit: int, closed_limit: int):
         """Callback for updating inserted/removed for lightpath."""
@@ -628,11 +384,7 @@ class VRCNO(VVCNO, LightpathMixin):
 
         trans = 0.0 if self._inserted else 1.0
 
-        return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: trans}
-        )
+        return LightpathState(inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: trans})
 
 
 class VRCDA(VRC, VRCNO):
@@ -647,6 +399,7 @@ class VRCDA(VRC, VRCNO):
     like VRCNO, but it uses more of the PVs that were defined in
     ST_ValveBase.
     """
+
     ...
 
 
@@ -659,49 +412,18 @@ class VCN(Device):
 
     It corresponds to ST_VCN in the lcls-twincat-vacuum library.
     """
-    position_readback = Cpt(
-        EpicsSignalRO,
-        ':POS_RDBK_RBV',
-        kind='hinted',
-        doc='valve position readback'
-    )
+
+    position_readback = Cpt(EpicsSignalRO, ":POS_RDBK_RBV", kind="hinted", doc="valve position readback")
     position_control = Cpt(
-        EpicsSignalWithRBV,
-        ':POS_REQ',
-        kind='normal',
-        doc=('requested positition to control the valve '
-             '0-100%')
+        EpicsSignalWithRBV, ":POS_REQ", kind="normal", doc=("requested positition to control the valve 0-100%")
     )
     upper_limit = Cpt(
-        EpicsSignalWithRBV,
-        ':Limit',
-        kind='normal',
-        doc=('max upper limit position to open the valve '
-             '0-100%')
+        EpicsSignalWithRBV, ":Limit", kind="normal", doc=("max upper limit position to open the valve 0-100%")
     )
-    interlock_ok = Cpt(
-        EpicsSignalRO,
-        ':ILK_OK_RBV',
-        kind='normal',
-        doc='interlock ok status'
-    )
-    open_command = Cpt(
-        EpicsSignalWithRBV,
-        ':OPN_SW',
-        kind='normal',
-        doc='Epics command to Open valve'
-    )
-    state = Cpt(
-        EpicsSignalWithRBV,
-        ':STATE',
-        kind='hinted',
-        doc='Valve state'
-    )
-    pos_ao = Cpt(
-        EpicsSignalRO,
-        ':POS_AO_R_RBV',
-        kind='hinted'
-    )
+    interlock_ok = Cpt(EpicsSignalRO, ":ILK_OK_RBV", kind="normal", doc="interlock ok status")
+    open_command = Cpt(EpicsSignalWithRBV, ":OPN_SW", kind="normal", doc="Epics command to Open valve")
+    state = Cpt(EpicsSignalWithRBV, ":STATE", kind="hinted", doc="Valve state")
+    pos_ao = Cpt(EpicsSignalRO, ":POS_AO_R_RBV", kind="hinted")
 
 
 class VCN_VAT590_Status(Device):
@@ -711,71 +433,135 @@ class VCN_VAT590_Status(Device):
     Corresponds to just ST_VAT590_STATUS in the
     lcls-twincat-vacuum library.
     """
+
     ctrl_mode = Cpt(
-        PytmcSignal, 'CTRL_MODE', io='i', kind='normal',
-        doc='Valve control mode readback',
+        PytmcSignal,
+        "CTRL_MODE",
+        io="i",
+        kind="normal",
+        doc="Valve control mode readback",
     )
     fatal_err = Cpt(
-        PytmcSignal, 'FATAL_ERR', io='i', kind='normal',
-        doc='Valve fatal error status readback',
+        PytmcSignal,
+        "FATAL_ERR",
+        io="i",
+        kind="normal",
+        doc="Valve fatal error status readback",
     )
 
     ecat_data_valid = Cpt(
-        PytmcSignal, 'GEN_STATUS:ECAT_DATA_VALID', io='i', kind='omitted',
+        PytmcSignal,
+        "GEN_STATUS:ECAT_DATA_VALID",
+        io="i",
+        kind="omitted",
     )
     zero_executed = Cpt(
-        PytmcSignal, 'GEN_STATUS:ZERO_EXECUTED', io='i', kind='omitted',
+        PytmcSignal,
+        "GEN_STATUS:ZERO_EXECUTED",
+        io="i",
+        kind="omitted",
     )
     ecat_rxbit = Cpt(
-        PytmcSignal, 'GEN_STATUS:ECAT_RxBIT', io='i', kind='omitted',
+        PytmcSignal,
+        "GEN_STATUS:ECAT_RxBIT",
+        io="i",
+        kind="omitted",
     )
     pres_sim = Cpt(
-        PytmcSignal, 'GEN_STATUS:PRES_SIM', io='i', kind='omitted',
+        PytmcSignal,
+        "GEN_STATUS:PRES_SIM",
+        io="i",
+        kind="omitted",
     )
     pres_sp_reached = Cpt(
-        PytmcSignal, 'GEN_STATUS:PRES_SP_REACHED', io='i', kind='omitted',
+        PytmcSignal,
+        "GEN_STATUS:PRES_SP_REACHED",
+        io="i",
+        kind="omitted",
     )
     warn_status = Cpt(
-        PytmcSignal, 'GEN_STATUS:WARN_STATUS', io='i', kind='omitted',
+        PytmcSignal,
+        "GEN_STATUS:WARN_STATUS",
+        io="i",
+        kind="omitted",
     )
     rem_ctrl = Cpt(
-        PytmcSignal, 'GEN_STATUS:REM_CTRL', io='i', kind='omitted',
+        PytmcSignal,
+        "GEN_STATUS:REM_CTRL",
+        io="i",
+        kind="omitted",
     )
     service_req = Cpt(
-        PytmcSignal, 'GEN_WARN:SERVICE_REQ', io='i', kind='omitted',
+        PytmcSignal,
+        "GEN_WARN:SERVICE_REQ",
+        io="i",
+        kind="omitted",
     )
     power_fail_bait = Cpt(
-        PytmcSignal, 'GEN_WARN:POWER_FAIL_BATT', io='i', kind='omitted',
+        PytmcSignal,
+        "GEN_WARN:POWER_FAIL_BATT",
+        io="i",
+        kind="omitted",
     )
     adc_unit_status = Cpt(
-        PytmcSignal, 'GEN_WARN:ADC_UNIT_STATUS', io='i', kind='omitted',
+        PytmcSignal,
+        "GEN_WARN:ADC_UNIT_STATUS",
+        io="i",
+        kind="omitted",
     )
     rem_not_possible = Cpt(
-        PytmcSignal, 'EXT_WARN:REM_NOT_POSSIBLE', io='i', kind='omitted',
+        PytmcSignal,
+        "EXT_WARN:REM_NOT_POSSIBLE",
+        io="i",
+        kind="omitted",
     )
     ctrl_sp_not_allowed = Cpt(
-        PytmcSignal, 'EXT_WARN:CTRL_SP_NOT_ALLOWED', io='i', kind='omitted',
+        PytmcSignal,
+        "EXT_WARN:CTRL_SP_NOT_ALLOWED",
+        io="i",
+        kind="omitted",
     )
     zero_status = Cpt(
-        PytmcSignal, 'EXT_WARN:ZERO_STATUS', io='i', kind='omitted',
+        PytmcSignal,
+        "EXT_WARN:ZERO_STATUS",
+        io="i",
+        kind="omitted",
     )
     pfo_status = Cpt(
-        PytmcSignal, 'EXT_WARN:PFO_STATUS', io='i', kind='omitted',
+        PytmcSignal,
+        "EXT_WARN:PFO_STATUS",
+        io="i",
+        kind="omitted",
     )
     pres_sp_oor = Cpt(
-        PytmcSignal, 'EXT_WARN:PRES_SP_OOR', io='i', kind='omitted',
+        PytmcSignal,
+        "EXT_WARN:PRES_SP_OOR",
+        io="i",
+        kind="omitted",
     )
     pos_sp_oor = Cpt(
-        PytmcSignal, 'EXT_WARN:POS_SP_OOR', io='i', kind='omitted',
+        PytmcSignal,
+        "EXT_WARN:POS_SP_OOR",
+        io="i",
+        kind="omitted",
     )
     ctrl_sp_oor = Cpt(
-        PytmcSignal, 'EXT_WARN:CTRL_SP_OOR', io='i', kind='omitted',
+        PytmcSignal,
+        "EXT_WARN:CTRL_SP_OOR",
+        io="i",
+        kind="omitted",
     )
     genctrl_sp_oor = Cpt(
-        PytmcSignal, 'EXT_WARN:GENCTRL_SP_OOR', io='i', kind='omitted',
+        PytmcSignal,
+        "EXT_WARN:GENCTRL_SP_OOR",
+        io="i",
+        kind="omitted",
     )
     proc_data_not_valid = Cpt(
-        PytmcSignal, 'EXT_WARN:PROC_DATA_NOT_VALID', io='i', kind='omitted',
+        PytmcSignal,
+        "EXT_WARN:PROC_DATA_NOT_VALID",
+        io="i",
+        kind="omitted",
     )
 
 
@@ -791,73 +577,110 @@ class VCN_VAT590(BaseInterface, Device):
     This corresponds to the ST_VCN_VAT590 and ST_VAT590_STATUS
     data types in the lcls-twincat-vacuum library.
     """
+
     tab_component_names = True
 
     pos_raw = Cpt(
-        PytmcSignal, 'POS_RAW', io='i', kind='hinted',
-        doc='Position readback',
+        PytmcSignal,
+        "POS_RAW",
+        io="i",
+        kind="hinted",
+        doc="Position readback",
     )
     pres_torr = Cpt(
-        PytmcSignal, 'PRES_TORR', io='i', kind='hinted',
-        doc='Pressure readback in torr units',
+        PytmcSignal,
+        "PRES_TORR",
+        io="i",
+        kind="hinted",
+        doc="Pressure readback in torr units",
     )
 
     pres_raw = Cpt(
-        PytmcSignal, 'PRES_RAW', io='i', kind='normal',
-        doc='Pressure readback',
+        PytmcSignal,
+        "PRES_RAW",
+        io="i",
+        kind="normal",
+        doc="Pressure readback",
     )
     pos_sp = Cpt(
-        PytmcSignal, 'POS_SP', io='i', kind='normal',
-        doc='Position setpoint readback',
+        PytmcSignal,
+        "POS_SP",
+        io="i",
+        kind="normal",
+        doc="Position setpoint readback",
     )
     pres_sp = Cpt(
-        PytmcSignal, 'PRES_SP', io='i', kind='normal',
-        doc='Pressure setpoint readback',
+        PytmcSignal,
+        "PRES_SP",
+        io="i",
+        kind="normal",
+        doc="Pressure setpoint readback",
     )
-    ilk_ok = Cpt(
-        PytmcSignal, 'ILK_OK', io='i', kind='normal',
-        doc='Interlock bit status'
-    )
+    ilk_ok = Cpt(PytmcSignal, "ILK_OK", io="i", kind="normal", doc="Interlock bit status")
 
     pos_req = Cpt(
-        PytmcSignal, 'POS_REQ', io='io', kind='config',
-        doc='Requested position (0.0-100%)',
+        PytmcSignal,
+        "POS_REQ",
+        io="io",
+        kind="config",
+        doc="Requested position (0.0-100%)",
     )
     pres_req = Cpt(
-        PytmcSignal, 'PRES_REQ', io='io', kind='config',
-        doc='Requested pressure in torr units',
+        PytmcSignal,
+        "PRES_REQ",
+        io="io",
+        kind="config",
+        doc="Requested pressure in torr units",
     )
     state = Cpt(
-        PytmcSignal, 'STATE', io='io', kind='config',
-        doc='Valve control mode',
+        PytmcSignal,
+        "STATE",
+        io="io",
+        kind="config",
+        doc="Valve control mode",
     )
 
     pos_limit = Cpt(
-        PytmcSignal, 'POS_LIMIT', io='io', kind='config',
-        doc='Percentage upper limit on valve open',
+        PytmcSignal,
+        "POS_LIMIT",
+        io="io",
+        kind="config",
+        doc="Percentage upper limit on valve open",
     )
     pres_set_limit = Cpt(
-        PytmcSignal, 'PRES_SET_LIMIT', io='io', kind='config',
-        doc='Upper limit for pressure control',
+        PytmcSignal,
+        "PRES_SET_LIMIT",
+        io="io",
+        kind="config",
+        doc="Upper limit for pressure control",
     )
     pres_rdbk_limit = Cpt(
-        PytmcSignal, 'PRES_RDBK_LIMIT', io='io', kind='config',
-        doc='Upper limit for pressure reading before valve close'
+        PytmcSignal,
+        "PRES_RDBK_LIMIT",
+        io="io",
+        kind="config",
+        doc="Upper limit for pressure reading before valve close",
     )
     pres_sens = Cpt(
-        PytmcSignal, 'PRES_SENS', io='io', kind='config',
-        doc='Select pressure sensor',
+        PytmcSignal,
+        "PRES_SENS",
+        io="io",
+        kind="config",
+        doc="Select pressure sensor",
     )
     rem_ctrl = Cpt(
-        PytmcSignal, 'REM_CTRL', io='o', kind='config',
-        doc='Select remote control mode',
+        PytmcSignal,
+        "REM_CTRL",
+        io="o",
+        kind="config",
+        doc="Select remote control mode",
     )
-    zero = Cpt(
-        PytmcSignal, 'ZERO', io='o', kind='config',
-        doc='Activate zero function bit'
-    )
+    zero = Cpt(PytmcSignal, "ZERO", io="o", kind="config", doc="Activate zero function bit")
 
-    status = Cpt(VCN_VAT590_Status, '',)
+    status = Cpt(
+        VCN_VAT590_Status,
+        "",
+    )
 
 
 class VCN_OpenLoop(Device):
@@ -867,34 +690,13 @@ class VCN_OpenLoop(Device):
     VCN w/ open loop control
     It corresponds to ST_VCN in the lcls-twincat-vacuum library.
     """
+
     position_control = Cpt(
-        EpicsSignalWithRBV,
-        ':POS_REQ',
-        kind='normal',
-        doc=('requested positition to control the valve '
-             '0-100%')
+        EpicsSignalWithRBV, ":POS_REQ", kind="normal", doc=("requested positition to control the valve 0-100%")
     )
     upper_limit = Cpt(
-        EpicsSignalWithRBV,
-        ':Limit',
-        kind='normal',
-        doc=('max upper limit position to open the valve '
-             '0-100%')
+        EpicsSignalWithRBV, ":Limit", kind="normal", doc=("max upper limit position to open the valve 0-100%")
     )
-    interlock_ok = Cpt(
-        EpicsSignalRO,
-        ':ILK_OK_RBV',
-        kind='normal',
-        doc='interlock ok status'
-    )
-    control_mode = Cpt(
-        EpicsSignalWithRBV,
-        ':STATE',
-        kind='normal',
-        doc='Open mode will open valve to upper limit'
-    )
-    pos_ao = Cpt(
-        EpicsSignalRO,
-        ':POS_AO_R_RBV',
-        kind='normal'
-    )
+    interlock_ok = Cpt(EpicsSignalRO, ":ILK_OK_RBV", kind="normal", doc="interlock ok status")
+    control_mode = Cpt(EpicsSignalWithRBV, ":STATE", kind="normal", doc="Open mode will open valve to upper limit")
+    pos_ao = Cpt(EpicsSignalRO, ":POS_AO_R_RBV", kind="normal")

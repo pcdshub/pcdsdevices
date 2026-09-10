@@ -6,31 +6,35 @@ from ophyd.sim import ReadOnlyError, make_fake_device
 
 from pcdsdevices import mirror
 
-from ..mirror import (KBOMirror, OffsetMirror, PointingMirror,
-                      XOffsetMirrorStateCool, XOffsetMirrorXYState)
+from ..mirror import KBOMirror, OffsetMirror, PointingMirror, XOffsetMirrorStateCool, XOffsetMirrorXYState
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_branching_mirror():
     FakeMirror = make_fake_device(PointingMirror)
-    m = FakeMirror("TST:M1H", prefix_xy="STEP:TST:M1H",
-                   xgantry_prefix="GANTRY:M1H:X", name='Test Mirror',
-                   in_lines=['MFX', 'MEC'], out_lines=['CXI'])
+    m = FakeMirror(
+        "TST:M1H",
+        prefix_xy="STEP:TST:M1H",
+        xgantry_prefix="GANTRY:M1H:X",
+        name="Test Mirror",
+        in_lines=["MFX", "MEC"],
+        out_lines=["CXI"],
+    )
     m.state.sim_put(0)
-    m.state.sim_set_enum_strs(['Unknown'] + PointingMirror.states_list)
+    m.state.sim_set_enum_strs(["Unknown"] + PointingMirror.states_list)
     # Couple the gantry
     m.xgantry.decoupled.sim_put(0)
     # Make the pitch look reasonable
-    m.pitch.motor_egu.sim_put('urad')
+    m.pitch.motor_egu.sim_put("urad")
     # Limits are enabled, pick something for the test
     m.xgantry.setpoint.sim_set_limits((-100, 100))
     return m
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_offset_mirror():
     FakeOffset = make_fake_device(OffsetMirror)
-    return FakeOffset('TST:M1H', name="Test Mirror")
+    return FakeOffset("TST:M1H", name="Test Mirror")
 
 
 def test_nan_protection(fake_branching_mirror):
@@ -39,29 +43,28 @@ def test_nan_protection(fake_branching_mirror):
 
 
 def test_ommotor_positioner_egu(fake_branching_mirror):
-    assert fake_branching_mirror.pitch.egu == 'urad'
+    assert fake_branching_mirror.pitch.egu == "urad"
 
 
-def test_mirror_init(fake_branching_mirror, fake_offset_mirror,
-                     fake_kbo_mirror):
+def test_mirror_init(fake_branching_mirror, fake_offset_mirror, fake_kbo_mirror):
     bm = fake_branching_mirror
-    assert bm.pitch.prefix == 'MIRR:TST:M1H'
-    assert bm.xgantry.prefix == 'STEP:TST:M1H:X:P'
-    assert bm.xgantry.gantry_prefix == 'GANTRY:M1H:X'
-    assert bm.ygantry.prefix == 'STEP:TST:M1H:Y:P'
-    assert bm.ygantry.gantry_prefix == 'GANTRY:TST:M1H:Y'
+    assert bm.pitch.prefix == "MIRR:TST:M1H"
+    assert bm.xgantry.prefix == "STEP:TST:M1H:X:P"
+    assert bm.xgantry.gantry_prefix == "GANTRY:M1H:X"
+    assert bm.ygantry.prefix == "STEP:TST:M1H:Y:P"
+    assert bm.ygantry.gantry_prefix == "GANTRY:TST:M1H:Y"
     m = fake_offset_mirror
-    assert m.pitch.prefix == 'MIRR:TST:M1H'
-    assert m.xgantry.prefix == 'TST:M1H:X:P'
-    assert m.xgantry.gantry_prefix == 'GANTRY:TST:M1H:X'
-    assert m.ygantry.prefix == 'TST:M1H:Y:P'
-    assert m.ygantry.gantry_prefix == 'GANTRY:TST:M1H:Y'
+    assert m.pitch.prefix == "MIRR:TST:M1H"
+    assert m.xgantry.prefix == "TST:M1H:X:P"
+    assert m.xgantry.gantry_prefix == "GANTRY:TST:M1H:X"
+    assert m.ygantry.prefix == "TST:M1H:Y:P"
+    assert m.ygantry.gantry_prefix == "GANTRY:TST:M1H:Y"
     km = fake_kbo_mirror
-    assert km.x.prefix == 'TST:M1H:MMS:X'
-    assert km.y.prefix == 'TST:M1H:MMS:Y'
-    assert km.pitch.prefix == 'TST:M1H:MMS:PITCH'
-    assert km.bender_us.prefix == 'TST:M1H:MMS:BEND:US'
-    assert km.bender_ds.prefix == 'TST:M1H:MMS:BEND:DS'
+    assert km.x.prefix == "TST:M1H:MMS:X"
+    assert km.y.prefix == "TST:M1H:MMS:Y"
+    assert km.pitch.prefix == "TST:M1H:MMS:PITCH"
+    assert km.bender_us.prefix == "TST:M1H:MMS:BEND:US"
+    assert km.bender_ds.prefix == "TST:M1H:MMS:BEND:DS"
 
 
 def test_offsetmirror_lighpath(fake_offset_mirror):
@@ -72,10 +75,10 @@ def test_offsetmirror_lighpath(fake_offset_mirror):
 
 def test_branching_mirror_destination(fake_branching_mirror):
     branching_mirror = fake_branching_mirror
-    assert branching_mirror.branches == ['MFX', 'MEC', 'CXI']
+    assert branching_mirror.branches == ["MFX", "MEC", "CXI"]
     # Unknown
     branching_mirror.state.sim_put(0)
-    assert branching_mirror.position == 'Unknown'
+    assert branching_mirror.position == "Unknown"
     assert not branching_mirror.removed
     assert not branching_mirror.inserted
     assert branching_mirror.destination == []
@@ -83,12 +86,12 @@ def test_branching_mirror_destination(fake_branching_mirror):
     branching_mirror.state.sim_put(2)
     assert branching_mirror.inserted
     assert not branching_mirror.removed
-    assert branching_mirror.destination == ['MFX', 'MEC']
+    assert branching_mirror.destination == ["MFX", "MEC"]
     # Removed
     branching_mirror.state.sim_put(1)
     assert branching_mirror.removed
     assert not branching_mirror.inserted
-    assert branching_mirror.destination == ['CXI']
+    assert branching_mirror.destination == ["CXI"]
 
 
 def test_branching_mirror_moves(fake_branching_mirror):
@@ -120,41 +123,44 @@ def test_epics_mirror_subscription(fake_branching_mirror):
     branching_mirror = fake_branching_mirror
     # Subscribe a pseudo callback
     cb = Mock()
-    branching_mirror.subscribe(cb, event_type=branching_mirror.SUB_STATE,
-                               run=False)
+    branching_mirror.subscribe(cb, event_type=branching_mirror.SUB_STATE, run=False)
     # Change the target state
-    branching_mirror.state.put('IN')
+    branching_mirror.state.put("IN")
     assert cb.called
 
 
 @pytest.mark.timeout(5)
 def test_mirror_disconnected():
-    PointingMirror("TST:M1H", prefix_xy="STEP:TST:M1H",
-                   xgantry_prefix="GANTRY:M1H:X", name='Test Mirror',
-                   in_lines=['MFX', 'MEC'], out_lines=['CXI'])
+    PointingMirror(
+        "TST:M1H",
+        prefix_xy="STEP:TST:M1H",
+        xgantry_prefix="GANTRY:M1H:X",
+        name="Test Mirror",
+        in_lines=["MFX", "MEC"],
+        out_lines=["CXI"],
+    )
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_kbo_mirror():
     FakeKBO = make_fake_device(KBOMirror)
-    return FakeKBO('TST:M1H', name="Test Mirror",
-                   input_branches=['X0'], output_branches=['X0', 'X1'])
+    return FakeKBO("TST:M1H", name="Test Mirror", input_branches=["X0"], output_branches=["X0", "X1"])
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_offset_cooled_mirror():
     FakeCooledOffsetMirror = make_fake_device(XOffsetMirrorStateCool)
-    return FakeCooledOffsetMirror('TST:MR1', name="Test Mirror")
+    return FakeCooledOffsetMirror("TST:MR1", name="Test Mirror")
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_xy_offset_mirror():
     FakeCooledOffsetMirror = make_fake_device(XOffsetMirrorXYState)
-    fake_mirror = FakeCooledOffsetMirror('TST:MR1', name="Test Mirror")
+    fake_mirror = FakeCooledOffsetMirror("TST:MR1", name="Test Mirror")
     # do lightpath setup
     fake_mirror._init_summary_signal()
-    fake_mirror.output_branches = ['L0', 'L1']
-    fake_mirror.input_branches = ['L0']
+    fake_mirror.output_branches = ["L0", "L1"]
+    fake_mirror.input_branches = ["L0"]
     return fake_mirror
 
 
@@ -197,7 +203,7 @@ def test_mirror_cooling(fake_offset_cooled_mirror):
 def test_xy_mirror_lightpath(fake_xy_offset_mirror, monkeypatch):
     xym = fake_xy_offset_mirror
     mock_schedule = Mock()
-    monkeypatch.setattr(mirror, 'schedule_task', mock_schedule)
+    monkeypatch.setattr(mirror, "schedule_task", mock_schedule)
 
     assert xym._retry_lightpath is True
     xym.insertion._state_initialized = False

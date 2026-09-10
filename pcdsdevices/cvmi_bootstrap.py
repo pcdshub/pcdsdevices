@@ -32,15 +32,16 @@ class CVMI(BaseInterface, GroupDevice):
     name : str
         Alias for the device
     """
+
     # UI representation
-    _icon = 'fa.minus-square'
+    _icon = "fa.minus-square"
     tab_component_names = True
 
     # Motor components
-    flow_cell_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
-    flow_cell_y = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
-    flow_cell_z = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
-    flow_cell_R = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
+    flow_cell_x = Cpt(BeckhoffAxis, ":MMS:01", kind="normal")
+    flow_cell_y = Cpt(BeckhoffAxis, ":MMS:02", kind="normal")
+    flow_cell_z = Cpt(BeckhoffAxis, ":MMS:03", kind="normal")
+    flow_cell_R = Cpt(BeckhoffAxis, ":MMS:07", kind="normal")
 
 
 class KTOF(BaseInterface, GroupDevice):
@@ -58,11 +59,12 @@ class KTOF(BaseInterface, GroupDevice):
     name : str
         Alias for the device
     """
+
     # UI representation
-    _icon = 'fa.minus-square'
+    _icon = "fa.minus-square"
     tab_component_names = True
 
     # Motor components
-    spec_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
-    spec_y = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
-    spec_z = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
+    spec_x = Cpt(BeckhoffAxis, ":MMS:01", kind="normal")
+    spec_y = Cpt(BeckhoffAxis, ":MMS:02", kind="normal")
+    spec_z = Cpt(BeckhoffAxis, ":MMS:03", kind="normal")

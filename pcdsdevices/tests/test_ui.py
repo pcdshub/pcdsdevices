@@ -8,4 +8,4 @@ def test_ui_entry_point():
 
 
 def test_ui_files_in_distribution():
-    assert len(list(path.glob('*.ui'))) > 0
+    assert len(list(path.glob("*.ui"))) > 0

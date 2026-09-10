@@ -8,9 +8,13 @@ from pathlib import Path
 import ophyd
 import pytest
 
-from ..interface import (BaseInterface, TabCompletionHelperClass,
-                         get_engineering_mode, set_engineering_mode,
-                         setup_preset_paths)
+from ..interface import (
+    BaseInterface,
+    TabCompletionHelperClass,
+    get_engineering_mode,
+    set_engineering_mode,
+    setup_preset_paths,
+)
 from ..sim import FastMotor, SlowMotor
 from . import conftest
 
@@ -22,28 +26,27 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def slow_motor():
-    return SlowMotor(name='sim_slow')
+    return SlowMotor(name="sim_slow")
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fast_motor():
-    return FastMotor(name='sim_fast')
+    return FastMotor(name="sim_fast")
 
 
 @pytest.fixture(scope="function")
 def deferred_fast_motor_presets():
     """deferred loading fast_motor presets, backed by a file but unloaded"""
-    setup_preset_paths(defer_loading=True,
-                       hutch=Path(__file__).parent / 'sim_fast_presets')
+    setup_preset_paths(defer_loading=True, hutch=Path(__file__).parent / "sim_fast_presets")
     yield
     setup_preset_paths()
 
 
 @pytest.mark.timeout(5)
 def test_mv(fast_motor):
-    logger.debug('test_mv')
+    logger.debug("test_mv")
     fast_motor(3, wait=True)
     assert fast_motor.wm() == 3
     fast_motor.mvr(1, wait=True)
@@ -52,7 +55,7 @@ def test_mv(fast_motor):
 
 @pytest.mark.timeout(5)
 def test_umv(slow_motor):
-    logger.debug('test_umv')
+    logger.debug("test_umv")
     start_position = slow_motor.position
     slow_motor.umvr(0)
     assert slow_motor.position == start_position
@@ -62,7 +65,7 @@ def test_umv(slow_motor):
 
 
 def test_camonitor(fast_motor):
-    logger.debug('test_camonitor')
+    logger.debug("test_camonitor")
 
     def interrupt():
         time.sleep(0.2)
@@ -73,7 +76,7 @@ def test_camonitor(fast_motor):
 
 
 def test_mv_ginput(monkeypatch, fast_motor):
-    logger.debug('test_mv_ginput')
+    logger.debug("test_mv_ginput")
     # Importing forces backend selection, so do inside method
     from matplotlib import pyplot as plt  # NOQA
 
@@ -86,9 +89,9 @@ def test_mv_ginput(monkeypatch, fast_motor):
     def fake_get_fignums(*args, **kwargs):
         return local_get_fignums
 
-    monkeypatch.setattr(plt, 'plot', fake_plot)
-    monkeypatch.setattr(plt, 'ginput', fake_ginput)
-    monkeypatch.setattr(plt, 'get_fignums', fake_get_fignums)
+    monkeypatch.setattr(plt, "plot", fake_plot)
+    monkeypatch.setattr(plt, "ginput", fake_ginput)
+    monkeypatch.setattr(plt, "get_fignums", fake_get_fignums)
 
     def inner_test():
         fast_motor.mv_ginput()
@@ -106,45 +109,45 @@ def test_mv_ginput(monkeypatch, fast_motor):
     inner_test()
 
 
-@pytest.mark.xfail(reason='annoying race condition, see #1050')
+@pytest.mark.xfail(reason="annoying race condition, see #1050")
 @pytest.mark.skipif(
     sys.platform in ("win32", "darwin"),
     reason="Fails on Windows, no fcntl and different signal handling",
 )
 def test_presets(presets, fast_motor: FastMotor):
-    logger.debug('test_presets')
+    logger.debug("test_presets")
 
     fast_motor.mv(4, wait=True)
-    fast_motor.presets.add_hutch('four', comment='four!')
+    fast_motor.presets.add_hutch("four", comment="four!")
 
     fast_motor.mv(3, wait=True)
-    fast_motor.presets.add_hutch('zero', 0, comment='center')
-    fast_motor.presets.add_here_user('sample')
+    fast_motor.presets.add_hutch("zero", 0, comment="center")
+    fast_motor.presets.add_here_user("sample")
     print(fast_motor.presets.positions)
     assert fast_motor.wm_zero() == -3
     assert fast_motor.wm_sample() == 0
     assert fast_motor.wm_four() == 1
-    assert fast_motor.presets.state() == 'sample'
+    assert fast_motor.presets.state() == "sample"
 
     # Clear paths, refresh, should still exist
     old_paths = fast_motor.presets._paths
     setup_preset_paths()
-    assert not hasattr(fast_motor, 'wm_zero')
+    assert not hasattr(fast_motor, "wm_zero")
     setup_preset_paths(**old_paths)
     assert fast_motor.wm_zero() == -3
     assert fast_motor.wm_sample() == 0
-    assert fast_motor.presets.state() == 'sample'
+    assert fast_motor.presets.state() == "sample"
 
     fast_motor.mv_zero(wait=True)
-    assert fast_motor.presets.state() == 'zero'
+    assert fast_motor.presets.state() == "zero"
     fast_motor.mvr(1, wait=True)
     assert fast_motor.wm_zero() == -1
     assert fast_motor.wm() == 1
-    assert fast_motor.presets.state() == 'Unknown'
+    assert fast_motor.presets.state() == "Unknown"
 
     # Sleep for one so we don't override old history
     time.sleep(1)
-    fast_motor.presets.positions.zero.update_pos(comment='hats')
+    fast_motor.presets.positions.zero.update_pos(comment="hats")
     assert fast_motor.wm_zero() == 0
     assert fast_motor.presets.positions.zero.pos == 1
 
@@ -163,11 +166,11 @@ def test_presets(presets, fast_motor: FastMotor):
     fast_motor.umv_sample()
     assert fast_motor.wm() == 3
 
-    fast_motor.presets.positions.sample.update_comment('hello there')
+    fast_motor.presets.positions.sample.update_comment("hello there")
     assert len(fast_motor.presets.positions.sample.history) == 2
 
     def block_file(path, lock):
-        with open(path, 'r+') as f:
+        with open(path, "r+") as f:
             fcntl.flock(f, fcntl.LOCK_EX)
             lock.acquire()
             fcntl.flock(f, fcntl.LOCK_UN)
@@ -181,36 +184,36 @@ def test_presets(presets, fast_motor: FastMotor):
 
         assert fast_motor.presets.positions.sample.pos == 3
         fast_motor.presets.positions.sample.update_pos(2)
-        assert not hasattr(fast_motor, 'wm_sample')
+        assert not hasattr(fast_motor, "wm_sample")
         fast_motor.presets.sync()
-        assert not hasattr(fast_motor, 'mv_sample')
+        assert not hasattr(fast_motor, "mv_sample")
 
     proc.join()
 
     fast_motor.presets.sync()
-    assert hasattr(fast_motor, 'mv_sample')
+    assert hasattr(fast_motor, "mv_sample")
 
 
 def test_presets_type(presets, fast_motor: FastMotor):
-    logger.debug('test_presets_type')
+    logger.debug("test_presets_type")
     # Mess up the input types, fail before opening the file
 
     with pytest.raises(TypeError):
         fast_motor.presets.add_here_user(123)
     with pytest.raises(TypeError):
-        fast_motor.presets.add_user(234234, 'cats')
+        fast_motor.presets.add_user(234234, "cats")
 
 
 def test_presets_desync(presets, fast_motor: FastMotor):
     assert not fast_motor.presets.sync_needed()
 
     fast_motor.mv(4, wait=True)
-    fast_motor.presets.add_hutch('four', comment='four!')
+    fast_motor.presets.add_hutch("four", comment="four!")
 
     assert not fast_motor.presets.sync_needed()
 
     # modify preset from other object with the same, to force collision
-    fast_motor2 = FastMotor(name='sim_fast')
+    fast_motor2 = FastMotor(name="sim_fast")
     fast_motor2.mv(5, wait=True)
     fast_motor2.presets.positions.four.update_pos()
 
@@ -230,12 +233,18 @@ def test_presets_tab_init(fast_motor: FastMotor, deferred_fast_motor_presets):
     assert not fast_motor.presets.sync_needed()
 
 
-@pytest.mark.parametrize("attr", [
-    "wm_dne", "wm_in", "mv_dne", "mv_in", "umv_dne", "umv_in",
-])
-def test_presets_getattribute_init(
-    fast_motor: FastMotor, attr: str, deferred_fast_motor_presets
-):
+@pytest.mark.parametrize(
+    "attr",
+    [
+        "wm_dne",
+        "wm_in",
+        "mv_dne",
+        "mv_in",
+        "umv_dne",
+        "umv_in",
+    ],
+)
+def test_presets_getattribute_init(fast_motor: FastMotor, attr: str, deferred_fast_motor_presets):
     # deferred_fast_motor_preset must come last,
     # to clear cache after motor is created (and sync-ed at init)
     assert fast_motor.presets.sync_needed()
@@ -247,7 +256,7 @@ def test_presets_getattribute_init(
 
 
 def test_engineering_mode():
-    logger.debug('test_engineering_mode')
+    logger.debug("test_engineering_mode")
     set_engineering_mode(False)
     assert not get_engineering_mode()
     set_engineering_mode(True)
@@ -255,7 +264,7 @@ def test_engineering_mode():
 
 
 def test_dir_whitelist_basic(fast_motor):
-    logger.debug('test_dir_whitelist_basic')
+    logger.debug("test_dir_whitelist_basic")
     set_engineering_mode(False)
     user_dir = dir(fast_motor)
     set_engineering_mode(True)
@@ -263,7 +272,9 @@ def test_dir_whitelist_basic(fast_motor):
     assert len(eng_dir) > len(user_dir)
 
 
-_TAB_COMPLETION_IGNORES = {'.areadetector.', }
+_TAB_COMPLETION_IGNORES = {
+    ".areadetector.",
+}
 
 
 def _should_check_tab_completion(cls):
@@ -272,7 +283,7 @@ def _should_check_tab_completion(cls):
         # Include any Devices that have BaseInterface
         return True
 
-    fully_qualified_name = f'{cls.__module__}.{cls.__name__}'
+    fully_qualified_name = f"{cls.__module__}.{cls.__name__}"
     if any(name in fully_qualified_name for name in _TAB_COMPLETION_IGNORES):
         # This doesn't mix BaseInterface in, but that's OK - it's on our list
         return False
@@ -283,22 +294,24 @@ def _should_check_tab_completion(cls):
 
 
 @pytest.mark.parametrize(
-    'cls',
-    [pytest.param(cls, id=f'{cls.__module__}.{cls.__name__}')
-     for cls in conftest.find_all_device_classes()
-     if _should_check_tab_completion(cls)]
+    "cls",
+    [
+        pytest.param(cls, id=f"{cls.__module__}.{cls.__name__}")
+        for cls in conftest.find_all_device_classes()
+        if _should_check_tab_completion(cls)
+    ],
 )
 def test_tab_completion(cls):
     if BaseInterface not in cls.mro():
-        pytest.skip(f'{cls} does not inherit from the interface')
+        pytest.skip(f"{cls} does not inherit from the interface")
 
     regex = cls._class_tab.build_regex()
-    if getattr(cls, 'tab_component_names', False):
+    if getattr(cls, "tab_component_names", False):
         for name in cls.component_names:
             if getattr(cls, name).kind != ophyd.Kind.omitted:
                 assert regex.match(name) is not None
 
-    for name in getattr(cls, 'tab_whitelist', []):
+    for name in getattr(cls, "tab_whitelist", []):
         assert regex.match(name) is not None
 
     # Make sure we're not letting through dunder methods unintentionally:
@@ -310,25 +323,25 @@ def test_tab_completion(cls):
 
 
 _STATUS_PRINT_IGNORES = {
-    '.AttenuatorCalculatorBase',
-    '.BadSlitPositionerBase',
-    '.DelayBase',
-    '.IPM_Det',
-    '.InOutPVStatePositioner',
-    '.PVPositionerComparator',
-    '.PVPositionerDone',
-    '.PVPositionerIsClose',
-    '.PseudoSingleInterface',
-    '.PulsePicker',
-    '.SlitsBase',
-    '.SyncAxesBase',
-    '.OffsetMotorBase',
+    ".AttenuatorCalculatorBase",
+    ".BadSlitPositionerBase",
+    ".DelayBase",
+    ".IPM_Det",
+    ".InOutPVStatePositioner",
+    ".PVPositionerComparator",
+    ".PVPositionerDone",
+    ".PVPositionerIsClose",
+    ".PseudoSingleInterface",
+    ".PulsePicker",
+    ".SlitsBase",
+    ".SyncAxesBase",
+    ".OffsetMotorBase",
 }
 
 
 def _should_check_status_prints(cls):
     """Filter out classes for checking ``status_info``."""
-    fully_qualified_name = f'{cls.__module__}.{cls.__name__}'
+    fully_qualified_name = f"{cls.__module__}.{cls.__name__}"
     if any(name in fully_qualified_name for name in _STATUS_PRINT_IGNORES):
         return False
 
@@ -337,11 +350,12 @@ def _should_check_status_prints(cls):
 
 
 @pytest.mark.parametrize(
-    'cls',
-    [pytest.param(cls, id=f'{cls.__module__}.{cls.__name__}')
-     for cls in conftest.find_all_device_classes()
-     if _should_check_status_prints(cls)
-     ]
+    "cls",
+    [
+        pytest.param(cls, id=f"{cls.__module__}.{cls.__name__}")
+        for cls in conftest.find_all_device_classes()
+        if _should_check_status_prints(cls)
+    ],
 )
 def test_smoke_status_prints(cls):
     instance = conftest.best_effort_instantiation(cls)
@@ -350,8 +364,7 @@ def test_smoke_status_prints(cls):
 
 
 def test_tab_helper_no_mixin():
-    class MyDevice:
-        ...
+    class MyDevice: ...
 
     helper = TabCompletionHelperClass(MyDevice)
     with pytest.raises(AssertionError):
@@ -361,37 +374,37 @@ def test_tab_helper_no_mixin():
 
 def test_tab_helper_class():
     class MyDeviceBaseA(BaseInterface, ophyd.Device):
-        tab_whitelist = ['a']
+        tab_whitelist = ["a"]
         a = 1
 
     class MyDeviceBaseB:
-        tab_whitelist = ['b']
+        tab_whitelist = ["b"]
         b = 2
 
     class MyDevice(MyDeviceBaseA, MyDeviceBaseB):
-        tab_whitelist = ['c']
+        tab_whitelist = ["c"]
         c = 3
         foobar = 4
         tab_component_names = True
         cpt = ophyd.Component(ophyd.Signal)
 
     assert MyDeviceBaseA._class_tab is not MyDevice._class_tab
-    assert {'a'}.issubset(MyDeviceBaseA._class_tab._includes)
-    assert {'a', 'b', 'c', 'cpt'}.issubset(MyDevice._class_tab._includes)
+    assert {"a"}.issubset(MyDeviceBaseA._class_tab._includes)
+    assert {"a", "b", "c", "cpt"}.issubset(MyDevice._class_tab._includes)
 
-    instance = MyDevice(name='instance')
+    instance = MyDevice(name="instance")
 
     tab = instance._tab
 
-    assert {'a', 'b', 'c', 'cpt'}.issubset(tab._includes)
-    for attr in ['a', 'b', 'c', 'cpt']:
+    assert {"a", "b", "c", "cpt"}.issubset(tab._includes)
+    for attr in ["a", "b", "c", "cpt"]:
         assert attr in tab.get_filtered_dir_list()
 
-    assert 'foobar' not in tab.get_filtered_dir_list()
-    tab.add('foobar')
-    assert 'foobar' in tab.get_filtered_dir_list()
-    tab.remove('foobar')
-    assert 'foobar' not in tab.get_filtered_dir_list()
-    tab.add('foobar')
+    assert "foobar" not in tab.get_filtered_dir_list()
+    tab.add("foobar")
+    assert "foobar" in tab.get_filtered_dir_list()
+    tab.remove("foobar")
+    assert "foobar" not in tab.get_filtered_dir_list()
+    tab.add("foobar")
     tab.reset()
-    assert 'foobar' not in tab.get_filtered_dir_list()
+    assert "foobar" not in tab.get_filtered_dir_list()

@@ -10,8 +10,7 @@ import ophyd.pseudopos
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.positioner import PositionerBase
-from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
-                             real_position_argument)
+from ophyd.pseudopos import PseudoSingle, pseudo_position_argument, real_position_argument
 from ophyd.signal import EpicsSignal
 from scipy.constants import speed_of_light
 
@@ -27,23 +26,26 @@ logger = logging.getLogger(__name__)
 
 class PseudoSingleInterface(FltMvInterface, PseudoSingle):
     """PseudoSingle with FltMvInterface mixed in."""
+
     notepad_setpoint = Cpt(
-        NotepadLinkedSignal, ':OphydSetpoint',
-        notepad_metadata={'record': 'ao', 'default_value': 0.0},
+        NotepadLinkedSignal,
+        ":OphydSetpoint",
+        notepad_metadata={"record": "ao", "default_value": 0.0},
     )
 
     notepad_readback = Cpt(
-        NotepadLinkedSignal, ':OphydReadback',
-        notepad_metadata={'record': 'ai', 'default_value': 0.0},
+        NotepadLinkedSignal,
+        ":OphydReadback",
+        notepad_metadata={"record": "ai", "default_value": 0.0},
     )
 
-    def __init__(self, prefix='', parent=None, verbose_name=None, **kwargs):
+    def __init__(self, prefix="", parent=None, verbose_name=None, **kwargs):
         if not prefix:
             # PseudoSingle generally does not get a prefix. Fix that here,
             # or 'notepad_setpoint' and 'notepad_readback' will have no
             # prefix.
-            attr_name = kwargs['attr_name']
-            prefix = f'{parent.prefix}:{attr_name}'
+            attr_name = kwargs["attr_name"]
+            prefix = f"{parent.prefix}:{attr_name}"
 
         super().__init__(prefix=prefix, parent=parent, **kwargs)
         self._verbose_name = verbose_name
@@ -58,10 +60,9 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
             for real_pos in self.parent.real_positioners:
                 dial_pos.append(real_pos.dial_position.get())
             if dial_pos:
-                calc_dial = self.parent.inverse(
-                    self.parent.RealPosition(*dial_pos))
+                calc_dial = self.parent.inverse(self.parent.RealPosition(*dial_pos))
             # try to get the correct pseudo position base on the name
-            return f'{calc_dial[calc_dial._fields.index(self.attr_name)]:.3e}'
+            return f"{calc_dial[calc_dial._fields.index(self.attr_name)]:.3e}"
         # some motors might not have dial_position
         except Exception:
             return None
@@ -84,11 +85,10 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         status: str
             Formatted string with all relevant status information.
         """
-        units = get_status_value(status_info, 'units')
+        units = get_status_value(status_info, "units")
         if not units:
-            units = get_status_value(status_info, 'notepad_readback', 'units')
-        position = get_status_float(
-            status_info, 'position', precision=3, format='e')
+            units = get_status_value(status_info, "notepad_readback", "units")
+        position = get_status_float(status_info, "position", precision=3, format="e")
         # if a dial_pos is not present we can assume that the dial position is
         # the same as the normal position
         dial_pos = self.calculated_dial_pos or position
@@ -96,7 +96,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         low, high = self.limits
         name = self.prefix
         if self._verbose_name:
-            name = f'{self._verbose_name} {self.prefix}'
+            name = f"{self._verbose_name} {self.prefix}"
 
         return f"""\
 Virtual Motor {name}
@@ -112,7 +112,8 @@ def _as_float(self):
 
 
 class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
-    """
+    (
+        """
     This is a PCDS-specific PseudoPositioner subclass which has a few notable
     changes/additions:
 
@@ -121,7 +122,9 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
       to floating point values.
     * Adds a set_current_position helper method
 
-    """ + ophyd.pseudopos.PseudoPositioner.__doc__
+    """
+        + ophyd.pseudopos.PseudoPositioner.__doc__
+    )
 
     def __init__(self, *args, **kwargs):
         self._my_move = False
@@ -161,12 +164,11 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
                         else:
                             signal.put(value)
             except Exception as ex:
-                self.log.debug('Failed to update notepad %s to position %s',
-                               attr, value, exc_info=ex)
+                self.log.debug("Failed to update notepad %s to position %s", attr, value, exc_info=ex)
 
     @pseudo_position_argument
     def move(self, position, wait=True, timeout=None, moved_cb=None):
-        '''
+        """
         Move to a specified position, optionally waiting for motion to
         complete.
 
@@ -198,19 +200,18 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
 
         RuntimeError
             If motion fails other than timing out.
-        '''
+        """
         self._my_move = True
         self._move_time = time.monotonic()
-        status = super().move(position, wait=wait, timeout=timeout,
-                              moved_cb=moved_cb)
-        self._update_notepad_ioc(position, 'notepad_setpoint')
+        status = super().move(position, wait=wait, timeout=timeout, moved_cb=moved_cb)
+        self._update_notepad_ioc(position, "notepad_setpoint")
         return status
 
     def _update_position(self):
         """Update the pseudo position based on that of the real positioners."""
         position = super()._update_position()
         if self._my_move:
-            self._update_notepad_ioc(position, 'notepad_readback')
+            self._update_notepad_ioc(position, "notepad_readback")
         return position
 
     def set_current_position(self, position):
@@ -248,13 +249,13 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         """
         for positioner in self._pseudo:
             try:
-                signal = getattr(positioner, 'notepad_setpoint', None)
+                signal = getattr(positioner, "notepad_setpoint", None)
                 if signal is None:
                     continue
                 signal.subscribe(self._our_move_check)
             except Exception as ex:
                 self.log.debug(
-                    'Failed to set up _our_move_check subscriptions.',
+                    "Failed to set up _our_move_check subscriptions.",
                     exc_info=ex,
                 )
 
@@ -290,13 +291,11 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
 
     def __init__(self, *args, **kwargs):
         warnings.warn(
-            'SyncAxesBase is deprecated and will be removed in a future '
-            'release. Please switch to SyncAxis.',
-            DeprecationWarning)
+            "SyncAxesBase is deprecated and will be removed in a future release. Please switch to SyncAxis.",
+            DeprecationWarning,
+        )
         if self.__class__ is SyncAxesBase:
-            raise TypeError(
-                "SyncAxesBase must be subclassed with the axes to synchronize included as components"
-            )
+            raise TypeError("SyncAxesBase must be subclassed with the axes to synchronize included as components")
         super().__init__(*args, **kwargs)
         self._offsets = None
 
@@ -329,10 +328,9 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
 
         pos = self.real_position
         combo = float(self.calc_combined(pos))
-        offsets = {fld: float(getattr(pos, fld)) - combo
-                   for fld in pos._fields}
+        offsets = {fld: float(getattr(pos, fld)) - combo for fld in pos._fields}
         self._offsets = offsets
-        logger.debug('Offsets %s cached', offsets)
+        logger.debug("Offsets %s cached", offsets)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
@@ -441,9 +439,10 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         e.g. sync_limits = (-100, 100) will bind the `SyncAxis` to move between
         -100 and 100.
     """
-    sync = Cpt(PseudoSingleInterface, kind='omitted')
 
-    tab_whitelist = ['fix_sync']
+    sync = Cpt(PseudoSingleInterface, kind="omitted")
+
+    tab_whitelist = ["fix_sync"]
 
     # Enum that defines how and when offsets are interpreted
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
@@ -469,8 +468,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         self._check_settings()
         self._has_setup = False
         self._real_attrs = [attr for attr, _ in self._get_real_positioners()]
-        self.scales = self._fill_info_dict(
-            self.scales, self.default_scale, 'scales')
+        self.scales = self._fill_info_dict(self.scales, self.default_scale, "scales")
         super().__init__(*args, **kwargs)
         if self.sync_limits is not None:
             self.sync._limits = tuple(self.sync_limits)
@@ -478,32 +476,25 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
     def _check_settings(self):
         """Mostly just a typo check."""
         if self.__class__ is SyncAxis:
-            raise TypeError(
-                "SyncAxis must be subclassed with the axes to synchronize included as components"
-            )
+            raise TypeError("SyncAxis must be subclassed with the axes to synchronize included as components")
         try:
             self.offset_mode = SyncAxisOffsetMode(self.offset_mode)
         except ValueError:
             try:
                 self.offset_mode = SyncAxisOffsetMode[self.offset_mode]
             except KeyError:
-                raise ValueError(f'Invalid offset_mode: {self.offset_mode}') from None
-        self._check_info_dict(self.offsets, 'offsets')
-        self._check_info_dict(self.scales, 'scales')
-        if (self.fix_sync_keep_still is not None
-                and self.fix_sync_keep_still not in self.component_names):
-            raise ValueError(
-                f'Invalid fix_sync_keep_still == {self.fix_sync_keep_still}. Must match a motor.'
-            )
+                raise ValueError(f"Invalid offset_mode: {self.offset_mode}") from None
+        self._check_info_dict(self.offsets, "offsets")
+        self._check_info_dict(self.scales, "scales")
+        if self.fix_sync_keep_still is not None and self.fix_sync_keep_still not in self.component_names:
+            raise ValueError(f"Invalid fix_sync_keep_still == {self.fix_sync_keep_still}. Must match a motor.")
 
     def _check_info_dict(self, setting, info_kind):
         """Helper function to check that all keys in the dict are Cpts"""
         if setting is not None:
             for attr, _ in setting.items():
                 if attr not in self.component_names:
-                    raise ValueError(
-                        f'Invalid key {attr} in {info_kind}. Must match a motor.'
-                    )
+                    raise ValueError(f"Invalid key {attr} in {info_kind}. Must match a motor.")
 
     def _fill_info_dict(self, setting, default, info_kind):
         """Helper function to fill default values into the dict"""
@@ -512,8 +503,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         elif isinstance(setting, dict):
             setting = copy.copy(setting)
         else:
-            raise ValueError(
-                f'Invalid {info_kind}: {setting}, must be dict or None')
+            raise ValueError(f"Invalid {info_kind}: {setting}, must be dict or None")
         for attr in self._real_attrs:
             setting.setdefault(attr, default)
         return setting
@@ -525,18 +515,16 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             elif self.offset_mode == SyncAxisOffsetMode.AUTO_FIXED:
                 self._handle_auto_fixed()
             else:
-                raise ValueError(f'Invalid offset_mode: {self.offset_mode}')
+                raise ValueError(f"Invalid offset_mode: {self.offset_mode}")
             self._has_setup = True
 
     def _handle_static_fixed(self):
-        self.offsets = self._fill_info_dict(
-            self.offsets, self.default_offset, 'offsets')
+        self.offsets = self._fill_info_dict(self.offsets, self.default_offset, "offsets")
 
     def _handle_auto_fixed(self):
         pos = self.real_position
         first_pos = pos[0]
-        self.offsets = {
-            fld: float(getattr(pos, fld)) - first_pos for fld in pos._fields}
+        self.offsets = {fld: float(getattr(pos, fld)) - first_pos for fld in pos._fields}
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
@@ -606,8 +594,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             pseudo_calcs.append(calc)
         pick_answer = pseudo_calcs[0]
         for calc in pseudo_calcs:
-            if not np.isclose(pick_answer, calc,
-                              atol=self.warn_deadband, rtol=0):
+            if not np.isclose(pick_answer, calc, atol=self.warn_deadband, rtol=0):
                 return False
         return True
 
@@ -615,7 +602,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         """
         Return the consistency warning text
         """
-        return f'{self.name} is in an inconsistent state. Call set_current_position or fix_sync to resolve.'
+        return f"{self.name} is in an inconsistent state. Call set_current_position or fix_sync to resolve."
 
     def fix_sync(self, confirm=True, wait=True, timeout=10):
         """
@@ -633,21 +620,21 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
 
         # Calculate the goal positions for every motor
         goal = self.forward(self.PseudoPosition(sync=sync_pos))
-        logger.info('Planning to perform the following moves:')
+        logger.info("Planning to perform the following moves:")
         moves = {}
 
         for attr, pos in goal._asdict().items():
             if attr == anchor:
-                logger.info(f'Keep {attr} at {anchor_pos}')
+                logger.info(f"Keep {attr} at {anchor_pos}")
             else:
-                logger.info(f'Move {attr} to {pos}')
+                logger.info(f"Move {attr} to {pos}")
                 moves[attr] = pos
 
         if not confirm:
-            logger.info('Automatically doing moves because confirm=False')
+            logger.info("Automatically doing moves because confirm=False")
             do_moves = True
         else:
-            do_moves = input('Confirm? (y/n): ').lower().startswith('y')
+            do_moves = input("Confirm? (y/n): ").lower().startswith("y")
 
         if do_moves:
             statuses = []
@@ -663,35 +650,35 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         Special SyncAxis handling to show all the real motors.
         """
         lines = []
-        if self.warn_inconsistent and not status_info['is_synced']:
+        if self.warn_inconsistent and not status_info["is_synced"]:
             lines.append(self.consistency_warning())
-        big_name = status_info['name']
-        lines.append(f'SyncAxis: {big_name}')
+        big_name = status_info["name"]
+        lines.append(f"SyncAxis: {big_name}")
         for attr in self._real_attrs:
             info = status_info[attr]
-            name = get_status_value(info, 'name')
-            name = name.replace(big_name + '_', '')
-            pos = get_status_float(info, 'position', format='g')
-            units = get_status_value(info, 'units')
-            lines.append(f'{name} position: {pos} [{units}]')
-        sync_pos = get_status_float(status_info, 'position', format='g')
-        lines.append(f'Sync position: {sync_pos}')
-        limits = status_info['limits']
-        lines.append(f'Sync limits (low, high): {limits}')
-        return '\n'.join(lines)
+            name = get_status_value(info, "name")
+            name = name.replace(big_name + "_", "")
+            pos = get_status_float(info, "position", format="g")
+            units = get_status_value(info, "units")
+            lines.append(f"{name} position: {pos} [{units}]")
+        sync_pos = get_status_float(status_info, "position", format="g")
+        lines.append(f"Sync position: {sync_pos}")
+        limits = status_info["limits"]
+        lines.append(f"Sync limits (low, high): {limits}")
+        return "\n".join(lines)
 
     def status_info(self):
         """
         Add the limits and sync information
         """
         info = super().status_info()
-        info['limits'] = self.sync.limits
+        info["limits"] = self.sync.limits
         if self.warn_inconsistent:
             try:
-                info['is_synced'] = self.is_synced()
+                info["is_synced"] = self.is_synced()
             except Exception:
-                info['is_synced'] = False
-                err = 'Error checking for sync axis consistency.'
+                info["is_synced"] = False
+                err = "Error checking for sync axis consistency."
                 logger.debug(err, exc_info=True)
                 logger.error(err)
         return info
@@ -742,22 +729,19 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         If False (default), increasing the real motor will increase the delay.
     """
 
-    delay = FCpt(PseudoSingleInterface, egu='{self.egu}', add_prefix=['egu'])
-    user_offset = Cpt(NotepadLinkedSignal, ':OphydOffset',
-                      notepad_metadata={'record': 'ao', 'default_value': 0.0})
+    delay = FCpt(PseudoSingleInterface, egu="{self.egu}", add_prefix=["egu"])
+    user_offset = Cpt(NotepadLinkedSignal, ":OphydOffset", notepad_metadata={"record": "ao", "default_value": 0.0})
     motor = None
 
-    def __init__(self, *args, egu='s', n_bounces=2, invert=False, **kwargs):
+    def __init__(self, *args, egu="s", n_bounces=2, invert=False, **kwargs):
         if self.__class__ is DelayBase:
-            raise TypeError(
-                'DelayBase must be subclassed with a "motor" component, the real motor to move.'
-            )
+            raise TypeError('DelayBase must be subclassed with a "motor" component, the real motor to move.')
         self.n_bounces = n_bounces
         if invert:
             self.n_bounces *= -1
         super().__init__(*args, egu=egu, **kwargs)
 
-    @pseudo_position_argument   # TODO: upstream this fix
+    @pseudo_position_argument  # TODO: upstream this fix
     def check_value(self, value):
         return super().check_value(value)
 
@@ -766,7 +750,7 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         """
         The user offset was changed.  Update the readback value, if possible.
         """
-        if not hasattr(self, 'real_position'):
+        if not hasattr(self, "real_position"):
             # A race condition on instantiation can cause this subscription to
             # fire prior to the real position being available.  The position
             # will update based on this offset when available.
@@ -802,18 +786,17 @@ class DelayBase(FltMvInterface, PseudoPositioner):
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         """Convert delay unit to motor unit."""
-        seconds = convert_unit(pseudo_pos.delay - self.user_offset.get(),
-                               self.delay.egu, 'seconds')
+        seconds = convert_unit(pseudo_pos.delay - self.user_offset.get(), self.delay.egu, "seconds")
         meters = seconds * speed_of_light / self.n_bounces
-        motor_value = convert_unit(meters, 'meters', self.motor.egu)
+        motor_value = convert_unit(meters, "meters", self.motor.egu)
         return self.RealPosition(motor=motor_value)
 
     @real_position_argument
     def inverse(self, real_pos):
         """Convert motor unit to delay unit."""
-        meters = convert_unit(real_pos.motor, self.motor.egu, 'meters')
+        meters = convert_unit(real_pos.motor, self.motor.egu, "meters")
         seconds = meters / speed_of_light * self.n_bounces
-        delay_value = convert_unit(seconds, 'seconds', self.delay.egu)
+        delay_value = convert_unit(seconds, "seconds", self.delay.egu)
         return self.PseudoPosition(delay=delay_value + self.user_offset.get())
 
     def set_current_position(self, position):
@@ -834,7 +817,7 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         """
         Use the renderer from the subdevice
         """
-        return self.delay.format_status_info(status_info['delay'])
+        return self.delay.format_status_info(status_info["delay"])
 
 
 delay_classes = {}
@@ -850,18 +833,12 @@ def delay_class_factory(motor_class):
     try:
         cls = delay_classes[motor_class]
     except KeyError:
-        cls = type(
-            'Delay' + motor_class.__name__,
-            (DelayBase,),
-            {'motor': Cpt(motor_class, '')}
-        )
+        cls = type("Delay" + motor_class.__name__, (DelayBase,), {"motor": Cpt(motor_class, "")})
         delay_classes[motor_class] = cls
     return cls
 
 
-def delay_instance_factory(
-    prefix, motor_class, egu='s', n_bounces=2, invert=False, **kwargs
-):
+def delay_instance_factory(prefix, motor_class, egu="s", n_bounces=2, invert=False, **kwargs):
     cls = delay_class_factory(motor_class)
     return cls(prefix, egu=egu, n_bounces=n_bounces, invert=invert, **kwargs)
 
@@ -902,23 +879,33 @@ class DelayMotor(InterfaceDevice, DelayBase):
         If True, increasing the real motor will decrease the delay.
         If False (default), increasing the real motor will increase the delay.
     """
+
     motor = ICpt(PositionerBase)
 
     def __init__(
-        self, motor, name=None, egu='s', n_bounces=2, invert=False,
+        self,
+        motor,
+        name=None,
+        egu="s",
+        n_bounces=2,
+        invert=False,
         **kwargs,
     ):
         if name is None:
-            name = motor.name + '_delay_motor'
+            name = motor.name + "_delay_motor"
         super().__init__(
-            motor.prefix, name=name,
-            egu=egu, n_bounces=n_bounces, invert=invert,
-            motor=motor, **kwargs,
+            motor.prefix,
+            name=name,
+            egu=egu,
+            n_bounces=n_bounces,
+            invert=invert,
+            motor=motor,
+            **kwargs,
         )
 
 
 class SimDelayStage(DelayBase):
-    motor = Cpt(FastMotor, init_pos=0, egu='mm')
+    motor = Cpt(FastMotor, init_pos=0, egu="mm")
 
 
 delay_classes[FastMotor] = SimDelayStage
@@ -954,10 +941,7 @@ class LookupTablePositioner(PseudoPositioner):
     column_names: tuple[str, ...]
     _table_data_by_name: dict[str, np.ndarray]
 
-    def __init__(self, *args,
-                 table: np.ndarray,
-                 column_names: list[str],
-                 **kwargs):
+    def __init__(self, *args, table: np.ndarray, column_names: list[str], **kwargs):
         super().__init__(*args, **kwargs)
         self.table = table
         self.column_names = tuple(column_names)
@@ -967,36 +951,31 @@ class LookupTablePositioner(PseudoPositioner):
                 missing.add(positioner.attr_name)
 
         if missing:
-            raise ValueError(f'Positioners {missing} not present in the table')
+            raise ValueError(f"Positioners {missing} not present in the table")
 
         if len(column_names) != self.table.shape[-1]:
-            raise ValueError(
-                'Incorrect number of column names for the given table.'
-            )
+            raise ValueError("Incorrect number of column names for the given table.")
 
         # For now, no fancy interpolation options
         if len(table.shape) != 2:
-            raise ValueError(f'Unsupported table dimensions: {table.shape}')
+            raise ValueError(f"Unsupported table dimensions: {table.shape}")
 
-        self._table_data_by_name = {
-            column_name: self.table[:, idx]
-            for idx, column_name in enumerate(column_names)
-        }
+        self._table_data_by_name = {column_name: self.table[:, idx] for idx, column_name in enumerate(column_names)}
 
         for attr, data in self._table_data_by_name.items():
             obj = getattr(self, attr)
             limits = (np.min(data), np.max(data))
             if isinstance(obj, PseudoSingle):
                 obj._limits = limits
-            elif hasattr(obj, 'limits'):
+            elif hasattr(obj, "limits"):
                 try:
                     obj.limits = limits
                 except Exception:
-                    self.log.exception('Unable to set limits for %s', obj.name)
+                    self.log.exception("Unable to set limits for %s", obj.name)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos: tuple) -> tuple:
-        '''
+        """
         Calculate the real motor position given the pseudo position, using the lookup table.
 
         Parameters
@@ -1008,7 +987,7 @@ class LookupTablePositioner(PseudoPositioner):
         -------
         real_position : RealPosition
             The real position output, a namedtuple.
-        '''
+        """
         values = pseudo_pos._asdict()
         pseudo_field, real_field = self._get_field_names()
         xp, fp = self._load_table_arrays(x_name=pseudo_field, f_name=real_field)
@@ -1022,7 +1001,7 @@ class LookupTablePositioner(PseudoPositioner):
 
     @real_position_argument
     def inverse(self, real_pos: tuple) -> tuple:
-        '''
+        """
         Calculate the pseudo motor position given the real position, using the lookup table.
 
         Parameters
@@ -1034,7 +1013,7 @@ class LookupTablePositioner(PseudoPositioner):
         -------
         pseudo_pos : PseudoPosition
             The pseudo position output
-        '''
+        """
         values = real_pos._asdict()
         pseudo_field, real_field = self._get_field_names()
         xp, fp = self._load_table_arrays(x_name=real_field, f_name=pseudo_field)
@@ -1055,8 +1034,8 @@ class LookupTablePositioner(PseudoPositioner):
         fields: tuple of str
             (pseudo_field, real_field)
         """
-        pseudo_field, = self.PseudoPosition._fields
-        real_field, = self.RealPosition._fields
+        (pseudo_field,) = self.PseudoPosition._fields
+        (real_field,) = self.RealPosition._fields
 
         return pseudo_field, real_field
 
@@ -1099,8 +1078,7 @@ class LookupTablePositioner(PseudoPositioner):
             # Check one more time in case neither direction works
             if not is_strictly_increasing(xp):
                 self.log.warning(
-                    "Lookup table is not strictly increasing or decreasing! "
-                    "This will give inconsistent results!"
+                    "Lookup table is not strictly increasing or decreasing! This will give inconsistent results!"
                 )
 
         return xp, fp
@@ -1118,14 +1096,14 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
     """
     Motor with an offset.
     """
+
     motor = None
-    pseudo_motor = Cpt(PseudoSingleInterface, kind='normal')
-    user_offset = Cpt(EpicsSignal, '', kind='normal')
+    pseudo_motor = Cpt(PseudoSingleInterface, kind="normal")
+    user_offset = Cpt(EpicsSignal, "", kind="normal")
 
     def __init__(self, prefix, motor_prefix, *args, **kwargs):
         if self.__class__ is OffsetMotorBase:
-            raise TypeError('OffsetMotorBase must be subclassed with '
-                            'a "motor" component, the real motor to move.')
+            raise TypeError('OffsetMotorBase must be subclassed with a "motor" component, the real motor to move.')
         self._motor_prefix = motor_prefix
         self._prefix = prefix
         super().__init__(prefix, *args, **kwargs)
@@ -1139,7 +1117,7 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
         """
         The user offset was changed. Update the readback value, if possible.
         """
-        if not hasattr(self, 'real_position'):
+        if not hasattr(self, "real_position"):
             # A race condition on instantiation can cause this subscription to
             # fire prior to the real position being available. The position
             # will update based on this offset when available.
@@ -1190,7 +1168,7 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
         return self.PseudoPosition(pseudo_motor=offset)
 
     def set_current_position(self, position):
-        '''
+        """
         Calculate and configure the user_offset value, indicating the provided
         ``position`` as the new current position.
 
@@ -1198,7 +1176,7 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
         ----------
         position : number
             The new current position.
-        '''
+        """
         self.user_offset.put(0.0)
         new_offset = position - self.position[0]
         self.user_offset.put(new_offset)

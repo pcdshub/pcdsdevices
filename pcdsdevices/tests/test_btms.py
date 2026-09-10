@@ -2,12 +2,19 @@ from typing import Optional
 
 import pytest
 
-from ..lasers.btms_config import (BtmsDestinationState, BtmsSourceState,
-                                  BtmsState, DestinationInControlError,
-                                  DestinationInUseError, DestinationPosition,
-                                  MaintenanceModeActiveError,
-                                  MovingActiveSource, PathCrossedError,
-                                  PositionInvalidError, SourcePosition)
+from ..lasers.btms_config import (
+    BtmsDestinationState,
+    BtmsSourceState,
+    BtmsState,
+    DestinationInControlError,
+    DestinationInUseError,
+    DestinationPosition,
+    MaintenanceModeActiveError,
+    MovingActiveSource,
+    PathCrossedError,
+    PositionInvalidError,
+    SourcePosition,
+)
 
 
 @pytest.mark.parametrize(
@@ -86,11 +93,7 @@ def test_destination_is_top(dest: DestinationPosition, top: bool):
         (SourcePosition.ls2, SourcePosition.ls8, True),
     ],
 )
-def test_source_position_path(
-    source1: SourcePosition,
-    source2: SourcePosition,
-    above: bool
-):
+def test_source_position_path(source1: SourcePosition, source2: SourcePosition, above: bool):
     assert source1.is_above(source2) is above
 
 
@@ -373,8 +376,7 @@ def test_target_in_use_error():
     for source in state.sources:
         start_pos = state.sources[source].destination
         other_destinations = {
-            state.sources[other].destination for other in state.sources
-            if state.sources[other].destination != start_pos
+            state.sources[other].destination for other in state.sources if state.sources[other].destination != start_pos
         }
         assert len(other_destinations) > 1
         for dest in other_destinations:

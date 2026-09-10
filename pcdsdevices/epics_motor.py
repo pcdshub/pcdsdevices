@@ -1,6 +1,7 @@
 """
 Module for LCLS's special motor records.
 """
+
 import functools
 import logging
 import shutil
@@ -23,8 +24,7 @@ from ophyd.utils.epics_pvs import raise_if_disconnected
 from pcdsutils.ext_scripts import get_hutch_name
 from prettytable import PrettyTable
 
-from pcdsdevices.pv_positioner import (PVPositionerComparator,
-                                       PVPositionerIsClose)
+from pcdsdevices.pv_positioner import PVPositionerComparator, PVPositionerIsClose
 
 from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
@@ -43,85 +43,88 @@ class MstaEnum(Enum):
     """
     Enum for the EPICS motor record .MSTA field bits.
     """
+
     # Note: the motor record docs start bit numbering at 1, but the MSTA bits
     # start at 0.
-    direction = 0       # last raw move direction (0: negative, 1: positive)
-    done = 1            # motion is complete
-    plus_ls = 2         # plus limit switch is hit
-    home_ls = 3         # state of the home limit switch
+    direction = 0  # last raw move direction (0: negative, 1: positive)
+    done = 1  # motion is complete
+    plus_ls = 2  # plus limit switch is hit
+    home_ls = 3  # state of the home limit switch
     # Bit 4 is un-used
     # closed-loop positioning enabled, called "position" in the docs
     closed_loop = 5
-    slip_stall = 6      # slip stall is detected
-    home = 7            # at the home position
-    enc_present = 8     # encoder is present. Called "present" in the docs.
-    problem = 9         # driver stopped polling, or there's a hardware problem
-    moving = 10         # the motor has a non-zero velocity (it's moving)
-    gain_support = 11   # the motor supports closed loop control
-    comm_error = 12     # controller communication error
-    minus_ls = 13       # minus limit switch is hit
-    homed = 14          # the motor has been homed
+    slip_stall = 6  # slip stall is detected
+    home = 7  # at the home position
+    enc_present = 8  # encoder is present. Called "present" in the docs.
+    problem = 9  # driver stopped polling, or there's a hardware problem
+    moving = 10  # the motor has a non-zero velocity (it's moving)
+    gain_support = 11  # the motor supports closed loop control
+    comm_error = 12  # controller communication error
+    minus_ls = 13  # minus limit switch is hit
+    homed = 14  # the motor has been homed
 
 
 class NewportMstaEnum(Enum):
     """
     Enum for the LCLS Newport XPS8 EPICS motor record .MSTA field bits.
     """
+
     # Note: the motor record docs start bit numbering at 1, but the MSTA bits
     # start at 0.
-    direction = 0       # last raw move direction (0: negative, 1: positive)
-    done = 1            # motion is complete
-    plus_ls = 2         # plus limit switch is hit
-    home_ls = 3         # state of the home limit switch
-    slip = 4            # continue of slip stall
+    direction = 0  # last raw move direction (0: negative, 1: positive)
+    done = 1  # motion is complete
+    plus_ls = 2  # plus limit switch is hit
+    home_ls = 3  # state of the home limit switch
+    slip = 4  # continue of slip stall
     # closed-loop positioning enabled, called "position" in the docs
     closed_loop = 5
-    slip_stall = 6      # slip stall is detected
-    home = 7            # at the home position
-    enc_present = 8     # encoder is present. Called "present" in the docs.
-    problem = 9         # driver stopped polling, or there's a hardware problem
-    moving = 10         # the motor has a non-zero velocity (it's moving)
-    gain_support = 11   # the motor supports closed loop control
-    comm_error = 12     # controller communication error
-    minus_ls = 13       # minus limit switch is hit
-    homed = 14          # the motor has been homed
-    powerup = 15        # the motor has been homed
-    mchb = 16           # MCode heart-beat
-    stall = 17          # stall detected
+    slip_stall = 6  # slip stall is detected
+    home = 7  # at the home position
+    enc_present = 8  # encoder is present. Called "present" in the docs.
+    problem = 9  # driver stopped polling, or there's a hardware problem
+    moving = 10  # the motor has a non-zero velocity (it's moving)
+    gain_support = 11  # the motor supports closed loop control
+    comm_error = 12  # controller communication error
+    minus_ls = 13  # minus limit switch is hit
+    homed = 14  # the motor has been homed
+    powerup = 15  # the motor has been homed
+    mchb = 16  # MCode heart-beat
+    stall = 17  # stall detected
     # 6 un-used bits for byte alignment
-    errno = 24          # error number
+    errno = 24  # error number
 
 
 class ImsMstaEnum(Enum):
     """
     Enum for the LCLS IMS EPICS motor record .MSTA field bits.
     """
+
     # Note: the motor record docs start bit numbering at 1, but the MSTA bits
     # start at 0.
-    direction = 0       # last raw move direction (0: negative, 1: positive)
-    done = 1            # motion is complete
-    plus_ls = 2         # plus limit switch is hit
-    home_ls = 3         # state of the home limit switch
-    slip = 4            # continue of slip stall detect
+    direction = 0  # last raw move direction (0: negative, 1: positive)
+    done = 1  # motion is complete
+    plus_ls = 2  # plus limit switch is hit
+    home_ls = 3  # state of the home limit switch
+    slip = 4  # continue of slip stall detect
     # closed-loop positioning enabled, called "position" in the docs
     closed_loop = 5
-    slip_stall = 6      # slip stall is detected
-    home = 7            # at the home position
-    enc_enable = 8      # encoder is enabled ("EE")
-    problem = 9         # driver stopped polling, or there's a hardware problem
-    moving = 10         # the motor has a non-zero velocity (it's moving)
-    gain_support = 11   # the motor supports closed loop control
-    comm_error = 12     # controller communication error
-    minus_ls = 13       # minus limit switch is hit
-    homed = 14          # the motor has been homed
-    errno = 15          # error number (7 bits)
-    stall = 22          # stall detected
-    trip_enabled = 23   # trip enabled
-    powerup = 24        # power cycled
-    ne = 25             # numeric enable
-    by0 = 26            # MCode not running (BY = 0)
+    slip_stall = 6  # slip stall is detected
+    home = 7  # at the home position
+    enc_enable = 8  # encoder is enabled ("EE")
+    problem = 9  # driver stopped polling, or there's a hardware problem
+    moving = 10  # the motor has a non-zero velocity (it's moving)
+    gain_support = 11  # the motor supports closed loop control
+    comm_error = 12  # controller communication error
+    minus_ls = 13  # minus limit switch is hit
+    homed = 14  # the motor has been homed
+    errno = 15  # error number (7 bits)
+    stall = 22  # stall detected
+    trip_enabled = 23  # trip enabled
+    powerup = 24  # power cycled
+    ne = 25  # numeric enable
+    by0 = 26  # MCode not running (BY = 0)
     # 4 un-used bits for byte alignment
-    not_init = 31          # initializaton not finished
+    not_init = 31  # initializaton not finished
 
 
 class EpicsMotorInterface(FltMvInterface, EpicsMotor):
@@ -153,6 +156,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
            keeping track of whether or not a move was caused by this session
            and filtering self.log appropriately.
     """
+
     # Allow metadata overrides by replacing the signal classes
     user_readback = UpCpt(cls=EpicsSignalROEditMD)
     user_setpoint = UpCpt(cls=EpicsSignalEditMD)
@@ -161,45 +165,48 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     low_limit_travel = UpCpt()
 
     # Enable/Disable puts
-    disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
-    set_metadata(disabled, dict(variety='bitmask',
-                                bits=1))
+    disabled = Cpt(EpicsSignal, ".DISP", kind="omitted")
+    set_metadata(disabled, dict(variety="bitmask", bits=1))
     # Description is valuable
-    description = Cpt(EpicsSignal, '.DESC', kind='normal')
+    description = Cpt(EpicsSignal, ".DESC", kind="normal")
     # Current Dial position
-    dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
+    dial_position = Cpt(EpicsSignalRO, ".DRBV", kind="normal")
 
-    tab_whitelist = ["set_current_position", "home", "velocity",
-                     "check_limit_switches", "get_low_limit",
-                     "set_low_limit", "get_high_limit", "set_high_limit",
-                     "velocity_base", "velocity_max"]
+    tab_whitelist = [
+        "set_current_position",
+        "home",
+        "velocity",
+        "check_limit_switches",
+        "get_low_limit",
+        "set_low_limit",
+        "get_high_limit",
+        "set_high_limit",
+        "velocity_base",
+        "velocity_max",
+    ]
 
-    set_metadata(EpicsMotor.home_forward, dict(variety='command-proc',
-                                               tags={"confirm"},
-                                               value=1))
+    set_metadata(EpicsMotor.home_forward, dict(variety="command-proc", tags={"confirm"}, value=1))
     EpicsMotor.home_forward.kind = Kind.normal
-    set_metadata(EpicsMotor.home_reverse, dict(variety='command-proc',
-                                               tags={"confirm"},
-                                               value=1))
+    set_metadata(EpicsMotor.home_reverse, dict(variety="command-proc", tags={"confirm"}, value=1))
     EpicsMotor.home_reverse.kind = Kind.normal
-    set_metadata(EpicsMotor.low_limit_switch, dict(variety='bitmask', bits=1))
+    set_metadata(EpicsMotor.low_limit_switch, dict(variety="bitmask", bits=1))
     EpicsMotor.low_limit_switch.kind = Kind.normal
-    set_metadata(EpicsMotor.high_limit_switch, dict(variety='bitmask', bits=1))
+    set_metadata(EpicsMotor.high_limit_switch, dict(variety="bitmask", bits=1))
     EpicsMotor.high_limit_switch.kind = Kind.normal
-    set_metadata(EpicsMotor.motor_done_move, dict(variety='bitmask', bits=1))
+    set_metadata(EpicsMotor.motor_done_move, dict(variety="bitmask", bits=1))
     EpicsMotor.motor_done_move.kind = Kind.omitted
-    set_metadata(EpicsMotor.motor_is_moving, dict(variety='bitmask', bits=1))
+    set_metadata(EpicsMotor.motor_is_moving, dict(variety="bitmask", bits=1))
     EpicsMotor.motor_is_moving.kind = Kind.normal
-    set_metadata(EpicsMotor.motor_stop, dict(variety='command-proc', value=1))
+    set_metadata(EpicsMotor.motor_stop, dict(variety="command-proc", value=1))
     EpicsMotor.motor_stop.kind = Kind.normal
     EpicsMotor.high_limit_travel.kind = Kind.config
     EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
 
-    velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
-    velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
+    velocity_base = Cpt(EpicsSignal, ".VBAS", kind="omitted")
+    velocity_max = Cpt(EpicsSignal, ".VMAX", kind="config")
 
-    msta_raw = Cpt(EpicsSignalRO, '.MSTA', kind='omitted')
+    msta_raw = Cpt(EpicsSignalRO, ".MSTA", kind="omitted")
 
     _alarm_filter_installed: ClassVar[bool] = False
     _moved_in_session: bool
@@ -207,7 +214,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     def __init__(self, *args, **kwargs):
         self._moved_in_session = False
-        self._egu = ''
+        self._egu = ""
         super().__init__(*args, **kwargs)
         self._install_motion_error_filter()
         self.motor_egu.subscribe(self._cache_egu)
@@ -250,20 +257,19 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         status: str
             Formatted string with all relevant status information.
         """
-        precision = self.user_readback.metadata['precision'] or 3
-        description = get_status_value(status_info, 'description', 'value')
-        units = get_status_value(status_info, 'user_setpoint', 'units')
-        dial = get_status_float(status_info, 'dial_position', 'value',
-                                precision=precision)
-        user = get_status_float(status_info, 'position', precision=precision)
+        precision = self.user_readback.metadata["precision"] or 3
+        description = get_status_value(status_info, "description", "value")
+        units = get_status_value(status_info, "user_setpoint", "units")
+        dial = get_status_float(status_info, "dial_position", "value", precision=precision)
+        user = get_status_float(status_info, "position", precision=precision)
 
         low, high = self.limits
         switch_limits = self.check_limit_switches()
 
-        name = ' '.join(self.prefix.split(':'))
-        name = f'{name}: {self.prefix}'
+        name = " ".join(self.prefix.split(":"))
+        name = f"{name}: {self.prefix}"
         if description:
-            name = f'{description}: {self.prefix}'
+            name = f"{description}: {self.prefix}"
 
         return f"""\
 {name}
@@ -376,14 +382,11 @@ Limit Switch: {switch_limits}
         # command will be accepted by the motor
         if any(self.limits):
             if not (self.low_limit <= value <= self.high_limit):
-                raise LimitError("Value {} outside of range: [{}, {}]"
-                                 .format(value, self.low_limit,
-                                         self.high_limit))
+                raise LimitError("Value {} outside of range: [{}, {}]".format(value, self.low_limit, self.high_limit))
 
         # Find the value for the disabled attribute
         if self.disabled.get() == 1:
-            raise MotorDisabledError("Motor is not enabled. Motion requests "
-                                     "ignored")
+            raise MotorDisabledError("Motor is not enabled. Motion requests ignored")
 
     def check_limit_switches(self):
         """
@@ -424,18 +427,22 @@ Limit Switch: {switch_limits}
             When motor in motion or position outside of limit.
         """
         if self.moving:
-            raise ValueError('Motor is in motion, cannot set the low limit!')
+            raise ValueError("Motor is in motion, cannot set the low limit!")
 
         if value > self.position:
-            raise ValueError(f'Could not set motor low limit to {value} at'
-                             f' position {self.position}. Low limit must '
-                             'be lower than the current position.')
+            raise ValueError(
+                f"Could not set motor low limit to {value} at"
+                f" position {self.position}. Low limit must "
+                "be lower than the current position."
+            )
 
         _current_high_limit = self.limits[1]
         if value > _current_high_limit:
-            raise ValueError(f'Could not set motor low limit to {value}.'
-                             'Low limit must be lower than the current'
-                             f'high limit: {_current_high_limit}')
+            raise ValueError(
+                f"Could not set motor low limit to {value}."
+                "Low limit must be lower than the current"
+                f"high limit: {_current_high_limit}"
+            )
 
         # update EPICS limits
         self.low_limit_travel.put(value)
@@ -459,18 +466,22 @@ Limit Switch: {switch_limits}
             When motor in motion or position outside of limit.
         """
         if self.moving:
-            raise ValueError('Motor is in motion, cannot set the high limit!')
+            raise ValueError("Motor is in motion, cannot set the high limit!")
 
         if value < self.position:
-            raise ValueError(f'Could not set motor high limit to {value} '
-                             f'at position {self.position}. High limit '
-                             'must be higher than the current position.')
+            raise ValueError(
+                f"Could not set motor high limit to {value} "
+                f"at position {self.position}. High limit "
+                "must be higher than the current position."
+            )
 
         _current_low_limit = self.limits[0]
         if value < _current_low_limit:
-            raise ValueError(f'Could not set motor high limit to {value}. '
-                             'High limit must be higher than the current low '
-                             f'limit: {_current_low_limit}')
+            raise ValueError(
+                f"Could not set motor high limit to {value}. "
+                "High limit must be higher than the current low "
+                f"limit: {_current_low_limit}"
+            )
         # update EPICS limits
         self.high_limit_travel.put(value)
 
@@ -481,7 +492,7 @@ Limit Switch: {switch_limits}
 
     @raise_if_disconnected
     def set_current_position(self, pos):
-        '''Configure the motor user position to the given value
+        """Configure the motor user position to the given value
 
         Override ophyd's method temporarily for error handling.
 
@@ -489,7 +500,7 @@ Limit Switch: {switch_limits}
         ----------
         pos : number
            Position to set.
-        '''
+        """
         self.set_use_switch.put(1, wait=True)
         try:
             self.user_setpoint.put(pos, wait=True, force=True)
@@ -522,7 +533,7 @@ Limit Switch: {switch_limits}
         Returns True if the message should pass, or False if the message
         should be filtered.
         """
-        return self._moved_in_session or ' alarm ' not in record.msg
+        return self._moved_in_session or " alarm " not in record.msg
 
     def _install_motion_error_filter(self) -> None:
         """
@@ -558,6 +569,7 @@ class EpicsMotorInterfaceAlarmFilter(logging.Filter):
     Finds the EpicsMotorInterface object associated with a ophyd.objects log
     message and gives it a chance to filter the log message out.
     """
+
     def filter(self, record: logging.LogRecord) -> bool:
         """Find the motor in the device registry and run its filter."""
         try:
@@ -610,10 +622,10 @@ class PCDSMotorBase(EpicsMotorInterface):
 
     # Disable missing field that our EPICS motor record lacks
     # This attribute is tracked by the _pos_changed callback
-    direction_of_travel = Cpt(Signal, kind='omitted')
+    direction_of_travel = Cpt(Signal, kind="omitted")
     # This attribute changes if the motor is stopped and unable to move 'Stop',
     # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
-    motor_spg = Cpt(EpicsSignal, '.SPG', kind='omitted')
+    motor_spg = Cpt(EpicsSignal, ".SPG", kind="omitted")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -627,7 +639,7 @@ class PCDSMotorBase(EpicsMotorInterface):
         order to move again.
         """
 
-        return self.motor_spg.put(value='Stop')
+        return self.motor_spg.put(value="Stop")
 
     def spg_pause(self):
         """
@@ -636,11 +648,11 @@ class PCDSMotorBase(EpicsMotorInterface):
         Move will resume if :meth:`.go` is called.
         """
 
-        return self.motor_spg.put(value='Pause')
+        return self.motor_spg.put(value="Pause")
 
     def spg_go(self):
         """Resumes paused movement."""
-        return self.motor_spg.put(value='Go')
+        return self.motor_spg.put(value="Go")
 
     def check_value(self, value):
         """
@@ -665,17 +677,13 @@ class PCDSMotorBase(EpicsMotorInterface):
 
         super().check_value(value)
 
-        if self.motor_spg.get() in [0, 'Stop']:
-            raise MotorDisabledError("Motor is stopped.  Motion requests "
-                                     "ignored until motor is set to 'Go'")
+        if self.motor_spg.get() in [0, "Stop"]:
+            raise MotorDisabledError("Motor is stopped.  Motion requests ignored until motor is set to 'Go'")
 
-        if self.motor_spg.get() in [1, 'Pause']:
-            raise MotorDisabledError("Motor is paused.  If a move is set, "
-                                     "motion will resume when motor is set "
-                                     "to 'Go'")
+        if self.motor_spg.get() in [1, "Pause"]:
+            raise MotorDisabledError("Motor is paused.  If a move is set, motion will resume when motor is set to 'Go'")
 
-    def _pos_changed(self, timestamp=None, old_value=None,
-                     value=None, **kwargs):
+    def _pos_changed(self, timestamp=None, old_value=None, value=None, **kwargs):
         # Store the internal travelling direction of the motor to account for
         # the fact that our EPICS motor does not have TDIR field
         try:
@@ -683,27 +691,22 @@ class PCDSMotorBase(EpicsMotorInterface):
             self.direction_of_travel.put(comparison)
         except TypeError:
             # We have some sort of null/None/default value
-            logger.debug('Could not compare value=%s > old_value=%s',
-                         value, old_value)
+            logger.debug("Could not compare value=%s > old_value=%s", value, old_value)
         # Pass information to PositionerBase
-        super()._pos_changed(timestamp=timestamp, old_value=old_value,
-                             value=value, **kwargs)
+        super()._pos_changed(timestamp=timestamp, old_value=old_value, value=value, **kwargs)
 
     def screen(self):
         """
         Opens Epics motor expert screen e.g. for reseting motor after stalling.
         """
-        executable = 'motor-expert-screen'
+        executable = "motor-expert-screen"
         if shutil.which(executable) is None:
-            logger.error('%s is not on path, we cannot start the screen',
-                         executable)
+            logger.error("%s is not on path, we cannot start the screen", executable)
             return
         arg = self.prefix
 
-        logger.info(f'Opening {executable} for {self.name}...')
-        subprocess.run([executable, arg],
-                       stdout=subprocess.DEVNULL,
-                       stderr=subprocess.DEVNULL)
+        logger.info(f"Opening {executable} for {self.name}...")
+        subprocess.run([executable, arg], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     @raise_if_disconnected
     def set_current_position(self, pos):
@@ -737,33 +740,31 @@ class IMS(PCDSMotorBase):
 
     __doc__ += basic_positioner_init
     # Bit masks to clear errors and flags
-    _bit_flags = {'powerup': {'clear': 36,
-                              'readback': 24},
-                  'stall': {'clear': 40,
-                            'readback': 22},
-                  'error': {'clear': 48,
-                            'readback': 15,
-                            'mask': 0x7f}}
+    _bit_flags = {
+        "powerup": {"clear": 36, "readback": 24},
+        "stall": {"clear": 40, "readback": 22},
+        "error": {"clear": 48, "readback": 15, "mask": 0x7F},
+    }
     # Custom IMS bit fields
-    reinit_command = Cpt(EpicsSignal, '.RINI', kind='omitted')
-    bit_status = Cpt(EpicsSignalRO, '.MSTA', kind='omitted')
-    seq_seln = Cpt(EpicsSignal, ':SEQ_SELN', kind='omitted')
-    error_severity = Cpt(EpicsSignal, '.SEVR', kind='omitted')
-    part_number = Cpt(EpicsSignalRO, '.PN', kind='omitted')
+    reinit_command = Cpt(EpicsSignal, ".RINI", kind="omitted")
+    bit_status = Cpt(EpicsSignalRO, ".MSTA", kind="omitted")
+    seq_seln = Cpt(EpicsSignal, ":SEQ_SELN", kind="omitted")
+    error_severity = Cpt(EpicsSignal, ".SEVR", kind="omitted")
+    part_number = Cpt(EpicsSignalRO, ".PN", kind="omitted")
 
     # IMS velocity has limits
-    velocity = Cpt(EpicsSignal, '.VELO', limits=True, kind='config')
+    velocity = Cpt(EpicsSignal, ".VELO", limits=True, kind="config")
 
     tab_whitelist = [
-        'reinitialize',
-        'acceleration',
-        'clear_.*',
-        'configure',
-        'get_configuration',
-        'get_configuration_values',
-        'get_current_values',
-        'find_configuration',
-        'diff_configuration'
+        "reinitialize",
+        "acceleration",
+        "clear_.*",
+        "configure",
+        "get_configuration",
+        "get_configuration_values",
+        "get_current_values",
+        "find_configuration",
+        "diff_configuration",
     ]
 
     # The singleton parameter manager object.
@@ -802,8 +803,7 @@ class IMS(PCDSMotorBase):
         # Clear all flags
         self.clear_all_flags()
 
-    def reinitialize(self, wait: bool = False,
-                     timeout: float = 10.0) -> SubscriptionStatus:
+    def reinitialize(self, wait: bool = False, timeout: float = 10.0) -> SubscriptionStatus:
         """
         Reinitialize the IMS motor.
 
@@ -820,7 +820,7 @@ class IMS(PCDSMotorBase):
         :class:`~ophyd.status.SubscriptionStatus`
             Status object reporting the initialization state of the motor.
         """
-        logger.info('Reinitializing motor')
+        logger.info("Reinitializing motor")
         # Issue command
         self.reinit_command.put(1)
 
@@ -849,7 +849,7 @@ class IMS(PCDSMotorBase):
         val = int(self.msta_raw.get())
         d = dict()
         for bit in ImsMstaEnum:
-            if bit.name == 'errno':
+            if bit.name == "errno":
                 d[bit.name] = (val >> bit.value) & 0x7F  # 7 bit error number
             else:
                 d[bit.name] = (val >> bit.value) & 0x1
@@ -863,22 +863,22 @@ class IMS(PCDSMotorBase):
 
     def clear_powerup(self, wait=False, timeout=10):
         """Clear powerup flag."""
-        return self._clear_flag('powerup', wait=wait, timeout=timeout)
+        return self._clear_flag("powerup", wait=wait, timeout=timeout)
 
     def clear_stall(self, wait=False, timeout=5):
         """Clear stall flag."""
-        return self._clear_flag('stall', wait=wait, timeout=timeout)
+        return self._clear_flag("stall", wait=wait, timeout=timeout)
 
     def clear_error(self, wait=False, timeout=10):
         """Clear error flag."""
-        return self._clear_flag('error', wait=wait, timeout=timeout)
+        return self._clear_flag("error", wait=wait, timeout=timeout)
 
     def _clear_flag(self, flag, wait=False, timeout=10):
         """Clear flag whose information is in :attr:`._bit_flags`"""
         # Gather our flag information
         flag_info = self._bit_flags[flag]
-        bit = flag_info['readback']
-        mask = flag_info.get('mask', 1)
+        bit = flag_info["readback"]
+        mask = flag_info.get("mask", 1)
 
         # Create a callback function to check for bit
         def flag_is_cleared(value=None, **kwargs):
@@ -892,8 +892,8 @@ class IMS(PCDSMotorBase):
             return st
 
         # Issue our command
-        logger.info('Clearing %s flag ...', flag)
-        self.seq_seln.put(flag_info['clear'])
+        logger.info("Clearing %s flag ...", flag)
+        self.seq_seln.put(flag_info["clear"])
         # Generate a status
         st = SubscriptionStatus(self.bit_status, flag_is_cleared)
         if wait:
@@ -903,23 +903,24 @@ class IMS(PCDSMotorBase):
     @property
     def md(self):
         if self._md is None:
-            raise AttributeError('Device does not have an attached md, '
-                                 'and was likely not initialized from happi')
+            raise AttributeError("Device does not have an attached md, and was likely not initialized from happi")
         return self._md
 
     @md.setter
     def md(self, new_md):
-        """ initialize attributes when md is set """
+        """initialize attributes when md is set"""
         self._md = new_md
         self._extra = self._md.extraneous
-        self._id = self._extra.get('_id')
-        self._pvbase = self._extra.get('pvbase')
-        self._stageidentity = self._extra.get('stageidentity')
+        self._id = self._extra.get("_id")
+        self._pvbase = self._extra.get("pvbase")
+        self._stageidentity = self._extra.get("stageidentity")
         if self._stageidentity is None:
             logger.warning(f"Stage Identity has not been set for this object: {self._id}. Configure manually.")
             return
         elif self._stageidentity == "NEW":
-            logger.warning(f"This is a new stage, parameter manager configuration does not exist yet. Please manually configure {self._id}")
+            logger.warning(
+                f"This is a new stage, parameter manager configuration does not exist yet. Please manually configure {self._id}"
+            )
             return
         else:
             try:
@@ -989,8 +990,8 @@ class IMS(PCDSMotorBase):
         self._setup_and_check_pmgr()
 
         self._pm.update_db()
-        o = self._pm._search(self._pm.pm.objs, 'rec_base', pv)
-        return self._pm.pm.getActualConfig(o['id'])
+        o = self._pm._search(self._pm.pm.objs, "rec_base", pv)
+        return self._pm.pm.getActualConfig(o["id"])
 
     @staticmethod
     def find_configuration(pattern, case_insensitive=True, display=30):
@@ -1012,13 +1013,12 @@ class IMS(PCDSMotorBase):
         Returns a list of strings if display is None, and nothing otherwise.
         """
         IMS._setup_and_check_pmgr()
-        matches = IMS._pm.match_config(pattern, ci=case_insensitive, parent='USR')
+        matches = IMS._pm.match_config(pattern, ci=case_insensitive, parent="USR")
         if display is None:
             return matches
         if len(matches) >= display:
             print("'%s' matches %d configurations." % (pattern, len(matches)))
-            print("Use a more restrictive pattern or "
-                  "larger value for display (%d)." % display)
+            print("Use a more restrictive pattern or larger value for display (%d)." % display)
         else:
             print("Matches for '%s':" % pattern)
             for m in matches:
@@ -1060,21 +1060,21 @@ class IMS(PCDSMotorBase):
         try:
             from pmgr import pmgrAPI
         except ImportError:
-            logger.error('Failed to import pmgr!')
-            logger.debug('', exc_info=True)
+            logger.error("Failed to import pmgr!")
+            logger.debug("", exc_info=True)
             IMS._pm_init_error = True
         try:
             hutch = get_hutch_name()
         except Exception:
-            logger.error('Could not determine hutch for pmgr!')
-            logger.debug('', exc_info=True)
+            logger.error("Could not determine hutch for pmgr!")
+            logger.debug("", exc_info=True)
             IMS._pm_init_error = True
             return
         try:
             IMS._pm = pmgrAPI.pmgrAPI("ims_motor", hutch)
         except Exception:
-            logger.error('Failed to create IMS pmgr object!')
-            logger.debug('', exc_info=True)
+            logger.error("Failed to create IMS pmgr object!")
+            logger.debug("", exc_info=True)
             IMS._pm_init_error = True
             return
 
@@ -1086,9 +1086,9 @@ class IMS(PCDSMotorBase):
     @staticmethod
     def check_pmgr():
         if IMS._pm is None:
-            raise RuntimeError('pmgr has not been set up yet, call setup_pmgr')
+            raise RuntimeError("pmgr has not been set up yet, call setup_pmgr")
         if IMS._pm_init_error:
-            raise RuntimeError('pmgr not available, initialized with an error')
+            raise RuntimeError("pmgr not available, initialized with an error")
 
     @staticmethod
     def _setup_and_check_pmgr():
@@ -1110,27 +1110,25 @@ class Newport(PCDSMotorBase):
     # Overrides are in roughly the same order as from EpicsMotor
 
     # Override from EpicsMotor to disable
-    offset_freeze_switch = Cpt(Signal, kind='omitted')
+    offset_freeze_switch = Cpt(Signal, kind="omitted")
 
     # Override from EpicsMotor to add subscription
     motor_egu = UpCpt()
 
     # Override from EpicsMotor to disable
-    home_forward = Cpt(Signal, kind='omitted')
-    home_reverse = Cpt(Signal, kind='omitted')
+    home_forward = Cpt(Signal, kind="omitted")
+    home_reverse = Cpt(Signal, kind="omitted")
 
     # Add new signal for subscription
-    motor_prec = Cpt(EpicsSignalRO, '.PREC', kind='omitted',
-                     auto_monitor=True)
+    motor_prec = Cpt(EpicsSignalRO, ".PREC", kind="omitted", auto_monitor=True)
 
-    velocity_max = Cpt(EpicsSignalRO, '.SVEL', kind='config')
-    velocity_base = Cpt(Signal, kind='omitted')
+    velocity_max = Cpt(EpicsSignalRO, ".SVEL", kind="config")
+    velocity_base = Cpt(Signal, kind="omitted")
 
     def home(self, *args, **kwargs):
         # This function should eventually be used. There is a way to home
         # Newport motors to a reference mark
-        raise NotImplementedError("Homing is not yet implemented for Newport "
-                                  "motors")
+        raise NotImplementedError("Homing is not yet implemented for Newport motors")
 
     @property
     def msta(self):
@@ -1141,7 +1139,7 @@ class Newport(PCDSMotorBase):
         val = int(self.msta_raw.get())
         d = dict()
         for bit in NewportMstaEnum:
-            if bit.name == 'errno':
+            if bit.name == "errno":
                 d[bit.name] = (val >> bit.value) & 0xFF  # 8 bit error number
             else:
                 d[bit.name] = (val >> bit.value) & 0x1
@@ -1168,7 +1166,7 @@ DelayNewport = delay_class_factory(Newport)
 
 
 class OffsetMotor(OffsetMotorBase):
-    motor = FCpt(IMS, '{self._motor_prefix}')
+    motor = FCpt(IMS, "{self._motor_prefix}")
 
 
 class OffsetIMSWithPreset(OffsetMotorBase):
@@ -1177,12 +1175,13 @@ class OffsetIMSWithPreset(OffsetMotorBase):
 
     This motor puts to an additional PV (_SET) during `set_current_postion`.
     """
-    motor = FCpt(IMS, '{self._motor_prefix}')
-    offset_set_pv = FCpt(EpicsSignal, '{self._prefix}_SET', kind='normal')
+
+    motor = FCpt(IMS, "{self._motor_prefix}")
+    offset_set_pv = FCpt(EpicsSignal, "{self._prefix}_SET", kind="normal")
 
     # override the set_current_position
     def set_current_position(self, position):
-        '''
+        """
         Override this method defined in OffsetMotorBase to allow setting the
         new current position to the _SET pv as well.
 
@@ -1193,7 +1192,7 @@ class OffsetIMSWithPreset(OffsetMotorBase):
         ----------
         position : number
             The new current position.
-        '''
+        """
         self.user_offset.put(0.0)
         new_offset = position - self.position[0]
         self.offset_set_pv.put(new_offset)
@@ -1211,8 +1210,8 @@ class PMC100(PCDSMotorBase):
 
     __doc__ += basic_positioner_init
 
-    home_forward = Cpt(Signal, kind='omitted')
-    home_reverse = Cpt(Signal, kind='omitted')
+    home_forward = Cpt(Signal, kind="omitted")
+    home_reverse = Cpt(Signal, kind="omitted")
 
     def home(self, *args, **kwargs):
         raise NotImplementedError("PMC100 motors have no homing procedure")
@@ -1230,44 +1229,37 @@ class MMC100(PCDSMotorBase):
     __doc__ += basic_positioner_init
     # Overrides are in roughly the same order as from EpicsMotor
 
-    offset_freeze_switch = Cpt(Signal, kind='omitted')
+    offset_freeze_switch = Cpt(Signal, kind="omitted")
 
-    home_forward = Cpt(EpicsSignal, '.MLP', kind='omitted')
-    home_reverse = Cpt(EpicsSignal, '.MLN', kind='omitted')
+    home_forward = Cpt(EpicsSignal, ".MLP", kind="omitted")
+    home_reverse = Cpt(EpicsSignal, ".MLN", kind="omitted")
 
-    velocity_base = Cpt(Signal, kind='omitted')
+    velocity_base = Cpt(Signal, kind="omitted")
 
 
 class BeckhoffAxisPLC(Device):
     """
     Error handling, debug, and aux functions for the Beckhoff Axis PLC code.
     """
-    status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
-                 string=True, doc='PLC error or warning')
-    err_bool = Cpt(PytmcSignal, 'bError', io='i', kind='normal',
-                   doc='True if there is some sort of error.')
-    err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal',
-                   doc='Current NC error code')
-    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='io', kind='normal',
-                        doc='Command to reset an active error')
-    enc_count = Cpt(PytmcSignal, 'nEncoderCount', io='i', kind='normal',
-                    doc='Raw encoder count for this motor.')
-    posdiff = Cpt(PytmcSignal, 'fPosDiff', io='i', kind='normal',
-                  doc='Difference between trajectory setpoint and readback.')
-    hardware_enable = Cpt(PytmcSignal, 'bHardwareEnable', io='i', kind='normal',
-                          doc='TRUE if motor has its hardware enable.')
-    cmd_home = Cpt(PytmcSignal, 'bHomeCmd', io='o', kind='normal',
-                   doc='Start TwinCAT homing routine.')
-    home_pos = Cpt(PytmcSignal, 'fHomePosition', io='io', kind='config',
-                   doc='Numeric position of home.')
-    user_enable = Cpt(PytmcSignal, 'bUserEnable', io='io', kind='config',
-                      doc='Power enable/disable')
 
-    set_metadata(err_code, dict(variety='scalar', display_format='hex'))
-    set_metadata(cmd_err_reset, dict(variety='command', value=1))
-    set_metadata(cmd_home, dict(variety='command-proc',
-                                value=1,
-                                tags={"confirm"}))
+    status = Cpt(PytmcSignal, "sErrorMessage", io="i", kind="normal", string=True, doc="PLC error or warning")
+    err_bool = Cpt(PytmcSignal, "bError", io="i", kind="normal", doc="True if there is some sort of error.")
+    err_code = Cpt(PytmcSignal, "nErrorId", io="i", kind="normal", doc="Current NC error code")
+    cmd_err_reset = Cpt(PytmcSignal, "bReset", io="io", kind="normal", doc="Command to reset an active error")
+    enc_count = Cpt(PytmcSignal, "nEncoderCount", io="i", kind="normal", doc="Raw encoder count for this motor.")
+    posdiff = Cpt(
+        PytmcSignal, "fPosDiff", io="i", kind="normal", doc="Difference between trajectory setpoint and readback."
+    )
+    hardware_enable = Cpt(
+        PytmcSignal, "bHardwareEnable", io="i", kind="normal", doc="TRUE if motor has its hardware enable."
+    )
+    cmd_home = Cpt(PytmcSignal, "bHomeCmd", io="o", kind="normal", doc="Start TwinCAT homing routine.")
+    home_pos = Cpt(PytmcSignal, "fHomePosition", io="io", kind="config", doc="Numeric position of home.")
+    user_enable = Cpt(PytmcSignal, "bUserEnable", io="io", kind="config", doc="Power enable/disable")
+
+    set_metadata(err_code, dict(variety="scalar", display_format="hex"))
+    set_metadata(cmd_err_reset, dict(variety="command", value=1))
+    set_metadata(cmd_home, dict(variety="command-proc", value=1, tags={"confirm"}))
 
 
 class BeckhoffAxisPLCEPS(BeckhoffAxisPLC):
@@ -1278,6 +1270,7 @@ class BeckhoffAxisPLCEPS(BeckhoffAxisPLC):
     has EPS considerations. Otherwise, these fields are not active
     in PLC logic and are distracting or confusing.
     """
+
     eps_forward = Cpt(EPS, "stEPSF:", doc="EPS forward enables.")
     eps_backward = Cpt(EPS, "stEPSB:", doc="EPS backward enables.")
     eps_power = Cpt(EPS, "stEPSP:", doc="EPS power enables.")
@@ -1294,18 +1287,16 @@ class BeckhoffAxis(EpicsMotorInterface):
     """
 
     __doc__ += basic_positioner_init
-    tab_whitelist = ['clear_error']
+    tab_whitelist = ["clear_error"]
 
-    plc = FCpt(BeckhoffAxisPLC, '{prefix}{_plc_suffix}', kind='normal',
-               doc='PLC error handling and aux functions.')
-    motor_spmg = Cpt(EpicsSignal, '.SPMG', kind='config',
-                     doc='Stop, Pause, Move, Go')
+    plc = FCpt(BeckhoffAxisPLC, "{prefix}{_plc_suffix}", kind="normal", doc="PLC error handling and aux functions.")
+    motor_spmg = Cpt(EpicsSignal, ".SPMG", kind="config", doc="Stop, Pause, Move, Go")
 
     # Clear the normal homing PVs that don't really work here
     home_forward = None
     home_reverse = None
 
-    def __init__(self, prefix, *, plc_suffix=':PLC:', **kwargs):
+    def __init__(self, prefix, *, plc_suffix=":PLC:", **kwargs):
         self._plc_suffix = plc_suffix
         super().__init__(prefix, **kwargs)
 
@@ -1335,14 +1326,17 @@ class BeckhoffAxis(EpicsMotorInterface):
         # Mutate subscribe appropriately if this is the exact sub req done
         # Or if it's a similar one using non-deprecated set_finished
         # See PositionerBase.move
-        if all((
-            event_type == self._SUB_REQ_DONE,
-            callback.__qualname__ in (
-                'StatusBase._finished',
-                'StatusBase.set_finished',
-            ),
-            not run,
-        )):
+        if all(
+            (
+                event_type == self._SUB_REQ_DONE,
+                callback.__qualname__
+                in (
+                    "StatusBase._finished",
+                    "StatusBase.set_finished",
+                ),
+                not run,
+            )
+        ):
             # Find the actual status object
             status = callback.__self__
             # Slip in the more specific end move handler
@@ -1374,7 +1368,7 @@ class BeckhoffAxis(EpicsMotorInterface):
         if has_error:
             error_message = self.plc.status.get()
             if not error_message:
-                error_message = 'Unspecified error'
+                error_message = "Unspecified error"
             error_code = self.plc.err_code.get()
             if error_code > 0:
                 error_message = f"{hex(error_code)}: {error_message}"
@@ -1409,12 +1403,10 @@ class BeckhoffAxis(EpicsMotorInterface):
         self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
         self._reset_sub(self._SUB_REQ_DONE)
 
-        status = MoveStatus(self, self.plc.home_pos.get(),
-                            timeout=None, settle_time=self._settle_time)
+        status = MoveStatus(self, self.plc.home_pos.get(), timeout=None, settle_time=self._settle_time)
         self.plc.cmd_home.put(1)
 
-        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE,
-                       run=False)
+        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE, run=False)
 
         try:
             if wait:
@@ -1441,8 +1433,7 @@ class BeckhoffAxis(EpicsMotorInterface):
         velo = self.velocity.get()
         if velo <= 0:
             raise RuntimeError(
-                f'{self.name} velocity is {velo}, which is not valid. '
-                'Please configure a nonzero, positive velocity.'
+                f"{self.name} velocity is {velo}, which is not valid. Please configure a nonzero, positive velocity."
             )
 
 
@@ -1454,8 +1445,8 @@ class BeckhoffAxisEPS(BeckhoffAxis):
     Otherwise, these fields are not active in PLC logic and are distracting
     or confusing.
     """
-    plc = Cpt(BeckhoffAxisPLCEPS, ':PLC:', kind='normal',
-              doc='PLC error handling, aux functions, and EPS.')
+
+    plc = Cpt(BeckhoffAxisPLCEPS, ":PLC:", kind="normal", doc="PLC error handling, aux functions, and EPS.")
 
 
 class BeckhoffAxisEPSCustom(BeckhoffAxis):
@@ -1467,6 +1458,7 @@ class BeckhoffAxisEPSCustom(BeckhoffAxis):
     /cds/group/pcds/epics-dev/screens/pydm/eps_screens/${beamline}/${name}
 
     """
+
     pass
 
 
@@ -1474,6 +1466,7 @@ class BeckhoffAxisPLC_Pre140(BeckhoffAxisPLC):
     """
     Disable some newly introduced signals.
     """
+
     posdiff = None
     cmd_home = None
     home_pos = None
@@ -1488,8 +1481,8 @@ class BeckhoffAxis_Pre140(BeckhoffAxis):
     prior to v1.4.0, which is when the homing routines were
     introduced.
     """
-    plc = Cpt(BeckhoffAxisPLC_Pre140, ':PLC:', kind='normal',
-              doc='PLC error handling and aux functions.')
+
+    plc = Cpt(BeckhoffAxisPLC_Pre140, ":PLC:", kind="normal", doc="PLC error handling and aux functions.")
 
     def home(self, *args, **kwargs):
         """
@@ -1512,6 +1505,7 @@ class BeckhoffAxisNoOffset(BeckhoffAxis):
     Rather than removing these entirely, keep them readable in case it is
     useful to know their values.
     """
+
     user_offset = UpCpt(cls=EpicsSignalRO)
     user_offset_dir = UpCpt(cls=EpicsSignalRO)
     offset_freeze_switch = UpCpt(cls=EpicsSignalRO)
@@ -1520,6 +1514,7 @@ class BeckhoffAxisNoOffset(BeckhoffAxis):
 
 class MotorDisabledError(Exception):
     """Error that indicates that we are not allowed to move."""
+
     pass
 
 
@@ -1545,52 +1540,47 @@ class SmarActOpenLoop(Device):
     """
 
     # Voltage for sawtooth ramp
-    step_voltage = Cpt(EpicsSignal, ':STEP_VOLTAGE', kind='omitted',
-                       doc='Voltage for sawtooth (0-100V)')
+    step_voltage = Cpt(EpicsSignal, ":STEP_VOLTAGE", kind="omitted", doc="Voltage for sawtooth (0-100V)")
     # Frequency of steps
-    step_freq = Cpt(EpicsSignal, ':STEP_FREQ', kind='config',
-                    doc='Sawtooth drive frequency')
+    step_freq = Cpt(EpicsSignal, ":STEP_FREQ", kind="config", doc="Sawtooth drive frequency")
     # Number of steps per step forward, backward command
-    jog_step_size = Cpt(EpicsSignal, ':STEP_COUNT', kind='normal',
-                        doc='Number of steps per FWD/BWD command')
+    jog_step_size = Cpt(EpicsSignal, ":STEP_COUNT", kind="normal", doc="Number of steps per FWD/BWD command")
     # Jog forward
-    jog_fwd = Cpt(EpicsSignal, ':STEP_FORWARD', kind='normal',
-                  doc='Jog the stage forward')
-    set_metadata(jog_fwd, dict(variety='command-proc', value=1))
+    jog_fwd = Cpt(EpicsSignal, ":STEP_FORWARD", kind="normal", doc="Jog the stage forward")
+    set_metadata(jog_fwd, dict(variety="command-proc", value=1))
     # Jog backward
-    jog_rev = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal',
-                  doc='Jog the stage backward')
-    set_metadata(jog_rev, dict(variety='command-proc', value=1))
+    jog_rev = Cpt(EpicsSignal, ":STEP_REVERSE", kind="normal", doc="Jog the stage backward")
+    set_metadata(jog_rev, dict(variety="command-proc", value=1))
     # Total number of steps counted
-    total_step_count = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT', kind='normal',
-                           doc='Current open loop step count')
+    total_step_count = Cpt(EpicsSignalRO, ":TOTAL_STEP_COUNT", kind="normal", doc="Current open loop step count")
     # Reset steps ("home")
-    step_clear_cmd = Cpt(EpicsSignal, ':CLEAR_COUNT', kind='config',
-                         doc='Clear the current step count')
-    set_metadata(step_clear_cmd, dict(variety='command-proc', value=1))
+    step_clear_cmd = Cpt(EpicsSignal, ":CLEAR_COUNT", kind="config", doc="Clear the current step count")
+    set_metadata(step_clear_cmd, dict(variety="command-proc", value=1))
     # Scan move
-    scan_move = Cpt(EpicsSignal, ':SCAN_POS', write_pv=':SCAN_MOVE',
-                    kind='config',
-                    doc='Set current piezo voltage (in 16 bit ADC steps)')
+    scan_move = Cpt(
+        EpicsSignal,
+        ":SCAN_POS",
+        write_pv=":SCAN_MOVE",
+        kind="config",
+        doc="Set current piezo voltage (in 16 bit ADC steps)",
+    )
     # Diagnostic read only PVs
-    channel_temp = Cpt(EpicsSignalRO, ':CHANTEMP', kind='normal',
-                       doc="Temperature at the channel's amplifier")
-    module_temp = Cpt(EpicsSignalRO, ':MODTEMP', kind='normal',
-                      doc='Temperature of the MCS2 Module in the rack')
+    channel_temp = Cpt(EpicsSignalRO, ":CHANTEMP", kind="normal", doc="Temperature at the channel's amplifier")
+    module_temp = Cpt(EpicsSignalRO, ":MODTEMP", kind="normal", doc="Temperature of the MCS2 Module in the rack")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Long name shenanigans
-        _set_long_name(self.step_voltage, 'Step Voltage')
-        _set_long_name(self.step_freq, 'Step Frequency')
-        _set_long_name(self.jog_step_size, 'Jog Step Size')
-        _set_long_name(self.jog_fwd, 'Jog Forward')
-        _set_long_name(self.jog_rev, 'Jog Backward')
-        _set_long_name(self.total_step_count, 'Total Step Count')
-        _set_long_name(self.step_clear_cmd, 'Clear Step Count')
-        _set_long_name(self.scan_move, 'Scan Voltage')
-        _set_long_name(self.channel_temp, 'Channel Temp. (°C)')
-        _set_long_name(self.module_temp, 'Module Temp. (°C)')
+        _set_long_name(self.step_voltage, "Step Voltage")
+        _set_long_name(self.step_freq, "Step Frequency")
+        _set_long_name(self.jog_step_size, "Jog Step Size")
+        _set_long_name(self.jog_fwd, "Jog Forward")
+        _set_long_name(self.jog_rev, "Jog Backward")
+        _set_long_name(self.total_step_count, "Total Step Count")
+        _set_long_name(self.step_clear_cmd, "Clear Step Count")
+        _set_long_name(self.scan_move, "Scan Voltage")
+        _set_long_name(self.channel_temp, "Channel Temp. (°C)")
+        _set_long_name(self.module_temp, "Module Temp. (°C)")
 
 
 class SmarActTipTilt(Device):
@@ -1621,10 +1611,10 @@ class SmarActTipTilt(Device):
     tt2 = SmarActTipTilt(tip_pv='LAS:MCS2:01:M1', tilt_pv='LAS:MCS2:02:M1')
     """
 
-    tip = FCpt(SmarActOpenLoop, '{prefix}{self._tip_pv}', kind='normal')
-    tilt = FCpt(SmarActOpenLoop, '{prefix}{self._tilt_pv}', kind='normal')
+    tip = FCpt(SmarActOpenLoop, "{prefix}{self._tip_pv}", kind="normal")
+    tilt = FCpt(SmarActOpenLoop, "{prefix}{self._tilt_pv}", kind="normal")
 
-    def __init__(self, prefix='', *, tip_pv, tilt_pv, **kwargs):
+    def __init__(self, prefix="", *, tip_pv, tilt_pv, **kwargs):
         self._tip_pv = tip_pv
         self._tilt_pv = tilt_pv
         super().__init__(prefix, **kwargs)
@@ -1635,90 +1625,86 @@ class SmarActOpenLoopPositioner(PVPositionerComparator):
     Positioner class for SmarAct open loop stages. Intended to be used in
     BlueSky scans. Uses an integer open loop step count as the position.
     """
-    setpoint = Cpt(EpicsSignal, ':SET_TOTAL_STEP_COUNT')
-    readback = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT')
+
+    setpoint = Cpt(EpicsSignal, ":SET_TOTAL_STEP_COUNT")
+    readback = Cpt(EpicsSignalRO, ":TOTAL_STEP_COUNT")
     atol = 1  # step count after move should be exact, but let's be cautious
 
-    egu = 'steps'
+    egu = "steps"
 
-    open_loop = Cpt(SmarActOpenLoop, '', kind='normal')
+    open_loop = Cpt(SmarActOpenLoop, "", kind="normal")
 
     def done_comparator(self, readback, setpoint):
-        return setpoint-self.atol < readback < setpoint+self.atol
+        return setpoint - self.atol < readback < setpoint + self.atol
 
 
 class SmarAct(EpicsMotorInterface):
     """
     Class for encoded SmarAct motors controlled via the MCS2 controller.
     """
+
     # Positioner type - only useful for encoded stages
-    pos_type = Cpt(EpicsSignal, ':PTYPE_RBV', write_pv=':PTYPE', kind='config')
+    pos_type = Cpt(EpicsSignal, ":PTYPE_RBV", write_pv=":PTYPE", kind="config")
 
     # Calibration - only works for encoded stages
-    needs_calib = Cpt(EpicsSignalRO, ':NEED_CALIB', kind='config')
+    needs_calib = Cpt(EpicsSignalRO, ":NEED_CALIB", kind="config")
 
-    do_calib = Cpt(EpicsSignal, ':DO_CALIB.PROC', kind='config')
-    set_metadata(do_calib, dict(variety='command-proc', value=1))
+    do_calib = Cpt(EpicsSignal, ":DO_CALIB.PROC", kind="config")
+    set_metadata(do_calib, dict(variety="command-proc", value=1))
 
     # Configuration for settings in NVRAM
-    log_scale_offset = Cpt(EpicsSignal, ':LSCO', write_pv=':SET_LSCO',
-                           kind='omitted', doc='Logical Scale Offset')
-    def_range_min = Cpt(EpicsSignal, ':DRMIN', write_pv=':SET_DRMIN',
-                        kind='omitted', doc='Default Range Minimum')
-    def_range_max = Cpt(EpicsSignal, ':DRMAX', write_pv=':SET_DRMAX',
-                        kind='omitted', doc='Default Range Maximum')
-    log_scale_inv = Cpt(EpicsSignal, ':LSCI_RBV', write_pv=':SET_LSCI',
-                        kind='omitted', doc='Default Range Minimum')
-    dist_code_inv = Cpt(EpicsSignal, ':DCIN_RBV', write_pv=':SET_DCIN',
-                        kind='omitted', doc='Distance Code Inversion')
+    log_scale_offset = Cpt(EpicsSignal, ":LSCO", write_pv=":SET_LSCO", kind="omitted", doc="Logical Scale Offset")
+    def_range_min = Cpt(EpicsSignal, ":DRMIN", write_pv=":SET_DRMIN", kind="omitted", doc="Default Range Minimum")
+    def_range_max = Cpt(EpicsSignal, ":DRMAX", write_pv=":SET_DRMAX", kind="omitted", doc="Default Range Maximum")
+    log_scale_inv = Cpt(EpicsSignal, ":LSCI_RBV", write_pv=":SET_LSCI", kind="omitted", doc="Default Range Minimum")
+    dist_code_inv = Cpt(EpicsSignal, ":DCIN_RBV", write_pv=":SET_DCIN", kind="omitted", doc="Distance Code Inversion")
 
     # Diagnostic read only PVs
-    channel_temp = Cpt(EpicsSignalRO, ':CHANTEMP', kind='normal',
-                       doc="Temperature at the channel's amplifier")
-    module_temp = Cpt(EpicsSignalRO, ':MODTEMP', kind='normal',
-                      doc='Temperature of the MCS2 Module in the rack')
-    channel_state_raw = Cpt(EpicsSignalRO, ':STATE_RBV', kind='omitted',
-                            doc='Channel state bitmask represented as raw int')
+    channel_temp = Cpt(EpicsSignalRO, ":CHANTEMP", kind="normal", doc="Temperature at the channel's amplifier")
+    module_temp = Cpt(EpicsSignalRO, ":MODTEMP", kind="normal", doc="Temperature of the MCS2 Module in the rack")
+    channel_state_raw = Cpt(
+        EpicsSignalRO, ":STATE_RBV", kind="omitted", doc="Channel state bitmask represented as raw int"
+    )
 
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
-    open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
+    open_loop = Cpt(SmarActOpenLoop, "", kind="omitted")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Long name shenanigans
         # Motor Record long name overrides
-        _set_long_name(self.velocity, 'Velocity')
-        _set_long_name(self.velocity_base, 'Velocity Min')
-        _set_long_name(self.velocity_max, 'Velocity Max')
-        _set_long_name(self.acceleration, 'Acceleration')
-        _set_long_name(self.motor_stop, 'Stop Motor')
-        _set_long_name(self.motor_is_moving, 'Actively Moving')
-        _set_long_name(self.dial_position, 'Dial Position')
-        _set_long_name(self.direction_of_travel, 'Direction of Travel')
-        _set_long_name(self.home_forward, 'Home Forward')
-        _set_long_name(self.home_reverse, 'Home Backward')
-        _set_long_name(self.low_limit_switch, 'Low Limit Switch')
-        _set_long_name(self.high_limit_switch, 'High Limit Switch')
-        _set_long_name(self.high_limit_travel, 'High Limit Travel')
-        _set_long_name(self.low_limit_travel, 'Low Limit Travel')
-        _set_long_name(self.user_setpoint, 'Setpoint')
-        _set_long_name(self.user_offset, 'User Offset')
-        _set_long_name(self.user_offset_dir, 'User Offset Direction')
-        _set_long_name(self.motor_egu, 'EGU')
-        _set_long_name(self.description, 'Description')
+        _set_long_name(self.velocity, "Velocity")
+        _set_long_name(self.velocity_base, "Velocity Min")
+        _set_long_name(self.velocity_max, "Velocity Max")
+        _set_long_name(self.acceleration, "Acceleration")
+        _set_long_name(self.motor_stop, "Stop Motor")
+        _set_long_name(self.motor_is_moving, "Actively Moving")
+        _set_long_name(self.dial_position, "Dial Position")
+        _set_long_name(self.direction_of_travel, "Direction of Travel")
+        _set_long_name(self.home_forward, "Home Forward")
+        _set_long_name(self.home_reverse, "Home Backward")
+        _set_long_name(self.low_limit_switch, "Low Limit Switch")
+        _set_long_name(self.high_limit_switch, "High Limit Switch")
+        _set_long_name(self.high_limit_travel, "High Limit Travel")
+        _set_long_name(self.low_limit_travel, "Low Limit Travel")
+        _set_long_name(self.user_setpoint, "Setpoint")
+        _set_long_name(self.user_offset, "User Offset")
+        _set_long_name(self.user_offset_dir, "User Offset Direction")
+        _set_long_name(self.motor_egu, "EGU")
+        _set_long_name(self.description, "Description")
         # SmarAct specific long names
-        _set_long_name(self.pos_type, 'Positioner Type')
-        _set_long_name(self.needs_calib, 'Needs Calibration?')
-        _set_long_name(self.do_calib, 'Calibrate')
-        _set_long_name(self.log_scale_offset, 'Logical Scale Offset')
-        _set_long_name(self.def_range_min, 'Default Range Min.')
-        _set_long_name(self.def_range_max, 'Default Range Max')
-        _set_long_name(self.log_scale_inv, 'Logical Scale Inversion')
-        _set_long_name(self.dist_code_inv, 'Distance Code Inversion')
-        _set_long_name(self.channel_temp, 'Channel Temp. (°C)')
-        _set_long_name(self.module_temp, 'Module Temp. (°C)')
-        _set_long_name(self.channel_state_raw, 'Channel State')
+        _set_long_name(self.pos_type, "Positioner Type")
+        _set_long_name(self.needs_calib, "Needs Calibration?")
+        _set_long_name(self.do_calib, "Calibrate")
+        _set_long_name(self.log_scale_offset, "Logical Scale Offset")
+        _set_long_name(self.def_range_min, "Default Range Min.")
+        _set_long_name(self.def_range_max, "Default Range Max")
+        _set_long_name(self.log_scale_inv, "Logical Scale Inversion")
+        _set_long_name(self.dist_code_inv, "Distance Code Inversion")
+        _set_long_name(self.channel_temp, "Channel Temp. (°C)")
+        _set_long_name(self.module_temp, "Module Temp. (°C)")
+        _set_long_name(self.channel_state_raw, "Channel State")
 
 
 class SmarActEncodedTipTilt(Device):
@@ -1727,10 +1713,11 @@ class SmarActEncodedTipTilt(Device):
     positioning configuration into a single device.
     Refer to SmarActTipTilt for more info.
     """
-    tip = FCpt(SmarAct, '{prefix}{self._tip_pv}', kind='normal')
-    tilt = FCpt(SmarAct, '{prefix}{self._tilt_pv}', kind='normal')
 
-    def __init__(self, prefix='', *, tip_pv, tilt_pv, **kwargs):
+    tip = FCpt(SmarAct, "{prefix}{self._tip_pv}", kind="normal")
+    tilt = FCpt(SmarAct, "{prefix}{self._tilt_pv}", kind="normal")
+
+    def __init__(self, prefix="", *, tip_pv, tilt_pv, **kwargs):
         self._tip_pv = tip_pv
         self._tilt_pv = tilt_pv
         super().__init__(prefix, **kwargs)
@@ -1744,48 +1731,28 @@ class SmarActChannelState(Device):
     read-only pytmc record, suitable for Typhos status indicators. The raw
     bitmask remains available on the parent as ``channel_state_raw``.
     """
-    moving = Cpt(PytmcSignal, ':MOVING', io='i', kind='normal',
-                 doc='Actively moving')
-    closed_loop = Cpt(PytmcSignal, ':CLOSED_LOOP', io='i', kind='normal',
-                      doc='Closed loop active')
-    calibrating = Cpt(PytmcSignal, ':CALIBRATING', io='i', kind='normal',
-                      doc='Calibrating')
-    referencing = Cpt(PytmcSignal, ':REFERENCING', io='i', kind='normal',
-                      doc='Referencing')
-    move_delayed = Cpt(PytmcSignal, ':MOVE_DELAYED', io='i', kind='normal',
-                       doc='Move delayed')
-    sensor_present = Cpt(PytmcSignal, ':SENSOR_PRESENT', io='i', kind='normal',
-                         doc='Sensor present')
-    calibrated = Cpt(PytmcSignal, ':CALIBRATED', io='i', kind='normal',
-                     doc='Is calibrated')
-    referenced = Cpt(PytmcSignal, ':REFERENCED', io='i', kind='normal',
-                     doc='Is referenced')
-    end_stop = Cpt(PytmcSignal, ':END_STOP', io='i', kind='normal',
-                   doc='End stop reached')
-    range_limit = Cpt(PytmcSignal, ':RANGE_LIMIT', io='i', kind='normal',
-                      doc='Range limit reached')
-    following_limit = Cpt(PytmcSignal, ':FOLLOWING_LIMIT', io='i',
-                          kind='normal', doc='Following limit reached')
-    move_failed = Cpt(PytmcSignal, ':MOVE_FAILED', io='i', kind='normal',
-                      doc='Movement failed')
-    streaming = Cpt(PytmcSignal, ':STREAMING', io='i', kind='normal',
-                    doc='Is streaming')
-    overload = Cpt(PytmcSignal, ':OVERLOAD', io='i', kind='normal',
-                   doc='Positioner overload')
-    over_temp = Cpt(PytmcSignal, ':OVER_TEMP', io='i', kind='normal',
-                    doc='Over temperature')
-    ref_mark = Cpt(PytmcSignal, ':REF_MARK', io='i', kind='normal',
-                   doc='Reference mark')
-    phased = Cpt(PytmcSignal, ':PHASED', io='i', kind='normal',
-                 doc='Is phased')
-    fault = Cpt(PytmcSignal, ':FAULT', io='i', kind='normal',
-                doc='Positioner fault')
-    amp_enabled = Cpt(PytmcSignal, ':AMP_ENABLED', io='i', kind='normal',
-                      doc='Amplifier enabled')
-    in_position = Cpt(PytmcSignal, ':IN_POSITION', io='i', kind='normal',
-                      doc='In position')
-    brake_enabled = Cpt(PytmcSignal, ':BRAKE_ENABLED', io='i', kind='normal',
-                        doc='Brake enabled')
+
+    moving = Cpt(PytmcSignal, ":MOVING", io="i", kind="normal", doc="Actively moving")
+    closed_loop = Cpt(PytmcSignal, ":CLOSED_LOOP", io="i", kind="normal", doc="Closed loop active")
+    calibrating = Cpt(PytmcSignal, ":CALIBRATING", io="i", kind="normal", doc="Calibrating")
+    referencing = Cpt(PytmcSignal, ":REFERENCING", io="i", kind="normal", doc="Referencing")
+    move_delayed = Cpt(PytmcSignal, ":MOVE_DELAYED", io="i", kind="normal", doc="Move delayed")
+    sensor_present = Cpt(PytmcSignal, ":SENSOR_PRESENT", io="i", kind="normal", doc="Sensor present")
+    calibrated = Cpt(PytmcSignal, ":CALIBRATED", io="i", kind="normal", doc="Is calibrated")
+    referenced = Cpt(PytmcSignal, ":REFERENCED", io="i", kind="normal", doc="Is referenced")
+    end_stop = Cpt(PytmcSignal, ":END_STOP", io="i", kind="normal", doc="End stop reached")
+    range_limit = Cpt(PytmcSignal, ":RANGE_LIMIT", io="i", kind="normal", doc="Range limit reached")
+    following_limit = Cpt(PytmcSignal, ":FOLLOWING_LIMIT", io="i", kind="normal", doc="Following limit reached")
+    move_failed = Cpt(PytmcSignal, ":MOVE_FAILED", io="i", kind="normal", doc="Movement failed")
+    streaming = Cpt(PytmcSignal, ":STREAMING", io="i", kind="normal", doc="Is streaming")
+    overload = Cpt(PytmcSignal, ":OVERLOAD", io="i", kind="normal", doc="Positioner overload")
+    over_temp = Cpt(PytmcSignal, ":OVER_TEMP", io="i", kind="normal", doc="Over temperature")
+    ref_mark = Cpt(PytmcSignal, ":REF_MARK", io="i", kind="normal", doc="Reference mark")
+    phased = Cpt(PytmcSignal, ":PHASED", io="i", kind="normal", doc="Is phased")
+    fault = Cpt(PytmcSignal, ":FAULT", io="i", kind="normal", doc="Positioner fault")
+    amp_enabled = Cpt(PytmcSignal, ":AMP_ENABLED", io="i", kind="normal", doc="Amplifier enabled")
+    in_position = Cpt(PytmcSignal, ":IN_POSITION", io="i", kind="normal", doc="In position")
+    brake_enabled = Cpt(PytmcSignal, ":BRAKE_ENABLED", io="i", kind="normal", doc="Brake enabled")
 
 
 class SmarActEtherCATOpenLoop(SmarActOpenLoop):
@@ -1799,26 +1766,22 @@ class SmarActEtherCATOpenLoop(SmarActOpenLoop):
     have no DS402 backing and are removed, as does the module temperature.
     Channel temperature is backed by an SDO and kept.
     """
-    step_voltage = Cpt(PytmcSignal, ':STEP_VOLTAGE', io='io', kind='omitted',
-                       doc='Voltage for sawtooth (0-100V)')
-    step_freq = Cpt(PytmcSignal, ':STEP_FREQ', io='io', kind='config',
-                    doc='Sawtooth drive frequency')
-    jog_step_size = Cpt(PytmcSignal, ':STEP_COUNT', io='io', kind='normal',
-                        doc='Signed number of steps per move command')
+
+    step_voltage = Cpt(PytmcSignal, ":STEP_VOLTAGE", io="io", kind="omitted", doc="Voltage for sawtooth (0-100V)")
+    step_freq = Cpt(PytmcSignal, ":STEP_FREQ", io="io", kind="config", doc="Sawtooth drive frequency")
+    jog_step_size = Cpt(
+        PytmcSignal, ":STEP_COUNT", io="io", kind="normal", doc="Signed number of steps per move command"
+    )
     # A single signed-count move command replaces the FWD/REV jog commands
-    step_move = Cpt(PytmcSignal, ':STEP_MOVE', io='io', kind='normal',
-                    doc='Execute a signed open-loop step move')
-    set_metadata(step_move, dict(variety='command-proc', value=1))
+    step_move = Cpt(PytmcSignal, ":STEP_MOVE", io="io", kind="normal", doc="Execute a signed open-loop step move")
+    set_metadata(step_move, dict(variety="command-proc", value=1))
     # Forward/reverse jog the step count magnitude; the PLC applies the sign
-    jog_fwd = Cpt(PytmcSignal, ':STEP_FORWARD', io='io', kind='normal',
-                  doc='Jog one step count forward')
-    set_metadata(jog_fwd, dict(variety='command-proc', value=1))
-    jog_rev = Cpt(PytmcSignal, ':STEP_REVERSE', io='io', kind='normal',
-                  doc='Jog one step count backward')
-    set_metadata(jog_rev, dict(variety='command-proc', value=1))
+    jog_fwd = Cpt(PytmcSignal, ":STEP_FORWARD", io="io", kind="normal", doc="Jog one step count forward")
+    set_metadata(jog_fwd, dict(variety="command-proc", value=1))
+    jog_rev = Cpt(PytmcSignal, ":STEP_REVERSE", io="io", kind="normal", doc="Jog one step count backward")
+    set_metadata(jog_rev, dict(variety="command-proc", value=1))
     # Channel temperature is backed by DS402 SDO 0x2026
-    channel_temp = Cpt(PytmcSignal, ':CHANTEMP', io='i', kind='normal',
-                       doc='Channel temperature (0x2026)')
+    channel_temp = Cpt(PytmcSignal, ":CHANTEMP", io="i", kind="normal", doc="Channel temperature (0x2026)")
     # No DS402 backing for these
     total_step_count = None
     step_clear_cmd = None
@@ -1837,6 +1800,7 @@ class SmarActEtherCAT(SmarAct, BeckhoffAxis):
     readback) are removed, and the remaining components are re-pointed to
     their pytmc record names.
     """
+
     # DS402 has no separate module temperature, default range, or
     # need-calibration readback
     needs_calib = None
@@ -1845,87 +1809,70 @@ class SmarActEtherCAT(SmarAct, BeckhoffAxis):
     module_temp = None
 
     # Per-channel diagnostics/config backed by DS402 SDOs
-    channel_temp = Cpt(PytmcSignal, ':CHANTEMP', io='i', kind='normal',
-                       doc='Channel temperature (0x2026)')
-    dist_code_inv = Cpt(PytmcSignal, ':DCIN', io='io', kind='config',
-                        doc='Distance code inverted (0x2029)')
-    movement_type = Cpt(PytmcSignal, ':MOVE_TYPE', io='i', kind='config',
-                        doc='Movement type (0x2003)')
-    base_unit = Cpt(PytmcSignal, ':BASE_UNIT', io='i', kind='config',
-                    doc='Base unit (0x2005)')
-    base_resolution = Cpt(PytmcSignal, ':BASE_RES', io='i', kind='config',
-                          doc='Base resolution (0x2006)')
-    pos_control_opt = Cpt(PytmcSignal, ':POS_CTRL_OPT', io='io', kind='config',
-                          doc='Positioner control options (0x2027)')
-    actuator_mode = Cpt(PytmcSignal, ':ACT_MODE', io='io', kind='config',
-                        doc='Actuator mode (0x2028)')
-    motor_load_protection = Cpt(PytmcSignal, ':MOTOR_LOAD_PROT', io='io',
-                                kind='config',
-                                doc='Motor load protection threshold (0x202B)')
-    diag_closed_loop_freq_max = Cpt(PytmcSignal, ':DIAG_CLF_MAX', io='i',
-                                    kind='normal',
-                                    doc='Diagnostic closed-loop frequency, '
-                                        'max (0x202A:1)')
-    diag_closed_loop_freq_avg = Cpt(PytmcSignal, ':DIAG_CLF_AVG', io='i',
-                                    kind='normal',
-                                    doc='Diagnostic closed-loop frequency, '
-                                        'avg (0x202A:2)')
+    channel_temp = Cpt(PytmcSignal, ":CHANTEMP", io="i", kind="normal", doc="Channel temperature (0x2026)")
+    dist_code_inv = Cpt(PytmcSignal, ":DCIN", io="io", kind="config", doc="Distance code inverted (0x2029)")
+    movement_type = Cpt(PytmcSignal, ":MOVE_TYPE", io="i", kind="config", doc="Movement type (0x2003)")
+    base_unit = Cpt(PytmcSignal, ":BASE_UNIT", io="i", kind="config", doc="Base unit (0x2005)")
+    base_resolution = Cpt(PytmcSignal, ":BASE_RES", io="i", kind="config", doc="Base resolution (0x2006)")
+    pos_control_opt = Cpt(
+        PytmcSignal, ":POS_CTRL_OPT", io="io", kind="config", doc="Positioner control options (0x2027)"
+    )
+    actuator_mode = Cpt(PytmcSignal, ":ACT_MODE", io="io", kind="config", doc="Actuator mode (0x2028)")
+    motor_load_protection = Cpt(
+        PytmcSignal, ":MOTOR_LOAD_PROT", io="io", kind="config", doc="Motor load protection threshold (0x202B)"
+    )
+    diag_closed_loop_freq_max = Cpt(
+        PytmcSignal, ":DIAG_CLF_MAX", io="i", kind="normal", doc="Diagnostic closed-loop frequency, max (0x202A:1)"
+    )
+    diag_closed_loop_freq_avg = Cpt(
+        PytmcSignal, ":DIAG_CLF_AVG", io="i", kind="normal", doc="Diagnostic closed-loop frequency, avg (0x202A:2)"
+    )
 
     # Calibrate command is a plain bo record, not a .PROC field
-    do_calib = Cpt(PytmcSignal, ':DO_CALIB', io='io', kind='config',
-                   doc='Calibrate command')
-    set_metadata(do_calib, dict(variety='command-proc', value=1))
+    do_calib = Cpt(PytmcSignal, ":DO_CALIB", io="io", kind="config", doc="Calibrate command")
+    set_metadata(do_calib, dict(variety="command-proc", value=1))
 
     # NVRAM config: pytmc exposes X / X_RBV rather than X / SET_X
-    log_scale_offset = Cpt(PytmcSignal, ':LSCO', io='io', kind='omitted',
-                           doc='Logical Scale Offset')
-    log_scale_inv = Cpt(PytmcSignal, ':LSCI', io='io', kind='omitted',
-                        doc='Logical Scale Inversion')
+    log_scale_offset = Cpt(PytmcSignal, ":LSCO", io="io", kind="omitted", doc="Logical Scale Offset")
+    log_scale_inv = Cpt(PytmcSignal, ":LSCI", io="io", kind="omitted", doc="Logical Scale Inversion")
 
     # Raw channel-state bitmask is nested under the chanState struct
-    channel_state_raw = Cpt(PytmcSignal, ':chanState:STATE', io='i',
-                            kind='omitted',
-                            doc='Channel state bitmask represented as raw int')
+    channel_state_raw = Cpt(
+        PytmcSignal, ":chanState:STATE", io="i", kind="omitted", doc="Channel state bitmask represented as raw int"
+    )
     # Decoded channel-state bits for named indicators
-    channel_state = Cpt(SmarActChannelState, ':chanState', kind='normal',
-                        doc='Decoded channel state flags')
+    channel_state = Cpt(SmarActChannelState, ":chanState", kind="normal", doc="Decoded channel state flags")
 
     # Open-loop step mode over EtherCAT
-    open_loop = Cpt(SmarActEtherCATOpenLoop, '', kind='omitted')
+    open_loop = Cpt(SmarActEtherCATOpenLoop, "", kind="omitted")
 
     # Additional DS402 configuration objects (SDOs/PDOs)
-    step_egu = Cpt(PytmcSignal, ':STEP_EGU', io='io', kind='config',
-                   doc='Step scale factor')
-    hold_time = Cpt(PytmcSignal, ':HOLD_TIME', io='io', kind='config',
-                    doc='Closed-loop hold time')
-    max_close_loop_freq = Cpt(PytmcSignal, ':MAX_CLF', io='io', kind='config',
-                              doc='Maximum closed-loop frequency')
-    calibration_opt = Cpt(PytmcSignal, ':CAL_OPT', io='io', kind='config',
-                          doc='Calibration options')
-    sensor_mode = Cpt(PytmcSignal, ':SENSOR_MODE', io='io', kind='config',
-                      doc='Sensor power mode')
-    referencing_opt = Cpt(PytmcSignal, ':REF_OPT', io='io', kind='config',
-                          doc='Referencing options')
-    reference_type = Cpt(PytmcSignal, ':REF_TYPE', io='i', kind='config',
-                         doc='Reference type')
-    safe_direction = Cpt(PytmcSignal, ':SAFE_DIR', io='io', kind='config',
-                         doc='Safe direction (0x200C). For positioners '
-                             'referenced by a mechanical end stop, homing and '
-                             'calibration ignore the requested start direction '
-                             'and use this plus the logical scale inversion. '
-                             'FORWARD=0, BACKWARD=1. This is an R(W)* object, '
-                             'writable only in the Pre-Op ESM state, so the PLC '
-                             'applies a new setpoint only while the drive is in '
-                             'Pre-Op. Stored in NVRAM; re-calibrate after '
-                             'changing.')
-    motor_load = Cpt(PytmcSignal, ':MOTOR_LOAD', io='i', kind='normal',
-                     doc='Motor load')
-    channel_type = Cpt(PytmcSignal, ':CHAN_TYPE', io='io', kind='config',
-                       doc='Channel type')
-    op_mode_req = Cpt(PytmcSignal, ':OPMODE_REQ', io='io', kind='config',
-                      doc='DS402 operation mode request')
-    home_mode = Cpt(PytmcSignal, ':HOME_MODE', io='i', kind='config',
-                    doc='Vendor homing mode')
+    step_egu = Cpt(PytmcSignal, ":STEP_EGU", io="io", kind="config", doc="Step scale factor")
+    hold_time = Cpt(PytmcSignal, ":HOLD_TIME", io="io", kind="config", doc="Closed-loop hold time")
+    max_close_loop_freq = Cpt(PytmcSignal, ":MAX_CLF", io="io", kind="config", doc="Maximum closed-loop frequency")
+    calibration_opt = Cpt(PytmcSignal, ":CAL_OPT", io="io", kind="config", doc="Calibration options")
+    sensor_mode = Cpt(PytmcSignal, ":SENSOR_MODE", io="io", kind="config", doc="Sensor power mode")
+    referencing_opt = Cpt(PytmcSignal, ":REF_OPT", io="io", kind="config", doc="Referencing options")
+    reference_type = Cpt(PytmcSignal, ":REF_TYPE", io="i", kind="config", doc="Reference type")
+    safe_direction = Cpt(
+        PytmcSignal,
+        ":SAFE_DIR",
+        io="io",
+        kind="config",
+        doc="Safe direction (0x200C). For positioners "
+        "referenced by a mechanical end stop, homing and "
+        "calibration ignore the requested start direction "
+        "and use this plus the logical scale inversion. "
+        "FORWARD=0, BACKWARD=1. This is an R(W)* object, "
+        "writable only in the Pre-Op ESM state, so the PLC "
+        "applies a new setpoint only while the drive is in "
+        "Pre-Op. Stored in NVRAM; re-calibrate after "
+        "changing.",
+    )
+    motor_load = Cpt(PytmcSignal, ":MOTOR_LOAD", io="i", kind="normal", doc="Motor load")
+    channel_type = Cpt(PytmcSignal, ":CHAN_TYPE", io="io", kind="config", doc="Channel type")
+    op_mode_req = Cpt(PytmcSignal, ":OPMODE_REQ", io="io", kind="config", doc="DS402 operation mode request")
+    home_mode = Cpt(PytmcSignal, ":HOME_MODE", io="i", kind="config", doc="Vendor homing mode")
 
 
 class SmarActPicoscale(SmarAct):
@@ -1940,64 +1887,72 @@ class SmarActPicoscale(SmarAct):
     SmarActPicoscale('prefix': 'LAS:MCS2:02:m1', 'name': 'Delay 1',
                      'ioc_base': 'LAS:MCS2:02').
     """
+
     # configuration settings and readbacks
-    pico_present = Cpt(EpicsSignalRO, ':PS_PRESENT', kind='config',
-                       doc='PicoScale is on and connected')
-    pico_exists = Cpt(EpicsSignalRO, ':HAVE_PS', kind='config',
-                      doc='Does this channel have a PicoScale assigned to it?')
-    pico_valid = Cpt(EpicsSignalRO, ':PS_DATA_VALID', kind='config',
-                     doc='Is the data valid and ready for accurate msmts?')
-    pico_sig_qual = Cpt(EpicsSignalRO, ':PS_SIG_QUALITY', kind='config',
-                        doc='Quality of interferometer signal. Higher = better')
+    pico_present = Cpt(EpicsSignalRO, ":PS_PRESENT", kind="config", doc="PicoScale is on and connected")
+    pico_exists = Cpt(
+        EpicsSignalRO, ":HAVE_PS", kind="config", doc="Does this channel have a PicoScale assigned to it?"
+    )
+    pico_valid = Cpt(
+        EpicsSignalRO, ":PS_DATA_VALID", kind="config", doc="Is the data valid and ready for accurate msmts?"
+    )
+    pico_sig_qual = Cpt(
+        EpicsSignalRO, ":PS_SIG_QUALITY", kind="config", doc="Quality of interferometer signal. Higher = better"
+    )
 
     # auto and manual adjustment related PVs
-    pico_adj_state = FCpt(EpicsSignal, '{self._ioc_base}:PS:CUR_ADJ_STATE',
-                          write_pv='{self._ioc_base}:PS:REQ_ADJ_STATE',
-                          kind='config', doc='Set to Manual or Auto adjustment '
-                          'mode')
-    pico_curr_adj_prog = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:CUR_ADJ_PROGRESS',
-                              kind='config', doc='Estimate of current adjustment '
-                              'progress')
-    pico_adj_done = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:ADJ_DONE',
-                         kind='config', doc='Is the auto adjustment done?')
+    pico_adj_state = FCpt(
+        EpicsSignal,
+        "{self._ioc_base}:PS:CUR_ADJ_STATE",
+        write_pv="{self._ioc_base}:PS:REQ_ADJ_STATE",
+        kind="config",
+        doc="Set to Manual or Auto adjustment mode",
+    )
+    pico_curr_adj_prog = FCpt(
+        EpicsSignalRO,
+        "{self._ioc_base}:PS:CUR_ADJ_PROGRESS",
+        kind="config",
+        doc="Estimate of current adjustment progress",
+    )
+    pico_adj_done = FCpt(
+        EpicsSignalRO, "{self._ioc_base}:PS:ADJ_DONE", kind="config", doc="Is the auto adjustment done?"
+    )
 
     # Validation that Picoscale is working properly
-    pico_enable = Cpt(EpicsSignalRO, ':PS_ENABLE_RBV', kind='normal',
-                      doc='Is the PicoScale enabled for this channel?')
-    pico_stable = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:STABLE', kind='normal',
-                       doc='Is system stable and ready for accurate msmts?')
+    pico_enable = Cpt(EpicsSignalRO, ":PS_ENABLE_RBV", kind="normal", doc="Is the PicoScale enabled for this channel?")
+    pico_stable = FCpt(
+        EpicsSignalRO, "{self._ioc_base}:PS:STABLE", kind="normal", doc="Is system stable and ready for accurate msmts?"
+    )
 
     # Diagnostic information from PS controller
-    pico_name = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:LOCATOR',
-                     kind='config', doc='Name of the PicoScale')
-    pico_wmin = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:WORKING_MIN',
-                     kind='config', doc='Working distance minimum')
-    pico_wmax = FCpt(EpicsSignalRO, '{self._ioc_base}:PS:WORKING_MAX',
-                     kind='config', doc='Working distance maximum')
+    pico_name = FCpt(EpicsSignalRO, "{self._ioc_base}:PS:LOCATOR", kind="config", doc="Name of the PicoScale")
+    pico_wmin = FCpt(EpicsSignalRO, "{self._ioc_base}:PS:WORKING_MIN", kind="config", doc="Working distance minimum")
+    pico_wmax = FCpt(EpicsSignalRO, "{self._ioc_base}:PS:WORKING_MAX", kind="config", doc="Working distance maximum")
 
     def __init__(self, prefix, *, ioc_base, **kwargs):
         self._ioc_base = ioc_base
         super().__init__(prefix, **kwargs)
-        self.pico_adj_done.long_name = 'Auto Adjustment Done?'
-        self.pico_adj_state.long_name = 'Auto Adjustment State'
-        self.pico_curr_adj_prog.long_name = 'Auto Adjustment Progress'
-        self.pico_enable.long_name = 'PicoScale Enabled?'
-        self.pico_exists.long_name = 'PicoScale Exists?'
-        self.pico_name.long_name = 'PicoScale Name'
-        self.pico_present.long_name = 'PicoScale Present?'
-        self.pico_sig_qual.long_name = 'Signal Quality'
-        self.pico_valid.long_name = 'PicoScale Valid?'
-        self.pico_stable.long_name = 'PicoScale Stable?'
-        self.pico_wmax.long_name = 'Working distance (max)'
-        self.pico_wmin.long_name = 'Working distance (min)'
+        self.pico_adj_done.long_name = "Auto Adjustment Done?"
+        self.pico_adj_state.long_name = "Auto Adjustment State"
+        self.pico_curr_adj_prog.long_name = "Auto Adjustment Progress"
+        self.pico_enable.long_name = "PicoScale Enabled?"
+        self.pico_exists.long_name = "PicoScale Exists?"
+        self.pico_name.long_name = "PicoScale Name"
+        self.pico_present.long_name = "PicoScale Present?"
+        self.pico_sig_qual.long_name = "Signal Quality"
+        self.pico_valid.long_name = "PicoScale Valid?"
+        self.pico_stable.long_name = "PicoScale Stable?"
+        self.pico_wmax.long_name = "Working distance (max)"
+        self.pico_wmin.long_name = "Working distance (min)"
 
 
 class PI_M824(PVPositionerIsClose):
     """
     class for hexapod PI axis
     """
-    setpoint = Cpt(EpicsSignal, '')
-    readback = Cpt(EpicsSignal, ':rbv')
+
+    setpoint = Cpt(EpicsSignal, "")
+    readback = Cpt(EpicsSignal, ":rbv")
     # one micron seems close enough
     atol = 0.001
 
@@ -2007,27 +1962,27 @@ def _GetMotorClass(basepv):
     Function to determine the appropriate motor class based on the PV.
     """
     # Available motor types
-    motor_types = (('MMS', IMS),
-                   ('CLZ', IMS),
-                   ('CLF', IMS),
-                   ('MMN', Newport),
-                   ('MZM', PMC100),
-                   ('MMC', MMC100),
-                   ('MMB', BeckhoffAxis),
-                   ('PIC', PCDSMotorBase),
-                   ('MCS', SmarAct),
-                   ('MCS2', SmarAct),
-                   ('HEX', PI_M824))
+    motor_types = (
+        ("MMS", IMS),
+        ("CLZ", IMS),
+        ("CLF", IMS),
+        ("MMN", Newport),
+        ("MZM", PMC100),
+        ("MMC", MMC100),
+        ("MMB", BeckhoffAxis),
+        ("PIC", PCDSMotorBase),
+        ("MCS", SmarAct),
+        ("MCS2", SmarAct),
+        ("HEX", PI_M824),
+    )
 
     # Search for component type in prefix
     for cpt_abbrev, _type in motor_types:
-        if f':{cpt_abbrev}:' in basepv:
-            logger.debug("Found %r in basepv %r, loading %r",
-                         cpt_abbrev, basepv, _type)
+        if f":{cpt_abbrev}:" in basepv:
+            logger.debug("Found %r in basepv %r, loading %r", cpt_abbrev, basepv, _type)
             return _type
     # Default to ophyd.EpicsMotor
-    logger.warning("Unable to find type of motor based on component. "
-                   "Using 'ophyd.EpicsMotor'")
+    logger.warning("Unable to find type of motor based on component. Using 'ophyd.EpicsMotor'")
     return EpicsMotor
 
 

@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class _SmarActEncodedTipTiltEmbeddedUI(QtWidgets.QWidget):
     """Annotations helper for SmarActEncodedTipTilt.embedded.ui. Do not instantiate."""
+
     # Open-loop
     dpad_open_loop_label: QtWidgets.QLabel
     tip_jog_fwd: pydm.widgets.pushbutton.PyDMPushButton
@@ -66,6 +67,7 @@ class MotorThread(QtCore.QThread):
         The parent object to spawn the thread from
 
     """
+
     _progress = QtCore.Signal(int)
     _status: MoveStatus = None
     _finished = QtCore.Signal(bool)
@@ -89,16 +91,17 @@ class _home_thread(MotorThread):
     Make a thread for the homing sequence and update the progress bar stored
     in the parent.
     """
+
     def run(self):
         stage = self._motor
         sequence = [stage.tip, stage.tilt, stage.tip]
         progress = 0
 
         for axis in sequence:
-            self._status = axis.home('reverse', wait=True)
+            self._status = axis.home("reverse", wait=True)
             self._status.wait()
             progress += 1
-            self._progress.emit(int(100*(progress/len(sequence))))
+            self._progress.emit(int(100 * (progress / len(sequence))))
 
         self._finished.emit(True)
 
@@ -112,6 +115,7 @@ class _calibrate_thread(MotorThread):
     device: any
         Should be either self.device.tip or self.device.tilt
     """
+
     def run(self):
         def is_calibrating(device: any):
             """
@@ -140,24 +144,30 @@ class _calibrate_thread(MotorThread):
             self._status = axis.do_calib.put(1)
             wait_on_calib(axis)
             progress += 1
-            self._progress.emit(int(100*(progress/len(2*sequence))))
+            self._progress.emit(int(100 * (progress / len(2 * sequence))))
             # Then home
-            self._status = axis.home('reverse', wait=True)
+            self._status = axis.home("reverse", wait=True)
             self._status.wait()
             progress += 1
-            self._progress.emit(int(100*(progress/len(2*sequence))))
+            self._progress.emit(int(100 * (progress / len(2 * sequence))))
 
         self._finished.emit(True)
 
 
 class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
     """Custom widget for controlling a tip-tilt with d-pad buttons"""
+
     ui: _SmarActEncodedTipTiltEmbeddedUI
 
-    def __init__(self, parent=None, ui_filename='SmarActEncodedTipTilt.embedded.ui', **kwargs,):
+    def __init__(
+        self,
+        parent=None,
+        ui_filename="SmarActEncodedTipTilt.embedded.ui",
+        **kwargs,
+    ):
         super().__init__(parent=parent, ui_filename=ui_filename)
 
-        self._omit_names = ['jog_fwd', 'jog_rev']
+        self._omit_names = ["jog_fwd", "jog_rev"]
         self.ui.extended_signal_panel = None
 
         self.ui.settings_button.clicked.connect(self._expand_layout)
@@ -193,14 +203,14 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
         # Set up the calibrate button, but only show it if either stage
         # happens to be uncalibrated, but the encoder is present. Check with a timer
         self.ui.calibrate_button.clicked.connect(self.confirm_calibrate)
-        _icon = IconFont().icon('wrench', QtGui.QColor(90, 90, 90))
+        _icon = IconFont().icon("wrench", QtGui.QColor(90, 90, 90))
         self.ui.calibrate_button.setIcon(_icon)
 
         self.ui.sequence_progress_bar.hide()
         self.ui.sequence_progress_bar.setRange(0, 100)
 
         self.ui.home_button.clicked.connect(self.confirm_home)
-        _icon = IconFont().icon('home', QtGui.QColor(0, 85, 255))
+        _icon = IconFont().icon("home", QtGui.QColor(0, 85, 255))
         self.ui.home_button.setIcon(_icon)
 
     def update_pvs(self):
@@ -210,7 +220,7 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
         """
 
         if self.device is None:
-            print('No device set!')
+            print("No device set!")
             return
 
         def set_open_loop(self, axis: str):
@@ -219,19 +229,21 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
             Ironically more lines than just hard coding it.
             """
             _prefix = getattr(self.device, axis).prefix
-            _open_loop_dict = {'jog_fwd': '_jog_fwd',
-                               'jog_rev': '_jog_rev',
-                               'step_count': ':TOTAL_STEP_COUNT',
-                               'jog_step_size': ':STEP_COUNT'}
+            _open_loop_dict = {
+                "jog_fwd": "_jog_fwd",
+                "jog_rev": "_jog_rev",
+                "step_count": ":TOTAL_STEP_COUNT",
+                "jog_step_size": ":STEP_COUNT",
+            }
 
             for obj, _suffix in _open_loop_dict.items():
-                _widget = getattr(self.ui, f'{axis}_{obj}')
+                _widget = getattr(self.ui, f"{axis}_{obj}")
                 if isinstance(_widget, pydm.widgets.pushbutton.PyDMPushButton):
                     # Set the slots for the jog buttons
-                    _signal = getattr(self, f'_{axis}{_suffix}')
+                    _signal = getattr(self, f"_{axis}{_suffix}")
                     _widget.clicked.connect(_signal)
                 else:
-                    _widget.set_channel(f'ca://{_prefix}{_suffix}')
+                    _widget.set_channel(f"ca://{_prefix}{_suffix}")
 
         def set_closed_loop(self, axis: str):
             """
@@ -239,26 +251,25 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
             """
             # Verbosely set the RBV widget
             _prefix = getattr(self.device, axis).prefix
-            _pos_rbv = getattr(self.ui, f'{axis}_rbv')
-            _pos_rbv.set_channel(f'ca://{_prefix}.RBV')
+            _pos_rbv = getattr(self.ui, f"{axis}_rbv")
+            _pos_rbv.set_channel(f"ca://{_prefix}.RBV")
 
             # Then connect the tweak buttons to their slots
-            for widget in ['_tweak_fwd', '_tweak_rev']:
-                _widget = getattr(self.ui, f'{axis}{widget}')
-                _signal = getattr(self, f'_{axis}{widget}')
+            for widget in ["_tweak_fwd", "_tweak_rev"]:
+                _widget = getattr(self.ui, f"{axis}{widget}")
+                _signal = getattr(self, f"_{axis}{widget}")
                 _widget.clicked.connect(_signal)
 
             # Then connect the byte indicators
-            _led_dict = {'calibrated': ':STATE_RBV.B6',
-                         'homed': ':STATE_RBV.B7'}
+            _led_dict = {"calibrated": ":STATE_RBV.B6", "homed": ":STATE_RBV.B7"}
             for state, _suffix in _led_dict.items():
-                _led = getattr(self.ui, f'{axis}_{state}_led')
-                _led.set_channel(f'ca://{_prefix}{_suffix}')
+                _led = getattr(self.ui, f"{axis}_{state}_led")
+                _led.set_channel(f"ca://{_prefix}{_suffix}")
 
-        set_open_loop(self, 'tip')
-        set_open_loop(self, 'tilt')
-        set_closed_loop(self, 'tip')
-        set_closed_loop(self, 'tilt')
+        set_open_loop(self, "tip")
+        set_open_loop(self, "tilt")
+        set_closed_loop(self, "tip")
+        set_closed_loop(self, "tilt")
 
     @QtCore.Property("QStringList")
     def omitNames(self) -> list[str]:
@@ -286,7 +297,7 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
         if device is None:
             return []
 
-        to_omit = set(['jog_fwd', 'jog_rev'])
+        to_omit = set(["jog_fwd", "jog_rev"])
 
         for name in self.omitNames:
             to_omit.add(name)
@@ -328,37 +339,37 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
         direction: str
             Direction of move, i.e. 'tip' or 'tilt'
         """
-        invert = getattr(self.ui, f'{axis}_invert_jog').isChecked()
+        invert = getattr(self.ui, f"{axis}_invert_jog").isChecked()
         stage = getattr(self.device, axis)
-        _fwd = getattr(stage, 'open_loop.jog_fwd')
-        _rev = getattr(stage, 'open_loop.jog_rev')
+        _fwd = getattr(stage, "open_loop.jog_fwd")
+        _rev = getattr(stage, "open_loop.jog_rev")
 
-        if direction == 'Forward':
+        if direction == "Forward":
             _jog = _rev if invert else _fwd
             _jog.put(1)
-        if direction == 'Reverse':
+        if direction == "Reverse":
             _jog = _fwd if invert else _rev
             _jog.put(1)
 
     @QtCore.Slot()
     def _tip_jog_fwd(self):
         """Jog tip axis forward by tip.jog_step_size"""
-        self._jog_wrapper(axis='tip', direction='Forward')
+        self._jog_wrapper(axis="tip", direction="Forward")
 
     @QtCore.Slot()
     def _tip_jog_rev(self):
         """Jog tip axis backwards by tip.jog_step_size"""
-        self._jog_wrapper(axis='tip', direction='Reverse')
+        self._jog_wrapper(axis="tip", direction="Reverse")
 
     @QtCore.Slot()
     def _tilt_jog_fwd(self):
         """Jog tilt axis forward by tilt.jog_step_size"""
-        self._jog_wrapper(axis='tilt', direction='Forward')
+        self._jog_wrapper(axis="tilt", direction="Forward")
 
     @QtCore.Slot()
     def _tilt_jog_rev(self):
         """Jog tilt axis backwards by tilt.jog_step_size"""
-        self._jog_wrapper(axis='tilt', direction='Reverse')
+        self._jog_wrapper(axis="tilt", direction="Reverse")
 
     def _get_position(self, device: any):
         """
@@ -374,7 +385,7 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
             _setpoint = self._get_position(device) + tweak_val
             device.user_setpoint.put(_setpoint)
         except Exception:
-            logger.exception(f'Tweak on {device} failed')
+            logger.exception(f"Tweak on {device} failed")
 
     def _tweak_wrapper(self, axis: str, direction: str):
         """
@@ -387,39 +398,39 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
         direction: str
             Direction of the tweak button, e.g. forward or reverse.
         """
-        invert = getattr(self.ui, f'{axis}_invert_tweak').isChecked()
+        invert = getattr(self.ui, f"{axis}_invert_tweak").isChecked()
         stage = getattr(self.device, axis)
-        tweak_val = float(getattr(self.ui, f'{axis}_tweak_value').text())
+        tweak_val = float(getattr(self.ui, f"{axis}_tweak_value").text())
 
-        if direction == 'Reverse':
-            tweak_val = - tweak_val
+        if direction == "Reverse":
+            tweak_val = -tweak_val
 
         tweak_val = -tweak_val if invert else tweak_val
 
         try:
             self.tweak_setpoint(stage, tweak_val)
         except Exception:
-            logger.exception(f'{direction} tweak on {axis} failed!')
+            logger.exception(f"{direction} tweak on {axis} failed!")
 
     @QtCore.Slot()
     def _tip_tweak_fwd(self):
         """Tweak positive by the amount listed in ``ui.tip_tweak_set``"""
-        self._tweak_wrapper(axis='tip', direction='Forward')
+        self._tweak_wrapper(axis="tip", direction="Forward")
 
     @QtCore.Slot()
     def _tip_tweak_rev(self):
         """Tweak negative by the amount listed in ``ui.tip_tweak_set``"""
-        self._tweak_wrapper(axis='tip', direction='Reverse')
+        self._tweak_wrapper(axis="tip", direction="Reverse")
 
     @QtCore.Slot()
     def _tilt_tweak_fwd(self):
         """Tweak positive by the amount listed in ``ui.tilt_tweak_set``"""
-        self._tweak_wrapper(axis='tilt', direction='Forward')
+        self._tweak_wrapper(axis="tilt", direction="Forward")
 
     @QtCore.Slot()
     def _tilt_tweak_rev(self):
         """Tweak negative by the amount listed in ``ui.tilt_tweak_set``"""
-        self._tweak_wrapper(axis='tilt', direction='Reverse')
+        self._tweak_wrapper(axis="tilt", direction="Reverse")
 
     @QtCore.Slot()
     def confirm_home(self):
@@ -449,9 +460,9 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
         offset = button.mapToGlobal(QtCore.QPoint(0, 0))
 
         _msg = QtWidgets.QMessageBox()
-        _msg.setWindowTitle('Warning')
-        _msg.setText('Are you sure you want to proceed?')
-        _msg.setInformativeText('This will move both axes to their mechanical end-stop.')
+        _msg.setWindowTitle("Warning")
+        _msg.setText("Are you sure you want to proceed?")
+        _msg.setInformativeText("This will move both axes to their mechanical end-stop.")
         _msg.setIcon(QtWidgets.QMessageBox.Warning)
         _msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
 
@@ -460,7 +471,8 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
             button.mapToGlobal(
                 QtCore.QPoint(
                     button.pos().x() + button.width(),
-                    button.pos().y() + button.height()
+                    button.pos().y()
+                    + button.height()
                     + self.style().pixelMetric(QtWidgets.QStyle.PM_TitleBarHeight)
                     - offset.y(),
                 )
@@ -493,7 +505,7 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
         """
         self.ui.sequence_progress_bar.setValue(0)
         self.ui.sequence_progress_bar.show()
-        self.ui.sequence_progress_bar.setFormat('Homing... %p%')
+        self.ui.sequence_progress_bar.setFormat("Homing... %p%")
 
         self._thread = _home_thread(device=self.device)
         self._thread._progress.connect(self.update_progress)
@@ -508,7 +520,7 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
         """
         self.ui.sequence_progress_bar.setValue(0)
         self.ui.sequence_progress_bar.show()
-        self.ui.sequence_progress_bar.setFormat('Calibrating... %p%')
+        self.ui.sequence_progress_bar.setFormat("Calibrating... %p%")
 
         self._thread = _calibrate_thread(device=self.device)
         self._thread._progress.connect(self.update_progress)
@@ -518,8 +530,9 @@ class SmarActEncodedTipTiltWidget(Display, utils.TyphosBase):
 
 # For the record, copy-pasting this from the other tip-tilt script is ugly and makes me sad
 # But all the other options are more painful, so I'll do this for now.
-class _StageSettingsUI():
+class _StageSettingsUI:
     """helper for the stages basic settings. Do not instantiate."""
+
     tip_label: QtWidgets.QLabel
     tilt_label: QtWidgets.QLabel
     step_size_label: QtWidgets.QLabel
@@ -541,6 +554,7 @@ class SettingsPanel(QtWidgets.QWidget):
     Container class for basic settings that accompany open-loop movement for SmarAct tip-tilts.
     Largely lifted from TyphosPositionerRow.
     """
+
     mirror: SmarActEncodedTipTiltWidget
     resize_timer: QtCore.QTimer
 
@@ -550,10 +564,10 @@ class SettingsPanel(QtWidgets.QWidget):
         self.mirror = mirror
         # Make the subdevice labels
         self.tip_label = QtWidgets.QLabel()
-        self.format_label(self.tip_label, 'Tip')
+        self.format_label(self.tip_label, "Tip")
 
         self.tilt_label = QtWidgets.QLabel()
-        self.format_label(self.tilt_label, 'Tilt')
+        self.format_label(self.tilt_label, "Tilt")
 
         # Then add panels, widgets, devices, and scroll areas
         self.tip_panel = TyphosSignalPanel()
@@ -598,9 +612,7 @@ class SettingsPanel(QtWidgets.QWidget):
         _font = _label.font()
         _font.setPointSize(_font.pointSize() + 4)
         _label.setFont(_font)
-        _label.setMaximumHeight(
-            QtGui.QFontMetrics(_font).boundingRect(_label.text()).height()
-        )
+        _label.setMaximumHeight(QtGui.QFontMetrics(_font).boundingRect(_label.text()).height())
 
     def format_scroll_area(self, panel, panel_scroll_area):
         """Format the scroll area for each subdevice"""
@@ -616,7 +628,7 @@ class SettingsPanel(QtWidgets.QWidget):
         Shamelessly stolen from TyphosPositionerRow.
         """
         button = self.mirror.ui.settings_button
-        button.PyDMIcon = 'SP_ToolBarHorizontalExtensionButton'
+        button.PyDMIcon = "SP_ToolBarHorizontalExtensionButton"
         return super().hideEvent(event)
 
     def showEvent(self, event: QtGui.QShowEvent):
@@ -625,13 +637,14 @@ class SettingsPanel(QtWidgets.QWidget):
         Shamelessly stolen from TyphosPositionerRow.
         """
         button = self.mirror.ui.settings_button
-        button.PyDMIcon = 'SP_ToolBarVerticalExtensionButton'
+        button.PyDMIcon = "SP_ToolBarVerticalExtensionButton"
         offset = button.mapToGlobal(QtCore.QPoint(0, 0))
         self.move(
             button.mapToGlobal(
                 QtCore.QPoint(
                     button.pos().x() + button.width(),
-                    button.pos().y() + button.height()
+                    button.pos().y()
+                    + button.height()
                     + self.style().pixelMetric(QtWidgets.QStyle.PM_TitleBarHeight)
                     - offset.y(),
                 )
@@ -654,13 +667,17 @@ class SettingsPanel(QtWidgets.QWidget):
         --------------------------------------------------------------------
         Also shamelessly stolen from TyphosPositionerRow
         """
-        if (self.tip_panel.minimumWidth() <= self.tip_panel.original_panel_min_width or
-                self.tilt_panel.minimumWidth() <= self.tilt_panel.original_panel_min_width):
+        if (
+            self.tip_panel.minimumWidth() <= self.tip_panel.original_panel_min_width
+            or self.tilt_panel.minimumWidth() <= self.tilt_panel.original_panel_min_width
+        ):
             # No change
             self.resize_timer.start()
             return
-        elif (self.tip_panel.last_resize_width != self.tip_panel.minimumWidth() or
-                self.tilt_panel.last_resize_width != self.tilt_panel.minimumWidth()):
+        elif (
+            self.tip_panel.last_resize_width != self.tip_panel.minimumWidth()
+            or self.tilt_panel.last_resize_width != self.tilt_panel.minimumWidth()
+        ):
             # We are not stable yet!
             self.tip_panel.last_resize_width = self.tip_panel.minimumWidth()
             self.tilt_panel.last_resize_width = self.tilt_panel.minimumWidth()

@@ -7,8 +7,7 @@ import pytest
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 
-from ..attenuator import (AT1K2, AT1K4, AT2K2, AT2L0, MAX_FILTERS, AttBase,
-                          Attenuator, _att_classes)
+from ..attenuator import AT1K2, AT1K4, AT2K2, AT2L0, MAX_FILTERS, AttBase, Attenuator, _att_classes
 from .conftest import wait_and_assert
 
 logger = logging.getLogger(__name__)
@@ -21,7 +20,7 @@ for name, cls in _att_classes.items():
 
 @pytest.mark.timeout(5)
 def test_attenuator_states(fake_att):
-    logger.debug('test_attenuator_states')
+    logger.debug("test_attenuator_states")
     att = fake_att
     # Set no transmission
     att.readback.sim_put(0)
@@ -34,7 +33,7 @@ def test_attenuator_states(fake_att):
 
 
 def test_attenuator_bluesky(fake_att):
-    logger.debug('test_attenuator_bluesky')
+    logger.debug("test_attenuator_bluesky")
     fake_att.read()
     fake_att.describe()
 
@@ -58,7 +57,7 @@ def fake_move_transition(att, status, goal):
 
 @pytest.mark.timeout(5)
 def test_attenuator_motion(fake_att):
-    logger.debug('test_attenuator_motion')
+    logger.debug("test_attenuator_motion")
     att = fake_att
     # Set up the ceil and floor
     att.trans_ceil.sim_put(0.8001)
@@ -85,7 +84,7 @@ def test_attenuator_motion(fake_att):
 
 @pytest.mark.timeout(5)
 def test_attenuator_no_interrupt(fake_att):
-    logger.debug('test_attenuator_no_interrupt')
+    logger.debug("test_attenuator_no_interrupt")
     att = fake_att
     # Set as already moving
     att.done.sim_put(1)
@@ -95,7 +94,7 @@ def test_attenuator_no_interrupt(fake_att):
 
 @pytest.mark.timeout(5)
 def test_attenuator_subscriptions(fake_att):
-    logger.debug('test_attenuator_subscriptions')
+    logger.debug("test_attenuator_subscriptions")
     att = fake_att
     cb = Mock()
     att.subscribe(cb, run=False)
@@ -112,7 +111,7 @@ def test_attenuator_subscriptions(fake_att):
 
 @pytest.mark.timeout(5)
 def test_attenuator_calcpend(fake_att):
-    logger.debug('test_attenuator_calcpend')
+    logger.debug("test_attenuator_calcpend")
     att = fake_att
     att.calcpend.sim_put(1)
     # Initialize to any value
@@ -123,6 +122,7 @@ def test_attenuator_calcpend(fake_att):
     def wait_put(sig, val, delay):
         time.sleep(delay)
         sig.sim_put(val)
+
     t = threading.Thread(target=wait_put, args=(att.calcpend, 0, 0.4))
     t.start()
     start = time.time()
@@ -138,7 +138,7 @@ def test_attenuator_calcpend(fake_att):
 
 @pytest.mark.timeout(5)
 def test_attenuator_set_energy(fake_att):
-    logger.debug('test_attenuator_set_energy')
+    logger.debug("test_attenuator_set_energy")
     att = fake_att
     att.set_energy()
     assert att.eget_cmd.get() == 6
@@ -149,14 +149,14 @@ def test_attenuator_set_energy(fake_att):
 
 
 def test_attenuator_transmission(fake_att):
-    logger.debug('test_attenuator_transmission')
+    logger.debug("test_attenuator_transmission")
     att = fake_att
     assert att.transmission == att.position
 
 
 @pytest.mark.timeout(5)
 def test_attenuator_staging(fake_att):
-    logger.debug('test_attenuator_staging')
+    logger.debug("test_attenuator_staging")
     att = fake_att
     # Set up at least one invalid state
     att.filter1.state.sim_put(att.filter1._unknown)
@@ -169,38 +169,33 @@ def test_attenuator_staging(fake_att):
 
 
 def test_attenuator():
-    logger.debug('test_attenuator')
-    att = Attenuator('TRD:ATT', MAX_FILTERS-1, name='att')
+    logger.debug("test_attenuator")
+    att = Attenuator("TRD:ATT", MAX_FILTERS - 1, name="att")
     att.wait_for_connection()
 
 
 @pytest.mark.timeout(5)
 def test_attenuator_disconnected():
-    AttBase('TST:ATT', name='test_att')
+    AttBase("TST:ATT", name="test_att")
 
 
-@pytest.fixture(
-    params=['at2l0', 'at1k4', 'at1k2', 'at2k2']
-)
+@pytest.fixture(params=["at2l0", "at1k4", "at1k2", "at2k2"])
 def fake_new_attenuator(request):
     """Attenuators new to LCLS-II."""
     attname = request.param
-    if attname == 'at2l0':
+    if attname == "at2l0":
         FakeAT2L0 = make_fake_device(AT2L0)
-        return FakeAT2L0('AT2L0:', name='fake_at2l0')
-    if attname == 'at1k4':
+        return FakeAT2L0("AT2L0:", name="fake_at2l0")
+    if attname == "at1k4":
         FakeAT1K4 = make_fake_device(AT1K4)
-        return FakeAT1K4('AT1K4:', calculator_prefix='AT1K4:CALC',
-                         name='fake_at1k4')
-    if attname == 'at1k2':
+        return FakeAT1K4("AT1K4:", calculator_prefix="AT1K4:CALC", name="fake_at1k4")
+    if attname == "at1k2":
         FakeAT1K2 = make_fake_device(AT1K2)
-        return FakeAT1K2('AT1K2:', calculator_prefix='AT1K2:CALC',
-                         name='fake_at1k2')
-    if attname == 'at2k2':
+        return FakeAT1K2("AT1K2:", calculator_prefix="AT1K2:CALC", name="fake_at1k2")
+    if attname == "at2k2":
         FakeAT2K2 = make_fake_device(AT2K2)
-        return FakeAT2K2('AT2K2:', calculator_prefix='AT2K2:CALC',
-                         name='fake_at2k2')
-    raise RuntimeError(f'Unknown attenuator {attname}')
+        return FakeAT2K2("AT2K2:", calculator_prefix="AT2K2:CALC", name="fake_at2k2")
+    raise RuntimeError(f"Unknown attenuator {attname}")
 
 
 def test_new_attenuator_smoke(fake_new_attenuator):
@@ -212,11 +207,7 @@ def test_new_attenuator_smoke(fake_new_attenuator):
     fake_new_attenuator.wm()
     with pytest.raises(ValueError):
         fake_new_attenuator(1.1)
-    print(
-        fake_new_attenuator.format_status_info(
-            fake_new_attenuator.status_info()
-        )
-    )
+    print(fake_new_attenuator.format_status_info(fake_new_attenuator.status_info()))
 
 
 @pytest.fixture(scope="function")

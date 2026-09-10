@@ -8,9 +8,17 @@ from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
 from ophyd.sim import make_fake_device
 
-from ..pseudopos import (DelayBase, LookupTablePositioner, OffsetMotorBase,
-                         PseudoSingleInterface, SimDelayStage, SyncAxesBase,
-                         SyncAxis, SyncAxisOffsetMode, is_strictly_increasing)
+from ..pseudopos import (
+    DelayBase,
+    LookupTablePositioner,
+    OffsetMotorBase,
+    PseudoSingleInterface,
+    SimDelayStage,
+    SyncAxesBase,
+    SyncAxis,
+    SyncAxisOffsetMode,
+    is_strictly_increasing,
+)
 from ..sim import FastMotor
 
 logger = logging.getLogger(__name__)
@@ -49,30 +57,30 @@ class SyncAxisCrazy(SyncAxis):
     two = Cpt(FastMotor)
     three = Cpt(FastMotor)
 
-    offsets = {'three': 3}
-    scales = {'two': -2, 'three': 3}
-    fix_sync_keep_still = 'two'
+    offsets = {"three": 3}
+    scales = {"two": -2, "three": 3}
+    fix_sync_keep_still = "two"
     sync_limits = (-10, 10)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def five_axes():
-    return FiveSyncSoftPositioner(name='sync', egu='five')
+    return FiveSyncSoftPositioner(name="sync", egu="five")
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def two_axes():
-    return MaxTwoSyncSoftPositioner(name='sync', egu='two')
+    return MaxTwoSyncSoftPositioner(name="sync", egu="two")
 
 
 def test_sync_passthrough(five_axes):
-    logger.debug('test_sync_passthrough')
-    assert five_axes.name == 'sync'
-    assert five_axes.egu == 'five'
+    logger.debug("test_sync_passthrough")
+    assert five_axes.name == "sync"
+    assert five_axes.egu == "five"
 
 
 def test_sync_basic(five_axes):
-    logger.debug('test_sync_basic')
+    logger.debug("test_sync_basic")
     five_axes.move(5)
     for i, pos in enumerate(five_axes.real_position):
         assert pos == 5
@@ -80,7 +88,7 @@ def test_sync_basic(five_axes):
 
 
 def test_sync_offset(five_axes, two_axes):
-    logger.debug('test_sync_offset')
+    logger.debug("test_sync_offset")
     five_axes.one.move(1)
     five_axes.two.move(2)
     five_axes.three.move(3)
@@ -98,28 +106,28 @@ def test_sync_offset(five_axes, two_axes):
 
 
 def test_sync_axis_default():
-    logger.debug('test_sync_axis_default')
-    sync = SyncAxisDefault('DEFAULT', name='sync_default')
+    logger.debug("test_sync_axis_default")
+    sync = SyncAxisDefault("DEFAULT", name="sync_default")
     sync.move(5, wait=True)
     assert sync.one.position == 5
     assert sync.two.position == 5
     assert sync.is_synced()
     sync.one.move(0)
     assert not sync.is_synced()
-    assert 'fix_sync' in sync.format_status_info(sync.status_info())
+    assert "fix_sync" in sync.format_status_info(sync.status_info())
 
 
 def test_sync_axis_auto():
-    logger.debug('test_sync_axis_auto')
-    sync = SyncAxisAuto('AUTO', name='sync_auto')
+    logger.debug("test_sync_axis_auto")
+    sync = SyncAxisAuto("AUTO", name="sync_auto")
     sync.move(5)
     assert sync.one.position == 5
     assert sync.two.position == 7
 
 
 def test_sync_axis_crazy():
-    logger.debug('test_sync_axis_crazy')
-    sync = SyncAxisCrazy('CRAZY', name='sync_crazy')
+    logger.debug("test_sync_axis_crazy")
+    sync = SyncAxisCrazy("CRAZY", name="sync_crazy")
     sync.move(5)
     assert sync.is_synced()
     assert sync.one.position == 5
@@ -131,63 +139,61 @@ def test_sync_axis_crazy():
 
 
 def test_sync_axis_class_checks():
-    logger.debug('test_sync_axis_class_checks')
+    logger.debug("test_sync_axis_class_checks")
 
     class BadSync(SyncAxisDefault):
         def __init__(self):
-            super().__init__('Bad', name='bad')
+            super().__init__("Bad", name="bad")
 
     # Original
     BadSync()
     # Bad offset_mode
-    BadSync.offset_mode = 'potatoes'
+    BadSync.offset_mode = "potatoes"
     with pytest.raises(ValueError):
         BadSync()
     BadSync.offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     # Bad offsets
-    BadSync.offsets = {'seven_billion': 3}
+    BadSync.offsets = {"seven_billion": 3}
     with pytest.raises(ValueError):
         BadSync()
     BadSync.offsets = None
     # Bad scales
-    BadSync.scales = {'longcat': 100000000}
+    BadSync.scales = {"longcat": 100000000}
     with pytest.raises(ValueError):
         BadSync()
     BadSync.scales = None
     # Bad fix_sync_keep_still
-    BadSync.fix_sync_keep_still = 'zoomer'
+    BadSync.fix_sync_keep_still = "zoomer"
     with pytest.raises(ValueError):
         BadSync()
     BadSync.fix_sync_keep_still = None
 
 
 def test_delay_basic():
-    logger.debug('test_delay_basic')
-    stage_s = SimDelayStage('prefix', name='name', egu='s', n_bounces=2)
-    stage_ns = SimDelayStage('prefix', name='name', egu='ns', n_bounces=2)
-    stage_inv = SimDelayStage('prefix', name='name', egu='s', n_bounces=2,
-                              invert=True)
+    logger.debug("test_delay_basic")
+    stage_s = SimDelayStage("prefix", name="name", egu="s", n_bounces=2)
+    stage_ns = SimDelayStage("prefix", name="name", egu="ns", n_bounces=2)
+    stage_inv = SimDelayStage("prefix", name="name", egu="s", n_bounces=2, invert=True)
     approx_c = 3e8
     stage_s.move(1e-9)
     stage_ns.move(1)
     stage_inv.move(-1e-9)
-    for pos in (stage_s.motor.position, stage_ns.motor.position,
-                stage_inv.motor.position):
-        assert abs(pos*1e-3 - 1e-9 * approx_c / 2) < 0.01
+    for pos in (stage_s.motor.position, stage_ns.motor.position, stage_inv.motor.position):
+        assert abs(pos * 1e-3 - 1e-9 * approx_c / 2) < 0.01
 
     stage_s.set_current_position(1.0e-6)
-    np.testing.assert_allclose(stage_s.position[0], 1.e-6)
-    np.testing.assert_allclose(stage_s.user_offset.get(), 1.e-6 - 1.e-9)
+    np.testing.assert_allclose(stage_s.position[0], 1.0e-6)
+    np.testing.assert_allclose(stage_s.user_offset.get(), 1.0e-6 - 1.0e-9)
 
 
 def test_subcls_warning():
-    logger.debug('test_subcls_warning')
+    logger.debug("test_subcls_warning")
     with pytest.raises(TypeError):
-        SyncAxesBase('prefix', name='name')
+        SyncAxesBase("prefix", name="name")
     with pytest.raises(TypeError):
-        DelayBase('prefix', name='name')
+        DelayBase("prefix", name="name")
     with pytest.raises(TypeError):
-        OffsetMotorBase('prefix', name='name')
+        OffsetMotorBase("prefix", name="name")
 
 
 @pytest.mark.parametrize(
@@ -197,10 +203,10 @@ def test_subcls_warning():
         (1, -1),
         (-1, 1),
         (-1, -1),
-    )
+    ),
 )
 def test_lut_positioner(real_sign: bool, pseudo_sign: bool):
-    logger.debug('test_lut_positioner_normal')
+    logger.debug("test_lut_positioner_normal")
     rs = real_sign
     ps = pseudo_sign
 
@@ -218,20 +224,23 @@ def test_lut_positioner(real_sign: bool, pseudo_sign: bool):
         real = Cpt(LimitSettableSoftPositioner)
 
     signs = np.asarray([[rs, ps]] * 8)
-    table = np.asarray(
-        [[0, 40],
-         [1, 50],
-         [2, 60],
-         [5, 90],
-         [6, 100],
-         [7, 200],
-         [8, 300],
-         [9, 400],
-         ]
-    ) * signs
-    column_names = ['real', 'pseudo']
-    lut = MyLUTPositioner('', table=table, column_names=column_names,
-                          name='lut')
+    table = (
+        np.asarray(
+            [
+                [0, 40],
+                [1, 50],
+                [2, 60],
+                [5, 90],
+                [6, 100],
+                [7, 200],
+                [8, 300],
+                [9, 400],
+            ]
+        )
+        * signs
+    )
+    column_names = ["real", "pseudo"]
+    lut = MyLUTPositioner("", table=table, column_names=column_names, name="lut")
 
     np.testing.assert_allclose(lut.forward(60 * ps)[0], 2 * rs)
     np.testing.assert_allclose(lut.inverse(7 * rs)[0], 200 * ps)
@@ -263,7 +272,7 @@ FakeDelayBase = make_fake_device(DelayBase)
 
 
 class FakeDelay(FakeDelayBase):
-    motor = Cpt(FastMotor, egu='mm')
+    motor = Cpt(FastMotor, egu="mm")
 
 
 def link_two_signals(signal1, signal2):
@@ -279,10 +288,10 @@ def link_two_signals(signal1, signal2):
     signal2.subscribe(put_to_1)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def linked_delays():
-    delay_one = FakeDelay('SIM', name='delay_one', n_bounces=1)
-    delay_two = FakeDelay('SIM', name='delay_two', n_bounces=2)
+    delay_one = FakeDelay("SIM", name="delay_one", n_bounces=1)
+    delay_two = FakeDelay("SIM", name="delay_two", n_bounces=2)
     link_two_signals(
         delay_one.delay.notepad_readback,
         delay_two.delay.notepad_readback,
@@ -340,12 +349,12 @@ def test_implicit_mutex(linked_delays: tuple[FakeDelay, FakeDelay]):
     time.sleep(delay_one._my_move_timeout)
     delay_two.move(2, wait=False)
     assert delay_two._my_move
-    wait_for(delay_one, '_my_move', False)
+    wait_for(delay_one, "_my_move", False)
     assert_no_updates()
 
     # Do it again but the other way
     time.sleep(delay_two._my_move_timeout)
     delay_one.move(3, wait=False)
     assert delay_one._my_move
-    wait_for(delay_two, '_my_move', False)
+    wait_for(delay_two, "_my_move", False)
     assert_no_updates()

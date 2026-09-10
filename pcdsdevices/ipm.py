@@ -1,6 +1,7 @@
 """
 Module for the `IPM` intensity position monitor classes.
 """
+
 import logging
 import warnings
 from typing import Union
@@ -36,16 +37,16 @@ class IPMTarget(InOutRecordPositioner):
 
     __doc__ += basic_positioner_init
 
-    in_states = ['TARGET1', 'TARGET2', 'TARGET3', 'TARGET4']
-    states_list = in_states + ['OUT']
+    in_states = ["TARGET1", "TARGET2", "TARGET3", "TARGET4"]
+    states_list = in_states + ["OUT"]
 
-    t1_composition = Cpt(EpicsSignalRO, ':TARGET1.DESC', kind='omitted')
-    t2_composition = Cpt(EpicsSignalRO, ':TARGET2.DESC', kind='omitted')
-    t3_composition = Cpt(EpicsSignalRO, ':TARGET3.DESC', kind='omitted')
-    t4_composition = Cpt(EpicsSignalRO, ':TARGET4.DESC', kind='omitted')
+    t1_composition = Cpt(EpicsSignalRO, ":TARGET1.DESC", kind="omitted")
+    t2_composition = Cpt(EpicsSignalRO, ":TARGET2.DESC", kind="omitted")
+    t3_composition = Cpt(EpicsSignalRO, ":TARGET3.DESC", kind="omitted")
+    t4_composition = Cpt(EpicsSignalRO, ":TARGET4.DESC", kind="omitted")
 
     # Assume that having any target in gives transmission 0.8
-    _transmission = {st: 0.8 for st in in_states}
+    _transmission = dict.fromkeys(in_states, 0.8)
 
     def get_composition(self):
         """
@@ -85,10 +86,10 @@ class IPMDiode(BaseInterface, GroupDevice):
     y, which points to the motor of the y-motion.
     """
 
-    tab_whitelist = ['x_motor', 'y_motor', 'insert', 'remove']
+    tab_whitelist = ["x_motor", "y_motor", "insert", "remove"]
 
-    x_motor = Cpt(IMS, ':X_MOTOR', kind='normal')
-    state = Cpt(InOutRecordPositioner, '', kind='normal')
+    x_motor = Cpt(IMS, ":X_MOTOR", kind="normal")
+    state = Cpt(InOutRecordPositioner, "", kind="normal")
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
@@ -106,13 +107,11 @@ class IPMDiode(BaseInterface, GroupDevice):
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
         """Moves the diode into the beam."""
-        return self.state.insert(moved_cb=moved_cb, timeout=timeout,
-                                 wait=wait)
+        return self.state.insert(moved_cb=moved_cb, timeout=timeout, wait=wait)
 
     def remove(self, moved_cb=None, timeout=None, wait=False):
         """Moves the diode out of the beam."""
-        return self.state.remove(moved_cb=moved_cb, timeout=timeout,
-                                 wait=wait)
+        return self.state.remove(moved_cb=moved_cb, timeout=timeout, wait=wait)
 
     @property
     def transmission(self):
@@ -132,16 +131,15 @@ class IPMMotion(BaseInterface, GroupDevice, LightpathMixin):
     This contains two state devices, a target and a diode.
     """
 
-    target = Cpt(IPMTarget, ':TARGET', kind='normal')
-    diode = Cpt(IPMDiode, ':DIODE', kind='normal')
+    target = Cpt(IPMTarget, ":TARGET", kind="normal")
+    diode = Cpt(IPMDiode, ":DIODE", kind="normal")
 
     # QIcon for UX
-    _icon = 'ei.screenshot'
+    _icon = "ei.screenshot"
 
-    tab_whitelist = ['target', 'diode', 'insert', 'remove', 'inserted',
-                     'removed', 'ty', 'dx', 'dy']
+    tab_whitelist = ["target", "diode", "insert", "remove", "inserted", "removed", "ty", "dx", "dy"]
 
-    lightpath_cpts = ['target.state', 'diode.state.state']
+    lightpath_cpts = ["target.state", "diode.state.state"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -166,30 +164,24 @@ class IPMMotion(BaseInterface, GroupDevice, LightpathMixin):
         status: str
             Formatted string with all relevant status information.
         """
-        name = ' '.join(self.prefix.split(':'))
+        name = " ".join(self.prefix.split(":"))
 
-        x_motor_pos = get_status_float(status_info, 'diode', 'x_motor',
-                                       'position')
-        y_motor_pos = get_status_float(status_info, 'diode', 'state', 'motor',
-                                       'position')
-        d_units = get_status_value(status_info, 'diode', 'x_motor',
-                                   'user_setpoint', 'units')
-        target_pos = get_status_value(status_info, 'target', 'motor',
-                                      'position')
-        t_units = get_status_value(status_info, 'target', 'motor',
-                                   'user_setpoint', 'units')
-        target_state_num = get_status_value(status_info, 'target',
-                                            'state', 'value')
-        target_state = get_status_value(status_info, 'target', 'position')
+        x_motor_pos = get_status_float(status_info, "diode", "x_motor", "position")
+        y_motor_pos = get_status_float(status_info, "diode", "state", "motor", "position")
+        d_units = get_status_value(status_info, "diode", "x_motor", "user_setpoint", "units")
+        target_pos = get_status_value(status_info, "target", "motor", "position")
+        t_units = get_status_value(status_info, "target", "motor", "user_setpoint", "units")
+        target_state_num = get_status_value(status_info, "target", "state", "value")
+        target_state = get_status_value(status_info, "target", "position")
 
-        composition = self.target.get_composition() or ''
+        composition = self.target.get_composition() or ""
 
-        if 'ipimb' in status_info.keys():
-            diode_type = 'IPIMB '
-        elif 'wave8' in status_info.keys():
-            diode_type = 'Wave8 '
+        if "ipimb" in status_info.keys():
+            diode_type = "IPIMB "
+        elif "wave8" in status_info.keys():
+            diode_type = "Wave8 "
         else:
-            diode_type = ''
+            diode_type = ""
 
         return f"""\
 {name}: Target {target_state_num} {target_state} [{composition}]
@@ -205,19 +197,13 @@ Target Position: {target_pos} [{t_units}]
     ) -> LightpathState:
         target_cpt = self.target
         diode_cpt = self.diode.state
-        inserted = (target_cpt.check_inserted(target_state) and
-                    diode_cpt.check_inserted(diode_state_state))
-        removed = (target_cpt.check_removed(target_state) and
-                   (diode_cpt.check_inserted(diode_state_state) or
-                   diode_cpt.check_removed(diode_state_state)))
-        transmission = (target_cpt.check_transmission(target_state) *
-                        diode_cpt.check_transmission(diode_state_state))
-
-        return LightpathState(
-            inserted=inserted,
-            removed=removed,
-            output={self.output_branches[0]: transmission}
+        inserted = target_cpt.check_inserted(target_state) and diode_cpt.check_inserted(diode_state_state)
+        removed = target_cpt.check_removed(target_state) and (
+            diode_cpt.check_inserted(diode_state_state) or diode_cpt.check_removed(diode_state_state)
         )
+        transmission = target_cpt.check_transmission(target_state) * diode_cpt.check_transmission(diode_state_state)
+
+        return LightpathState(inserted=inserted, removed=removed, output={self.output_branches[0]: transmission})
 
     @property
     def inserted(self):
@@ -230,28 +216,24 @@ Target Position: {target_pos} [{t_units}]
         Returns `True` if target is removed and diode is not blocking.
         Diode does not block when inserted or removed.
         """
-        return (self.target.removed and
-                (self.diode.removed or self.diode.inserted))
+        return self.target.removed and (self.diode.removed or self.diode.inserted)
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
         """Move both the target and diode in."""
-        return (self.target.insert(moved_cb=moved_cb, timeout=timeout,
-                                   wait=wait)
-                & self.diode.insert(moved_cb=moved_cb, timeout=timeout,
-                                    wait=wait))
+        return self.target.insert(moved_cb=moved_cb, timeout=timeout, wait=wait) & self.diode.insert(
+            moved_cb=moved_cb, timeout=timeout, wait=wait
+        )
 
     def remove(self, moved_cb=None, timeout=None, wait=False):
         """
         Moves the target out of the beam and removes the diode if it is in an
         unknown state.
         """
-        rmstatus = self.target.remove(moved_cb=moved_cb, timeout=timeout,
-                                      wait=wait)
-        if (self.diode.removed or self.diode.inserted):
+        rmstatus = self.target.remove(moved_cb=moved_cb, timeout=timeout, wait=wait)
+        if self.diode.removed or self.diode.inserted:
             return rmstatus
         else:
-            return (rmstatus & self.diode.remove(moved_cb=moved_cb,
-                                                 timeout=timeout, wait=wait))
+            return rmstatus & self.diode.remove(moved_cb=moved_cb, timeout=timeout, wait=wait)
 
     def target_in(self, target_num, moved_cb=None, timeout=None, wait=False):
         """
@@ -282,8 +264,7 @@ Target Position: {target_pos} [{t_units}]
         -------
         status: MoveStatus
         """
-        return self.target.move(target_num, moved_cb=moved_cb,
-                                timeout=timeout, wait=wait)
+        return self.target.move(target_num, moved_cb=moved_cb, timeout=timeout, wait=wait)
 
     @property
     def transmission(self):
@@ -309,16 +290,11 @@ class IPIMBChannel(BaseInterface, Device):
 
     tab_component_names = True
 
-    amplitude = FCpt(EpicsSignalRO, '{self.prefix}:CH{self.channel_index}',
-                     kind='hinted')
-    gain = FCpt(EpicsSignal,
-                '{self.prefix}:ChargeAmpRangeCH{self.channel_index}',
-                kind='config', string=True)
+    amplitude = FCpt(EpicsSignalRO, "{self.prefix}:CH{self.channel_index}", kind="hinted")
+    gain = FCpt(EpicsSignal, "{self.prefix}:ChargeAmpRangeCH{self.channel_index}", kind="config", string=True)
 
-    base = FCpt(EpicsSignal, '{self.prefix}:CH{self.channel_index}_BASE',
-                kind='config')
-    scale = FCpt(EpicsSignal, '{self.prefix}:CH{self.channel_index}_SCALE',
-                 kind='config')
+    base = FCpt(EpicsSignal, "{self.prefix}:CH{self.channel_index}_BASE", kind="config")
+    scale = FCpt(EpicsSignal, "{self.prefix}:CH{self.channel_index}_SCALE", kind="config")
 
     def __init__(self, prefix, *, name, channel_index, **kwargs):
         self.channel_index = channel_index
@@ -358,29 +334,29 @@ class IPIMB(BaseInterface, GroupDevice):
         Trigger component.
     """
 
-    tab_whitelist = ['sum', 'xpos', 'ypos']
+    tab_whitelist = ["sum", "xpos", "ypos"]
 
-    sum = Cpt(EpicsSignalRO, ':SUM', kind='hinted')
-    xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
-    ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
-    evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
-    delay = Cpt(EpicsSignal, ':TrigDelay', kind='config')
-    bias = Cpt(EpicsSignal, ':DiodeBias', kind='config')
-    ch0 = Cpt(IPIMBChannel, '', channel_index=0, kind='normal')
-    ch1 = Cpt(IPIMBChannel, '', channel_index=1, kind='normal')
-    ch2 = Cpt(IPIMBChannel, '', channel_index=2, kind='normal')
-    ch3 = Cpt(IPIMBChannel, '', channel_index=3, kind='normal')
+    sum = Cpt(EpicsSignalRO, ":SUM", kind="hinted")
+    xpos = Cpt(EpicsSignalRO, ":XPOS", kind="normal")
+    ypos = Cpt(EpicsSignalRO, ":YPOS", kind="normal")
+    evr_channel = Cpt(Trigger, ":TRIG:TRIG0", kind="normal")
+    delay = Cpt(EpicsSignal, ":TrigDelay", kind="config")
+    bias = Cpt(EpicsSignal, ":DiodeBias", kind="config")
+    ch0 = Cpt(IPIMBChannel, "", channel_index=0, kind="normal")
+    ch1 = Cpt(IPIMBChannel, "", channel_index=1, kind="normal")
+    ch2 = Cpt(IPIMBChannel, "", channel_index=2, kind="normal")
+    ch3 = Cpt(IPIMBChannel, "", channel_index=3, kind="normal")
 
     def __init__(self, prefix, *, name, prefix_ioc=None, **kwargs):
         if not prefix_ioc:
-            self._prefix_ioc = 'IOC:%s' % prefix
+            self._prefix_ioc = "IOC:%s" % prefix
         else:
             self._prefix_ioc = prefix_ioc
         super().__init__(prefix, name=name, **kwargs)
 
     def screen(self):
         """Function to call the (pyQT) screen for an IPIMB box."""
-        return ipm_screen('IPIMB', self.prefix, self._prefix_ioc)
+        return ipm_screen("IPIMB", self.prefix, self._prefix_ioc)
 
     @property
     def isum(self):
@@ -388,7 +364,7 @@ class IPIMB(BaseInterface, GroupDevice):
         Backcompatibility alias for the sum signal.
         """
         warnings.warn(
-            'isum is deprecated, please use sum instead',
+            "isum is deprecated, please use sum instead",
             DeprecationWarning,
         )
         return self.sum
@@ -412,17 +388,20 @@ class Wave8Channel(BaseInterface, Device):
 
     tab_component_names = True
 
-    amplitude = FCpt(EpicsSignalRO, '{self.prefix}:AMPL_{self.channel_index}',
-                     kind='hinted')
-    tpos = FCpt(EpicsSignalRO, '{self.prefix}:TPOS_{self.channel_index}',
-                kind='normal')
+    amplitude = FCpt(EpicsSignalRO, "{self.prefix}:AMPL_{self.channel_index}", kind="hinted")
+    tpos = FCpt(EpicsSignalRO, "{self.prefix}:TPOS_{self.channel_index}", kind="normal")
     number_of_samples = FCpt(
-        EpicsSignal, '{self.prefix}:NumberOfSamples{self.channel_index}_RBV',
-        write_pv='{self.prefix}:NumberOfSamples{self.channel_index}',
-        kind='config')
+        EpicsSignal,
+        "{self.prefix}:NumberOfSamples{self.channel_index}_RBV",
+        write_pv="{self.prefix}:NumberOfSamples{self.channel_index}",
+        kind="config",
+    )
     delay = FCpt(
-        EpicsSignal, '{self.prefix}:Delay{self.channel_index}_RBV',
-        write_pv='{self.prefix}:Delay{self.channel_index}', kind='config')
+        EpicsSignal,
+        "{self.prefix}:Delay{self.channel_index}_RBV",
+        write_pv="{self.prefix}:Delay{self.channel_index}",
+        kind="config",
+    )
 
     def __init__(self, prefix, *, name, channel_index, **kwargs):
         self.channel_index = channel_index
@@ -442,40 +421,40 @@ class Wave8(BaseInterface, GroupDevice):
         Alias for the wave8.
     """
 
-    tab_whitelist = ['sum', 'xpos', 'ypos']
+    tab_whitelist = ["sum", "xpos", "ypos"]
 
-    sum = Cpt(EpicsSignalRO, ':SUM', kind='normal')
-    xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
-    ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
-    evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
-    do_config = Cpt(EpicsSignal, ':DO_CONFIG.PROC', kind='config')
-    ch0 = Cpt(Wave8Channel, '', channel_index=0, kind='normal')
-    ch1 = Cpt(Wave8Channel, '', channel_index=1, kind='normal')
-    ch2 = Cpt(Wave8Channel, '', channel_index=2, kind='normal')
-    ch3 = Cpt(Wave8Channel, '', channel_index=3, kind='normal')
-    ch4 = Cpt(Wave8Channel, '', channel_index=4, kind='normal')
-    ch5 = Cpt(Wave8Channel, '', channel_index=5, kind='normal')
-    ch6 = Cpt(Wave8Channel, '', channel_index=6, kind='normal')
-    ch7 = Cpt(Wave8Channel, '', channel_index=7, kind='normal')
-    ch8 = Cpt(Wave8Channel, '', channel_index=8, kind='normal')
-    ch9 = Cpt(Wave8Channel, '', channel_index=9, kind='normal')
-    ch10 = Cpt(Wave8Channel, '', channel_index=10, kind='normal')
-    ch11 = Cpt(Wave8Channel, '', channel_index=11, kind='normal')
-    ch12 = Cpt(Wave8Channel, '', channel_index=12, kind='normal')
-    ch13 = Cpt(Wave8Channel, '', channel_index=13, kind='normal')
-    ch14 = Cpt(Wave8Channel, '', channel_index=14, kind='normal')
-    ch15 = Cpt(Wave8Channel, '', channel_index=15, kind='normal')
+    sum = Cpt(EpicsSignalRO, ":SUM", kind="normal")
+    xpos = Cpt(EpicsSignalRO, ":XPOS", kind="normal")
+    ypos = Cpt(EpicsSignalRO, ":YPOS", kind="normal")
+    evr_channel = Cpt(Trigger, ":TRIG:TRIG0", kind="normal")
+    do_config = Cpt(EpicsSignal, ":DO_CONFIG.PROC", kind="config")
+    ch0 = Cpt(Wave8Channel, "", channel_index=0, kind="normal")
+    ch1 = Cpt(Wave8Channel, "", channel_index=1, kind="normal")
+    ch2 = Cpt(Wave8Channel, "", channel_index=2, kind="normal")
+    ch3 = Cpt(Wave8Channel, "", channel_index=3, kind="normal")
+    ch4 = Cpt(Wave8Channel, "", channel_index=4, kind="normal")
+    ch5 = Cpt(Wave8Channel, "", channel_index=5, kind="normal")
+    ch6 = Cpt(Wave8Channel, "", channel_index=6, kind="normal")
+    ch7 = Cpt(Wave8Channel, "", channel_index=7, kind="normal")
+    ch8 = Cpt(Wave8Channel, "", channel_index=8, kind="normal")
+    ch9 = Cpt(Wave8Channel, "", channel_index=9, kind="normal")
+    ch10 = Cpt(Wave8Channel, "", channel_index=10, kind="normal")
+    ch11 = Cpt(Wave8Channel, "", channel_index=11, kind="normal")
+    ch12 = Cpt(Wave8Channel, "", channel_index=12, kind="normal")
+    ch13 = Cpt(Wave8Channel, "", channel_index=13, kind="normal")
+    ch14 = Cpt(Wave8Channel, "", channel_index=14, kind="normal")
+    ch15 = Cpt(Wave8Channel, "", channel_index=15, kind="normal")
 
     def __init__(self, prefix, *, name, prefix_ioc=None, **kwargs):
         if not prefix_ioc:
-            self._prefix_ioc = 'IOC:%s' % prefix
+            self._prefix_ioc = "IOC:%s" % prefix
         else:
             self._prefix_ioc = prefix_ioc
         super().__init__(prefix, name=name, **kwargs)
 
     def screen(self):
         """Function to call the (pyQT) screen for a Wave8 box."""
-        return ipm_screen('Wave8', self.prefix, self._prefix_ioc)
+        return ipm_screen("Wave8", self.prefix, self._prefix_ioc)
 
     def apply_configuration(self):
         """Put to the 'DO_CONFIG' PV, causing config PVs to be applied."""
@@ -487,6 +466,7 @@ class Wave8(BaseInterface, GroupDevice):
 
 class IPM_Det(BaseInterface, Device):
     """Base class for IPM_IPIMB and IPM_Wave8. Not meant to be instantiated."""
+
     tab_component_names = True
 
     def sum(self):
@@ -503,7 +483,7 @@ class IPM_Det(BaseInterface, Device):
 
     def channel(self, i=0):
         """Returns the detector's specified channel."""
-        if (i >= self._num_channels or i < 0):
+        if i >= self._num_channels or i < 0:
             raise ValueError("Invalid channel number!")
         else:
             return self.channels[i]
@@ -516,27 +496,25 @@ class IPM_Det(BaseInterface, Device):
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self.det = getattr(self, self._det)
-        self._channels = {i: getattr(self.det, 'ch%d' % i)
-                          for i in range(self._num_channels)}
+        self._channels = {i: getattr(self.det, "ch%d" % i) for i in range(self._num_channels)}
 
 
 class IPM_IPIMB(IPMMotion, IPM_Det):
     """
-%s
+    %s
 
-    has a `ipimb` component which represents the IPIMB box used for readout.
+        has a `ipimb` component which represents the IPIMB box used for readout.
     """
 
     __doc__ = __doc__ % (IPM_base) + basic_positioner_init
 
-    ipimb = FCpt(IPIMB, '{self.prefix_ipimb}', prefix_ioc='{self.prefix_ioc}')
+    ipimb = FCpt(IPIMB, "{self.prefix_ipimb}", prefix_ioc="{self.prefix_ioc}")
 
     # IPIMB's have four channels
     _num_channels = 4
-    _det = 'ipimb'
+    _det = "ipimb"
 
-    def __init__(self, prefix, *, name, prefix_ipimb, prefix_ioc=None,
-                 **kwargs):
+    def __init__(self, prefix, *, name, prefix_ipimb, prefix_ioc=None, **kwargs):
         self.prefix_ipimb = prefix_ipimb
         self.prefix_ioc = prefix_ioc
         super().__init__(prefix, name=name, **kwargs)
@@ -544,21 +522,20 @@ class IPM_IPIMB(IPMMotion, IPM_Det):
 
 class IPM_Wave8(IPMMotion, IPM_Det):
     """
-%s
+    %s
 
-    has a `wave8` component which represents the Wave8 used for readout.
+        has a `wave8` component which represents the Wave8 used for readout.
     """
 
     __doc__ = __doc__ % (IPM_base) + basic_positioner_init
 
-    wave8 = FCpt(Wave8, '{self.prefix_wave8}', prefix_ioc='{self.prefix_ioc}')
+    wave8 = FCpt(Wave8, "{self.prefix_wave8}", prefix_ioc="{self.prefix_ioc}")
 
     # Wave8's have sixteen channels
     _num_channels = 16
-    _det = 'wave8'
+    _det = "wave8"
 
-    def __init__(self, prefix, *, name, prefix_wave8, prefix_ioc=None,
-                 **kwargs):
+    def __init__(self, prefix, *, name, prefix_wave8, prefix_ioc=None, **kwargs):
         self.prefix_wave8 = prefix_wave8
         self.prefix_ioc = prefix_ioc
         super().__init__(prefix, name=name, **kwargs)
@@ -589,12 +566,10 @@ def IPM(prefix, *, name, **kwargs):
         BasePV for Wave8.
     """
 
-    if 'prefix_ipimb' in kwargs:
-        return IPM_IPIMB(prefix, name=name,
-                         prefix_ipimb=kwargs.pop('prefix_ipimb'), **kwargs)
-    elif 'prefix_wave8' in kwargs:
-        return IPM_Wave8(prefix, name=name,
-                         prefix_wave8=kwargs.pop('prefix_wave8'), **kwargs)
+    if "prefix_ipimb" in kwargs:
+        return IPM_IPIMB(prefix, name=name, prefix_ipimb=kwargs.pop("prefix_ipimb"), **kwargs)
+    elif "prefix_wave8" in kwargs:
+        return IPM_Wave8(prefix, name=name, prefix_wave8=kwargs.pop("prefix_wave8"), **kwargs)
     else:
         return IPMMotion(prefix, name=name, **kwargs)
 
@@ -606,24 +581,27 @@ class IntensityProfileMonitorStates(TwinCATStatePMPS):
     Defines the state count as 5 (OUT and 4 targets) to limit the number of
     config PVs we connect to.
     """
+
     config = UpCpt(state_count=5)
 
 
-class BeckhoffIntensityProfileTarget(BaseInterface, GroupDevice,
-                                     LightpathInOutCptMixin):
+class BeckhoffIntensityProfileTarget(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """
     Diagnostic device to measure relative pulse intensity and provide
     a signal for data normalization. Has a wave8 V3 and is PLC controlled.
     """
+
     tab_component_names = True
 
-    lightpath_cpts = ['target']
-    _icon = 'fa.ellipsis-v'
+    lightpath_cpts = ["target"]
+    _icon = "fa.ellipsis-v"
 
-    target = Cpt(IntensityProfileMonitorStates, ':MMS:STATE', kind='hinted',
-                 doc='Control of the diagnostic stack via saved positions.')
-    y_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:Y', kind='normal',
-                  doc='Direct control of the diagnostic stack motor.')
-    x_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:X', kind='normal',
-                  doc='X position of target stack.')
-    wave8 = Cpt(Wave8V2, ':W8:01', kind='hinted')
+    target = Cpt(
+        IntensityProfileMonitorStates,
+        ":MMS:STATE",
+        kind="hinted",
+        doc="Control of the diagnostic stack via saved positions.",
+    )
+    y_motor = Cpt(BeckhoffAxisNoOffset, ":MMS:Y", kind="normal", doc="Direct control of the diagnostic stack motor.")
+    x_motor = Cpt(BeckhoffAxisNoOffset, ":MMS:X", kind="normal", doc="X position of target stack.")
+    wave8 = Cpt(Wave8V2, ":W8:01", kind="hinted")

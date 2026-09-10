@@ -36,13 +36,13 @@ class PVPositionerComparator(FltMvInterface, PVPositioner):
         self._last_setpoint = None
         super().__init__(prefix, name=name, **kwargs)
         if None in (self.setpoint, self.readback):
-            raise NotImplementedError('PVPositionerComparator requires both '
-                                      'a setpoint and a readback signal to '
-                                      'compare!')
+            raise NotImplementedError(
+                "PVPositionerComparator requires both a setpoint and a readback signal to compare!"
+            )
 
     def done_comparator(self, readback, setpoint):
         """Override done_comparator in subclass."""
-        raise NotImplementedError('Must implement a done comparator!')
+        raise NotImplementedError("Must implement a done comparator!")
 
     def __init_subclass__(cls, **kwargs):
         """Set up callbacks in subclass."""
@@ -68,8 +68,7 @@ class PVPositionerComparator(FltMvInterface, PVPositioner):
     def _update_done(self):
         """Update our status to done if we pass the comparator."""
         if None not in (self._last_readback, self._last_setpoint):
-            is_done = self.done_comparator(self._last_readback,
-                                           self._last_setpoint)
+            is_done = self.done_comparator(self._last_readback, self._last_setpoint)
             self.done.put(int(is_done), force=True)
 
 
@@ -94,9 +93,9 @@ class PVPositionerIsClose(PVPositionerComparator):
     def done_comparator(self, readback, setpoint):
         kwargs = {}
         if self.atol is not None:
-            kwargs['atol'] = self.atol
+            kwargs["atol"] = self.atol
         if self.rtol is not None:
-            kwargs['rtol'] = self.rtol
+            kwargs["rtol"] = self.rtol
         return np.isclose(readback, setpoint, **kwargs)
 
 
@@ -152,11 +151,11 @@ class PVPositionerDone(FltMvInterface, PVPositioner):
 
     def _setup_move(self, position):
         """Skip the move part of the move if below the tolerance."""
-        if self.skip_small_moves and abs(position-self.position) < self.atol:
-            self.log.debug('Skipping small move of %s', self.name)
+        if self.skip_small_moves and abs(position - self.position) < self.atol:
+            self.log.debug("Skipping small move of %s", self.name)
             self._toggle_done()
         else:
-            self.log.debug('Doing pv positioner move of %s', self.name)
+            self.log.debug("Doing pv positioner move of %s", self.name)
             super()._setup_move(position)
             self._toggle_done()
 
@@ -213,11 +212,11 @@ class PVPositionerNoInterrupt(PVPositioner):
         used for put completion.  Otherwise, the ``setpoint`` will be used.  See
         the `-c` option from ``caput`` for more information.
     """
+
     def __init__(self, *args, **kwargs):
         if self.__class__ is PVPositionerNoInterrupt:
             raise TypeError(
-                "PVPositionerNoInterrupt must be subclassed with the correct "
-                "signals set in the class definition."
+                "PVPositionerNoInterrupt must be subclassed with the correct signals set in the class definition."
             )
         super().__init__(*args, **kwargs)
 
@@ -288,4 +287,5 @@ class OnePVMotor(PVPositionerDone):
     name : str, keyword-only
         A name to refer to this positioner.
     """
+
     setpoint = Cpt(EpicsSignal, "")

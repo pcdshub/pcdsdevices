@@ -1,6 +1,7 @@
 """
 Utilities related to the PMPS system.
 """
+
 from ophyd.device import Component as Cpt
 
 from .device import UpdateComponent as UpCpt
@@ -15,15 +16,26 @@ class TwinCATStatePMPS(TwinCATInOutPositioner):
 
     This class adds utility PVs for managing the PMPS state.
     """
-    arb_enable = Cpt(PytmcSignal, ':PMPS:ARB:ENABLE', io='io', kind='config',
-                     doc='Enables PMPS pre-emptive protections. This can be '
-                         'disabled to fall back on fast-fault-only '
-                         'protections. Disabling this will also clear '
-                         'arbiter requests.')
-    maint_mode = Cpt(PytmcSignal, ':PMPS:MAINT', io='io', kind='config',
-                     doc='If this is on, we trip a fast fault and then can '
-                         'move the motor freely. Useful for debugging '
-                         'motion issues.')
+
+    arb_enable = Cpt(
+        PytmcSignal,
+        ":PMPS:ARB:ENABLE",
+        io="io",
+        kind="config",
+        doc="Enables PMPS pre-emptive protections. This can be "
+        "disabled to fall back on fast-fault-only "
+        "protections. Disabling this will also clear "
+        "arbiter requests.",
+    )
+    maint_mode = Cpt(
+        PytmcSignal,
+        ":PMPS:MAINT",
+        io="io",
+        kind="config",
+        doc="If this is on, we trip a fast fault and then can "
+        "move the motor freely. Useful for debugging "
+        "motion issues.",
+    )
 
 
 class TwinCATMalStatePMPS(TwinCATMalStatePositioner, TwinCATStatePMPS):
@@ -36,4 +48,5 @@ class TwinCATMalStatePMPS(TwinCATMalStatePositioner, TwinCATStatePMPS):
     Unlike the plain `TwinCATMalStatePositioner`, this still has meaningful
     Configuration content: the ``arb_enable`` and ``maint_mode`` PMPS PVs.
     """
+
     config = UpCpt(state_count=2)

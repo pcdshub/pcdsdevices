@@ -35,17 +35,21 @@ from functools import wraps
 
 import numpy as np
 from ophyd import Component as Cpt
-from ophyd import EpicsSignal
+from ophyd import EpicsSignal, PVPositioner
 from ophyd import FormattedComponent as FCpt
-from ophyd import PVPositioner
 from scipy.constants import speed_of_light
 
 from .device import UnrelatedComponent as UCpt
 from .epics_motor import DelayNewport, EpicsMotorInterface
 from .interface import FltMvInterface
-from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
-                        SyncAxesBase, SyncAxis, pseudo_position_argument,
-                        real_position_argument)
+from .pseudopos import (
+    LookupTablePositioner,
+    PseudoSingleInterface,
+    SyncAxesBase,
+    SyncAxis,
+    pseudo_position_argument,
+    real_position_argument,
+)
 from .signal import NotepadLinkedSignal, UnitConversionDerivedSignal
 from .sim import FastMotor
 from .utils import convert_unit, get_status_float, get_status_value
@@ -76,25 +80,22 @@ def load_calibration_file(filename: typing.Union[pathlib.Path, str]) -> np.ndarr
     """
     data = np.loadtxt(str(filename))
     sort_indices = data[:, 0].argsort()
-    return np.column_stack([data[sort_indices, 0],
-                            data[sort_indices, 1]
-                            ])
+    return np.column_stack([data[sort_indices, 0], data[sort_indices, 1]])
 
 
 class LaserEnergyPlotContext:
     table: np.ndarray
-    figure: 'matplotlib.figure.Figure'
+    figure: "matplotlib.figure.Figure"
     pyplot: types.ModuleType  # matplotlib.pyplot
     column_names: tuple[str, ...]
-    _subplot: 'matplotlib.axes._subplots.AxesSubplot'
+    _subplot: "matplotlib.axes._subplots.AxesSubplot"
 
-    def __init__(self, *,
-                 table: np.ndarray,
-                 column_names: typing.Sequence[str]):
+    def __init__(self, *, table: np.ndarray, column_names: typing.Sequence[str]):
         self.table = table
 
         # Importing forces backend selection, so do inside method
         import matplotlib.pyplot as pyplot  # noqa
+
         self.pyplot = pyplot
         self.figure = None
         self._subplot = None
@@ -126,9 +127,7 @@ class LaserEnergyPlotContext:
 
         self._subplot = self.figure.subplots()
         self._subplot.plot(
-            self.table[:, self.column_names.index('motor')],
-            self.table[:, self.column_names.index('energy')],
-            "k-o"
+            self.table[:, self.column_names.index("motor")], self.table[:, self.column_names.index("energy")], "k-o"
         )
         if new_figure:
             self._subplot.set_xlabel("Motor position")
@@ -168,20 +167,20 @@ class LaserEnergyPositioner(FltMvInterface, LookupTablePositioner):
 
     _plot_context: LaserEnergyPlotContext
 
-    energy = Cpt(PseudoSingleInterface, egu='uJ')
-    motor = Cpt(EpicsMotorInterface, '')
+    energy = Cpt(PseudoSingleInterface, egu="uJ")
+    motor = Cpt(EpicsMotorInterface, "")
 
-    def __init__(self, *args,
-                 calibration_file: typing.Union[pathlib.Path, str],
-                 column_names: typing.Sequence[str] = None,
-                 enable_plotting: bool = False,
-                 **kwargs):
+    def __init__(
+        self,
+        *args,
+        calibration_file: typing.Union[pathlib.Path, str],
+        column_names: typing.Sequence[str] = None,
+        enable_plotting: bool = False,
+        **kwargs,
+    ):
         table = load_calibration_file(calibration_file)
-        column_names = column_names or ['motor', 'energy']
-        super().__init__(*args,
-                         table=table,
-                         column_names=column_names,
-                         **kwargs)
+        column_names = column_names or ["motor", "energy"]
+        super().__init__(*args, table=table, column_names=column_names, **kwargs)
         self._plot_context = None
         self.enable_plotting = enable_plotting
 
@@ -206,17 +205,17 @@ class LaserEnergyPositioner(FltMvInterface, LookupTablePositioner):
 
     @pseudo_position_argument
     def move(self, position, wait=True, timeout=None, moved_cb=None):
-        ret = super().move(position, wait=wait, timeout=timeout,
-                           moved_cb=moved_cb)
+        ret = super().move(position, wait=wait, timeout=timeout, moved_cb=moved_cb)
         if self._plot_context is not None:
             real = self.forward(position)
-            self._plot_context.add_line(position=real.motor,
-                                        energy=position.energy)
+            self._plot_context.add_line(position=real.motor, energy=position.energy)
         return ret
 
 
 class _ScaledUnitConversionDerivedSignal(UnitConversionDerivedSignal):
-    UnitConversionDerivedSignal.__doc__ + """
+    (
+        UnitConversionDerivedSignal.__doc__
+        + """
 
     This semi-private class enables scaling of input/output values from
     :class:`UnitConversionDerivedSignal`.  Perhaps the only scale that will
@@ -230,19 +229,19 @@ class _ScaledUnitConversionDerivedSignal(UnitConversionDerivedSignal):
         ``inverse``: the "original" value will be multiplied by the scale,
         whereas a new user-specified setpoint value will be divided.
     """
+    )
     scale = -1
 
     def forward(self, value):
-        '''Compute derived signal value -> original signal value'''
+        """Compute derived signal value -> original signal value"""
         if self.user_offset is not None:
             value = value - self.user_offset
         value /= self.scale
         return convert_unit(value, self.derived_units, self.original_units)
 
     def inverse(self, value):
-        '''Compute original signal value -> derived signal value'''
-        derived_value = convert_unit(value, self.original_units,
-                                     self.derived_units)
+        """Compute original signal value -> derived signal value"""
+        derived_value = convert_unit(value, self.original_units, self.derived_units)
         derived_value *= self.scale
         if self.user_offset is not None:
             derived_value += self.user_offset
@@ -259,48 +258,53 @@ class LaserTiming(FltMvInterface, PVPositioner):
 
     tab_component_names = True
 
-    verbose_name = 'Laser X-ray Timing'
+    verbose_name = "Laser X-ray Timing"
 
-    _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
-                       kind='omitted',
-                       doc='The internal nanosecond-expecting signal.'
-                       )
-    setpoint = Cpt(_ScaledUnitConversionDerivedSignal,
-                   derived_from='_fs_tgt_time',
-                   derived_units='s',
-                   original_units='ns',
-                   kind='hinted',
-                   doc='Setpoint which handles the timing conversion.',
-                   limits=(-100e-6, 100e-6),
-                   )
-    notepad_setpoint = Cpt(NotepadLinkedSignal, ':lxt:OphydSetpoint',
-                           notepad_metadata={'record': 'ao',
-                                             'default_value': 0.0},
-                           kind='omitted'
-                           )
-    notepad_readback = Cpt(NotepadLinkedSignal, ':lxt:OphydReadback',
-                           notepad_metadata={'record': 'ao',
-                                             'default_value': 0.0},
-                           kind='omitted'
-                           )
-    user_offset = Cpt(NotepadLinkedSignal, ':lxt:OphydOffset',
-                      notepad_metadata={'record': 'ao', 'default_value': 0.0},
-                      kind='normal',
-                      doc='A Python-level user offset.'
-                      )
+    _fs_tgt_time = Cpt(
+        EpicsSignal,
+        ":VIT:FS_TGT_TIME",
+        auto_monitor=True,
+        kind="omitted",
+        doc="The internal nanosecond-expecting signal.",
+    )
+    setpoint = Cpt(
+        _ScaledUnitConversionDerivedSignal,
+        derived_from="_fs_tgt_time",
+        derived_units="s",
+        original_units="ns",
+        kind="hinted",
+        doc="Setpoint which handles the timing conversion.",
+        limits=(-100e-6, 100e-6),
+    )
+    notepad_setpoint = Cpt(
+        NotepadLinkedSignal,
+        ":lxt:OphydSetpoint",
+        notepad_metadata={"record": "ao", "default_value": 0.0},
+        kind="omitted",
+    )
+    notepad_readback = Cpt(
+        NotepadLinkedSignal,
+        ":lxt:OphydReadback",
+        notepad_metadata={"record": "ao", "default_value": 0.0},
+        kind="omitted",
+    )
+    user_offset = Cpt(
+        NotepadLinkedSignal,
+        ":lxt:OphydOffset",
+        notepad_metadata={"record": "ao", "default_value": 0.0},
+        kind="normal",
+        doc="A Python-level user offset.",
+    )
 
     # A motor (record) will be moved after the above record is touched, so
     # use its done motion status:
-    done = Cpt(EpicsSignal, ':MMS:PH.DMOV', auto_monitor=True, kind='omitted')
+    done = Cpt(EpicsSignal, ":MMS:PH.DMOV", auto_monitor=True, kind="omitted")
     done_value = 1
 
-    def __init__(self, prefix='', *, egu=None, invert=True, limits=None, **kwargs):
-        if egu not in (None, 's'):
-            raise ValueError(
-                f'{self.__class__.__name__} is pre-configured to work in units'
-                f' of seconds.'
-            )
-        super().__init__(prefix, egu='s', **kwargs)
+    def __init__(self, prefix="", *, egu=None, invert=True, limits=None, **kwargs):
+        if egu not in (None, "s"):
+            raise ValueError(f"{self.__class__.__name__} is pre-configured to work in units of seconds.")
+        super().__init__(prefix, egu="s", **kwargs)
         if invert:
             self.setpoint.scale = -1
         else:
@@ -323,13 +327,12 @@ class LaserTiming(FltMvInterface, PVPositioner):
                 if signal.get(use_monitor=True) != position:
                     signal.put(position, wait=False)
         except Exception as ex:
-            self.log.debug('Failed to update notepad setpoint to position %s',
-                           position, exc_info=ex)
+            self.log.debug("Failed to update notepad setpoint to position %s", position, exc_info=ex)
         super()._setup_move(position)
 
         # Something is wrong with done signal, just sleep and pretend
         time.sleep(1)
-        self._move_changed(value=1-self.done_value)
+        self._move_changed(value=1 - self.done_value)
         self._move_changed(value=self.done_value)
 
     @done.sub_value
@@ -343,8 +346,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
                     if signal.get(use_monitor=True) != position:
                         signal.put(position, wait=False)
             except Exception as ex:
-                self.log.debug('Failed to update notepad readback to position'
-                               ' %s', position, exc_info=ex)
+                self.log.debug("Failed to update notepad readback to position %s", position, exc_info=ex)
 
     @property
     def limits(self):
@@ -361,7 +363,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
         self.setpoint.limits = limits
 
     def set_current_position(self, position):
-        '''
+        """
         Calculate and configure the user_offset value, indicating the provided
         ``position`` as the new current position.
 
@@ -369,7 +371,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
         ----------
         position
             The new current position.
-        '''
+        """
         self.user_offset.put(0.0)
         new_offset = position - self.setpoint.get()
         self.user_offset.put(new_offset)
@@ -394,9 +396,9 @@ class LaserTiming(FltMvInterface, PVPositioner):
         try:
             dial_pos = self._fs_tgt_time.get()
             # convert from ns to s
-            return f'{(dial_pos * 1e-9):.3e}'
+            return f"{(dial_pos * 1e-9):.3e}"
         except Exception:
-            return 'N/A'
+            return "N/A"
 
     def format_status_info(self, status_info):
         """
@@ -417,9 +419,8 @@ class LaserTiming(FltMvInterface, PVPositioner):
             Formatted string with all relevant status information.
         """
         dial_pos = self.dial_pos
-        position = get_status_float(
-            status_info, 'position', precision=3, format='e')
-        units = get_status_value(status_info, 'setpoint', 'units')
+        position = get_status_float(status_info, "position", precision=3, format="e")
+        units = get_status_value(status_info, "setpoint", "units")
         return f"""\
 Virtual Motor {self.verbose_name} {self.prefix}
 Current position (user, dial): {position} [{units}] {dial_pos} [s]
@@ -433,56 +434,63 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
 
     tab_component_names = True
 
-    verbose_name = 'Laser X-ray Timing'
+    verbose_name = "Laser X-ray Timing"
 
-    _tgt_time = Cpt(EpicsSignal, ':PHASCTL:DELAY_SET', auto_monitor=True,
-                    kind='omitted',
-                    doc='The internal nanosecond-expecting signal.'
-                    )
-    setpoint = Cpt(_ScaledUnitConversionDerivedSignal,
-                   derived_from='_tgt_time',
-                   derived_units='s',
-                   original_units='ns',
-                   kind='hinted',
-                   doc='Setpoint which handles the timing conversion.',
-                   limits=(-100e-6, 100e-6),
-                   )
-    notepad_setpoint = Cpt(NotepadLinkedSignal, ':lxt:OphydSetpoint',
-                           notepad_metadata={'record': 'ao',
-                                             'default_value': 0.0},
-                           kind='omitted'
-                           )
-    notepad_readback = Cpt(NotepadLinkedSignal, ':lxt:OphydReadback',
-                           notepad_metadata={'record': 'ao',
-                                             'default_value': 0.0},
-                           kind='omitted'
-                           )
-    user_offset = FCpt(NotepadLinkedSignal, '{self.prefix}:lxt:OphydOffset{self.instrument}',
-                       notepad_metadata={'record': 'ao', 'default_value': 0.0},
-                       kind='normal',
-                       doc='A Python-level user offset.'
-                       )
-    hla_enabled = Cpt(EpicsSignal, ':PHASCTL:HLA_ENABLED',
-                      kind='omitted',
-                      doc='HLA status',
-                      )
+    _tgt_time = Cpt(
+        EpicsSignal,
+        ":PHASCTL:DELAY_SET",
+        auto_monitor=True,
+        kind="omitted",
+        doc="The internal nanosecond-expecting signal.",
+    )
+    setpoint = Cpt(
+        _ScaledUnitConversionDerivedSignal,
+        derived_from="_tgt_time",
+        derived_units="s",
+        original_units="ns",
+        kind="hinted",
+        doc="Setpoint which handles the timing conversion.",
+        limits=(-100e-6, 100e-6),
+    )
+    notepad_setpoint = Cpt(
+        NotepadLinkedSignal,
+        ":lxt:OphydSetpoint",
+        notepad_metadata={"record": "ao", "default_value": 0.0},
+        kind="omitted",
+    )
+    notepad_readback = Cpt(
+        NotepadLinkedSignal,
+        ":lxt:OphydReadback",
+        notepad_metadata={"record": "ao", "default_value": 0.0},
+        kind="omitted",
+    )
+    user_offset = FCpt(
+        NotepadLinkedSignal,
+        "{self.prefix}:lxt:OphydOffset{self.instrument}",
+        notepad_metadata={"record": "ao", "default_value": 0.0},
+        kind="normal",
+        doc="A Python-level user offset.",
+    )
+    hla_enabled = Cpt(
+        EpicsSignal,
+        ":PHASCTL:HLA_ENABLED",
+        kind="omitted",
+        doc="HLA status",
+    )
 
     # The phase shifter will be moved after the above record is touched, so
     # use its done status:
-    done = Cpt(EpicsSignal, ':PHASCTL:DELAY_MOVING', auto_monitor=True, kind='omitted')
+    done = Cpt(EpicsSignal, ":PHASCTL:DELAY_MOVING", auto_monitor=True, kind="omitted")
     done_value = 0
 
-    def __init__(self, prefix='', *, egu=None, invert=True, limits=None, instrument=None, **kwargs):
-        if egu not in (None, 's'):
-            raise ValueError(
-                f'{self.__class__.__name__} is pre-configured to work in units'
-                f' of seconds.'
-            )
+    def __init__(self, prefix="", *, egu=None, invert=True, limits=None, instrument=None, **kwargs):
+        if egu not in (None, "s"):
+            raise ValueError(f"{self.__class__.__name__} is pre-configured to work in units of seconds.")
         if instrument is not None:
-            self.instrument = ':' + instrument
+            self.instrument = ":" + instrument
         else:
-            self.instrument = ''
-        super().__init__(prefix, egu='s', **kwargs)
+            self.instrument = ""
+        super().__init__(prefix, egu="s", **kwargs)
         if invert:
             self.setpoint.scale = -1
         else:
@@ -504,6 +512,7 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
                 func(self, *args, **kwargs)
             else:
                 raise Exception("Laser Locker Timing: Calibration Required.")
+
         return wrapper
 
     @check_hla
@@ -515,8 +524,7 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
                 if signal.get(use_monitor=True) != position:
                     signal.put(position, wait=False)
         except Exception as ex:
-            self.log.debug('Failed to update notepad setpoint to position %s',
-                           position, exc_info=ex)
+            self.log.debug("Failed to update notepad setpoint to position %s", position, exc_info=ex)
         super()._setup_move(position)
 
         # Something is wrong with done signal, sleep and see if we missed the transition
@@ -524,7 +532,7 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
         time.sleep(0.2)
         # If we missed the transition, mark done now
         if self.done.get() == self.done_value:
-            self._move_changed(value=1-self.done_value)
+            self._move_changed(value=1 - self.done_value)
             self._move_changed(value=self.done_value)
 
     @done.sub_value
@@ -538,8 +546,7 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
                     if signal.get(use_monitor=True) != position:
                         signal.put(position, wait=False)
             except Exception as ex:
-                self.log.debug('Failed to update notepad readback to position'
-                               ' %s', position, exc_info=ex)
+                self.log.debug("Failed to update notepad readback to position %s", position, exc_info=ex)
 
     @property
     def limits(self):
@@ -556,7 +563,7 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
         self.setpoint.limits = limits
 
     def set_current_position(self, position):
-        '''
+        """
         Calculate and configure the user_offset value, indicating the provided
         ``position`` as the new current position.
 
@@ -564,7 +571,7 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
         ----------
         position
             The new current position.
-        '''
+        """
         self.user_offset.put(0.0)
         new_offset = position - self.setpoint.get()
         self.user_offset.put(new_offset)
@@ -585,9 +592,9 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
         try:
             dial_pos = self._tgt_time.get()
             # convert from ns to s
-            return f'{(dial_pos * 1e-9):.3e}'
+            return f"{(dial_pos * 1e-9):.3e}"
         except Exception:
-            return 'N/A'
+            return "N/A"
 
     def format_status_info(self, status_info):
         """
@@ -608,9 +615,8 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
             Formatted string with all relevant status information.
         """
         dial_pos = self.dial_pos
-        position = get_status_float(
-            status_info, 'position', precision=3, format='e')
-        units = get_status_value(status_info, 'setpoint', 'units')
+        position = get_status_float(status_info, "position", precision=3, format="e")
+        units = get_status_value(status_info, "setpoint", "units")
         return f"""\
 Virtual Motor {self.verbose_name} {self.prefix}
 Current position (user, dial): {position} [{units}] {dial_pos} [s]
@@ -638,20 +644,18 @@ class _ReversedTimeToolDelay(DelayNewport):
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         """Convert delay unit to motor unit."""
-        seconds = convert_unit(-pseudo_pos.delay - self.user_offset.get(),
-                               self.delay.egu, 'seconds')
+        seconds = convert_unit(-pseudo_pos.delay - self.user_offset.get(), self.delay.egu, "seconds")
         meters = seconds * speed_of_light / self.n_bounces
-        motor_value = convert_unit(meters, 'meters', self.motor.egu)
+        motor_value = convert_unit(meters, "meters", self.motor.egu)
         return self.RealPosition(motor=motor_value)
 
     @real_position_argument
     def inverse(self, real_pos):
         """Convert motor unit to delay unit."""
-        meters = convert_unit(real_pos.motor, self.motor.egu, 'meters')
+        meters = convert_unit(real_pos.motor, self.motor.egu, "meters")
         seconds = meters / speed_of_light * self.n_bounces
-        delay_value = convert_unit(seconds, 'seconds', self.delay.egu)
-        return self.PseudoPosition(delay=-(delay_value
-                                           + self.user_offset.get()))
+        delay_value = convert_unit(seconds, "seconds", self.delay.egu)
+        return self.PseudoPosition(delay=-(delay_value + self.user_offset.get()))
 
 
 class LaserTimingCompensation(SyncAxesBase):
@@ -666,16 +670,17 @@ class LaserTimingCompensation(SyncAxesBase):
     ``delay`` and ``laser`` are intentionally renamed to non-ophyd-style
     ``txt`` and ``lxt``, respectively.
     """
+
     tab_component_names = True
     pseudo = Cpt(PseudoSingleInterface, limits=(-100e-6, 100e-6))
-    delay = UCpt(_ReversedTimeToolDelay, doc='The **reversed** txt motor')
-    laser = UCpt(LaserTiming, doc='The lxt motor')
+    delay = UCpt(_ReversedTimeToolDelay, doc="The **reversed** txt motor")
+    laser = UCpt(LaserTiming, doc="The lxt motor")
 
     def __init__(self, prefix, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         super().__init__(prefix, **kwargs)
-        self.delay.name = 'txt_reversed'
-        self.laser.name = 'lxt'
+        self.delay.name = "txt_reversed"
+        self.laser.name = "lxt"
 
 
 class LxtTtcExample(SyncAxis):
@@ -684,14 +689,14 @@ class LxtTtcExample(SyncAxis):
 
     XPP's config on March 4, 2021
     """
-    lxt = Cpt(LaserTiming, 'LAS:FS11')
-    txt = Cpt(DelayNewport, 'XPP:LAS:MMN:16',
-              n_bounces=14)
+
+    lxt = Cpt(LaserTiming, "LAS:FS11")
+    txt = Cpt(DelayNewport, "XPP:LAS:MMN:16", n_bounces=14)
 
     tab_component_names = True
-    scales = {'txt': -1}
+    scales = {"txt": -1}
     warn_deadband = 5e-14
-    fix_sync_keep_still = 'lxt'
+    fix_sync_keep_still = "lxt"
     sync_limits = (-100e-6, 100e-6)
 
 
@@ -700,4 +705,4 @@ class FakeLxtTtc(LxtTtcExample):
     txt = Cpt(FastMotor)
 
     def __init__(self):
-        super().__init__('FAKE:LXT:TTC', name='fake_lxt_ttc')
+        super().__init__("FAKE:LXT:TTC", name="fake_lxt_ttc")

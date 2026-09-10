@@ -5,6 +5,7 @@ This covers generalized ways that we can protect hardware from
 damaging itself. For example: we can prevent a motor from moving
 forward if moving forward would collide with another motor.
 """
+
 from ophyd import Component as Cpt
 from ophyd import Device
 
@@ -28,17 +29,19 @@ class EPS(BaseInterface, Device):
     this class only makes minimal adjustments to make the default
     typhos view usable.
     """
-    eps_ok = Cpt(PytmcSignal, "bEPS_OK", io="i", kind="normal",
-                 doc="EPS summary: true if everything is OK")
-    message = Cpt(PytmcSignal, "sMessage", io="i", kind="normal",
-                  string=True,
-                  doc="Message from EPS to the user.")
-    flags_raw = Cpt(PytmcSignal, "nFlags", io="i", kind="omitted",
-                    doc="Raw EPS bitmask")
+
+    eps_ok = Cpt(PytmcSignal, "bEPS_OK", io="i", kind="normal", doc="EPS summary: true if everything is OK")
+    message = Cpt(PytmcSignal, "sMessage", io="i", kind="normal", string=True, doc="Message from EPS to the user.")
+    flags_raw = Cpt(PytmcSignal, "nFlags", io="i", kind="omitted", doc="Raw EPS bitmask")
     flags = Cpt(InternalSignal, kind="normal")
-    flag_desc = Cpt(PytmcSignal, "sFlagDesc", io="i", kind="omitted",
-                    string=True,
-                    doc="Semicolon-delimited descriptions of each flag")
+    flag_desc = Cpt(
+        PytmcSignal,
+        "sFlagDesc",
+        io="i",
+        kind="omitted",
+        string=True,
+        doc="Semicolon-delimited descriptions of each flag",
+    )
 
     # See _update_flag docstring
     set_metadata(flags, dict(variety="bitmask", bits=8))
