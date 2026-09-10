@@ -38,7 +38,7 @@ jobs:
       contents: read
     uses: pcdshub/pcds-ci-helpers/.github/workflows/python-uv-build.yml@52a413e9d77c09f9e7617c3a75fc19a7d6cf4e11
     with:
-      package-name: "import_name_goes_here"
+      package-name: "pcdsdevices"
 
   # On tag, uploads the files from pypi-build to pypi. Requires trusted publishing to be set up.
   # This cannot include the central workflow like the others, it unfortunately needs to be copied into the file here.
