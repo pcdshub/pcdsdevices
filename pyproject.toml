@@ -48,3 +48,13 @@ file = "dev-requirements.txt"
 
 [tool.setuptools.dynamic.optional-dependencies.doc]
 file = "docs-requirements.txt"
+
+[tool.ruff]
+line-length = 120
+exclude = [".git", "__pycache__", "build", "dist", "*/_version.py"]
+
+[tool.ruff.lint]
+select = ["C", "E", "F", "W", "B", "I"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
