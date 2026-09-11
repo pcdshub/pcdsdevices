@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from enum import IntEnum
 
 from lightpath import LightpathState
@@ -5,8 +7,12 @@ from ophyd import Component as Cpt
 from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
-from .inout import InOutPositioner, InOutPVStatePositioner
-from .interface import BaseInterface, LightpathInOutMixin, LightpathMixin
+from .digital_signals import J120K
+from .epics_motor import BeckhoffAxisNoOffset
+from .inout import (InOutPositioner, InOutPVStatePositioner,
+                    TwinCATInOutPositioner)
+from .interface import (BaseInterface, LightpathInOutCptMixin,
+                        LightpathInOutMixin, LightpathMixin)
 
 
 class Commands(IntEnum):
@@ -40,16 +46,27 @@ class Stopper(InOutPVStatePositioner, LightpathInOutMixin):
     """
 
     # Limit-based states
-    open_limit = Cpt(EpicsSignalRO, ":OPEN", kind="normal", doc="Reads 1 if the stopper is out, at the open limit.")
+    open_limit = Cpt(
+        EpicsSignalRO,
+        ":OPEN",
+        kind="normal",
+        doc="Reads 1 if the stopper is out, at the open limit.",
+    )
     closed_limit = Cpt(
-        EpicsSignalRO, ":CLOSE", kind="normal", doc=("Reads 1 if the stopper is in, at the closed limit.")
+        EpicsSignalRO,
+        ":CLOSE",
+        kind="normal",
+        doc=("Reads 1 if the stopper is in, at the closed limit."),
     )
 
     # Information on device control
     command = Cpt(EpicsSignal, ":CMD", kind="omitted", doc="Put here to command a stopper move.")
     commands = Commands
 
-    _state_logic = {"open_limit": {0: "defer", 1: "OUT"}, "closed_limit": {0: "defer", 1: "IN"}}
+    _state_logic = {
+        "open_limit": {0: "defer", 1: "OUT"},
+        "closed_limit": {0: "defer", 1: "IN"},
+    }
     _state_logic_set_ref = "command"
 
     # QIcon for UX
@@ -157,9 +174,17 @@ class PPSStopper2PV(BaseInterface, LightpathMixin):
         Defaults to 1.
     """
 
-    in_signal = FCpt(EpicsSignalRO, "{prefix}{in_suffix}", kind="hinted", doc="Tells us if the stopper is IN or NOT_IN")
+    in_signal = FCpt(
+        EpicsSignalRO,
+        "{prefix}{in_suffix}",
+        kind="hinted",
+        doc="Tells us if the stopper is IN or NOT_IN",
+    )
     out_signal = FCpt(
-        EpicsSignalRO, "{prefix}{out_suffix}", kind="hinted", doc="Tells us if the stopper is OUT or NOT_OUT"
+        EpicsSignalRO,
+        "{prefix}{out_suffix}",
+        kind="hinted",
+        doc="Tells us if the stopper is OUT or NOT_OUT",
     )
 
     # QIcon for UX
@@ -168,7 +193,16 @@ class PPSStopper2PV(BaseInterface, LightpathMixin):
     # Lightpath settings
     lightpath_cpts = ["in_signal", "out_signal"]
 
-    def __init__(self, prefix, *, in_suffix="INSUM", out_suffix="OUTSUM", in_value=1, out_value=1, **kwargs):
+    def __init__(
+        self,
+        prefix,
+        *,
+        in_suffix="INSUM",
+        out_suffix="OUTSUM",
+        in_value=1,
+        out_value=1,
+        **kwargs,
+    ):
         self.in_suffix = in_suffix
         self.out_suffix = out_suffix
         self.in_value = in_value
@@ -182,8 +216,42 @@ class PPSStopper2PV(BaseInterface, LightpathMixin):
         transmission = 0.0 if self._inserted else 1.0
 
         return LightpathState(
-            inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: transmission}
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: transmission},
         )
 
 
 PPSStopperL2SI = PPSStopper2PV
+
+
+class ST1K0(BaseInterface, LightpathInOutCptMixin):
+    """
+    ST1K0: controls-controlled stopper in the FEE
+
+    This device has 1 main member: the stopper/absorber (diamond stopper).
+
+    The vertical motor moves stopper in and out of the beam path in
+    the +/- y direction.
+
+    It has a state selector that can be used to move in and out by state name.
+
+    It also has a flow switch, which is not connected to anything at time of writing.
+
+    Instantiate me with:
+    st1k0 = ST1K0("ST1K0:MMS:01", name="st1k0")
+
+    or just
+    st1k0 = ST1K0()
+    """
+
+    tab_component_names = True
+
+    state = Cpt(TwinCATInOutPositioner, ":STATE", kind="hinted")
+    absorber_vert = Cpt(BeckhoffAxisNoOffset, "", kind="normal")
+    flow_switch = Cpt(J120K, "", kind="normal", doc="Device that indicates nominal PCW Flow Rate.")
+
+    lightpath_cpts = ["state"]
+
+    def __init__(self, prefix: str = "ST1K0:MMS:01", *args, name: str = "st1k0", **kwargs):
+        super().__init__(prefix, *args, name=name, **kwargs)
