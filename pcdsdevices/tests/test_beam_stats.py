@@ -28,7 +28,7 @@ def test_beam_stats(fake_beam_stats):
     logger.debug("test_beam_stats")
     stats = fake_beam_stats
     stats.read()
-    stats.hints
+    stats.hints  # noqa: B018
 
 
 def test_beam_stats_avg(fake_beam_stats):
@@ -66,7 +66,7 @@ def fake_lcls():
 def test_lcls(fake_lcls):
     lcls = fake_lcls
     lcls.read()
-    lcls.hints
+    lcls.hints  # noqa: B018
 
 
 def test_bykik_status(fake_lcls):

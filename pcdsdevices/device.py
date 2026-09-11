@@ -96,8 +96,8 @@ class UnrelatedComponent(Component):
             expected_kwarg = self.attr + "_" + kw
         try:
             return instance.unrelated_prefixes[expected_kwarg]
-        except KeyError:
-            raise ValueError(f"Missing {expected_kwarg} in __init__ for {instance.name}.")
+        except KeyError as exc:
+            raise ValueError(f"Missing {expected_kwarg} in __init__ for {instance.name}.") from exc
 
 
 class ObjectComponent(Component):

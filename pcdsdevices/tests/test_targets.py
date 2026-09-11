@@ -102,7 +102,7 @@ def test_get_samples(fake_grid_stage, sample_file):
     for ff in res:
         assert ff in ["sample1", "sample2", "test_sample"]
     assert len(res) == 3
-    with pytest.raises(Exception):
+    with pytest.raises(FileNotFoundError):
         xy.get_samples(path="bad_file")
 
 
@@ -128,7 +128,7 @@ def test_get_sample_data(fake_grid_stage, sample_file):
     res = xy.get_sample_data("non_sample", path=sample_file)
     assert res == {}
     # raise an exception if could not load file
-    with pytest.raises(Exception):
+    with pytest.raises(FileNotFoundError):
         xy.get_sample_data("non_sample", path="no_file")
 
 
@@ -430,7 +430,7 @@ def test_set_m_n_points(fake_grid_stage):
     assert stage.m_n_points == (5, 5)
     stage.m_n_points = 10, 23
     assert stage.m_n_points == (10, 23)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         stage.m_n_points = 23
 
 

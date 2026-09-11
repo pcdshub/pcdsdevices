@@ -131,8 +131,10 @@ class SourceToDestinationConfig(BaseInterface, Device):
         if destination_pos is None:
             try:
                 destination_pos = self.parent.destination_pos
-            except AttributeError:
-                raise RuntimeError("destination_pos must be passed as a kwarg or available on the parent device")
+            except AttributeError as exc:
+                raise RuntimeError(
+                    "destination_pos must be passed as a kwarg or available on the parent device"
+                ) from exc
 
         assert isinstance(destination_pos, DestinationPosition)
         self.destination_pos = destination_pos
@@ -499,8 +501,8 @@ class BtpsSourceStatus(BaseInterface, Device):
         try:
             dest_index = int(self.current_destination.get())
             dest = DestinationPosition.from_index(dest_index)
-        except Exception:
-            raise ValueError("Current destination invalid; unable to set nominal positions")
+        except Exception as exc:
+            raise ValueError("Current destination invalid; unable to set nominal positions") from exc
 
         config = self.parent.destinations[dest].sources[self.source_pos]
 

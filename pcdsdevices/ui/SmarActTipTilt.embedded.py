@@ -227,7 +227,8 @@ class _StageSettingsUI:
 
 class SettingsPanel(QtWidgets.QWidget):
     """
-    Container class for basic settings that accompany open-loop movement for SmarAct tip-tilts. Largely lifted from TyphosPositionerRow
+    Container class for basic settings that accompany open-loop movement for SmarAct tip-tilts.
+    Largely lifted from TyphosPositionerRow
     """
 
     mirror: SmarActTipTiltWidget

@@ -511,7 +511,7 @@ class Lcls2LaserTiming(FltMvInterface, PVPositioner):
             if self.hla_enabled.get() == 1:
                 func(self, *args, **kwargs)
             else:
-                raise Exception("Laser Locker Timing: Calibration Required.")
+                raise RuntimeError("Laser Locker Timing: Calibration Required.")
 
         return wrapper
 

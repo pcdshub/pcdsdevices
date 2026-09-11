@@ -1539,7 +1539,7 @@ class AbsProgressBar(ProgressBar):
         super().__init__(*args, **kwargs)
 
         # Allow manual updates for a final status print
-        for i, obj in enumerate(self.status_objs):
+        for i in range(self.status_objs):
             self._manual_cbs.append(functools.partial(self._status_cb, i))
 
     def _status_cb(self, pos, status):
@@ -1728,7 +1728,9 @@ class LightpathMixin(Device):
     # Mixin holds one summary signal that changes with lightpath_cpts
     lightpath_summary: Signal = Cpt(SummarySignal, name="lightpath_summary", kind="omitted")
 
-    def __init__(self, *args, input_branches=[], output_branches=[], **kwargs):
+    def __init__(self, *args, input_branches=None, output_branches=None, **kwargs):
+        input_branches = input_branches or []
+        output_branches = output_branches or []
         self._lightpath_ready = False
         self._retry_lightpath = True
         self._summary_initialized = False

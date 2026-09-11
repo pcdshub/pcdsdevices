@@ -254,7 +254,7 @@ def test_laser_timing_init_configurables():
     lcls2_lxt._setup_move(10)
     assert lcls2_lxt.position == 10
     lcls2_lxt.hla_enabled.put(0)
-    with pytest.raises(Exception):
+    with pytest.raises(RuntimeError):
         lcls2_lxt._setup_move(0)
     assert lcls2_lxt.position == 10
 

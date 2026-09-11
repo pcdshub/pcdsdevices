@@ -609,8 +609,8 @@ class MetaDataDict(dict):
         """
         try:
             return self[item]
-        except KeyError:
-            raise AttributeError(f"No attribute named '{item}'")
+        except KeyError as exc:
+            raise AttributeError(f"No attribute named '{item}'") from exc
 
     def __setattr__(self, key, value):
         """
@@ -641,8 +641,8 @@ class MetaDataDict(dict):
         """
         try:
             del self[key]
-        except KeyError:
-            raise AttributeError(f"No attribute named '{key}'")
+        except KeyError as exc:
+            raise AttributeError(f"No attribute named '{key}'") from exc
 
 
 class SL2K4Slits(BeckhoffSlits):

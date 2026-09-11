@@ -27,11 +27,12 @@ def TuttiFruttiCls(
     wfs=False,
     ell=False,
     ellch=1,
-    misc=[],
+    misc=None,
 ):
     """
     Generate a TuttiFrutti class. See TuttiFrutti function for more details.
     """
+    misc = misc or []
     cpts = {}
     if nf:
         cpt = Cpt(LasBasler, "_NF1:", kind="normal")
@@ -82,7 +83,7 @@ def TuttiFrutti(
     wfs=False,
     ell=False,
     ellch=1,
-    misc=[],
+    misc=None,
 ):
     """
     Factory function for Tuttifrutti diagnostic stack device. Returns a device
@@ -169,6 +170,7 @@ def TuttiFrutti(
     ttf = TuttiFrutti('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True,
                            misc=dmisc)
     """
+    misc = misc or []
     cls = TuttiFruttiCls(
         prefix,
         name,

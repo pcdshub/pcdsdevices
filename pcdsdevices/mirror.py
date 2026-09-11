@@ -385,11 +385,14 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
     def __init__(
         self,
         *args,
-        x_ranges: list[list[int]] = [],
-        y_ranges: list[list[int]] = [],
-        pitch_ranges: list[list[list[int]]] = [],
+        x_ranges: list[list[int]] = None,
+        y_ranges: list[list[int]] = None,
+        pitch_ranges: list[list[list[int]]] = None,
         **kwargs,
     ) -> None:
+        x_ranges = x_ranges or []
+        y_ranges = y_ranges or []
+        pitch_ranges = pitch_ranges or []
         # insertion status, [[min_x_out, max_x_out], [min_x_in, max_x_in]]
         self.x_ranges = x_ranges
         # coating status.  (n_coatings * 2) array

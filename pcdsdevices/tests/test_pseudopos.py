@@ -82,7 +82,7 @@ def test_sync_passthrough(five_axes):
 def test_sync_basic(five_axes):
     logger.debug("test_sync_basic")
     five_axes.move(5)
-    for i, pos in enumerate(five_axes.real_position):
+    for pos in five_axes.real_position:
         assert pos == 5
     assert five_axes.pseudo.position == 5
 
@@ -134,7 +134,7 @@ def test_sync_axis_crazy():
     assert sync.two.position == -10
     assert sync.three.position == 18
     assert sync.position.sync == 5
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         sync.move(20)
 
 

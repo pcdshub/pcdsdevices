@@ -161,7 +161,7 @@ def test_presets(presets, fast_motor: FastMotor):
         fast_motor.wm_zero()
 
     with pytest.raises(AttributeError):
-        fast_motor.presets.positions.zero
+        fast_motor.presets.positions.zero  # noqa: B018
 
     fast_motor.umv_sample()
     assert fast_motor.wm() == 3

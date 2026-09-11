@@ -366,6 +366,7 @@ class IPIMB(BaseInterface, GroupDevice):
         warnings.warn(
             "isum is deprecated, please use sum instead",
             DeprecationWarning,
+            stacklevel=2,
         )
         return self.sum
 

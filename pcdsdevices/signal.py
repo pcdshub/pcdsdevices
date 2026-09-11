@@ -654,14 +654,14 @@ class MultiDerivedSignal(AggregateSignal):
 
         try:
             sig.bind(mds=None, items=None)
-        except Exception:
+        except Exception as exc:
             raise ValueError(
                 f"The `calculate_on_get` signature is incorrect for "
                 f"MultiDerivedSignal.  It should take two parameters, "
                 f"'mds' and 'items' as either positional or keyword "
                 f"arguments. For {parent_name}.{self.attr_name}:"
                 f"{func_name}{sig}"
-            )
+            ) from exc
 
     def _check_calculate_on_put_signature(self, func: Optional[MdsOnGetFunction]):
         """Ensure the ``calculate_on_put`` signature is correct."""
@@ -674,14 +674,14 @@ class MultiDerivedSignal(AggregateSignal):
 
         try:
             sig.bind(mds=None, value=None)
-        except Exception:
+        except Exception as exc:
             raise ValueError(
                 f"The `calculate_on_put` signature is incorrect for "
                 f"MultiDerivedSignal.  It should take two parameters, "
                 f"'mds' and 'value' as either positional or keyword "
                 f"arguments. For {parent_name}.{self.attr_name}:"
                 f"{func_name}{sig}"
-            )
+            ) from exc
 
     @property
     def signals(self) -> list[Signal]:

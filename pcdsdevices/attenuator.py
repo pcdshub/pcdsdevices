@@ -1820,7 +1820,8 @@ class SXRGasAtt(BaseInterface, GroupDevice):
         mode : str, either "PMPS" or "Local"
         Mode for attenuator.
         control_type : str, optional
-            Set control type in "Local" mode, either "transmission" or "pressure" control. The default is 'transmission'.
+            Set control type in "Local" mode, either "transmission" or "pressure" control.
+            The default is 'transmission'.
         gas_type : str, optional
             Change gas type to "N2" or "Ar". The default is None.If None is passed the attenuator uses the current gas.
 

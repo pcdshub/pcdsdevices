@@ -151,7 +151,8 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         left_half = ch_list[:midpoint]
         right_half = ch_list[midpoint:]
 
-        # Reminder that left and right half are dicitonaries with entries: (<string name of channel attribute>, <dict of channel attributes>)
+        # Reminder that left and right half are dicitonaries with entries:
+        # (<string name of channel attribute>, <dict of channel attributes>)
         for ch, ch_info in left_half:
             ch_obj = getattr(self.device, ch)
             add_channel_row(left_layout, ch_info, ch_obj)
@@ -159,7 +160,8 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             ch_obj = getattr(self.device, ch)
             add_channel_row(right_layout, ch_info, ch_obj)
 
-        # I need to resize the window after the scroll widget is populated, or else the screen will cuttoff all the channels
+        # I need to resize the window after the scroll widget is populated,
+        # or else the screen will cuttoff all the channels
         # I Encapsulate in a function so I can add a delay, Qt needs time to draw everything to screen before I resize
         def delayed_resize():
             current_width = self.width()

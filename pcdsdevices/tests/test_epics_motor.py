@@ -181,7 +181,8 @@ def test_epics_motor_soft_limits(fake_epics_motor):
 
     - Checks that initial limits are set correctly.
     - Verifies that moves beyond the limits raise the correct error for each motor class.
-    - Simulates readback changes and verifies that the device prevents setting invalid limits depending on current position.
+    - Simulates readback changes and verifies that the device prevents setting invalid limits
+      depending on current position.
     - Ensures setting and checking new, in-range limits works for all classes.
     """
     logger.debug("test_epics_motor_soft_limits")

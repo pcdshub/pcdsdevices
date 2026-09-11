@@ -120,6 +120,7 @@ class LegacyItem(HappiItem):
             "lacks specificity. Use one of detailed_screen, "
             "embedded_screen, or engineering screen instead",
             DeprecationWarning,
+            stacklevel=2,
         )
         return self.detailed_screen
 

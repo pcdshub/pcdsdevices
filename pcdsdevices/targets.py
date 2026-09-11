@@ -383,9 +383,9 @@ class XYGridStage:
         """
         try:
             self._m_points, self._n_points = m_n_values
-        except Exception:
+        except Exception as exc:
             err_msg = "Please pass an iterable with two items for m points and n points respectively."
-            raise Exception(err_msg)
+            raise ValueError(err_msg) from exc
 
     @property
     def coefficients(self):

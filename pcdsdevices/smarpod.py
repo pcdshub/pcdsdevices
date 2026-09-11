@@ -6,7 +6,8 @@ SmarPod is a hexapod-like positioning system from SmarAct
 > SMARPOD motion systems offer six degrees of freedom similar to classical hexapod
 > systems while guaranteeing highest resolution and repeatability. Compared to
 > serial kinematic systems, parallel kinematic SMARPODs exhibit a higher stiffness.
-> A user-friendly software package allows easy integration into your own control environment assuring a very short setup time.
+> A user-friendly software package allows easy integration into your own control environment
+  assuring a very short setup time.
 
 see https://www.smaract.com/en/smarpod
 """

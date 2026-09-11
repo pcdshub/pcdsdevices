@@ -919,7 +919,8 @@ class IMS(PCDSMotorBase):
             return
         elif self._stageidentity == "NEW":
             logger.warning(
-                f"This is a new stage, parameter manager configuration does not exist yet. Please manually configure {self._id}"
+                "This is a new stage, parameter manager configuration does not exist yet. "
+                f"Please manually configure {self._id}"
             )
             return
         else:

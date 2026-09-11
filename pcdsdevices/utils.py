@@ -130,7 +130,7 @@ def get_input():
     finally:
         # Restore the terminal to normal input mode
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-        return inp
+        return inp  # noqa: B012
 
 
 ureg = None

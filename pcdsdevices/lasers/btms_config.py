@@ -104,7 +104,7 @@ class _PositionDiagram:
 
 
 class SourcePosition(str, enum.Enum):
-    f"""
+    """
     "LS" laser source ports in the switchbox by their official names.
 
     The order of definition is intentional here: this is top-bottom sources by
@@ -114,7 +114,7 @@ class SourcePosition(str, enum.Enum):
     .. code::
 
         {POSITION_DIAGRAM}
-    """
+    """.format(POSITION_DIAGRAM=POSITION_DIAGRAM)
 
     ls5 = "LS5"
     ls1 = "LS1"
@@ -249,7 +249,7 @@ class SourcePosition(str, enum.Enum):
 
 
 class DestinationPosition(str, enum.Enum):
-    f"""
+    """
     "LD" laser destination ports from the switchbox.
 
     These are defined left-to-right as per the top-down drawings that the BTMS
@@ -258,7 +258,7 @@ class DestinationPosition(str, enum.Enum):
     .. code::
 
         {POSITION_DIAGRAM}
-    """
+    """.format(POSITION_DIAGRAM=POSITION_DIAGRAM)
     # Left-right destination ports
     ld8 = "LD8"  # top
     ld1 = "LD1"  # bottom

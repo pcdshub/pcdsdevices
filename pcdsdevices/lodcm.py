@@ -799,7 +799,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
         elif "XCS" in self._prefix:
             self._hutch_prefix = "HFX"
 
-        super().__init__(prefix=prefix, *args, **kwargs)
+        super().__init__(prefix, *args, **kwargs)
 
     def get_reflection(self):
         """
@@ -1035,7 +1035,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
         elif "XCS" in self._prefix:
             self._hutch_prefix = "HFX"
 
-        super().__init__(prefix=prefix, *args, **kwargs)
+        super().__init__(prefix, *args, **kwargs)
 
     def get_reflection(self):
         """
@@ -1253,7 +1253,7 @@ class LODCMEnergyC1(FltMvInterface, PseudoPositioner, GroupDevice):
         elif "XCS" in self._prefix:
             self._hutch_prefix = "HFX"
 
-        super().__init__(prefix=prefix, *args, **kwargs)
+        super().__init__(prefix, *args, **kwargs)
 
     def get_reflection(self):
         """
@@ -2217,7 +2217,7 @@ class SimLODCM(LODCM):
 
     def __init__(self, prefix, *args, **kwargs):
 
-        super().__init__(prefix=prefix, *args, **kwargs)
+        super().__init__(prefix, *args, **kwargs)
         # first tower
         self.z1 = FastMotor(limits=(-1000, 1000))
         self.x1 = FastMotor(limits=(-1000, 1000))

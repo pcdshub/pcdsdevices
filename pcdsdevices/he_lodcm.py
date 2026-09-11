@@ -262,7 +262,7 @@ class HE_LODCM(BaseInterface, GroupDevice):
     tab_component_names = True
 
     def __init__(self, prefix, *args, **kwargs):
-        super().__init__(prefix=prefix, *args, **kwargs)
+        super().__init__(prefix, *args, **kwargs)
 
         # Aliases
         self.E = self.energy.energy
