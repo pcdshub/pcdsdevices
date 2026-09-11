@@ -1539,7 +1539,7 @@ class AbsProgressBar(ProgressBar):
         super().__init__(*args, **kwargs)
 
         # Allow manual updates for a final status print
-        for i in range(self.status_objs):
+        for i in range(len(self.status_objs)):
             self._manual_cbs.append(functools.partial(self._status_cb, i))
 
     def _status_cb(self, pos, status):
