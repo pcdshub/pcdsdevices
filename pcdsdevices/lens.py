@@ -1,6 +1,7 @@
 """
 Module for Beryllium Lens positioners.
 """
+
 import logging
 import time
 from collections import defaultdict
@@ -15,8 +16,7 @@ from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import CombinedInOutRecordPositioner, InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutMixin, tweak_base
-from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
-                        pseudo_position_argument, real_position_argument)
+from .pseudopos import PseudoPositioner, PseudoSingleInterface, pseudo_position_argument, real_position_argument
 from .sim import FastMotor
 
 logger = logging.getLogger(__name__)
@@ -31,12 +31,12 @@ class XFLS(InOutRecordPositioner, LightpathInOutMixin):
 
     __doc__ += basic_positioner_init
 
-    states_list = ['LENS1', 'LENS2', 'LENS3', 'OUT']
-    in_states = ['LENS1', 'LENS2', 'LENS3']
+    states_list = ["LENS1", "LENS2", "LENS3", "OUT"]
+    in_states = ["LENS1", "LENS2", "LENS3"]
     _lens_transmission = 0.8
 
     # QIcon for UX
-    _icon = 'fa.ellipsis-v'
+    _icon = "fa.ellipsis-v"
 
     def __init__(self, prefix, *, name, **kwargs):
         # Set a default transmission, but allow easy subclass overrides
@@ -71,10 +71,9 @@ class Prefocus(CombinedInOutRecordPositioner, LightpathInOutMixin):
         # Set default transmission
         # Done this way because states are still unknown at this point
         # Assume that having any target in gives transmission 0.8
-        self._transmission = defaultdict(lambda state: 0.8
-                                         if state in self.in_states
-                                         else (1 if state in self.out_states
-                                               else 0))
+        self._transmission = defaultdict(
+            lambda state: 0.8 if state in self.in_states else (1 if state in self.out_states else 0)
+        )
         super().__init__(prefix, name=name, **kwargs)
         # motor aliases
         self.x = self.x_motor
@@ -123,20 +122,32 @@ class LensStackBase(BaseInterface, PseudoPositioner):
     parameters used in some calculations for different hutches.
     Use `pcdscalc.set_lens_set_to_file` to set the lens sets file
     """
-    x = FCpt(IMS, '{self.x_prefix}')
-    y = FCpt(IMS, '{self.y_prefix}')
-    z = FCpt(IMS, '{self.z_prefix}')
+
+    x = FCpt(IMS, "{self.x_prefix}")
+    y = FCpt(IMS, "{self.y_prefix}")
+    z = FCpt(IMS, "{self.z_prefix}")
 
     calib_z = Cpt(PseudoSingleInterface)
     beam_size = Cpt(PseudoSingleInterface)
 
-    tab_whitelist = ['tweak', 'align', 'calib_z', 'beam_size', 'create_lens',
-                     'read_lens']
+    tab_whitelist = ["tweak", "align", "calib_z", "beam_size", "create_lens", "read_lens"]
     tab_component_names = True
 
-    def __init__(self, x_prefix, y_prefix, z_prefix, lens_set,
-                 z_offset, z_dir, E, att_obj, lcls_obj=None,
-                 mono_obj=None, *args, **kwargs):
+    def __init__(
+        self,
+        x_prefix,
+        y_prefix,
+        z_prefix,
+        lens_set,
+        z_offset,
+        z_dir,
+        E,
+        att_obj,
+        lcls_obj=None,
+        mono_obj=None,
+        *args,
+        **kwargs,
+    ):
         self.x_prefix = x_prefix
         self.y_prefix = y_prefix
         self.z_prefix = z_prefix
@@ -191,28 +202,30 @@ class LensStackBase(BaseInterface, PseudoPositioner):
         """
         if not np.isclose(pseudo_pos.beam_size, self.beam_size.position):
             beam_size = pseudo_pos.beam_size
-            dist = calcs.calc_distance_for_size(beam_size, self.lens_set,
-                                                self._E)[0]
+            dist = calcs.calc_distance_for_size(beam_size, self.lens_set, self._E)[0]
             z_pos = (dist - self.z_offset) * self.z_dir * 1000
         else:
             z_pos = pseudo_pos.calib_z
         try:
-            pos = [self.x.presets.positions.align_position_one.pos,
-                   self.y.presets.positions.align_position_one.pos,
-                   self.z.presets.positions.align_position_one.pos,
-                   self.x.presets.positions.align_position_two.pos,
-                   self.y.presets.positions.align_position_two.pos,
-                   self.z.presets.positions.align_position_two.pos]
-            x_pos = ((pos[0]-pos[3])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[0]
-            y_pos = ((pos[1]-pos[4])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[1]
+            pos = [
+                self.x.presets.positions.align_position_one.pos,
+                self.y.presets.positions.align_position_one.pos,
+                self.z.presets.positions.align_position_one.pos,
+                self.x.presets.positions.align_position_two.pos,
+                self.y.presets.positions.align_position_two.pos,
+                self.z.presets.positions.align_position_two.pos,
+            ]
+            x_pos = ((pos[0] - pos[3]) / (pos[2] - pos[5])) * (z_pos - pos[2]) + pos[0]
+            y_pos = ((pos[1] - pos[4]) / (pos[2] - pos[5])) * (z_pos - pos[2]) + pos[1]
             return self.RealPosition(x=x_pos, y=y_pos, z=z_pos)
         except AttributeError:
-            self.log.debug('', exc_info=True)
-            self.log.error("Please setup the pseudo motor for use by using "
-                           "the align() method. If you have already done that,"
-                           " check if the preset pathways have been setup.")
-            return self.RealPosition(x=self.x.position, y=self.y.position,
-                                     z=z_pos)
+            self.log.debug("", exc_info=True)
+            self.log.error(
+                "Please setup the pseudo motor for use by using "
+                "the align() method. If you have already done that,"
+                " check if the preset pathways have been setup."
+            )
+            return self.RealPosition(x=self.x.position, y=self.y.position, z=z_pos)
 
     @real_position_argument
     def inverse(self, real_pos):
@@ -231,9 +244,8 @@ class LensStackBase(BaseInterface, PseudoPositioner):
             PseudoPosition
         """
         dist_m = real_pos.z / 1000 * self.z_dir + self.z_offset
-        logger.info('dist_m %s', dist_m)
-        beamsize = calcs.calc_beam_fwhm(self._E, self.lens_set,
-                                        distance=dist_m)
+        logger.info("dist_m %s", dist_m)
+        beamsize = calcs.calc_beam_fwhm(self._E, self.lens_set, distance=dist_m)
         return self.PseudoPosition(calib_z=real_pos.z, beam_size=beamsize)
 
     def align(self, z_position=None, edge_offset=20):
@@ -271,11 +283,13 @@ class LensStackBase(BaseInterface, PseudoPositioner):
             self.z.presets.add_hutch(value=pos[2], name="align_position_one")
             self.z.presets.add_hutch(value=pos[5], name="align_position_two")
         except AttributeError:
-            self.log.debug('', exc_info=True)
-            self.log.error('No folder setup for motor presets. '
-                           'Please add a location to save the positions to '
-                           'using setup_preset_paths from '
-                           'pcdsdevices.interface to keep the position files.')
+            self.log.debug("", exc_info=True)
+            self.log.error(
+                "No folder setup for motor presets. "
+                "Please add a location to save the positions to "
+                "using setup_preset_paths from "
+                "pcdsdevices.interface to keep the position files."
+            )
             return
         if z_position is not None:
             self.calib_z.move(z_position)
@@ -305,10 +319,9 @@ class LensStackBase(BaseInterface, PseudoPositioner):
             positioner instance.
         """
         if self._make_safe() is True:
-            return super().move(position, wait=wait, timeout=timeout,
-                                moved_cb=moved_cb)
+            return super().move(position, wait=wait, timeout=timeout, moved_cb=moved_cb)
         else:
-            logger.warning('Aborting moving for safety.')
+            logger.warning("Aborting moving for safety.")
             return
 
     def _make_safe(self):
@@ -322,8 +335,7 @@ class LensStackBase(BaseInterface, PseudoPositioner):
             Return `True` if the attenuator was moved in.
         """
         if self._att_obj is None:
-            logger.warning('Cannot do safe moveZ, no attenuator'
-                           ' object provided.')
+            logger.warning("Cannot do safe moveZ, no attenuator object provided.")
             return False
         filt, thk = self._att_obj.filters[0], 0
         for f in self._att_obj.filters:
@@ -334,10 +346,10 @@ class LensStackBase(BaseInterface, PseudoPositioner):
             filt.insert()
             time.sleep(0.01)
         if filt.inserted:
-            logger.info('Beam stop attenuator moved in!')
+            logger.info("Beam stop attenuator moved in!")
             safe = True
         else:
-            logger.warning('Beam stop attenuator did not move in!')
+            logger.warning("Beam stop attenuator did not move in!")
             safe = False
         return safe
 
@@ -524,9 +536,22 @@ class LensStack(LensStackBase):
 
     """
 
-    def __init__(self, x_prefix, y_prefix, z_prefix, z_offset, z_dir, E,
-                 att_obj, lcls_obj=None, mono_obj=None, *args, path,
-                 lens_set=None, **kwargs):
+    def __init__(
+        self,
+        x_prefix,
+        y_prefix,
+        z_prefix,
+        z_offset,
+        z_dir,
+        E,
+        att_obj,
+        lcls_obj=None,
+        mono_obj=None,
+        *args,
+        path,
+        lens_set=None,
+        **kwargs,
+    ):
 
         self.path = path
         self.lens_pack = self.read_lens()
@@ -535,10 +560,7 @@ class LensStack(LensStackBase):
             # Defaulting this a the first set in the file for now
             lens_set = calcs.get_lens_set(1, self.path)
 
-        super().__init__(
-            x_prefix, y_prefix, z_prefix, lens_set, z_offset, z_dir, E,
-            att_obj, *args, **kwargs
-        )
+        super().__init__(x_prefix, y_prefix, z_prefix, lens_set, z_offset, z_dir, E, att_obj, *args, **kwargs)
 
     def read_lens(self, print_only=False):
         """
@@ -604,11 +626,12 @@ class LensStack(LensStackBase):
 
     @property
     def backup_path(self):
-        return self.path + str(date.today()) + '.bak'
+        return self.path + str(date.today()) + ".bak"
 
 
 class SimLensStackBase(LensStackBase):
     """Test version of the lens stack for testing the Be lens class."""
+
     x = Cpt(FastMotor, limits=(-10, 10))
     y = Cpt(FastMotor, limits=(-10, 10))
     z = Cpt(FastMotor, limits=(-100, 100))

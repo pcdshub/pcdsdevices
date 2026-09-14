@@ -4,8 +4,7 @@ import logging
 import re
 
 from pydm import Display
-from pydm.widgets import (PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel,
-                          PyDMLineEdit, PyDMPushButton, PyDMSlider)
+from pydm.widgets import PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel, PyDMLineEdit, PyDMPushButton, PyDMSlider
 from qtpy import QtCore, QtGui, QtWidgets
 from typhos import utils
 
@@ -16,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 class _SmarActDetailedUI(QtWidgets.QWidget):
     """Annotations helper for SmarAct.detailed.ui. Do not instantiate."""
+
     # Status bar
     calibrated_bool: PyDMByteIndicator
     has_encoder_bool: PyDMByteIndicator
@@ -95,9 +95,10 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
     """
     Custom widget for managing the SmarAct detailed screen
     """
+
     ui: _SmarActDetailedUI
 
-    def __init__(self, parent=None, ui_filename='SmarAct.detailed.ui', **kwargs):
+    def __init__(self, parent=None, ui_filename="SmarAct.detailed.ui", **kwargs):
         super().__init__(parent=parent, ui_filename=ui_filename)
 
     @property
@@ -137,15 +138,15 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         object_names = self.find_pydm_names()
         for obj in object_names:
             _widget = getattr(self, obj)
-            _channel = getattr(_widget, 'channel')
+            _channel = _widget.channel
             if not _channel:
-                _channel = ''
-            if re.search(r'\{prefix\}', _channel):
-                _widget.set_channel(_channel.replace('${prefix}', self.device.prefix))
+                _channel = ""
+            if re.search(r"\{prefix\}", _channel):
+                _widget.set_channel(_channel.replace("${prefix}", self.device.prefix))
 
         # Now let's manually add the funky egu and description signals here to avoid terminal spam
-        self.desc_set.set_channel(f'sig://{self.device.name}_description')
-        self.egu_set.set_channel(f'sig://{self.device.name}_motor_egu')
+        self.desc_set.set_channel(f"sig://{self.device.name}_description")
+        self.egu_set.set_channel(f"sig://{self.device.name}_motor_egu")
         self.scan_move_set._minimum = 0
         self.scan_move_set._maximum = 65535
 
@@ -166,59 +167,76 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         # Widgets whose PV exists but under a different pytmc name.
         repoint = {
             # Status-bar bits: serial mbbiDirect .Bn -> decoded booleans
-            'has_encoder_bool': ':chanState:SENSOR_PRESENT_RBV',
-            'calibrated_bool': ':chanState:CALIBRATED_RBV',
-            'referenced_bool': ':chanState:REFERENCED_RBV',
+            "has_encoder_bool": ":chanState:SENSOR_PRESENT_RBV",
+            "calibrated_bool": ":chanState:CALIBRATED_RBV",
+            "referenced_bool": ":chanState:REFERENCED_RBV",
             # Raw state bitmask lives under the chanState struct
-            'channel_states': ':chanState:STATE_RBV',
+            "channel_states": ":chanState:STATE_RBV",
             # Commands write the pytmc bo record directly, no .PROC field
-            'jog_rev_button': ':STEP_REVERSE',
-            'do_calib_button': ':DO_CALIB',
+            "jog_rev_button": ":STEP_REVERSE",
+            "do_calib_button": ":DO_CALIB",
             # Read-only diagnostics: pytmc appends _RBV
-            'channel_temp_rbv': ':CHANTEMP_RBV',
-            'motor_load_rbv': ':MOTOR_LOAD_RBV',
+            "channel_temp_rbv": ":CHANTEMP_RBV",
+            "motor_load_rbv": ":MOTOR_LOAD_RBV",
             # Diagnostic closed-loop frequency (0x202A:1 max, 0x202A:2 avg)
-            'diag_closed_loop_freq_max_rbv': ':DIAG_CLF_MAX_RBV',
-            'diag_closed_loop_freq_avg_rbv': ':DIAG_CLF_AVG_RBV',
+            "diag_closed_loop_freq_max_rbv": ":DIAG_CLF_MAX_RBV",
+            "diag_closed_loop_freq_avg_rbv": ":DIAG_CLF_AVG_RBV",
             # NVRAM config: pytmc uses X / X_RBV instead of X / SET_X
-            'log_scale_offset_rbv': ':LSCO_RBV',
-            'log_scale_offset_set': ':LSCO',
-            'log_scale_inversion_set': ':LSCI',
-            'dist_code_inversion_set': ':DCIN',
+            "log_scale_offset_rbv": ":LSCO_RBV",
+            "log_scale_offset_set": ":LSCO",
+            "log_scale_inversion_set": ":LSCI",
+            "dist_code_inversion_set": ":DCIN",
         }
         for name, suffix in repoint.items():
             widget = getattr(self, name, None)
             if widget is not None:
-                widget.set_channel(f'ca://{prefix}{suffix}')
+                widget.set_channel(f"ca://{prefix}{suffix}")
 
         # Widgets whose object has no DS402 backing at all.
         hide = [
             # Open loop: no step counter, reset, or scan over DS402
-            'total_step_count_rbv', 'total_step_count_label',
-            'step_clear_cmd_button', 'step_clear_cmd_label',
-            'scan_move_rbv', 'scan_move_set', 'scan_move_label',
+            "total_step_count_rbv",
+            "total_step_count_label",
+            "step_clear_cmd_button",
+            "step_clear_cmd_label",
+            "scan_move_rbv",
+            "scan_move_set",
+            "scan_move_label",
             # MCS2 homes via home_mode (AUTOZERO / CURRENT_POSITION_METHOD)
             # and cmd_home. The .HOMF/.HOMR directional buttons are hidden:
             # for an end-stop stage the reference direction is the configured
             # safe direction, not whichever button is pressed. The "Home"
             # section header is dropped too since only its buttons lived under it.
-            'home_label',
-            'home_forward_button', 'home_forward_label',
-            'home_reverse_button', 'home_reverse_label',
+            "home_label",
+            "home_forward_button",
+            "home_forward_label",
+            "home_reverse_button",
+            "home_reverse_label",
             # Diagnostics: no module temp, channel error, or CLF diagnostics
-            'module_temp_rbv', 'module_temp_label', 'module_temp_units',
-            'chan_error_rbv', 'chan_error_label',
+            "module_temp_rbv",
+            "module_temp_label",
+            "module_temp_units",
+            "chan_error_rbv",
+            "chan_error_label",
             # Only the timebase has no DS402 backing; max/avg are re-pointed
-            'diag_closed_loop_freq_timebase_rbv',
-            'diag_closed_loop_timebase_set',
-            'diag_closed_loop_freq_timebase_label',
+            "diag_closed_loop_freq_timebase_rbv",
+            "diag_closed_loop_timebase_set",
+            "diag_closed_loop_freq_timebase_label",
             # Config: no TTZV or default range. The "TTZV Threshold" caption
             # carries the generic object name 'label' in the .ui, not
             # 'ttzv_threshold_label', so hide 'label' to drop the orphan.
-            'ttzv_rbv', 'ttzv_set', 'ttzv_label',
-            'ttzv_threshold_rbv', 'ttzv_threshold_set', 'label',
-            'def_range_min_rbv', 'def_range_min_set', 'def_range_min_label',
-            'def_range_max_rbv', 'def_range_max_set', 'def_range_max_label',
+            "ttzv_rbv",
+            "ttzv_set",
+            "ttzv_label",
+            "ttzv_threshold_rbv",
+            "ttzv_threshold_set",
+            "label",
+            "def_range_min_rbv",
+            "def_range_min_set",
+            "def_range_min_label",
+            "def_range_max_rbv",
+            "def_range_max_set",
+            "def_range_max_label",
         ]
         for name in hide:
             widget = getattr(self, name, None)
@@ -229,12 +247,12 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         # CALIBRATED flag instead. This row reads "needs calibration", so show
         # the inverse of CALIBRATED: red when the bit is 0 (calibration needed,
         # hit Calibrate) and green once the channel reports calibrated.
-        led = getattr(self, 'needs_calib_led', None)
+        led = getattr(self, "needs_calib_led", None)
         if led is not None:
-            led.set_channel(f'ca://{prefix}:chanState:CALIBRATED_RBV')
-            led.onColor = QtGui.QColor(0, 255, 0)    # calibrated
-            led.offColor = QtGui.QColor(255, 0, 0)   # needs calibration
-            led.labels = ['Needs Calibration']
+            led.set_channel(f"ca://{prefix}:chanState:CALIBRATED_RBV")
+            led.onColor = QtGui.QColor(0, 255, 0)  # calibrated
+            led.offColor = QtGui.QColor(255, 0, 0)  # needs calibration
+            led.labels = ["Needs Calibration"]
 
         # Safe direction (0x200C) is EtherCAT-only, so the serial .ui has no
         # widget for it. Add a row to the Configuration tab so operators can
@@ -251,21 +269,20 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         new setpoint while the drive is in Pre-Op. Show the readback plus a
         write combo so operators can request a direction.
         """
-        grid = self.findChild(QtWidgets.QGridLayout, 'config_grid_layout')
-        if grid is None or hasattr(self, 'safe_direction_rbv'):
+        grid = self.findChild(QtWidgets.QGridLayout, "config_grid_layout")
+        if grid is None or hasattr(self, "safe_direction_rbv"):
             return
         row = grid.rowCount()
 
-        label = QtWidgets.QLabel('Safe Direction', self)
-        label.setObjectName('safe_direction_label')
-        rbv = PyDMLabel(self, init_channel=f'ca://{prefix}:SAFE_DIR_RBV')
-        rbv.setObjectName('safe_direction_rbv')
+        label = QtWidgets.QLabel("Safe Direction", self)
+        label.setObjectName("safe_direction_label")
+        rbv = PyDMLabel(self, init_channel=f"ca://{prefix}:SAFE_DIR_RBV")
+        rbv.setObjectName("safe_direction_rbv")
         rbv.setAlignment(QtCore.Qt.AlignCenter)
         rbv.showUnits = False
         rbv.precisionFromPV = True
-        set_widget = PyDMEnumComboBox(
-            self, init_channel=f'ca://{prefix}:SAFE_DIR')
-        set_widget.setObjectName('safe_direction_set')
+        set_widget = PyDMEnumComboBox(self, init_channel=f"ca://{prefix}:SAFE_DIR")
+        set_widget.setObjectName("safe_direction_set")
 
         grid.addWidget(label, row, 0, QtCore.Qt.AlignLeft)
         grid.addWidget(rbv, row, 1)
@@ -282,7 +299,7 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         """
         _signals = list(self.device.component_names)
         # Let's deal with the subdevice signals afterwards
-        _signals.remove('open_loop')
+        _signals.remove("open_loop")
         _open_loop_signals = list(self.device.open_loop.component_names)
 
         def _get_tooltip(device: any, signal: str) -> str:
@@ -293,15 +310,13 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             try:
                 _tooltip = getattr(type(device), signal).doc
             except AttributeError:
-                _tooltip = ''
-            _tooltip = (_dotted_name + '<br>'
-                        + round(1.75*len(_dotted_name))*'-' + '<br>'
-                        + _tooltip)
+                _tooltip = ""
+            _tooltip = _dotted_name + "<br>" + round(1.75 * len(_dotted_name)) * "-" + "<br>" + _tooltip
             return _tooltip
 
-        for sig in (_signals + _open_loop_signals):
+        for sig in _signals + _open_loop_signals:
             # Assume the QLabel's object name is standard form
-            _label_name = sig + '_label'
+            _label_name = sig + "_label"
             _device = self.device
             # open_loop is a component device, nests differently
             if sig in _open_loop_signals:
@@ -320,8 +335,7 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         result : list[str]
             1D list of object names
         """
-        pydm_objs = [PyDMPushButton, PyDMByteIndicator, PyDMLabel,
-                     PyDMLineEdit, PyDMEnumComboBox, PyDMSlider]
+        pydm_objs = [PyDMPushButton, PyDMByteIndicator, PyDMLabel, PyDMLineEdit, PyDMEnumComboBox, PyDMSlider]
 
         result = []
 
@@ -329,9 +343,16 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             result += [obj.objectName() for obj in self.findChildren(obj_type)]
 
         # get rid of the objects from the embedded TyphosPositioner widget
-        _omit = ['low_limit_switch', 'moving_indicator', 'high_limit_switch',
-                 'low_limit', 'user_readback', 'error_label',
-                 'high_limit', 'user_setpoint']
+        _omit = [
+            "low_limit_switch",
+            "moving_indicator",
+            "high_limit_switch",
+            "low_limit",
+            "user_readback",
+            "error_label",
+            "high_limit",
+            "user_setpoint",
+        ]
 
         return [obj for obj in result if obj not in _omit]
 
@@ -341,8 +362,8 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
         Sadly involves a lot of manual signal management that would normally be
         handled in TyphosSignalPanel.
         """
-        if hasattr(self.device, 'pico_exists'):
-            if hasattr(self, 'picoscale'):
+        if hasattr(self.device, "pico_exists"):
+            if hasattr(self, "picoscale"):
                 # Don't add infite tabs please :]
                 return
             # Only start this timer if PicoScale exists
@@ -352,37 +373,48 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             self.adj_prog_timer.start()
             self._last_adj_prog = 0
             # Grab all the pico related signals
-            _pico_signals = [sig for sig in self.device.component_names if 'pico' in sig]
+            _pico_signals = [sig for sig in self.device.component_names if "pico" in sig]
             self.pico_signal_dict = {}
             # Grab any usable info from the HAPPI device and rebuild the JSON
             for sig in _pico_signals:
                 _d = {}
                 _sig = getattr(self.device, sig)
-                _d['name'] = sig
-                if hasattr(_sig, 'pvname'):
-                    _d['read_pv'] = _sig.pvname
-                if hasattr(_sig, 'setpoint_pvname'):
-                    _d['write_pv'] = _sig.setpoint_pvname
-                if hasattr(_sig, 'long_name'):
-                    _d['label'] = _sig.long_name
+                _d["name"] = sig
+                if hasattr(_sig, "pvname"):
+                    _d["read_pv"] = _sig.pvname
+                if hasattr(_sig, "setpoint_pvname"):
+                    _d["write_pv"] = _sig.setpoint_pvname
+                if hasattr(_sig, "long_name"):
+                    _d["label"] = _sig.long_name
                 self.pico_signal_dict[sig] = _d
 
             # Now let's add some metadata for customizing the display
-            _byte_sigs = ['pico_present', 'pico_exists', 'pico_valid', 'pico_enable', 'pico_stable', 'pico_adj_done']
-            _enum_sigs = ['pico_adj_state']
+            _byte_sigs = ["pico_present", "pico_exists", "pico_valid", "pico_enable", "pico_stable", "pico_adj_done"]
+            _enum_sigs = ["pico_adj_state"]
             for sig in _byte_sigs:
-                self.pico_signal_dict[sig]['meta'] = 'byte'
+                self.pico_signal_dict[sig]["meta"] = "byte"
             for sig in _enum_sigs:
-                self.pico_signal_dict[sig]['meta'] = 'enum'
+                self.pico_signal_dict[sig]["meta"] = "enum"
             # Some exceptions that prove the rule
-            self.pico_signal_dict['pico_curr_adj_prog']['meta'] = 'progressbar'
+            self.pico_signal_dict["pico_curr_adj_prog"]["meta"] = "progressbar"
 
             # Last but not least, let me manually dictate the signal order
-            _rows = ['pico_name', 'pico_present', 'pico_exists', 'pico_valid', 'pico_enable',
-                     'pico_stable', 'pico_adj_done', 'pico_wmin', 'pico_wmax', 'pico_sig_qual',
-                     'pico_adj_state', 'pico_curr_adj_prog']
+            _rows = [
+                "pico_name",
+                "pico_present",
+                "pico_exists",
+                "pico_valid",
+                "pico_enable",
+                "pico_stable",
+                "pico_adj_done",
+                "pico_wmin",
+                "pico_wmax",
+                "pico_sig_qual",
+                "pico_adj_state",
+                "pico_curr_adj_prog",
+            ]
             for pos, item in enumerate(_rows):
-                self.pico_signal_dict[item]['row'] = pos
+                self.pico_signal_dict[item]["row"] = pos
 
             # Generate the tab
             self.generate_pico_tab()
@@ -412,60 +444,59 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             """
             # Make the row label first
             row_label = QtWidgets.QLabel()
-            row_label.setText(signal_dict['label'])
+            row_label.setText(signal_dict["label"])
             # Set the object name as an attr for later shenanigans
-            setattr(self, signal_dict['name'] + '_label', row_label)
+            setattr(self, signal_dict["name"] + "_label", row_label)
 
             # Then set the RBV widget
             rbv_widget = PyDMLabel()
             rbv_widget.setAlignment(QtCore.Qt.AlignCenter)
             # Unless they're special
-            if 'meta' in signal_dict:
-                if signal_dict['meta'] == 'byte':
+            if "meta" in signal_dict:
+                if signal_dict["meta"] == "byte":
                     rbv_widget = PyDMByteIndicator()
                     rbv_widget.circles = 1
                     rbv_widget.showLabels = 0
-                if signal_dict['meta'] == 'progressbar':
+                if signal_dict["meta"] == "progressbar":
                     rbv_widget = QtWidgets.QProgressBar()
                     rbv_widget.setRange(0, 100)
                     rbv_widget.hide()
                     row_label.hide()
 
             # Add the widget as an attr for later shenanigans
-            setattr(self, signal_dict['name'] + '_rbv', rbv_widget)
+            setattr(self, signal_dict["name"] + "_rbv", rbv_widget)
 
-            if hasattr(rbv_widget, 'set_channel'):
-                rbv_widget.set_channel(signal_dict['read_pv'])
+            if hasattr(rbv_widget, "set_channel"):
+                rbv_widget.set_channel(signal_dict["read_pv"])
 
             # Create setpoint widgets if they exist
-            if 'write_pv' in signal_dict:
+            if "write_pv" in signal_dict:
                 # handle tricky enums
-                if 'meta' in signal_dict and signal_dict['meta'] == 'enum':
+                if "meta" in signal_dict and signal_dict["meta"] == "enum":
                     setpoint_widget = PyDMEnumComboBox()
-                    setpoint_widget.set_channel(signal_dict['write_pv'])
+                    setpoint_widget.set_channel(signal_dict["write_pv"])
                     # lean on HAPPI if possible
-                    _signal_metadata = getattr(self.device, signal_dict['name']).metadata
-                    if 'enum_strs' in _signal_metadata:
-                        for item in _signal_metadata['enum_strs']:
+                    _signal_metadata = getattr(self.device, signal_dict["name"]).metadata
+                    if "enum_strs" in _signal_metadata:
+                        for item in _signal_metadata["enum_strs"]:
                             setpoint_widget.addItem(item)
                     # Otherwise just give it some defaults
                     else:
-                        for item in ['Disable', 'Enable']:
+                        for item in ["Disable", "Enable"]:
                             setpoint_widget.addItem(item)
                 # Default line edits
                 else:
                     setpoint_widget = PyDMLineEdit()
-                    setpoint_widget.set_channel(signal_dict['write_pv'])
+                    setpoint_widget.set_channel(signal_dict["write_pv"])
 
                 # Add the widget as an attr for later shenanigans
-                setattr(self, signal_dict['name'] + '_set', setpoint_widget)
+                setattr(self, signal_dict["name"] + "_set", setpoint_widget)
 
             # Now finally add these signals
-            grid.addWidget(row_label, signal_dict['row'], 0)
-            grid.addWidget(
-                getattr(self, signal_dict['name'] + '_rbv'), signal_dict['row'], 1)
-            if 'write_pv' in signal_dict:
-                grid.addWidget(setpoint_widget, signal_dict['row'], 2)
+            grid.addWidget(row_label, signal_dict["row"], 0)
+            grid.addWidget(getattr(self, signal_dict["name"] + "_rbv"), signal_dict["row"], 1)
+            if "write_pv" in signal_dict:
+                grid.addWidget(setpoint_widget, signal_dict["row"], 2)
 
         # Make the tab
         self.picoscale = QtWidgets.QWidget()
@@ -481,7 +512,7 @@ class SmarActDetailedWidget(Display, utils.TyphosBase):
             add_signal_row(self.picoscale.panel, self.pico_signal_dict[_d])
         # Set the layout and add to the tab widget
         self.picoscale.setLayout(self.picoscale.panel)
-        self.controls_tabs.addTab(self.picoscale, 'Picoscale')
+        self.controls_tabs.addTab(self.picoscale, "Picoscale")
 
     def update_adj_prog(self):
         """

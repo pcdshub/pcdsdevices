@@ -17,5 +17,5 @@ class QminiSpectrometerDetailedUI(QminiBase, Display, utils.TyphosBase):
     NOTE: inherit QminiBase FIRST so that the mro resolves it LAST
     """
 
-    def __init__(self, parent=None, ui_filename='QminiSpectrometer.detailed.ui', **kwargs):
+    def __init__(self, parent=None, ui_filename="QminiSpectrometer.detailed.ui", **kwargs):
         super().__init__(parent=parent, ui_filename=ui_filename)

@@ -16,6 +16,7 @@ class ATMTarget(TwinCATStatePMPS):
     Defines the state count as 6 (OUT and 5 targets) to limit the number of
     config PVs we connect to.
     """
+
     config = UpCpt(state_count=6)
 
 
@@ -28,22 +29,18 @@ class ArrivalTimeMonitor(BaseInterface, GroupDevice, LightpathInOutCptMixin):
 
     This device is also known as the ATM.
     """
+
     tab_component_names = True
 
-    lightpath_cpts = ['target']
-    _icon = 'fa.clock-o'
+    lightpath_cpts = ["target"]
+    _icon = "fa.clock-o"
 
-    target = Cpt(ATMTarget, ':MMS:STATE', kind='hinted',
-                 doc='Control of the diagnostic stack via saved positions.')
-    y_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:Y', kind='normal',
-                  doc='Direct control of the diagnostic stack motor.')
-    x_motor = Cpt(BeckhoffAxis, ':MMS:X', kind='normal',
-                  doc='X position of target stack for alignment')
+    target = Cpt(ATMTarget, ":MMS:STATE", kind="hinted", doc="Control of the diagnostic stack via saved positions.")
+    y_motor = Cpt(BeckhoffAxisNoOffset, ":MMS:Y", kind="normal", doc="Direct control of the diagnostic stack motor.")
+    x_motor = Cpt(BeckhoffAxis, ":MMS:X", kind="normal", doc="X position of target stack for alignment")
 
-    thermocouple1 = Cpt(TwinCATTempSensor, ':STC:01', kind='normal',
-                        doc='First thermocouple.')
-    flow_meter = Cpt(FDQ, '', kind='normal',
-                     doc='Device that measures PCW Flow Rate.')
+    thermocouple1 = Cpt(TwinCATTempSensor, ":STC:01", kind="normal", doc="First thermocouple.")
+    flow_meter = Cpt(FDQ, "", kind="normal", doc="Device that measures PCW Flow Rate.")
 
 
 class TM1K4Target(ATMTarget):
@@ -53,6 +50,7 @@ class TM1K4Target(ATMTarget):
     Defines the state count as 9 (OUT and 8 targets), three more than the
     standard ATM.
     """
+
     config = UpCpt(state_count=9)
 
 
@@ -61,8 +59,7 @@ class TM1K4(ArrivalTimeMonitor):
     An ATM in TMO that has two extra target states.
     """
 
-    target = Cpt(TM1K4Target, ':MMS:STATE', kind='hinted',
-                 doc='Control of the diagnostic stack via saved positions.')
+    target = Cpt(TM1K4Target, ":MMS:STATE", kind="hinted", doc="Control of the diagnostic stack via saved positions.")
 
 
 class TM2K4Target(ATMTarget):
@@ -72,6 +69,7 @@ class TM2K4Target(ATMTarget):
     Defines the state count as 9 (OUT and 8 targets), three more than the
     standard ATM.
     """
+
     config = UpCpt(state_count=9)
 
 
@@ -80,8 +78,7 @@ class TM2K4(ArrivalTimeMonitor):
     An ATM in TMO that has one fewer target state.
     """
 
-    target = Cpt(TM2K4Target, ':MMS:STATE', kind='hinted',
-                 doc='Control of the diagnostic stack via saved positions.')
+    target = Cpt(TM2K4Target, ":MMS:STATE", kind="hinted", doc="Control of the diagnostic stack via saved positions.")
     flow_meter = None
 
 
@@ -92,6 +89,7 @@ class TM2K2Target(ATMTarget):
     Defines the state count as 7 (OUT and 6 targets), one more than the
     standard ATM.
     """
+
     config = UpCpt(state_count=7)
 
 
@@ -99,14 +97,15 @@ class TM2K2(ArrivalTimeMonitor):
     """
     An ATM in RIX that has one extra target state.
     """
-    target = Cpt(TM2K2Target, ':MMS:STATE', kind='hinted',
-                 doc='Control of the diagnostic stack via saved positions.')
+
+    target = Cpt(TM2K2Target, ":MMS:STATE", kind="hinted", doc="Control of the diagnostic stack via saved positions.")
 
 
 class MFXATM(ArrivalTimeMonitor):
     """
     An ATM in MFX that has no cooling.
     """
+
     flow_meter = None
 
 
@@ -117,6 +116,7 @@ class TM1L2Target(ATMTarget):
     Defines the state count as 7 (OUT and 6 targets), one more than the
     standard ATM.
     """
+
     config = UpCpt(state_count=7)
 
 
@@ -124,8 +124,7 @@ class TM1L2(ArrivalTimeMonitor):
     """
     An ATM in XPP that has one extra target state, one extra rtd, and no cooling.
     """
-    target = Cpt(TM1L2Target, ':MMS:STATE', kind='hinted',
-                 doc='Control of the diagnostic stack via saved positions.')
-    thermocouple2 = Cpt(TwinCATTempSensor, ':STC:02', kind='normal',
-                        doc='Second thermocouple.')
+
+    target = Cpt(TM1L2Target, ":MMS:STATE", kind="hinted", doc="Control of the diagnostic stack via saved positions.")
+    thermocouple2 = Cpt(TwinCATTempSensor, ":STC:02", kind="normal", doc="Second thermocouple.")
     flow_meter = None
