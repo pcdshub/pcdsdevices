@@ -7,6 +7,7 @@ position, a zoom motor, and a camera to view the yag. Some PIMs have LEDs for
 illumination and/or a focus motor. Each of these configurations is set up as
 its own class.
 """
+
 import logging
 
 from ophyd.device import Component as Cpt
@@ -16,8 +17,7 @@ from ophyd.ophydobj import OphydObject
 from ophyd.signal import EpicsSignal
 
 from .analog_signals import FDQ
-from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
-                                     PCDSAreaDetectorTyphosTrigger)
+from .areadetector.detectors import PCDSAreaDetectorEmbedded, PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .digital_signals import J120K
@@ -47,11 +47,11 @@ class PIMY(InOutRecordPositioner, BaseInterface):
     states_list = []
     _in_if_not_out = True
 
-    _states_alias = {'YAG': 'IN'}
+    _states_alias = {"YAG": "IN"}
     # QIcon for UX
-    _icon = 'fa.camera-retro'
+    _icon = "fa.camera-retro"
 
-    tab_whitelist = ['stage']
+    tab_whitelist = ["stage"]
     _pre_stage_state = None
 
     def stage(self) -> list[OphydObject]:
@@ -90,25 +90,24 @@ class PIM(BaseInterface, GroupDevice, LightpathInOutCptMixin):
         be inferred from `prefix`.
     """
 
-    _prefix_start = ''
+    _prefix_start = ""
 
-    state = Cpt(PIMY, '', kind='normal')
-    zoom = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
-    detector = FCpt(PCDSAreaDetectorEmbedded, '{self._prefix_det}',
-                    kind='normal')
+    state = Cpt(PIMY, "", kind="normal")
+    zoom = FCpt(IMS, "{self._prefix_zoom}", kind="normal")
+    detector = FCpt(PCDSAreaDetectorEmbedded, "{self._prefix_det}", kind="normal")
 
-    tab_whitelist = ['y', 'remove', 'insert', 'removed', 'inserted']
+    tab_whitelist = ["y", "remove", "insert", "removed", "inserted"]
     tab_component_names = True
 
-    lightpath_cpts = ['state']
+    lightpath_cpts = ["state"]
 
     def infer_prefix(self, prefix):
         """Pulls out the first two segments of the prefix PV, if not already
-           done"""
+        done"""
         if not self._prefix_start:
-            self._prefix_start = '{}:{}:'.format(
-                prefix.split(':')[0],
-                prefix.split(':')[1],
+            self._prefix_start = "{}:{}:".format(
+                prefix.split(":")[0],
+                prefix.split(":")[1],
             )
 
     def format_status_info(self, status_info):
@@ -128,28 +127,23 @@ class PIM(BaseInterface, GroupDevice, LightpathInOutCptMixin):
         status: str
             Formatted string with all relevant status information.
         """
-        focus = get_status_value(status_info, 'focus', 'position')
-        f_units = get_status_value(status_info, 'focus', 'user_setpoint',
-                                   'units')
-        state_pos = get_status_value(status_info, 'state', 'position')
-        y_pos = get_status_float(status_info, 'state', 'motor', 'position',
-                                 precision=4)
-        y_units = get_status_value(status_info, 'state', 'motor',
-                                   'user_setpoint', 'units')
-        zoom = get_status_float(status_info, 'zoom', 'position',
-                                precision=4)
-        z_units = get_status_value(status_info, 'zoom', 'user_setpoint',
-                                   'units')
+        focus = get_status_value(status_info, "focus", "position")
+        f_units = get_status_value(status_info, "focus", "user_setpoint", "units")
+        state_pos = get_status_value(status_info, "state", "position")
+        y_pos = get_status_float(status_info, "state", "motor", "position", precision=4)
+        y_units = get_status_value(status_info, "state", "motor", "user_setpoint", "units")
+        zoom = get_status_float(status_info, "zoom", "position", precision=4)
+        z_units = get_status_value(status_info, "zoom", "user_setpoint", "units")
 
-        name = ' '.join(self.prefix.split(':'))
-        if focus != 'N/A':
-            focus = f' Focus: {focus} [{f_units}]'
+        name = " ".join(self.prefix.split(":"))
+        if focus != "N/A":
+            focus = f" Focus: {focus} [{f_units}]"
         else:
-            focus = ''
-        if zoom != 'N/A':
-            zoom = f'Navitar Zoom: {zoom} [{z_units}]'
+            focus = ""
+        if zoom != "N/A":
+            zoom = f"Navitar Zoom: {zoom} [{z_units}]"
         else:
-            zoom = ''
+            zoom = ""
 
         return f"""\
 {name}: {state_pos}
@@ -174,29 +168,26 @@ Y Position: {y_pos} [{y_units}]
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
         """Moves the YAG into the beam."""
-        return self.state.insert(moved_cb=moved_cb, timeout=timeout,
-                                 wait=wait)
+        return self.state.insert(moved_cb=moved_cb, timeout=timeout, wait=wait)
 
     def remove(self, moved_cb=None, timeout=None, wait=False):
         """Moves the YAG and diode out of the beam."""
-        return self.state.remove(moved_cb=moved_cb, timeout=timeout,
-                                 wait=wait)
+        return self.state.remove(moved_cb=moved_cb, timeout=timeout, wait=wait)
 
-    def __init__(self, prefix, *, name, prefix_det=None, prefix_zoom=None,
-                 **kwargs):
+    def __init__(self, prefix, *, name, prefix_det=None, prefix_zoom=None, **kwargs):
         self.infer_prefix(prefix)
 
         # Infer the detector PV from the base prefix
         if prefix_det:
             self._prefix_det = prefix_det
         else:
-            self._prefix_det = self.prefix_start+'CVV:01:'
+            self._prefix_det = self.prefix_start + "CVV:01:"
 
         # Infer the zoom motor PV from the base prefix
         if prefix_zoom:
             self._prefix_zoom = prefix_zoom
         else:
-            self._prefix_zoom = self.prefix_start+'CLZ:01'
+            self._prefix_zoom = self.prefix_start + "CLZ:01"
 
         super().__init__(prefix, name=name, **kwargs)
         self.y = self.state.motor
@@ -229,7 +220,7 @@ class PIMWithFocus(PIM):
         be inferred from `prefix`.
     """
 
-    focus = FCpt(IMS, '{self._prefix_focus}', kind='normal')
+    focus = FCpt(IMS, "{self._prefix_focus}", kind="normal")
 
     def __init__(self, prefix, *, name, prefix_focus=None, **kwargs):
         self.infer_prefix(prefix)
@@ -238,7 +229,7 @@ class PIMWithFocus(PIM):
         if prefix_focus:
             self._prefix_focus = prefix_focus
         else:
-            self._prefix_focus = self.prefix_start+'CLF:01'
+            self._prefix_focus = self.prefix_start + "CLF:01"
 
         super().__init__(prefix, name=name, **kwargs)
 
@@ -269,7 +260,8 @@ class PIMWithLED(PIM):
         The EPICS base PV of the LED. If None, it will be attempted to be
         inferred from `prefix`.
     """
-    led = FCpt(EpicsSignal, '{self._prefix_led}', kind='normal')
+
+    led = FCpt(EpicsSignal, "{self._prefix_led}", kind="normal")
 
     def __init__(self, prefix, *, name, prefix_led=None, **kwargs):
         self.infer_prefix(prefix)
@@ -278,7 +270,7 @@ class PIMWithLED(PIM):
         if prefix_led:
             self._prefix_led = prefix_led
         else:
-            self._prefix_led = self.prefix_start+'CIL:01'
+            self._prefix_led = self.prefix_start + "CIL:01"
 
         super().__init__(prefix, name=name, **kwargs)
 
@@ -315,11 +307,18 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
         inferred from `prefix`.
     """
 
-    def __init__(self, prefix, *, name, prefix_focus=None, prefix_led=None,
-                 prefix_det=None, prefix_zoom=None, **kwargs):
-        super().__init__(prefix, name=name, prefix_focus=prefix_focus,
-                         prefix_led=prefix_led, prefix_det=prefix_det,
-                         prefix_zoom=prefix_zoom, **kwargs)
+    def __init__(
+        self, prefix, *, name, prefix_focus=None, prefix_led=None, prefix_det=None, prefix_zoom=None, **kwargs
+    ):
+        super().__init__(
+            prefix,
+            name=name,
+            prefix_focus=prefix_focus,
+            prefix_led=prefix_led,
+            prefix_det=prefix_det,
+            prefix_zoom=prefix_zoom,
+            **kwargs,
+        )
 
 
 class LCLS2Target(TwinCATStatePMPS):
@@ -332,6 +331,7 @@ class LCLS2Target(TwinCATStatePMPS):
     The PPM and the XTES Imager have the same state count,
     despite having different targets at those states.
     """
+
     config = UpCpt(state_count=4)
 
 
@@ -342,20 +342,17 @@ class LCLS2ImagerBase(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     All LCLS2 imagers are guaranteed to have the following components that
     behave essentially the same.
     """
+
     tab_component_names = True
 
-    lightpath_cpts = ['target']
-    _icon = 'fa.video-camera'
+    lightpath_cpts = ["target"]
+    _icon = "fa.video-camera"
 
-    target = Cpt(LCLS2Target, ':MMS:STATE', kind='hinted',
-                 doc='Control of the diagnostic stack via saved positions.')
-    y_motor = Cpt(BeckhoffAxisNoOffset, ':MMS', kind='normal',
-                  doc='Direct control of the diagnostic stack motor.')
-    detector = Cpt(PCDSAreaDetectorTyphosTrigger, ':CAM:', kind='normal',
-                   doc='Area detector settings and readbacks.')
-    cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',
-                    doc='Camera power supply controls.')
-    set_metadata(cam_power, dict(variety='command-enum'))
+    target = Cpt(LCLS2Target, ":MMS:STATE", kind="hinted", doc="Control of the diagnostic stack via saved positions.")
+    y_motor = Cpt(BeckhoffAxisNoOffset, ":MMS", kind="normal", doc="Direct control of the diagnostic stack motor.")
+    detector = Cpt(PCDSAreaDetectorTyphosTrigger, ":CAM:", kind="normal", doc="Area detector settings and readbacks.")
+    cam_power = Cpt(PytmcSignal, ":CAM:PWR", io="io", kind="config", doc="Camera power supply controls.")
+    set_metadata(cam_power, dict(variety="command-enum"))
 
     @property
     def y_states(self):
@@ -377,63 +374,94 @@ class PPMPowerMeter(BaseInterface, Device):
 
     tab_component_names = True
 
-    responsivity = Cpt(PytmcSignal, ':RESP', io='i', kind='normal',
-                       doc='Responsivity in  V/W, unique for every power meter.')
+    responsivity = Cpt(
+        PytmcSignal, ":RESP", io="i", kind="normal", doc="Responsivity in  V/W, unique for every power meter."
+    )
 
-    background_voltage = Cpt(PytmcSignal, ':BACK:VOLT', io='io', kind='normal',
-                             doc='Background voltage value used to calculate pulse energy.')
+    background_voltage = Cpt(
+        PytmcSignal,
+        ":BACK:VOLT",
+        io="io",
+        kind="normal",
+        doc="Background voltage value used to calculate pulse energy.",
+    )
 
-    auto_background_reset = Cpt(PytmcSignal, ':BACK:RESET', io='io', kind='normal',
-                                doc='Set to reset auto background voltage collection.')
-    set_metadata(auto_background_reset, dict(variety='command-proc', value=1))
+    auto_background_reset = Cpt(
+        PytmcSignal, ":BACK:RESET", io="io", kind="normal", doc="Set to reset auto background voltage collection."
+    )
+    set_metadata(auto_background_reset, dict(variety="command-proc", value=1))
 
-    background_mode = Cpt(PytmcSignal, ':BACK:MODE', io='io', kind='normal',
-                          doc='Can be manual or auto In manual mode, you can collect '
-                          'for a specified number of seconds. In auto mode, a buffer of '
-                          'automatically collected background voltages will be used to calculate the background voltage.')
+    background_mode = Cpt(
+        PytmcSignal,
+        ":BACK:MODE",
+        io="io",
+        kind="normal",
+        doc="Can be manual or auto In manual mode, you can collect "
+        "for a specified number of seconds. In auto mode, a buffer of "
+        "automatically collected background voltages will be used to calculate the background voltage.",
+    )
 
-    manual_collect = Cpt(PytmcSignal, ':BACK:COLL', io='io', kind='normal',
-                         doc='Start collecting background voltages for specified time.')
-    set_metadata(manual_collect, dict(variety='command-proc', value=1))
+    manual_collect = Cpt(
+        PytmcSignal,
+        ":BACK:COLL",
+        io="io",
+        kind="normal",
+        doc="Start collecting background voltages for specified time.",
+    )
+    set_metadata(manual_collect, dict(variety="command-proc", value=1))
 
-    manual_in_progress = Cpt(PytmcSignal, ':BACK:MANUAL_COLLECTING', io='i', kind='normal',
-                             doc='Manual collection currntly in progress')
-    set_metadata(manual_in_progress, dict(variety='command'))
+    manual_in_progress = Cpt(
+        PytmcSignal, ":BACK:MANUAL_COLLECTING", io="i", kind="normal", doc="Manual collection currntly in progress"
+    )
+    set_metadata(manual_in_progress, dict(variety="command"))
 
-    manual_collect_time = Cpt(PytmcSignal, ':BACK:TIME', io='io', kind='normal',
-                              doc='Time to collect background voltages for.')
+    manual_collect_time = Cpt(
+        PytmcSignal, ":BACK:TIME", io="io", kind="normal", doc="Time to collect background voltages for."
+    )
 
-    raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal',
-                      doc='Raw readback from the power meter.')
+    raw_voltage = Cpt(PytmcSignal, ":VOLT", io="i", kind="normal", doc="Raw readback from the power meter.")
 
-    calibrated_mj = Cpt(PytmcSignal, ':MJ', io='i', kind='normal',
-                        doc='Calibrated absolute measurement of beam '
-                            'power in physics units.')
+    calibrated_mj = Cpt(
+        PytmcSignal, ":MJ", io="i", kind="normal", doc="Calibrated absolute measurement of beam power in physics units."
+    )
 
-    calibrated_uj = Cpt(UnitConversionDerivedSignal, derived_from='calibrated_mj',
-                        derived_units='uJ', original_units='mJ', write_access=False)
+    calibrated_uj = Cpt(
+        UnitConversionDerivedSignal,
+        derived_from="calibrated_mj",
+        derived_units="uJ",
+        original_units="mJ",
+        write_access=False,
+    )
 
-    wattage = Cpt(PytmcSignal, ':WATT', io='i', kind='normal',
-                  doc='Wattage measured by power meter, equals MJ times Beamrate.')
+    wattage = Cpt(
+        PytmcSignal, ":WATT", io="i", kind="normal", doc="Wattage measured by power meter, equals MJ times Beamrate."
+    )
 
-    thermocouple = Cpt(TwinCATThermocouple, '', kind='normal',
-                       doc='Thermocouple on the power meter holder.')
+    thermocouple = Cpt(TwinCATThermocouple, "", kind="normal", doc="Thermocouple on the power meter holder.")
 
-    raw_voltage_buffer = Cpt(PytmcSignal, ':VOLT_BUFFER', io='i',
-                             kind='omitted',
-                             doc='Array of the last 1000 raw measurements. '
-                                 'Polls faster than the EPICS updates.')
+    raw_voltage_buffer = Cpt(
+        PytmcSignal,
+        ":VOLT_BUFFER",
+        io="i",
+        kind="omitted",
+        doc="Array of the last 1000 raw measurements. Polls faster than the EPICS updates.",
+    )
 
-    calibrated_mj_buffer = Cpt(PytmcSignal, ':MJ_BUFFER', io='i',
-                               kind='omitted',
-                               doc='Array of the last 1000 fully calibrated '
-                                   'measurements. Polls faster than the '
-                                   'EPICS updates.')
+    calibrated_mj_buffer = Cpt(
+        PytmcSignal,
+        ":MJ_BUFFER",
+        io="i",
+        kind="omitted",
+        doc="Array of the last 1000 fully calibrated measurements. Polls faster than the EPICS updates.",
+    )
 
-    wattage_buffer = Cpt(PytmcSignal, ':WATT_BUFFER', io='i',
-                         kind='omitted',
-                         doc='Array of the last 1000 wattages. Polls faster than the '
-                         'EPICS updates.')
+    wattage_buffer = Cpt(
+        PytmcSignal,
+        ":WATT_BUFFER",
+        io="i",
+        kind="omitted",
+        doc="Array of the last 1000 wattages. Polls faster than the EPICS updates.",
+    )
 
 
 class PPM(LCLS2ImagerBase):
@@ -453,17 +481,13 @@ class PPM(LCLS2ImagerBase):
         An identifying name for this motor, e.g. 'im3l0'.
     """
 
-    power_meter = Cpt(PPMPowerMeter, ':SPM', kind='normal',
-                      doc='Device that measures power of incident beam.')
-    yag_thermocouple = Cpt(TwinCATThermocouple, ':YAG', kind='normal',
-                           doc='Thermocouple on the YAG holder.')
+    power_meter = Cpt(PPMPowerMeter, ":SPM", kind="normal", doc="Device that measures power of incident beam.")
+    yag_thermocouple = Cpt(TwinCATThermocouple, ":YAG", kind="normal", doc="Thermocouple on the YAG holder.")
 
-    led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config',
-              doc='Percent of light from the dimmable illuminatior.')
-    set_metadata(led, dict(variety='scalar-range',
-                           range={'value': (0, 100),
-                                  'source': 'value'}
-                           ))
+    led = Cpt(
+        PytmcSignal, ":CAM:CIL:PCT", io="io", kind="config", doc="Percent of light from the dimmable illuminatior."
+    )
+    set_metadata(led, dict(variety="scalar-range", range={"value": (0, 100), "source": "value"}))
 
 
 class XPIMFilterWheel(StatePositioner):
@@ -477,17 +501,20 @@ class XPIMFilterWheel(StatePositioner):
 
     tab_component_names = True
 
-    state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='normal',
-                doc='Control of the filter wheel state by preset '
-                    'transmission percentages.')
+    state = Cpt(
+        EpicsSignal,
+        ":GET_RBV",
+        write_pv=":SET",
+        kind="normal",
+        doc="Control of the filter wheel state by preset transmission percentages.",
+    )
 
-    reset_cmd = Cpt(PytmcSignal, ':ERR:RESET', io='i', kind='omitted',
-                    doc='Command to reset a filter wheel error.')
-    error_message = Cpt(PytmcSignal, ':ERR:MSG', io='i', kind='omitted',
-                        string=True,
-                        doc='Error text for a filter wheel error.')
+    reset_cmd = Cpt(PytmcSignal, ":ERR:RESET", io="i", kind="omitted", doc="Command to reset a filter wheel error.")
+    error_message = Cpt(
+        PytmcSignal, ":ERR:MSG", io="i", kind="omitted", string=True, doc="Error text for a filter wheel error."
+    )
 
-    set_metadata(state, dict(variety='command-enum'))
+    set_metadata(state, dict(variety="command-enum"))
 
 
 class XPIMLED(BaseInterface, Device):
@@ -513,18 +540,23 @@ class XPIMLED(BaseInterface, Device):
 
     tab_component_names = True
 
-    power = Cpt(PytmcSignal, ':PWR', io='io', kind='normal',
-                doc='LED power state, either on or off.')
-    power_timeout = Cpt(PytmcSignal, ':CLK:TIMEOUT', io='io', kind='config',
-                        doc='Configured auto-shutdown timeout for the led.')
-    time_remaining = Cpt(PytmcSignal, ':CLK:REMAINING', io='io', kind='config',
-                         doc='Remaining time before auto-shutoff.')
-    auto_mode = Cpt(PytmcSignal, ':AUTO', io='io', kind='config',
-                    doc='Configure auto mode vs manual mode for turning '
-                        'the LED on and off.')
+    power = Cpt(PytmcSignal, ":PWR", io="io", kind="normal", doc="LED power state, either on or off.")
+    power_timeout = Cpt(
+        PytmcSignal, ":CLK:TIMEOUT", io="io", kind="config", doc="Configured auto-shutdown timeout for the led."
+    )
+    time_remaining = Cpt(
+        PytmcSignal, ":CLK:REMAINING", io="io", kind="config", doc="Remaining time before auto-shutoff."
+    )
+    auto_mode = Cpt(
+        PytmcSignal,
+        ":AUTO",
+        io="io",
+        kind="config",
+        doc="Configure auto mode vs manual mode for turning the LED on and off.",
+    )
 
-    set_metadata(power, dict(variety='command-enum'))
-    set_metadata(auto_mode, dict(variety='command-enum'))
+    set_metadata(power, dict(variety="command-enum"))
+    set_metadata(auto_mode, dict(variety="command-enum"))
 
 
 class XPIM(LCLS2ImagerBase):
@@ -544,25 +576,19 @@ class XPIM(LCLS2ImagerBase):
         An identifying name for this motor, e.g. 'im3l0'.
     """
 
-    zoom_motor = Cpt(BeckhoffAxisNoOffset, ':CLZ', kind='normal',
-                     doc='Motorized zoom.')
-    focus_motor = Cpt(BeckhoffAxisNoOffset, ':CLF', kind='normal',
-                      doc='Motorized focus.')
+    zoom_motor = Cpt(BeckhoffAxisNoOffset, ":CLZ", kind="normal", doc="Motorized zoom.")
+    focus_motor = Cpt(BeckhoffAxisNoOffset, ":CLF", kind="normal", doc="Motorized focus.")
 
-    zoom_lock = Cpt(PytmcSignal, ':CLZ:LOCK', io='io', kind='config',
-                    doc='Lockout to prevent zoom motion.')
-    focus_lock = Cpt(PytmcSignal, ':CLF:LOCK', io='io', kind='config',
-                     doc='Lockout to prevent focus motion.')
-    led = Cpt(XPIMLED, ':CIL', kind='config',
-              doc='LED for viewing the reticle.')
-    filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config',
-                       doc='Optical filter wheel in front of the camera '
-                           'to prevent saturation.')
-    flow_switch = Cpt(J120K, '', kind='normal',
-                      doc='Device that indicates nominal PCW Flow Rate.')
+    zoom_lock = Cpt(PytmcSignal, ":CLZ:LOCK", io="io", kind="config", doc="Lockout to prevent zoom motion.")
+    focus_lock = Cpt(PytmcSignal, ":CLF:LOCK", io="io", kind="config", doc="Lockout to prevent focus motion.")
+    led = Cpt(XPIMLED, ":CIL", kind="config", doc="LED for viewing the reticle.")
+    filter_wheel = Cpt(
+        XPIMFilterWheel, ":MFW", kind="config", doc="Optical filter wheel in front of the camera to prevent saturation."
+    )
+    flow_switch = Cpt(J120K, "", kind="normal", doc="Device that indicates nominal PCW Flow Rate.")
 
-    set_metadata(zoom_lock, dict(variety='command-enum'))
-    set_metadata(focus_lock, dict(variety='command-enum'))
+    set_metadata(zoom_lock, dict(variety="command-enum"))
+    set_metadata(focus_lock, dict(variety="command-enum"))
 
 
 class IM2K0(LCLS2ImagerBase):
@@ -573,17 +599,14 @@ class IM2K0(LCLS2ImagerBase):
     the PPM models. Somehow this makes it the least complicated imager on the
     beamline.
     """
+
     # XPIM illuminator
-    led = Cpt(XPIMLED, ':CIL', kind='config',
-              doc='LED for viewing the reticle.')
-    flow_switch = Cpt(J120K, '', kind='normal',
-                      doc='Device that indicates nominal PCW Flow Rate.')
+    led = Cpt(XPIMLED, ":CIL", kind="config", doc="LED for viewing the reticle.")
+    flow_switch = Cpt(J120K, "", kind="normal", doc="Device that indicates nominal PCW Flow Rate.")
     # Nothing else! No power meter, no zoom/focus, no filter wheel...
 
 
-@reorder_components(
-    end_with=['k2700', 'power_meter', 'yag_thermocouple', 'led']
-)
+@reorder_components(end_with=["k2700", "power_meter", "yag_thermocouple", "led"])
 class IM3L0(PPM):
     """
     One-off subclass of PPM to include this device's Keithley 2700
@@ -591,21 +614,21 @@ class IM3L0(PPM):
     Includes a Keithley 2700 digital multimeter on top of the PPM class, mainly
     so it shows up on this device's detailed screen.
     """
-    k2700 = Cpt(IM3L0_K2700, ':SPM:K2700',
-                doc='Digital multimeter to get power readouts for this device.')
+
+    k2700 = Cpt(IM3L0_K2700, ":SPM:K2700", doc="Digital multimeter to get power readouts for this device.")
 
 
 class PPMCOOL(PPM):
     """
     L2SI's Power and Profile Monitor design with cooling.
     """
-    flow_meter = Cpt(FDQ, '', kind='normal',
-                     doc='Device that measures PCW Flow Rate.')
+
+    flow_meter = Cpt(FDQ, "", kind="normal", doc="Device that measures PCW Flow Rate.")
 
 
 class PPMCoolSwitch(PPM):
     """
     L2SI's Power and Profile Monitor design with cooling switch.
     """
-    flow_switch = Cpt(J120K, '', kind='normal',
-                      doc='Device that indicates nominal PCW Flow Rate.')
+
+    flow_switch = Cpt(J120K, "", kind="normal", doc="Device that indicates nominal PCW Flow Rate.")

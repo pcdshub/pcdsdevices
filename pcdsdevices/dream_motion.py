@@ -26,8 +26,9 @@ class TMODream(BaseInterface, GroupDevice):
     name : str
         Alias for the device
     """
+
     # UI representation
-    _icon = 'fa.minus-square'
+    _icon = "fa.minus-square"
     tab_component_names = True
 
     gas_nozzle_x = Cpt(BeckhoffAxis, ":GSJN:MMS:X", doc="dream gas nozzle x axis", kind="normal")
@@ -52,15 +53,16 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
     name : str, keyword-only
         Alias for the device
     """
+
     # UI representation
-    _icon = 'fa.minus-square'
+    _icon = "fa.minus-square"
     tab_component_names = True
 
     # Motor components
-    top = Cpt(SmarActEtherCAT, ':SL3K4:MMT:Y1', kind='normal')
-    bottom = Cpt(SmarActEtherCAT, ':SL3K4:MMT:Y2', kind='normal')
-    north = Cpt(SmarActEtherCAT, ':SL3K4:MMT:X1', kind='normal')
-    south = Cpt(SmarActEtherCAT, ':SL3K4:MMT:X2', kind='normal')
+    top = Cpt(SmarActEtherCAT, ":SL3K4:MMT:Y1", kind="normal")
+    bottom = Cpt(SmarActEtherCAT, ":SL3K4:MMT:Y2", kind="normal")
+    north = Cpt(SmarActEtherCAT, ":SL3K4:MMT:X1", kind="normal")
+    south = Cpt(SmarActEtherCAT, ":SL3K4:MMT:X2", kind="normal")
 
 
 class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
@@ -75,14 +77,15 @@ class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
     name : str, keyword-only
         Alias for the device
     """
+
     # UI representation
-    _icon = 'fa.minus-square'
+    _icon = "fa.minus-square"
     tab_component_names = True
     # Motor components
-    x = Cpt(SmarActEtherCAT, ':DGPD:MMT:X', kind='normal')
-    y = Cpt(SmarActEtherCAT, ':DGPD:MMT:Y', kind='normal')
-    z = Cpt(SmarActEtherCAT, ':DGPD:MMT:Z', kind='normal')
-    ret = Cpt(SmarActEtherCAT, ':DGPD:MMT:RET', kind='normal')
+    x = Cpt(SmarActEtherCAT, ":DGPD:MMT:X", kind="normal")
+    y = Cpt(SmarActEtherCAT, ":DGPD:MMT:Y", kind="normal")
+    z = Cpt(SmarActEtherCAT, ":DGPD:MMT:Z", kind="normal")
+    ret = Cpt(SmarActEtherCAT, ":DGPD:MMT:RET", kind="normal")
 
 
 class DREAM_Gas_Jet_Slits(BaseInterface, GroupDevice):
@@ -97,11 +100,12 @@ class DREAM_Gas_Jet_Slits(BaseInterface, GroupDevice):
     name : str, keyword-only
         Alias for the device
     """
+
     # UI representation
-    _icon = 'fa.minus-square'
+    _icon = "fa.minus-square"
     tab_component_names = True
     # Motor components
-    north = Cpt(SmarAct, ':m5', kind='normal')
-    south = Cpt(SmarAct, ':m10', kind='normal')
-    east = Cpt(SmarAct, ':m6', kind='normal')
-    west = Cpt(SmarAct, ':m11', kind='normal')
+    north = Cpt(SmarAct, ":m5", kind="normal")
+    south = Cpt(SmarAct, ":m10", kind="normal")
+    east = Cpt(SmarAct, ":m6", kind="normal")
+    west = Cpt(SmarAct, ":m11", kind="normal")

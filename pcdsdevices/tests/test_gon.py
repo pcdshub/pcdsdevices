@@ -5,13 +5,12 @@ import numpy as np
 import pytest
 from ophyd.sim import make_fake_device
 
-from ..gon import (BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, SimKappa,
-                   XYZStage)
+from ..gon import BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, SimKappa, XYZStage
 
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_kappa():
     fake_kap = SimKappa()
 
@@ -24,48 +23,69 @@ def fake_kappa():
 
 
 def test_gon_factory():
-    logger.debug('test_gon_factory')
-    assert isinstance(Goniometer(name='gon', prefix_hor='a', prefix_ver='b',
-                                 prefix_rot='c', prefix_tip='d',
-                                 prefix_tilt='e'), BaseGon)
-    assert isinstance(Goniometer(name='gon', prefix_hor='a', prefix_ver='b',
-                                 prefix_rot='c', prefix_tip='d',
-                                 prefix_tilt='e', prefix_detver='i',
-                                 prefix_dettilt='j', prefix_2theta='k'),
-                      GonWithDetArm)
+    logger.debug("test_gon_factory")
+    assert isinstance(
+        Goniometer(name="gon", prefix_hor="a", prefix_ver="b", prefix_rot="c", prefix_tip="d", prefix_tilt="e"), BaseGon
+    )
+    assert isinstance(
+        Goniometer(
+            name="gon",
+            prefix_hor="a",
+            prefix_ver="b",
+            prefix_rot="c",
+            prefix_tip="d",
+            prefix_tilt="e",
+            prefix_detver="i",
+            prefix_dettilt="j",
+            prefix_2theta="k",
+        ),
+        GonWithDetArm,
+    )
 
 
 @pytest.mark.timeout(5)
 def test_gon_init():
-    logger.debug('test_gon_init')
+    logger.debug("test_gon_init")
     FakeGon = make_fake_device(BaseGon)
-    FakeGon(name='test', prefix_hor='hor', prefix_ver='ver',
-            prefix_rot='rot', prefix_tip='tip', prefix_tilt='tilt')
+    FakeGon(name="test", prefix_hor="hor", prefix_ver="ver", prefix_rot="rot", prefix_tip="tip", prefix_tilt="tilt")
     FakeGon = make_fake_device(GonWithDetArm)
-    FakeGon(name='test', prefix_hor='hor', prefix_ver='ver',
-            prefix_rot='rot', prefix_tip='tip', prefix_tilt='tilt',
-            prefix_detver='detver', prefix_dettilt='dettilt',
-            prefix_2theta='2theta')
+    FakeGon(
+        name="test",
+        prefix_hor="hor",
+        prefix_ver="ver",
+        prefix_rot="rot",
+        prefix_tip="tip",
+        prefix_tilt="tilt",
+        prefix_detver="detver",
+        prefix_dettilt="dettilt",
+        prefix_2theta="2theta",
+    )
     FakeGon = make_fake_device(XYZStage)
-    FakeGon(name='test', prefix_x='x', prefix_y='y', prefix_z='z')
+    FakeGon(name="test", prefix_x="x", prefix_y="y", prefix_z="z")
     FakeGon = make_fake_device(SamPhi)
-    FakeGon(name='test', prefix_samz='samz', prefix_samphi='samphi')
+    FakeGon(name="test", prefix_samz="samz", prefix_samphi="samphi")
     FakeGon = make_fake_device(Kappa)
-    FakeGon(name='test', prefix='TST:KAPPA')
+    FakeGon(name="test", prefix="TST:KAPPA")
 
 
 @pytest.mark.timeout(5)
 def test_gon_disconnected():
-    logger.debug('test_gon_disconnected')
-    BaseGon(name='test1', prefix_hor='hor', prefix_ver='ver',
-            prefix_rot='rot', prefix_tip='tip', prefix_tilt='tilt')
-    GonWithDetArm(name='test2', prefix_hor='hor', prefix_ver='ver',
-                  prefix_rot='rot', prefix_tip='tip', prefix_tilt='tilt',
-                  prefix_detver='detver', prefix_dettilt='dettilt',
-                  prefix_2theta='2theta')
-    XYZStage(name='test3', prefix_x='x', prefix_y='y', prefix_z='z')
-    SamPhi(name='test4', prefix_samz='samz', prefix_samphi='samphi')
-    Kappa(name='test5', prefix='TST:KAPPA5')
+    logger.debug("test_gon_disconnected")
+    BaseGon(name="test1", prefix_hor="hor", prefix_ver="ver", prefix_rot="rot", prefix_tip="tip", prefix_tilt="tilt")
+    GonWithDetArm(
+        name="test2",
+        prefix_hor="hor",
+        prefix_ver="ver",
+        prefix_rot="rot",
+        prefix_tip="tip",
+        prefix_tilt="tilt",
+        prefix_detver="detver",
+        prefix_dettilt="dettilt",
+        prefix_2theta="2theta",
+    )
+    XYZStage(name="test3", prefix_x="x", prefix_y="y", prefix_z="z")
+    SamPhi(name="test4", prefix_samz="samz", prefix_samphi="samphi")
+    Kappa(name="test5", prefix="TST:KAPPA5")
 
 
 def test_k_to_e(fake_kappa):
@@ -95,9 +115,7 @@ def test_e_to_k(fake_kappa):
 
 def test_forward(fake_kappa):
     # result that current positions for fake_kappa would give us
-    forward = fake_kappa.forward(e_eta=3.5336456057255035,
-                                 e_chi=15.288540112588864,
-                                 e_phi=-36.46635439427449)
+    forward = fake_kappa.forward(e_eta=3.5336456057255035, e_chi=15.288540112588864, e_phi=-36.46635439427449)
     # original position: eta=10, kappa=20, phi=30
     assert np.isclose(forward.eta, 10)
     assert np.isclose(forward.kappa, 20)
@@ -157,11 +175,11 @@ def test_check_motor_step(fake_kappa):
     res = fake_kappa.check_motor_step(9, 19, 29)
     assert res is True
     # numbers outside the range - yes
-    with patch('builtins.input', return_value='y'):
+    with patch("builtins.input", return_value="y"):
         res = fake_kappa.check_motor_step(5, 14, 23)
     assert res is True
     # numbers outside the range - no
-    with patch('builtins.input', return_value='n'):
+    with patch("builtins.input", return_value="n"):
         res = fake_kappa.check_motor_step(5, 14, 23)
     assert res is False
 
@@ -169,7 +187,7 @@ def test_check_motor_step(fake_kappa):
 @pytest.mark.timeout(5)
 def test_moving(fake_kappa):
     eta_pos, kappa_pos, phi_pos = fake_kappa.e_to_k(e_eta=3, e_chi=5, e_phi=7)
-    with patch('builtins.input', return_value='y'):
+    with patch("builtins.input", return_value="y"):
         fake_kappa.e_eta.mv(3)
         fake_kappa.e_chi.mv(5)
         fake_kappa.e_phi.mv(7)
@@ -177,9 +195,8 @@ def test_moving(fake_kappa):
     assert fake_kappa.kappa.position == kappa_pos
     assert fake_kappa.phi.position == phi_pos
 
-    eta_pos, kappa_pos, phi_pos = fake_kappa.e_to_k(e_eta=45, e_chi=45,
-                                                    e_phi=45)
-    with patch('builtins.input', return_value='y'):
+    eta_pos, kappa_pos, phi_pos = fake_kappa.e_to_k(e_eta=45, e_chi=45, e_phi=45)
+    with patch("builtins.input", return_value="y"):
         status = fake_kappa.move(45, 45, 45)
     assert fake_kappa.eta.position == eta_pos
     assert fake_kappa.kappa.position == kappa_pos
@@ -188,7 +205,7 @@ def test_moving(fake_kappa):
     assert status.done
     assert status.success
 
-    with patch('builtins.input', return_value='n'):
+    with patch("builtins.input", return_value="n"):
         status = fake_kappa.move(0, 0, 0)
     try:
         status.wait()
@@ -198,11 +215,23 @@ def test_moving(fake_kappa):
     assert not status.success
 
 
-@pytest.mark.parametrize("eta,kappa,phi", [
-    (0, 0, 0), (1, 2, 3), (10, 20, 30), (45, 45, 45),
-    (6, 2, 6), (42, 0, 0), (0, 42, 0), (0, 0, 42),
-    (7, 7, 7), (-1, -2, -3), (-10, 25, -30), (9, -1, 1),
-])
+@pytest.mark.parametrize(
+    "eta,kappa,phi",
+    [
+        (0, 0, 0),
+        (1, 2, 3),
+        (10, 20, 30),
+        (45, 45, 45),
+        (6, 2, 6),
+        (42, 0, 0),
+        (0, 42, 0),
+        (0, 0, 42),
+        (7, 7, 7),
+        (-1, -2, -3),
+        (-10, 25, -30),
+        (9, -1, 1),
+    ],
+)
 def test_kappa_calculations(fake_kappa, eta, kappa, phi):
     e_eta, e_chi, e_phi = fake_kappa.k_to_e(eta, kappa, phi)
     k_eta, k_kap, k_phi = fake_kappa.e_to_k(e_eta, e_chi, e_phi)
@@ -211,11 +240,23 @@ def test_kappa_calculations(fake_kappa, eta, kappa, phi):
     assert np.isclose(phi, k_phi)
 
 
-@pytest.mark.parametrize("eta,kappa,phi", [
-    (0, 225, 0), (1, 227, 3), (10, 245, 30), (45, 270, 45),
-    (6, 227, 6), (42, 225, 0), (0, 267, 0), (0, 225, 42),
-    (7, 232, 7), (-1, 223, -3), (-10, 250, -30), (9, 224, 1),
-])
+@pytest.mark.parametrize(
+    "eta,kappa,phi",
+    [
+        (0, 225, 0),
+        (1, 227, 3),
+        (10, 245, 30),
+        (45, 270, 45),
+        (6, 227, 6),
+        (42, 225, 0),
+        (0, 267, 0),
+        (0, 225, 42),
+        (7, 232, 7),
+        (-1, 223, -3),
+        (-10, 250, -30),
+        (9, 224, 1),
+    ],
+)
 def test_kappa_calculations_big_kap(fake_kappa, eta, kappa, phi):
     fake_kappa.kappa.move(225, wait=True)
     e_eta, e_chi, e_phi = fake_kappa.k_to_e(eta, kappa, phi)

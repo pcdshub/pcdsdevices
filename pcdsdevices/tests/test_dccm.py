@@ -7,10 +7,10 @@ from ..dccm import DCCM, CrystalIndex
 from .test_epics_motor import motor_setup
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_dccm():
     cls = make_fake_device(DCCM)
-    return cls('TST:SP1T0', hutch='TST2', acr_status_suffix='AO804', acr_status_pv_index='9', name='fake_dccm')
+    return cls("TST:SP1T0", hutch="TST2", acr_status_suffix="AO804", acr_status_pv_index="9", name="fake_dccm")
 
 
 def test_acr_energy_params(fake_dccm):

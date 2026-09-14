@@ -9,11 +9,10 @@ from ..slits import BeckhoffSlits, LusiSlits, SimLusiSlits, SL2K4Slits
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_slits():
     FakeSlits = make_fake_device(LusiSlits)
-    slits = FakeSlits("TST:JAWS:", name='Test Slits',
-                      input_branches=['X0'], output_branches=['X0'])
+    slits = FakeSlits("TST:JAWS:", name="Test Slits", input_branches=["X0"], output_branches=["X0"])
     # Set centers
     slits.xcenter.readback.sim_put(0.0)
     slits.ycenter.readback.sim_put(0.0)
@@ -26,24 +25,21 @@ def fake_slits():
     return slits
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_beckhoff_slits():
     FakeBeckhoffSlits = make_fake_device(BeckhoffSlits)
-    slits = FakeBeckhoffSlits('TST:BKSLITS', name='test_slits',
-                              input_branches=['X0'], output_branches=['X0'])
+    slits = FakeBeckhoffSlits("TST:BKSLITS", name="test_slits", input_branches=["X0"], output_branches=["X0"])
     return slits
 
 
 @pytest.fixture
 def fake_sl2k4_slits():
     FakeSlits = make_fake_device(SL2K4Slits)
-    return FakeSlits(prefix='SL2K4:SCATTER', cam='IM6K4:PPM:CAM',
-                     data_source='IMAGE2',
-                     name='sl2k4_slits')
+    return FakeSlits(prefix="SL2K4:SCATTER", cam="IM6K4:PPM:CAM", data_source="IMAGE2", name="sl2k4_slits")
 
 
 def test_slit_states(fake_slits):
-    logger.debug('test_slit_states')
+    logger.debug("test_slit_states")
     slits = fake_slits
     # Wide open
     slits.xwidth.readback.sim_put(20.0)
@@ -59,7 +55,7 @@ def test_slit_states(fake_slits):
 
 
 def test_slit_motion(fake_slits):
-    logger.debug('test_slit_motion')
+    logger.debug("test_slit_motion")
     slits = fake_slits
     # Uneven motion
     status = slits.move((5.0, 10.0))
@@ -93,14 +89,14 @@ def test_slit_motion(fake_slits):
 
 
 def test_slit_interface():
-    logger.debug('test_slits_interface')
-    slits = SimLusiSlits('SIM:SLIT', name='sim_slits')
+    logger.debug("test_slits_interface")
+    slits = SimLusiSlits("SIM:SLIT", name="sim_slits")
     slits(3, 5)
     assert slits() == (3, 5)
 
 
 def test_slit_subscriptions(fake_slits):
-    logger.debug('test_slit_subscriptions')
+    logger.debug("test_slit_subscriptions")
     slits = fake_slits
     # Subscribe a pseudo callback
     cb = Mock()
@@ -112,7 +108,7 @@ def test_slit_subscriptions(fake_slits):
 
 @pytest.mark.timeout(10)
 def test_slit_staging(fake_slits):
-    logger.debug('test_slit_staging')
+    logger.debug("test_slit_staging")
     slits = fake_slits
     # Check the starting location
     slits.xwidth.readback.sim_put(2.5)
@@ -140,7 +136,7 @@ def test_slit_staging(fake_slits):
 
 
 def test_beckhoffslits_dmov(fake_beckhoff_slits):
-    logger.debug('test_beckhoffslits_dmov')
+    logger.debug("test_beckhoffslits_dmov")
     sl = fake_beckhoff_slits
 
     def set_all(dmov):
@@ -158,7 +154,7 @@ def test_beckhoffslits_dmov(fake_beckhoff_slits):
 
 
 def test_sl2k4_slits(fake_sl2k4_slits):
-    logger.debug('test_sl2k4_slits')
+    logger.debug("test_sl2k4_slits")
     sl = fake_sl2k4_slits
 
     def set_all(dmov):
@@ -179,5 +175,5 @@ def test_sl2k4_slits(fake_sl2k4_slits):
 
 @pytest.mark.timeout(5)
 def test_slits_disconnected():
-    LusiSlits("TST:JAWS:", name='Test Slits')
-    BeckhoffSlits('TST:BK', name='test_slits')
+    LusiSlits("TST:JAWS:", name="Test Slits")
+    BeckhoffSlits("TST:BK", name="test_slits")

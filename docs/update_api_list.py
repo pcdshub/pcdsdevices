@@ -3,6 +3,7 @@ Tool that generates the source for ``source/api.rst``.
 
 Uses tools from the pcdsdevices test suite to enumerate classes and callables.
 """
+
 import sys
 
 import ophyd
@@ -21,11 +22,7 @@ classes = conftest.find_all_classes(
 
 callables = conftest.find_all_callables()
 
-modules = {
-    obj.__module__
-    for obj in list(classes) + list(callables)
-    if obj.__module__.startswith("pcdsdevices.")
-}
+modules = {obj.__module__ for obj in list(classes) + list(callables) if obj.__module__.startswith("pcdsdevices.")}
 
 
 def create_api_list() -> list[str]:

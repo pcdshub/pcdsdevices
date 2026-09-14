@@ -4,10 +4,10 @@ from ophyd.sim import make_fake_device
 from ..tpr import TPR_TAP_NS, TPR_TICK_NS, TimingMode, TprTrigger
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_trigger():
     cls = make_fake_device(TprTrigger)
-    return cls('TST:TPR', channel=10, timing_mode=TimingMode.LCLS2, name='trig_a')
+    return cls("TST:TPR", channel=10, timing_mode=TimingMode.LCLS2, name="trig_a")
 
 
 def test_enable(fake_trigger):
@@ -21,7 +21,7 @@ def test_enable(fake_trigger):
 
 @pytest.mark.timeout(5)
 def test_disconnected_trigger():
-    TprTrigger('TST', channel=1, timing_mode=TimingMode.LCLS1, name='test')
+    TprTrigger("TST", channel=1, timing_mode=TimingMode.LCLS1, name="test")
 
 
 def put_equals_setpoint(mds, setpoint, ns_time):
@@ -49,5 +49,10 @@ def test_width(fake_trigger):
 
 
 def test_motor(fake_trigger):
-    assert mds_get(fake_trigger.ns_delay_scan.readback, fake_trigger.ns_delay_scan.delay_ticks,
-                   fake_trigger.ns_delay_scan.delay_taps, 3, 3)
+    assert mds_get(
+        fake_trigger.ns_delay_scan.readback,
+        fake_trigger.ns_delay_scan.delay_ticks,
+        fake_trigger.ns_delay_scan.delay_taps,
+        3,
+        3,
+    )

@@ -32,24 +32,25 @@ class CVMI(BaseInterface, GroupDevice):
     name : str
         Alias for the device
     """
+
     # UI representation
-    _icon = 'fa.minus-square'
+    _icon = "fa.minus-square"
     tab_component_names = True
 
     # Motor components
-    gas_jet_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
-    gas_jet_y = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
-    gas_jet_z = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
+    gas_jet_x = Cpt(BeckhoffAxis, ":MMS:01", kind="normal")
+    gas_jet_y = Cpt(BeckhoffAxis, ":MMS:02", kind="normal")
+    gas_jet_z = Cpt(BeckhoffAxis, ":MMS:03", kind="normal")
 
-    gas_needle_x = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
-    gas_needle_y = Cpt(BeckhoffAxis, ':MMS:05', kind='normal')
-    gas_needle_z = Cpt(BeckhoffAxis, ':MMS:06', kind='normal')
+    gas_needle_x = Cpt(BeckhoffAxis, ":MMS:04", kind="normal")
+    gas_needle_y = Cpt(BeckhoffAxis, ":MMS:05", kind="normal")
+    gas_needle_z = Cpt(BeckhoffAxis, ":MMS:06", kind="normal")
 
-    sample_paddle = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
+    sample_paddle = Cpt(BeckhoffAxis, ":MMS:07", kind="normal")
 
     # LEDs
-    led1 = Cpt(LightControl, ':LED:01')
-    led2 = Cpt(LightControl, ':LED:02')
+    led1 = Cpt(LightControl, ":LED:01")
+    led2 = Cpt(LightControl, ":LED:02")
 
 
 class KTOF(BaseInterface, GroupDevice):
@@ -67,11 +68,12 @@ class KTOF(BaseInterface, GroupDevice):
     name : str
         Alias for the device
     """
+
     # UI representation
-    _icon = 'fa.minus-square'
+    _icon = "fa.minus-square"
     tab_component_names = True
 
     # Motor components
-    spec_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
-    spec_y = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
-    spec_z = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
+    spec_x = Cpt(BeckhoffAxis, ":MMS:01", kind="normal")
+    spec_y = Cpt(BeckhoffAxis, ":MMS:02", kind="normal")
+    spec_z = Cpt(BeckhoffAxis, ":MMS:03", kind="normal")
