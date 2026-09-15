@@ -9,5 +9,5 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.timeout(5)
 def test_lic_disconnected():
-    logger.debug('test_lic_disconnected')
-    LaserInCoupling('TST:WFS', name='tst')
+    logger.debug("test_lic_disconnected")
+    LaserInCoupling("TST:WFS", name="tst")

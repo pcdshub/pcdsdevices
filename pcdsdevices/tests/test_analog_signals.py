@@ -10,10 +10,10 @@ from ..analog_signals import Acromag, AcromagChannel, Mesh
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_acromag():
     FakeAcromag = make_fake_device(Acromag)
-    acromag = FakeAcromag('Test:Acromag', name='test_acromag')
+    acromag = FakeAcromag("Test:Acromag", name="test_acromag")
     acromag.ao1_0.sim_put(1.0)
     acromag.ao1_1.sim_put(1.0)
     acromag.ao1_2.sim_put(1.0)
@@ -51,22 +51,21 @@ def fake_acromag():
 
 
 def test_acromag_factory():
-    ai_prefix = 'TST:PREFIX:ai1'
-    ao_prefix = 'TST:PREFIX:ao1'
-    ai_res = AcromagChannel(ai_prefix, channel='7')
-    ao_res = AcromagChannel(ao_prefix, channel='7')
+    ai_prefix = "TST:PREFIX:ai1"
+    ao_prefix = "TST:PREFIX:ao1"
+    ai_res = AcromagChannel(ai_prefix, channel="7")
+    ao_res = AcromagChannel(ao_prefix, channel="7")
     assert isinstance(ai_res, EpicsSignalRO)
     assert isinstance(ao_res, EpicsSignal)
-    signal_class_res = AcromagChannel(ao_prefix, channel='7',
-                                      signal_class=EpicsSignalRO)
+    signal_class_res = AcromagChannel(ao_prefix, channel="7", signal_class=EpicsSignalRO)
     assert isinstance(signal_class_res, EpicsSignalRO)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_mesh():
     FakeMesh = make_fake_device(Mesh)
     # Using SP channel = 1, RB channel = 2, scale = 1000
-    mesh = FakeMesh('Test:Mesh', 1, 2)
+    mesh = FakeMesh("Test:Mesh", 1, 2)
     mesh.write_sig.sim_put(1.0)
     mesh.read_sig.sim_put(1.05)  # rb will be slightly off from sp
     return mesh
@@ -100,24 +99,24 @@ def test_set_rel_mesh_voltage(fake_mesh):
 def test_tweak_mesh_voltage(fake_mesh, monkeypatch):
     # Create mock user inputs for tweak up/down
     def mock_tweak_up():
-        return '\x1b[C'  # arrow right
+        return "\x1b[C"  # arrow right
 
     def mock_tweak_down():
-        return '\x1b[D'  # arrow left
+        return "\x1b[D"  # arrow left
 
-    monkeypatch.setattr(utils, 'get_input', mock_tweak_up)
+    monkeypatch.setattr(utils, "get_input", mock_tweak_up)
     fake_mesh.tweak_mesh_voltage(500.0, test_flag=True)
     assert fake_mesh.write_sig.get() == 1.5
-    monkeypatch.setattr(utils, 'get_input', mock_tweak_down)
+    monkeypatch.setattr(utils, "get_input", mock_tweak_down)
     fake_mesh.tweak_mesh_voltage(500.0, test_flag=True)
     assert fake_mesh.write_sig.get() == 1.0
 
 
 @pytest.mark.timeout(5)
 def test_acromag_disconnected():
-    Acromag('Test:Acromag', name='test_acromag')
+    Acromag("Test:Acromag", name="test_acromag")
 
 
 @pytest.mark.timeout(5)
 def test_mesh_disconnected():
-    Mesh('Test:Mesh', 1, 2)
+    Mesh("Test:Mesh", 1, 2)

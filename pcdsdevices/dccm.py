@@ -17,8 +17,7 @@ from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface, FltMvInterface, LightpathInOutCptMixin
 from .pmps import TwinCATStatePMPS
-from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
-                        pseudo_position_argument, real_position_argument)
+from .pseudopos import PseudoPositioner, PseudoSingleInterface, pseudo_position_argument, real_position_argument
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -49,18 +48,18 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
 
     # used to display limits on ui since self.energy.low/high_limit are properties, not components
     _extra_sig_md = {
-        'precision': 3,
-        'units': 'mrad',
+        "precision": 3,
+        "units": "mrad",
     }
     high_limit_travel = Cpt(
         InternalSignal,
         metadata=_extra_sig_md,
-        kind='omitted',
+        kind="omitted",
     )
     low_limit_travel = Cpt(
         InternalSignal,
         metadata=_extra_sig_md,
-        kind='omitted',
+        kind="omitted",
     )
 
     def __init__(self, prefix: str, *, name: str, **kwargs):
@@ -77,29 +76,26 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
     # Pseudo motor and real motor
     energy = Cpt(
         PseudoSingleInterface,
-        egu='keV',
-        kind='hinted',
+        egu="keV",
+        kind="hinted",
         limits=(4, 25),
-        verbose_name='DCCM Photon Energy',
-        doc=(
-            'PseudoSingle that moves the calculated DCCM '
-            'selected energy in keV.'
-        ),
+        verbose_name="DCCM Photon Energy",
+        doc=("PseudoSingle that moves the calculated DCCM selected energy in keV."),
     )
 
-    th1 = Cpt(BeckhoffAxis, ":MMS:TH1", doc="Bragg Upstream/TH1 Axis", kind="normal", name='th1')
-    th2 = Cpt(BeckhoffAxis, ":MMS:TH2", doc="Bragg Upstream/TH2 Axis", kind="normal", name='th2')
+    th1 = Cpt(BeckhoffAxis, ":MMS:TH1", doc="Bragg Upstream/TH1 Axis", kind="normal", name="th1")
+    th2 = Cpt(BeckhoffAxis, ":MMS:TH2", doc="Bragg Upstream/TH2 Axis", kind="normal", name="th2")
 
     # the numerical dspacing value
     _crystal_index = CrystalIndex.Si111
-    crystal_index = Cpt(AttributeSignal, attr='_crystal_index', kind='omitted', write_access=False)
+    crystal_index = Cpt(AttributeSignal, attr="_crystal_index", kind="omitted", write_access=False)
 
     # string for current dspacing value
     @property
     def _crystal_index_name(self):
         return self._crystal_index.name
 
-    crystal_index_name = Cpt(AttributeSignal, attr='_crystal_index_name', kind='omitted', write_access=False)
+    crystal_index_name = Cpt(AttributeSignal, attr="_crystal_index_name", kind="omitted", write_access=False)
 
     def update_crystal_index(self, crystal_index):
         if not isinstance(crystal_index, CrystalIndex):
@@ -112,13 +108,18 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         old_value = self.energy.readback.get()
         self._my_move = True
         self._update_position()
-        self.energy.readback._run_subs(sub_type=self.energy.readback.SUB_VALUE, old_value=old_value, value=self.energy.readback.get(), timestamp=time.time())
+        self.energy.readback._run_subs(
+            sub_type=self.energy.readback.SUB_VALUE,
+            old_value=old_value,
+            value=self.energy.readback.get(),
+            timestamp=time.time(),
+        )
         # Update string
         cin = self.crystal_index_name
         cin._run_subs(sub_type=cin.SUB_VALUE, old_value=cin._readback, value=cin.get(), timestamp=time.time())
 
-    switch_crystal_index = Cpt(AttributeSignal, attr='_switch_crystal_index')
-    set_metadata(switch_crystal_index, dict(variety='command', value=0))
+    switch_crystal_index = Cpt(AttributeSignal, attr="_switch_crystal_index")
+    set_metadata(switch_crystal_index, dict(variety="command", value=0))
 
     @property
     def _switch_crystal_index(self):
@@ -158,7 +159,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         real_pos = self.RealPosition(*real_pos)
         theta = real_pos.th1
         if theta < 0.1:
-            energy = float('NaN')
+            energy = float("NaN")
         else:
             energy = self.braggAngleToEnergy(theta)
         return self.PseudoPosition(energy=energy)
@@ -178,7 +179,7 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
             The angle in degrees
         """
         energy = energy * 1000
-        bragg_angle = np.rad2deg(np.arcsin(np.float64(eV_to_lambda)/energy/(2*self.dspacing)))
+        bragg_angle = np.rad2deg(np.arcsin(np.float64(eV_to_lambda) / energy / (2 * self.dspacing)))
         return bragg_angle
 
     def braggAngleToEnergy(self, theta):
@@ -195,8 +196,8 @@ class DCCMEnergy(FltMvInterface, PseudoPositioner):
         energy: float
              The photon energy (color) in keV.
         """
-        energy = eV_to_lambda/(2*self.dspacing*np.sin(np.deg2rad(np.float64(theta))))
-        return energy/1000
+        energy = eV_to_lambda / (2 * self.dspacing * np.sin(np.deg2rad(np.float64(theta))))
+        return energy / 1000
 
 
 class DCCMEnergyWithVernier(DCCMEnergy):
@@ -220,34 +221,29 @@ class DCCMEnergyWithVernier(DCCMEnergy):
         PVs to write to. If omitted, we can guess this from the
         prefix.
     """
-    acr_energy = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
-                      doc='Requests ACR to move the Vernier.')
+
+    acr_energy = FCpt(BeamEnergyRequest, "{hutch}", kind="normal", doc="Requests ACR to move the Vernier.")
 
     # These are duplicate warnings with main energy motor
     _enable_warn_constants: bool = False
     hutch: str
 
-    def __init__(
-        self,
-        prefix: str,
-        hutch: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, prefix: str, hutch: Optional[str] = None, **kwargs):
         # Determine which hutch to use
         if hutch is not None:
             self.hutch = hutch
-        elif 'TXI' in prefix:
-            self.hutch = 'TXI'
-        elif 'CXI' in prefix:
-            self.hutch = 'CXI'
-        elif 'MEC' in prefix:
-            self.hutch = 'MEC'
-        elif 'MFX' in prefix:
-            self.hutch = 'MFX'
-        elif 'XCS' in prefix:
-            self.hutch = 'XCS'
+        elif "TXI" in prefix:
+            self.hutch = "TXI"
+        elif "CXI" in prefix:
+            self.hutch = "CXI"
+        elif "MEC" in prefix:
+            self.hutch = "MEC"
+        elif "MFX" in prefix:
+            self.hutch = "MFX"
+        elif "XCS" in prefix:
+            self.hutch = "XCS"
         else:
-            self.hutch = 'TST'
+            self.hutch = "TST"
         super().__init__(prefix, **kwargs)
 
     @pseudo_position_argument
@@ -282,21 +278,19 @@ class DCCMEnergyWithACRStatus(DCCMEnergyWithVernier):
         Prefix to the SIOC PV that ACR uses to report the move status.
         For HXR this usually is 'AO805'.
     """
-    acr_energy = FCpt(BeamEnergyRequest, '{hutch}',
-                      pv_index='{pv_index}',
-                      acr_status_suffix='{acr_status_suffix}',
-                      add_prefix=('suffix', 'write_pv', 'pv_index',
-                                  'acr_status_suffix'),
-                      kind='normal',
-                      doc='Requests ACR to move the energy.')
+
+    acr_energy = FCpt(
+        BeamEnergyRequest,
+        "{hutch}",
+        pv_index="{pv_index}",
+        acr_status_suffix="{acr_status_suffix}",
+        add_prefix=("suffix", "write_pv", "pv_index", "acr_status_suffix"),
+        kind="normal",
+        doc="Requests ACR to move the energy.",
+    )
 
     def __init__(
-        self,
-        prefix: str,
-        hutch: typing.Optional[str] = None,
-        acr_status_suffix='AO805',
-        pv_index=2,
-        **kwargs
+        self, prefix: str, hutch: typing.Optional[str] = None, acr_status_suffix="AO805", pv_index=2, **kwargs
     ):
         self.acr_status_suffix = acr_status_suffix
         self.pv_index = pv_index
@@ -328,37 +322,40 @@ class DCCM(BaseInterface, GroupDevice, LightpathInOutCptMixin):
 
     tab_component_names = True
 
-    tx_state = Cpt(DCCMTarget, ':MMS:STATE', kind='hinted', doc='Control of TX axis via saved positions.')
+    tx_state = Cpt(DCCMTarget, ":MMS:STATE", kind="hinted", doc="Control of TX axis via saved positions.")
 
     energy = Cpt(
-        DCCMEnergy, '', kind='hinted',
-        doc=(
-            'PseudoPositioner that moves the theta motors in '
-            'terms of the calculated DCCM energy.'
-        ),
+        DCCMEnergy,
+        "",
+        kind="hinted",
+        doc=("PseudoPositioner that moves the theta motors in terms of the calculated DCCM energy."),
     )
 
     energy_with_vernier = FCpt(
-        DCCMEnergyWithVernier, '{self.prefix}', kind='normal',
-        hutch='{hutch}',
-        add_prefix=('suffix', 'write_pv', 'hutch'),
+        DCCMEnergyWithVernier,
+        "{self.prefix}",
+        kind="normal",
+        hutch="{hutch}",
+        add_prefix=("suffix", "write_pv", "hutch"),
         doc=(
-            'PseudoPositioner that moves the theta motor in '
-            'terms of the calculated DCCM energy while '
-            'also requesting a vernier move.'
+            "PseudoPositioner that moves the theta motor in "
+            "terms of the calculated DCCM energy while "
+            "also requesting a vernier move."
         ),
     )
     energy_with_acr_status = FCpt(
-        DCCMEnergyWithACRStatus, '{self.prefix}', kind='normal',
-        hutch='{hutch}',
-        pv_index='{acr_status_pv_index}',
-        acr_status_suffix='{acr_status_suffix}',
-        add_prefix=('suffix', 'write_pv', 'acr_status_suffix', 'pv_index', 'hutch'),
+        DCCMEnergyWithACRStatus,
+        "{self.prefix}",
+        kind="normal",
+        hutch="{hutch}",
+        pv_index="{acr_status_pv_index}",
+        acr_status_suffix="{acr_status_suffix}",
+        add_prefix=("suffix", "write_pv", "acr_status_suffix", "pv_index", "hutch"),
         doc=(
-            'PseudoPositioner that moves the alio in '
-            'terms of the calculated CCM energy while '
-            'also requesting an energy change to ACR. '
-            'This will wait on ACR to complete the move.'
+            "PseudoPositioner that moves the alio in "
+            "terms of the calculated CCM energy while "
+            "also requesting an energy change to ACR. "
+            "This will wait on ACR to complete the move."
         ),
     )
 
@@ -368,43 +365,43 @@ class DCCM(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     txd = Cpt(BeckhoffAxis, ":MMS:TXD", doc="YAG Diagnostic X Axis", kind="normal")
     tyd = Cpt(BeckhoffAxis, ":MMS:TYD", doc="YAG Diagnostic Y Axis", kind="normal")
 
-    lightpath_cpts = ['tx_state']
+    lightpath_cpts = ["tx_state"]
 
     def __init__(
-            self,
-            prefix: str = "SP1L0:DCCM",
-            hutch: str = '',
-            acr_status_suffix: str = 'AO805',
-            acr_status_pv_index: int = 2,
-            **kwargs
+        self,
+        prefix: str = "SP1L0:DCCM",
+        hutch: str = "",
+        acr_status_suffix: str = "AO805",
+        acr_status_pv_index: int = 2,
+        **kwargs,
     ):
         self.hutch = hutch
         self.acr_status_suffix = acr_status_suffix
         self.acr_status_pv_index = acr_status_pv_index
         super().__init__(prefix, **kwargs)
 
-
     def _proxy_method(method_name):  # noqa
         """
         Proxy a method from tx_state
         """
+
         def method_selector(self, *args, **kwargs):
             return getattr(self.tx_state, method_name)(*args, **kwargs)
 
         return method_selector
 
-
     def _proxy_property(prop_name):  # noqa
         """Read-only property proxy for tx_state"""
+
         def getter(self):
             return getattr(self.tx_state, prop_name)
 
         # Only support read-only properties for now.
         return property(getter)
 
-    inserted = _proxy_property('inserted')
-    check_inserted = _proxy_method('check_inserted')
-    removed = _proxy_property('removed')
-    check_removed = _proxy_method('check_removed')
-    insert = _proxy_method('insert')
-    remove = _proxy_method('remove')
+    inserted = _proxy_property("inserted")
+    check_inserted = _proxy_method("check_inserted")
+    removed = _proxy_property("removed")
+    check_removed = _proxy_method("check_removed")
+    insert = _proxy_method("insert")
+    remove = _proxy_method("remove")

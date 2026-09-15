@@ -14,7 +14,7 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
     Custom widget for managing the pdu detailed screen
     """
 
-    def __init__(self, parent=None, ui_filename='PDU.detailed.ui', macros=None, **kwargs):
+    def __init__(self, parent=None, ui_filename="PDU.detailed.ui", macros=None, **kwargs):
         super().__init__(parent=parent, ui_filename=ui_filename, macros=macros, **kwargs)
 
     @property
@@ -66,14 +66,16 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
                 ch_obj = getattr(self.device, cpt.dotted_name)
                 # add to the dictionary
                 self.channel_signal_dict[cpt.dotted_name] = {
-                    'ch_index': ch_obj.ch_index.pvname,
-                    'ch_name': ch_obj.ch_name.pvname,
-                    'ch_status': ch_obj.ch_status.pvname,
-                    'ch_ctrl_state': ch_obj.ch_ctrl_state.pvname
+                    "ch_index": ch_obj.ch_index.pvname,
+                    "ch_name": ch_obj.ch_name.pvname,
+                    "ch_status": ch_obj.ch_status.pvname,
+                    "ch_ctrl_state": ch_obj.ch_ctrl_state.pvname,
                 }
         # If we have a PDU with more than 8 channels, the rows will sort lexigraphically
         # by channel (ex: 10 comes before 1). Force it to conform with some shenanigans
-        self.channel_signal_dict_sorted = dict(sorted(self.channel_signal_dict.items(), key=lambda item: self.order_channels(item[1]['ch_index'])))
+        self.channel_signal_dict_sorted = dict(
+            sorted(self.channel_signal_dict.items(), key=lambda item: self.order_channels(item[1]["ch_index"]))
+        )
         self.generate_rows()
 
     def generate_rows(self):
@@ -81,6 +83,7 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         Format each ophyd pdu channel component into a row and append to the layout.
         Split channels into two collumns to keep the screen from growing length-wise
         """
+
         def add_channel_row(layout, ch_info, ch_obj):
             row_layout = QtWidgets.QHBoxLayout()
 
@@ -110,8 +113,8 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             row_layout.addWidget(ctrl_state, 2)
 
             # Alarm color callback
-            self.update_color(ctrl_state, ch_info['ch_status'])
-            self.update_color(status, ch_info['ch_status'])
+            self.update_color(ctrl_state, ch_info["ch_status"])
+            self.update_color(status, ch_info["ch_status"])
 
             # Command combo box
             # This would be a pydm enum combo box but the Epics record is not a mbbo. I need to
@@ -119,7 +122,9 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             # setting the appropriate command component on the pdu channel
 
             cmd = QtWidgets.QComboBox()
-            cmd.wheelEvent = lambda event: None  # This disables scrolling on the widget to stop people from accidentally turning channels off
+            cmd.wheelEvent = lambda event: (
+                None
+            )  # This disables scrolling on the widget to stop people from accidentally turning channels off
             cmd.addItems(["Idle", "Turn On", "Turn Off", "Cycle"])
 
             def on_action_selected(index):
@@ -146,7 +151,8 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         left_half = ch_list[:midpoint]
         right_half = ch_list[midpoint:]
 
-        # Reminder that left and right half are dicitonaries with entries: (<string name of channel attribute>, <dict of channel attributes>)
+        # Reminder that left and right half are dicitonaries with entries:
+        # (<string name of channel attribute>, <dict of channel attributes>)
         for ch, ch_info in left_half:
             ch_obj = getattr(self.device, ch)
             add_channel_row(left_layout, ch_info, ch_obj)
@@ -154,7 +160,8 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
             ch_obj = getattr(self.device, ch)
             add_channel_row(right_layout, ch_info, ch_obj)
 
-        # I need to resize the window after the scroll widget is populated, or else the screen will cuttoff all the channels
+        # I need to resize the window after the scroll widget is populated,
+        # or else the screen will cuttoff all the channels
         # I Encapsulate in a function so I can add a delay, Qt needs time to draw everything to screen before I resize
         def delayed_resize():
             current_width = self.width()
@@ -167,8 +174,8 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         """
         Helper function for sorting the channel dictionaries
         """
-        match = re.search(r':Outlet:(\d+):', pvname)
-        return int(match.group(1)) if match else float('inf')
+        match = re.search(r":Outlet:(\d+):", pvname)
+        return int(match.group(1)) if match else float("inf")
 
     def update_color(self, label, pvname):
         """
@@ -182,6 +189,7 @@ class PDUDetailedWidget(Display, utils.TyphosBase):
         pvname: str
             The alarm PV that should trigger a color change
         """
+
         def on_change(value=None, **kwargs):
             severity = kwargs.get("severity")
             if severity == 2:

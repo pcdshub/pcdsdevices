@@ -12,19 +12,19 @@ from ..mps import MPS, MPSLimits, mps_factory, must_be_known, must_be_out
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_mps():
     FakeMPS = make_fake_device(MPS)
     # Hotpatch module to make the mps_factory behave
     mps_module.MPS = FakeMPS
-    mps = FakeMPS("TST:MPS", name='MPS Bit')
+    mps = FakeMPS("TST:MPS", name="MPS Bit")
     return mps
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_mps_limits():
     FakeLimits = make_fake_device(MPSLimits)
-    mps = FakeLimits("Tst:Mps:Lim", logic=lambda x, y: x, name='MPS Limits')
+    mps = FakeLimits("Tst:Mps:Lim", logic=lambda x, y: x, name="MPS Limits")
     # Not bypassed or faulted
     mps.in_limit.fault.sim_put(0)
     mps.in_limit.bypass.sim_put(0)
@@ -34,7 +34,7 @@ def fake_mps_limits():
 
 
 def test_must_be_out():
-    logger.debug('test_must_be_out')
+    logger.debug("test_must_be_out")
     assert not must_be_out(True, True)
     assert not must_be_out(True, False)
     assert must_be_out(False, True)
@@ -42,7 +42,7 @@ def test_must_be_out():
 
 
 def test_must_be_known():
-    logger.debug('test_must_be_known')
+    logger.debug("test_must_be_known")
     assert not must_be_known(True, True)
     assert must_be_known(True, False)
     assert must_be_known(False, True)
@@ -76,16 +76,17 @@ def test_mps_factory(fake_mps):
     # Create a custom device
     class MyDevice(Device):
         pass
+
     # Create a constructor for the MPS version of that device
-    MPSDevice = partial(mps_factory, 'MPSDevice', MyDevice)
+    MPSDevice = partial(mps_factory, "MPSDevice", MyDevice)
     # Create an instanace of the MPSDevice
-    d = MPSDevice('Tst:Prefix', name='Tst', mps_prefix='Tst:Mps:Prefix')
+    d = MPSDevice("Tst:Prefix", name="Tst", mps_prefix="Tst:Mps:Prefix")
     # Check we made an MPS subcomponent
-    assert hasattr(d, 'mps')
+    assert hasattr(d, "mps")
     assert isinstance(d.mps, MPS)
-    assert d.mps.prefix == 'Tst:Mps:Prefix'
+    assert d.mps.prefix == "Tst:Mps:Prefix"
     # Check our original device constructor still worked
-    assert d.name == 'Tst'
+    assert d.name == "Tst"
 
 
 def test_mpslimit_faults(fake_mps_limits):
@@ -111,9 +112,9 @@ def test_mpslimit_subscriptions(fake_mps_limits):
 
 @pytest.mark.timeout(5)
 def test_mps_disconnected():
-    MPS("TST:MPS", name='MPS Bit')
+    MPS("TST:MPS", name="MPS Bit")
 
 
 @pytest.mark.timeout(5)
 def test_mps_limit_disconnected():
-    MPSLimits("Tst:Mps:Lim", logic=lambda x, y: x, name='MPS Limits')
+    MPSLimits("Tst:Mps:Lim", logic=lambda x, y: x, name="MPS Limits")

@@ -8,19 +8,19 @@ from ..movablestand import MovableStand
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_stand():
     FakeStand = make_fake_device(MovableStand)
-    stand = FakeStand('STAND:NAME', name='stand')
+    stand = FakeStand("STAND:NAME", name="stand")
     return stand
 
 
 def test_movablestand_sanity(fake_stand):
-    logger.debug('test_movablestand_sanity')
+    logger.debug("test_movablestand_sanity")
     with pytest.raises(NotImplementedError):
-        fake_stand.move('OUT')
+        fake_stand.move("OUT")
 
 
 @pytest.mark.timeout(5)
 def test_movablestand_disconnected():
-    MovableStand('TST', name='tst')
+    MovableStand("TST", name="tst")

@@ -4,10 +4,10 @@ from ophyd.sim import make_fake_device
 from ..device_types import Trigger
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_trigger():
     cls = make_fake_device(Trigger)
-    return cls('TST:EVR:TRIGA', name='trig_a')
+    return cls("TST:EVR:TRIGA", name="trig_a")
 
 
 def test_enable(fake_trigger):
@@ -19,4 +19,4 @@ def test_enable(fake_trigger):
 
 @pytest.mark.timeout(5)
 def test_disconnected_trigger():
-    Trigger('TST', name='test')
+    Trigger("TST", name="test")

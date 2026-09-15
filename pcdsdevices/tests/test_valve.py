@@ -9,23 +9,23 @@ from ..valve import GateValve, InterlockError, PPSStopper, Stopper
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_pps():
     FakePPS = make_fake_device(PPSStopper)
     pps = FakePPS("PPS:H0:SUM", name="test_pps")
-    pps.state.sim_set_enum_strs(['Unknown', 'IN', 'OUT'])
-    pps.state.sim_put('OUT')
+    pps.state.sim_set_enum_strs(["Unknown", "IN", "OUT"])
+    pps.state.sim_put("OUT")
     return pps
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_stopper():
     FakeStopper = make_fake_device(Stopper)
     stp = FakeStopper("STP:TST:", name="test_stopper")
     return stp
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_valve():
     FakeValve = make_fake_device(GateValve)
     vlv = FakeValve("VGC:TST:", name="test_valve")
@@ -119,7 +119,7 @@ def test_valve_motion(fake_valve):
         valve.open()
 
 
-@pytest.mark.parametrize('cls', [GateValve, PPSStopper, Stopper])
+@pytest.mark.parametrize("cls", [GateValve, PPSStopper, Stopper])
 @pytest.mark.timeout(5)
 def test_valve_disconnected(cls):
-    cls('TST', name='tst')
+    cls("TST", name="tst")

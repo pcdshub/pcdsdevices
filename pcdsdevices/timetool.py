@@ -1,6 +1,7 @@
 """
 Module for Timetool classes.
 """
+
 from collections import defaultdict
 
 from ophyd.device import Component as Cpt
@@ -36,17 +37,16 @@ class Timetool(CombinedInOutRecordPositioner):
     # In should be everything except state 0 (Unknown) and state 1 (Out)
     _in_if_not_out = True
 
-    detector = FCpt(PCDSAreaDetector, '{self._prefix_det}', kind='normal')
+    detector = FCpt(PCDSAreaDetector, "{self._prefix_det}", kind="normal")
 
     def __init__(self, prefix, *, name, prefix_det, **kwargs):
         self._prefix_det = prefix_det
         # Set default transmission
         # Done this way because states are still unknown at this point
         # Assume that having any target in gives transmission 0.8
-        self._transmission = defaultdict(lambda state: 0.8
-                                         if state in self.in_states
-                                         else (1 if state in self.out_states
-                                               else 0))
+        self._transmission = defaultdict(
+            lambda state: 0.8 if state in self.in_states else (1 if state in self.out_states else 0)
+        )
         super().__init__(prefix, name=name, **kwargs)
 
 
@@ -69,5 +69,5 @@ class TimetoolWithNav(Timetool):
         The EPICS base PV of the detector.
     """
 
-    zoom_motor = Cpt(IMS, ':ZOOM_MOTOR', kind='normal')
-    focus_motor = Cpt(IMS, ':FOCUS_MOTOR', kind='normal')
+    zoom_motor = Cpt(IMS, ":ZOOM_MOTOR", kind="normal")
+    focus_motor = Cpt(IMS, ":FOCUS_MOTOR", kind="normal")

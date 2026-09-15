@@ -27,9 +27,13 @@ class MPODApalisChannel(BaseInterface, Device):
     name : str, keyword-only
         A name to refer to the device.
     """
+
     voltage = Cpt(
-        EpicsSignalEditMD, ':VoltageMeasure',
-        write_pv=':VoltageSet', kind='normal', limits=True,
+        EpicsSignalEditMD,
+        ":VoltageMeasure",
+        write_pv=":VoltageSet",
+        kind="normal",
+        limits=True,
         doc=(
             "MPOD Channel Voltage Measurement [V]. "
             "The value of this signal is the actual measured voltage "
@@ -38,12 +42,14 @@ class MPODApalisChannel(BaseInterface, Device):
         ),
     )
 
-    max_voltage = Cpt(EpicsSignalRO, ':VoltageNominal', kind='normal',
-                      doc='MPOD Channel Maximum Voltage [V]')
+    max_voltage = Cpt(EpicsSignalRO, ":VoltageNominal", kind="normal", doc="MPOD Channel Maximum Voltage [V]")
 
     current = Cpt(
-        EpicsSignalEditMD, ':CurrentMeasure',
-        write_pv=':CurrentSet', kind='normal', limits=True,
+        EpicsSignalEditMD,
+        ":CurrentMeasure",
+        write_pv=":CurrentSet",
+        kind="normal",
+        limits=True,
         doc=(
             "MPOD Channel Current Measurement [A]. "
             "The value of this signal is the actual measured current "
@@ -52,41 +58,38 @@ class MPODApalisChannel(BaseInterface, Device):
         ),
     )
 
-    max_current = Cpt(EpicsSignalRO, ':CurrentNominal', kind='normal',
-                      doc='MPOD Channel Current Maximum')
+    max_current = Cpt(EpicsSignalRO, ":CurrentNominal", kind="normal", doc="MPOD Channel Current Maximum")
 
-    state = Cpt(EpicsSignal, ':isOn', write_pv=':Control:setOn',
-                kind='normal', string=True,
-                doc='MPOD Channel State [Off/On]')
-
-    desc = Cpt(EpicsSignal, ':VoltageMeasure.DESC', kind='normal',
-               doc='MPOD Channel Description')
-
-    last_voltage_set = Cpt(
-        EpicsSignalRO, ':VoltageSet', kind='normal',
-        doc=(
-            'Readback to verify the MPOD Channel Voltage Setpoint [V]. '
-            'This is used to compare the measured readback voltage with '
-            'the last value we set to the channel. '
-            'To change the voltage, use the voltage signal or the '
-            'set_voltage helper method.'
-        )
+    state = Cpt(
+        EpicsSignal, ":isOn", write_pv=":Control:setOn", kind="normal", string=True, doc="MPOD Channel State [Off/On]"
     )
 
-    is_trip = Cpt(EpicsSignalRO, ':isTrip', kind='omitted',
-                  doc='True if MPOD channel is tripped.')
+    desc = Cpt(EpicsSignal, ":VoltageMeasure.DESC", kind="normal", doc="MPOD Channel Description")
+
+    last_voltage_set = Cpt(
+        EpicsSignalRO,
+        ":VoltageSet",
+        kind="normal",
+        doc=(
+            "Readback to verify the MPOD Channel Voltage Setpoint [V]. "
+            "This is used to compare the measured readback voltage with "
+            "the last value we set to the channel. "
+            "To change the voltage, use the voltage signal or the "
+            "set_voltage helper method."
+        ),
+    )
+
+    is_trip = Cpt(EpicsSignalRO, ":isTrip", kind="omitted", doc="True if MPOD channel is tripped.")
 
     event_trip = Cpt(
-        EpicsSignalRO, ':EventTrip', kind='normal',
-        doc=(
-            'Latching bit that event supply is not good.'
-            'External supply exceeds lower or upper limits.'
-        )
+        EpicsSignalRO,
+        ":EventTrip",
+        kind="normal",
+        doc=("Latching bit that event supply is not good.External supply exceeds lower or upper limits."),
     )
 
     tab_component_names = True
-    tab_whitelist = ['on', 'off',
-                     'set_voltage', 'set_current']
+    tab_whitelist = ["on", "off", "set_voltage", "set_current"]
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -174,7 +177,10 @@ def _put_clamped(signal: EpicsSignal, value: float) -> None:
     def local_warn(alt_value: float):
         logger.warning(
             "Cannot put %g. The limits are %s, will set %s to %g",
-            value, signal.limits, signal.attr_name, alt_value,
+            value,
+            signal.limits,
+            signal.attr_name,
+            alt_value,
         )
 
     if value < low_val:
@@ -188,7 +194,6 @@ def _put_clamped(signal: EpicsSignal, value: float) -> None:
 
 
 class MPODApalisModule(BaseInterface, GroupDevice):
-
     """
     MPODApalis Module Object.
 
@@ -200,52 +205,58 @@ class MPODApalisModule(BaseInterface, GroupDevice):
         A name to refer to the device.
     """
 
-    voltage_ramp_speed = Cpt(EpicsSignal, ':VoltageRampSpeed', kind='normal',
-                             doc='MPOD module Voltage Ramp Rate [%/sec*Vnom]')
+    voltage_ramp_speed = Cpt(
+        EpicsSignal, ":VoltageRampSpeed", kind="normal", doc="MPOD module Voltage Ramp Rate [%/sec*Vnom]"
+    )
 
-    current_ramp_speed = Cpt(EpicsSignal, ':CurrentRampSpeed', kind='normal',
-                             doc='MPOD module current Ramp  Rate [%/sec*Inom]')
+    current_ramp_speed = Cpt(
+        EpicsSignal, ":CurrentRampSpeed", kind="normal", doc="MPOD module current Ramp  Rate [%/sec*Inom]"
+    )
 
-    temperature = Cpt(EpicsSignalRO, ':Temperature', kind='normal',
-                      doc='MPOD Temperature [C]')
+    temperature = Cpt(EpicsSignalRO, ":Temperature", kind="normal", doc="MPOD Temperature [C]")
 
-    supply_status = Cpt(EpicsSignalRO, ':isSupplyGood', kind='normal',
-                        doc='Supply voltages are within range')
+    supply_status = Cpt(EpicsSignalRO, ":isSupplyGood", kind="normal", doc="Supply voltages are within range")
 
-    module_status = Cpt(EpicsSignalRO, ':isModuleGood', kind='normal',
-                        doc='Module health status')
+    module_status = Cpt(EpicsSignalRO, ":isModuleGood", kind="normal", doc="Module health status")
 
-    fine_adjustment_status = Cpt(EpicsSignalRO, ':isFineAdjustment',
-                                 kind='normal', doc='Fine adjustment mode status')
+    fine_adjustment_status = Cpt(EpicsSignalRO, ":isFineAdjustment", kind="normal", doc="Fine adjustment mode status")
 
-    input_status = Cpt(EpicsSignalRO, ':isInputError', kind='normal',
-                       doc='Input error in connection with a module access')
+    input_status = Cpt(
+        EpicsSignalRO, ":isInputError", kind="normal", doc="Input error in connection with a module access"
+    )
 
-    live_insertion_status = Cpt(EpicsSignalRO, ':isLiveInsertion',
-                                kind='normal', doc='Live insertion mode status')
+    live_insertion_status = Cpt(EpicsSignalRO, ":isLiveInsertion", kind="normal", doc="Live insertion mode status")
 
-    saftey_loop_status = Cpt(EpicsSignalRO, ':isSafetyLoopGood',
-                             kind='normal', doc='Saftey loop status')
+    saftey_loop_status = Cpt(EpicsSignalRO, ":isSafetyLoopGood", kind="normal", doc="Saftey loop status")
 
-    kill = Cpt(EpicsSignal, ':isKillEnable',
-               write_pv=':Control:setKillEnable',
-               kind='normal', string=True,
-               doc='Module-wide kill functionality')
+    kill = Cpt(
+        EpicsSignal,
+        ":isKillEnable",
+        write_pv=":Control:setKillEnable",
+        kind="normal",
+        string=True,
+        doc="Module-wide kill functionality",
+    )
 
-    faults = Cpt(EpicsSignal, ':isEventActive',
-                 write_pv=':Control:doClear',
-                 kind='normal', string=True,
-                 doc='Clears all MPOD module faults')
+    faults = Cpt(
+        EpicsSignal,
+        ":isEventActive",
+        write_pv=":Control:doClear",
+        kind="normal",
+        string=True,
+        doc="Clears all MPOD module faults",
+    )
 
-    limit_pos = Cpt(EpicsSignalRO, ':VoltageLimit', kind='omitted',
-                    doc='Positive voltage limit as a % of the max voltage')
+    limit_pos = Cpt(
+        EpicsSignalRO, ":VoltageLimit", kind="omitted", doc="Positive voltage limit as a % of the max voltage"
+    )
 
-    limit_neg = Cpt(EpicsSignalRO, ':VoltageLimitNegative', kind='omitted',
-                    doc='Negative voltage limit as a % of the max voltage')
+    limit_neg = Cpt(
+        EpicsSignalRO, ":VoltageLimitNegative", kind="omitted", doc="Negative voltage limit as a % of the max voltage"
+    )
 
     tab_component_names = True
-    tab_whitelist = ['clear_faults', 'set_voltage_ramp_speed',
-                     'set_current_ramp_speed']
+    tab_whitelist = ["clear_faults", "set_voltage_ramp_speed", "set_current_ramp_speed"]
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -311,23 +322,20 @@ class MPODApalisModule(BaseInterface, GroupDevice):
 
     @limit_pos.sub_value
     def _update_limit_pos(self, value, **kwargs):
-        if np.isclose(self._limit_pos, value,
-                      rtol=self._limit_rtol, atol=self._limit_atol):
+        if np.isclose(self._limit_pos, value, rtol=self._limit_rtol, atol=self._limit_atol):
             return
         self._limit_pos = value
         self._update_channel_limits()
 
     @limit_neg.sub_value
     def _update_limit_neg(self, value, **kwargs):
-        if np.isclose(self._limit_neg, value,
-                      rtol=self._limit_rtol, atol=self._limit_atol):
+        if np.isclose(self._limit_neg, value, rtol=self._limit_rtol, atol=self._limit_atol):
             return
         self._limit_neg = value
         self._update_channel_limits()
 
 
 class MPODApalisModule4Channel(MPODApalisModule):
-
     """
     MPODApalis 4 channel Module Object.
 
@@ -346,7 +354,6 @@ class MPODApalisModule4Channel(MPODApalisModule):
 
 
 class MPODApalisModule8Channel(MPODApalisModule):
-
     """
     MPODApalis 8 channel Module Object.
 
@@ -369,7 +376,6 @@ class MPODApalisModule8Channel(MPODApalisModule):
 
 
 class MPODApalisModule16Channel(MPODApalisModule):
-
     """
     MPODApalis 16 channel Module Object.
 
@@ -400,7 +406,6 @@ class MPODApalisModule16Channel(MPODApalisModule):
 
 
 class MPODApalisModule24Channel(MPODApalisModule):
-
     """
     MPODApalis 24 channel Module Object.
 
@@ -439,7 +444,6 @@ class MPODApalisModule24Channel(MPODApalisModule):
 
 
 class MPODApalisCrate(BaseInterface, Device):
-
     """
     MPODApalis Crate Object.
 
@@ -451,12 +455,10 @@ class MPODApalisCrate(BaseInterface, Device):
         A name to refer to the device.
     """
 
-    power = Cpt(EpicsSignal, ':Crate:PowerOn',
-                kind='normal', string=True,
-                doc='Crate power status and control')
+    power = Cpt(EpicsSignal, ":Crate:PowerOn", kind="normal", string=True, doc="Crate power status and control")
 
     tab_component_names = True
-    tab_whitelist = ['power']
+    tab_whitelist = ["power"]
 
     def power_cycle(self):
         """
