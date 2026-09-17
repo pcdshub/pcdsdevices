@@ -3,7 +3,6 @@ Module for controlling LEDs or fiber-lites.
 To be paired with FB_LED function block.
 """
 
-
 import logging
 
 from ophyd import Component as Cpt
@@ -22,23 +21,8 @@ class LightControl(Device):
     """
 
     # LED variables
-    desc = Cpt(
-        PytmcSignal, ':NAME',
-        io='io',
-        kind='normal',
-        string=True
-    )
+    desc = Cpt(PytmcSignal, ":NAME", io="io", kind="normal", string=True)
 
-    pct = Cpt(
-        PytmcSignal, ':ILL:PCT',
-        kind='normal',
-        io='io',
-        doc='Illuminator percentage'
-    )
+    pct = Cpt(PytmcSignal, ":ILL:PCT", kind="normal", io="io", doc="Illuminator percentage")
 
-    pwr = Cpt(
-        PytmcSignal, ':PWR',
-        kind='normal',
-        io='i',
-        doc='Illuminator power boolean (ON/OFF)'
-    )
+    pwr = Cpt(PytmcSignal, ":PWR", kind="normal", io="i", doc="Illuminator power boolean (ON/OFF)")

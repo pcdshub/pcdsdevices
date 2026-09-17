@@ -1,6 +1,7 @@
 """
 Module for the LCLS1 `PulsePicker`
 """
+
 import logging
 
 from ophyd.device import Component as Cpt
@@ -28,37 +29,35 @@ class PulsePicker(InOutPVStatePositioner, LightpathInOutMixin):
 
     __doc__ += basic_positioner_init
 
-    blade = Cpt(EpicsSignalRO, ':READ_DF', kind='normal')
-    mode = Cpt(EpicsSignalRO, ':SD_SIMPLE', kind='config')
+    blade = Cpt(EpicsSignalRO, ":READ_DF", kind="normal")
+    mode = Cpt(EpicsSignalRO, ":SD_SIMPLE", kind="config")
 
-    cmd_reset = Cpt(EpicsSignal, ':RESET_PG', kind='omitted')
-    cmd_open = Cpt(EpicsSignal, ':S_OPEN', kind='omitted')
-    cmd_close = Cpt(EpicsSignal, ':S_CLOSE', kind='omitted')
-    cmd_flipflop = Cpt(EpicsSignal, ':RUN_FLIPFLOP', kind='omitted')
-    cmd_burst = Cpt(EpicsSignal, ':RUN_BURSTMODE', kind='omitted')
-    cmd_follower = Cpt(EpicsSignal, ':RUN_FOLLOWERMODE', kind='omitted')
+    cmd_reset = Cpt(EpicsSignal, ":RESET_PG", kind="omitted")
+    cmd_open = Cpt(EpicsSignal, ":S_OPEN", kind="omitted")
+    cmd_close = Cpt(EpicsSignal, ":S_CLOSE", kind="omitted")
+    cmd_flipflop = Cpt(EpicsSignal, ":RUN_FLIPFLOP", kind="omitted")
+    cmd_burst = Cpt(EpicsSignal, ":RUN_BURSTMODE", kind="omitted")
+    cmd_follower = Cpt(EpicsSignal, ":RUN_FOLLOWERMODE", kind="omitted")
 
-    states_list = ['OPEN', 'CLOSED']
-    in_states = ['CLOSED']
-    out_states = ['OPEN']
-    _states_alias = {'CLOSED': ['CLOSED', 'IN']}
-    _state_logic = {'blade': {0: 'OPEN',
-                              1: 'CLOSED',
-                              2: 'CLOSED'}}
-    _state_logic_set_ref = 'cmd_open'
+    states_list = ["OPEN", "CLOSED"]
+    in_states = ["CLOSED"]
+    out_states = ["OPEN"]
+    _states_alias = {"CLOSED": ["CLOSED", "IN"]}
+    _state_logic = {"blade": {0: "OPEN", 1: "CLOSED", 2: "CLOSED"}}
+    _state_logic_set_ref = "cmd_open"
     # QIcon for UX
-    _icon = 'fa.compass'
+    _icon = "fa.compass"
 
-    tab_whitelist = ['reset', 'open', 'close', 'flipflop', 'burst', 'follower']
+    tab_whitelist = ["reset", "open", "close", "flipflop", "burst", "follower"]
 
     def _do_move(self, state):
         """
         Handle move requests for basic open/close commands. This allows us to
         make calls like pulsepicker.move('OPEN')
         """
-        if state.name == 'OPEN':
+        if state.name == "OPEN":
             self.open(wait=False)
-        if state.name == 'CLOSED':
+        if state.name == "CLOSED":
             self.close(wait=False)
 
     def _wait(self, sig, *goals):
@@ -66,14 +65,16 @@ class PulsePicker(InOutPVStatePositioner, LightpathInOutMixin):
         Helper function to wait for a signal to reach a value. This is used
         here because most commands are only valid when mode is IDLE.
         """
+
         def cb(value, *args, **kwargs):
             logger.debug((value, goals))
             return value in goals
+
         status = SubscriptionStatus(sig, cb)
         status_wait(status)
 
     def _log_request(self, mode):
-        logger.debug('Request %s %s', self.name, mode)
+        logger.debug("Request %s %s", self.name, mode)
 
     def reset(self, wait=False):
         """
@@ -85,11 +86,11 @@ class PulsePicker(InOutPVStatePositioner, LightpathInOutMixin):
             If `True`, block until procedure is done.
         """
 
-        self._log_request('RESET')
-        if self.mode.get() not in (0, 'IDLE'):
+        self._log_request("RESET")
+        if self.mode.get() not in (0, "IDLE"):
             self.cmd_reset.put(1)
             if wait:
-                self._wait(self.mode, 0, 'IDLE')
+                self._wait(self.mode, 0, "IDLE")
 
     def open(self, wait=False):
         """
@@ -102,10 +103,10 @@ class PulsePicker(InOutPVStatePositioner, LightpathInOutMixin):
         """
 
         self.reset(wait=True)
-        self._log_request('OPEN')
+        self._log_request("OPEN")
         self.cmd_open.put(1)
         if wait:
-            self._wait(self.blade, 0, 'OPEN')
+            self._wait(self.blade, 0, "OPEN")
 
     def close(self, wait=False):
         """
@@ -117,10 +118,10 @@ class PulsePicker(InOutPVStatePositioner, LightpathInOutMixin):
             If `True`, block until procedure is done.
         """
         self.reset(wait=True)
-        self._log_request('CLOSED')
+        self._log_request("CLOSED")
         self.cmd_close.put(1)
         if wait:
-            self._wait(self.blade, 1, 2, 'CLOSED -', 'CLOSED +')
+            self._wait(self.blade, 1, 2, "CLOSED -", "CLOSED +")
 
     def flipflop(self, wait=False):
         """
@@ -132,10 +133,10 @@ class PulsePicker(InOutPVStatePositioner, LightpathInOutMixin):
             If `True`, block until procedure is done.
         """
         self.reset(wait=True)
-        self._log_request('FLIP-FLOP')
+        self._log_request("FLIP-FLOP")
         self.cmd_flipflop.put(1)
         if wait:
-            self._wait(self.mode, 2, 'FLIP-FLOP')
+            self._wait(self.mode, 2, "FLIP-FLOP")
 
     def burst(self, wait=False):
         """
@@ -148,10 +149,10 @@ class PulsePicker(InOutPVStatePositioner, LightpathInOutMixin):
         """
 
         self.reset(wait=True)
-        self._log_request('BURST')
+        self._log_request("BURST")
         self.cmd_burst.put(1)
         if wait:
-            self._wait(self.mode, 3, 'BURST')
+            self._wait(self.mode, 3, "BURST")
 
     def follower(self, wait=False):
         """
@@ -164,10 +165,10 @@ class PulsePicker(InOutPVStatePositioner, LightpathInOutMixin):
         """
 
         self.reset(wait=True)
-        self._log_request('FOLLOWER')
+        self._log_request("FOLLOWER")
         self.cmd_follower.put(1)
         if wait:
-            self._wait(self.mode, 6, 'FOLLOWER')
+            self._wait(self.mode, 6, "FOLLOWER")
 
 
 class PulsePickerInOut(PulsePicker, GroupDevice):
@@ -187,26 +188,23 @@ class PulsePickerInOut(PulsePicker, GroupDevice):
 
     __doc__ += basic_positioner_init
 
-    inout = FCpt(InOutRecordPositioner, '{self._inout}', kind='normal')
+    inout = FCpt(InOutRecordPositioner, "{self._inout}", kind="normal")
 
-    states_list = ['OUT', 'OPEN', 'CLOSED']
-    out_states = ['OUT', 'OPEN']
-    _state_logic = {'inout.state': {1: 'defer',
-                                    2: 'OUT',
-                                    'IN': 'defer',
-                                    'OUT': 'OUT'},
-                    'blade': {0: 'OPEN',
-                              1: 'CLOSED',
-                              2: 'CLOSED'}}
-    _state_logic_mode = 'FIRST'
+    states_list = ["OUT", "OPEN", "CLOSED"]
+    out_states = ["OUT", "OPEN"]
+    _state_logic = {
+        "inout.state": {1: "defer", 2: "OUT", "IN": "defer", "OUT": "OUT"},
+        "blade": {0: "OPEN", 1: "CLOSED", 2: "CLOSED"},
+    }
+    _state_logic_mode = "FIRST"
 
     # When we move PulsePickerInOut, it moves inout
     stage_group = [inout]
 
     def __init__(self, prefix, **kwargs):
         # inout follows naming convention
-        parts = prefix.split(':')
-        self._inout = ':'.join(parts[:2] + ['PP', 'Y'])
+        parts = prefix.split(":")
+        self._inout = ":".join(parts[:2] + ["PP", "Y"])
         super().__init__(prefix, **kwargs)
 
     def _do_move(self, state):
@@ -218,7 +216,7 @@ class PulsePickerInOut(PulsePicker, GroupDevice):
         commands.
         """
 
-        if state.name == 'OUT':
+        if state.name == "OUT":
             self.inout.remove()
         else:
             self.inout.insert()

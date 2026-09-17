@@ -217,34 +217,29 @@ class DCCMEnergyWithVernier(DCCMEnergy):
         PVs to write to. If omitted, we can guess this from the
         prefix.
     """
-    acr_energy = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
-                      doc='Requests ACR to move the Vernier.')
+
+    acr_energy = FCpt(BeamEnergyRequest, "{hutch}", kind="normal", doc="Requests ACR to move the Vernier.")
 
     # These are duplicate warnings with main energy motor
     _enable_warn_constants: bool = False
     hutch: str
 
-    def __init__(
-        self,
-        prefix: str,
-        hutch: Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, prefix: str, hutch: Optional[str] = None, **kwargs):
         # Determine which hutch to use
         if hutch is not None:
             self.hutch = hutch
-        elif 'TXI' in prefix:
-            self.hutch = 'TXI'
-        elif 'CXI' in prefix:
-            self.hutch = 'CXI'
-        elif 'MEC' in prefix:
-            self.hutch = 'MEC'
-        elif 'MFX' in prefix:
-            self.hutch = 'MFX'
-        elif 'XCS' in prefix:
-            self.hutch = 'XCS'
+        elif "TXI" in prefix:
+            self.hutch = "TXI"
+        elif "CXI" in prefix:
+            self.hutch = "CXI"
+        elif "MEC" in prefix:
+            self.hutch = "MEC"
+        elif "MFX" in prefix:
+            self.hutch = "MFX"
+        elif "XCS" in prefix:
+            self.hutch = "XCS"
         else:
-            self.hutch = 'TST'
+            self.hutch = "TST"
         super().__init__(prefix, **kwargs)
 
     def move(self, position, wait=True, timeout=None, moved_cb=None):
@@ -271,13 +266,16 @@ class DCCMEnergyWithACRStatus(DCCMEnergyWithVernier):
         Prefix to the SIOC PV that ACR uses to report the move status.
         For HXR this usually is 'AO805'.
     """
-    acr_energy = FCpt(BeamEnergyRequest, '{hutch}',
-                      pv_index='{pv_index}',
-                      acr_status_suffix='{acr_status_suffix}',
-                      add_prefix=('suffix', 'write_pv', 'pv_index',
-                                  'acr_status_suffix'),
-                      kind='normal',
-                      doc='Requests ACR to move the energy.')
+
+    acr_energy = FCpt(
+        BeamEnergyRequest,
+        "{hutch}",
+        pv_index="{pv_index}",
+        acr_status_suffix="{acr_status_suffix}",
+        add_prefix=("suffix", "write_pv", "pv_index", "acr_status_suffix"),
+        kind="normal",
+        doc="Requests ACR to move the energy.",
+    )
 
     def __init__(
         self,
@@ -310,7 +308,7 @@ class DCCM(Device):
 
     tab_component_names = True
 
-    tx_state = Cpt(DCCMTarget, ':MMS:STATE', kind='hinted', doc='Control of TX axis via saved positions.')
+    tx_state = Cpt(DCCMTarget, ":MMS:STATE", kind="hinted", doc="Control of TX axis via saved positions.")
 
     energy = FCpt(
         DCCMEnergy, '{self.prefix}', kind='hinted',
@@ -327,9 +325,9 @@ class DCCM(Device):
         hutch='{hutch}',
         add_prefix=('suffix', 'write_pv', 'hutch'),
         doc=(
-            'PseudoPositioner that moves the theta motor in '
-            'terms of the calculated DCCM energy while '
-            'also requesting a vernier move.'
+            "PseudoPositioner that moves the theta motor in "
+            "terms of the calculated DCCM energy while "
+            "also requesting a vernier move."
         ),
     )
     energy_with_acr_status = FCpt(
@@ -340,10 +338,10 @@ class DCCM(Device):
         acr_status_suffix='{acr_status_suffix}',
         add_prefix=('suffix', 'write_pv', 'acr_status_suffix', 'pv_index', 'hutch'),
         doc=(
-            'PseudoPositioner that moves the alio in '
-            'terms of the calculated CCM energy while '
-            'also requesting an energy change to ACR. '
-            'This will wait on ACR to complete the move.'
+            "PseudoPositioner that moves the alio in "
+            "terms of the calculated CCM energy while "
+            "also requesting an energy change to ACR. "
+            "This will wait on ACR to complete the move."
         ),
     )
 
@@ -371,19 +369,19 @@ class DCCM(Device):
         self.acr_status_pv_index = acr_status_pv_index
         super().__init__(prefix, **kwargs)
 
-
     def _proxy_method(method_name):  # noqa
         """
         Proxy a method from tx_state
         """
+
         def method_selector(self, *args, **kwargs):
             return getattr(self.tx_state, method_name)(*args, **kwargs)
 
         return method_selector
 
-
     def _proxy_property(prop_name):  # noqa
         """Read-only property proxy for tx_state"""
+
         def getter(self):
             return getattr(self.tx_state, prop_name)
 

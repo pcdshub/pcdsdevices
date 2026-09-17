@@ -18,21 +18,17 @@ logger = logging.getLogger(__name__)
 
 
 class BeamStats(BaseInterface, Device):
-    mj = Cpt(EpicsSignalRO, 'GDET:FEE1:241:ENRC', kind='hinted',
-             doc='Pulse energy [mJ]')
-    ev = Cpt(EpicsSignalRO, 'BLD:SYS0:500:PHOTONENERGY', kind='normal',
-             doc='Photon Energy [eV]')
-    rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE', kind='normal',
-               doc='LCLSBEAM Event Rate [Hz]')
-    owner = Cpt(EpicsSignalRO, 'ECS:SYS0:0:BEAM_OWNER_ID', kind='omitted',
-                doc='BEAM_OWNER ID')
+    mj = Cpt(EpicsSignalRO, "GDET:FEE1:241:ENRC", kind="hinted", doc="Pulse energy [mJ]")
+    ev = Cpt(EpicsSignalRO, "BLD:SYS0:500:PHOTONENERGY", kind="normal", doc="Photon Energy [eV]")
+    rate = Cpt(EpicsSignalRO, "EVNT:SYS0:1:LCLSBEAMRATE", kind="normal", doc="LCLSBEAM Event Rate [Hz]")
+    owner = Cpt(EpicsSignalRO, "ECS:SYS0:0:BEAM_OWNER_ID", kind="omitted", doc="BEAM_OWNER ID")
 
-    mj_avg = Cpt(AvgSignal, 'mj', averages=120, kind='normal')
-    mj_buffersize = Cpt(AttributeSignal, 'mj_avg.averages', kind='config')
+    mj_avg = Cpt(AvgSignal, "mj", averages=120, kind="normal")
+    mj_buffersize = Cpt(AttributeSignal, "mj_avg.averages", kind="config")
 
     tab_component_names = True
 
-    def __init__(self, prefix='', name='beam_stats', **kwargs):
+    def __init__(self, prefix="", name="beam_stats", **kwargs):
         super().__init__(prefix=prefix, name=name, **kwargs)
 
 
@@ -99,42 +95,32 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
         SIOC:SYS0:ML07:{suffix}. The selected PV should be 0 while the device
         is moving and 1 when it is done.
     """
+
     setpoint = FCpt(
         EpicsSignal,
-        '{prefix}:USER:MCC:EPHOT{line_text}:SET{pv_index}',
-        kind='hinted',
-        add_prefix=('suffix', 'write_pv', 'line_text', 'pv_index'),
-        doc=(
-            'The setpoint PV that acr listens on to update the '
-            'vernier or undulator PVs as appropriate.'
-        ),
+        "{prefix}:USER:MCC:EPHOT{line_text}:SET{pv_index}",
+        kind="hinted",
+        add_prefix=("suffix", "write_pv", "line_text", "pv_index"),
+        doc=("The setpoint PV that acr listens on to update the vernier or undulator PVs as appropriate."),
     )
     ref = FCpt(
         EpicsSignal,
-        '{prefix}:USER:MCC:EPHOT{line_text}:REF{pv_index}',
-        kind='normal',
-        add_prefix=('suffix', 'write_pv', 'line_text', 'pv_index'),
-        doc=(
-            'A reference PV for the photon energy at the nominal '
-            'position of the vernier or undulator.'
-        ),
+        "{prefix}:USER:MCC:EPHOT{line_text}:REF{pv_index}",
+        kind="normal",
+        add_prefix=("suffix", "write_pv", "line_text", "pv_index"),
+        doc=("A reference PV for the photon energy at the nominal position of the vernier or undulator."),
     )
 
     line_text_dict = {
-        'K': 'K',
-        'L': '',
+        "K": "K",
+        "L": "",
     }
-    for k_hutch in ('k', 'TMO', 'RIX'):
-        line_text_dict[k_hutch] = line_text_dict['K']
-    for l_hutch in ('l', 'XPP', 'XCS', 'MFX', 'CXI', 'MEC'):
-        line_text_dict[l_hutch] = line_text_dict['L']
+    for k_hutch in ("k", "TMO", "RIX"):
+        line_text_dict[k_hutch] = line_text_dict["K"]
+    for l_hutch in ("l", "XPP", "XCS", "MFX", "CXI", "MEC"):
+        line_text_dict[l_hutch] = line_text_dict["L"]
 
-    def __new__(
-        cls,
-        *args,
-        acr_status_suffix: Optional[str] = None,
-        **kwargs
-    ):
+    def __new__(cls, *args, acr_status_suffix: Optional[str] = None, **kwargs):
         if cls is not BeamEnergyRequest:
             return super().__new__(cls)
         if acr_status_suffix is None:
@@ -150,9 +136,9 @@ class BeamEnergyRequest(FltMvInterface, Device, PositionerBase):
         line: Optional[str] = None,
         pv_index: int = 1,
         acr_status_suffix: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ):
-        self.line_text = self.line_text_dict.get(line or prefix, '')
+        self.line_text = self.line_text_dict.get(line or prefix, "")
         self.pv_index = pv_index
         self.acr_status_suffix = acr_status_suffix
         super().__init__(prefix, name=name, **kwargs)
@@ -165,6 +151,7 @@ class BeamEnergyRequestNoWait(BeamEnergyRequest, PVPositionerDone):
     It will report done immediately and ignore moves that are smaller than
     atol.
     """
+
     atol = 0.5
 
     # All done-related functionality is inherited from PVPositionerDone
@@ -180,17 +167,18 @@ class BeamEnergyRequestACRWait(BeamEnergyRequest, PVPositioner):
     It will report done when the ACR status PV indicates done and will
     not use the atol parameter.
     """
+
     # All the logic is implemented in parent classes, just pick the PV
     done = FCpt(
         EpicsSignal,
-        'SIOC:SYS0:ML07:{acr_status_suffix}',
-        kind='normal',
-        add_prefix=('suffix', 'write_pv', 'acr_status_suffix'),
+        "SIOC:SYS0:ML07:{acr_status_suffix}",
+        kind="normal",
+        add_prefix=("suffix", "write_pv", "acr_status_suffix"),
         doc=(
-            'PV that is 0 while the motors are moving and 1 when ACR is '
-            'ready for a new request. ACR can pick which of these PVs '
-            'to use to report status.'
-        )
+            "PV that is 0 while the motors are moving and 1 when ACR is "
+            "ready for a new request. ACR can pick which of these PVs "
+            "to use to report status."
+        ),
     )
     done_value = 1
 
@@ -204,12 +192,8 @@ class FakeBeamEnergyRequest(_FakeBeamEnergyRequest):
     """
     Required setup for fake classes to work properly with __new__ splitting
     """
-    def __new__(
-        cls,
-        *args,
-        acr_status_suffix: Optional[str] = None,
-        **kwargs
-    ):
+
+    def __new__(cls, *args, acr_status_suffix: Optional[str] = None, **kwargs):
         if cls is not FakeBeamEnergyRequest:
             return super().__new__(cls)
         if acr_status_suffix is None:
@@ -220,15 +204,13 @@ class FakeBeamEnergyRequest(_FakeBeamEnergyRequest):
 class FakeBeamEnergyRequestNoWait(
     _FakeBeamEnergyRequestNoWait,
     FakeBeamEnergyRequest,
-):
-    ...
+): ...
 
 
 class FakeBeamEnergyRequestACRWait(
     _FakeBeamEnergyRequestACRWait,
     FakeBeamEnergyRequest,
-):
-    ...
+): ...
 
 
 fake_device_cache[BeamEnergyRequestNoWait] = FakeBeamEnergyRequestNoWait
@@ -243,53 +225,47 @@ class LCLS(BaseInterface, Device):
 
     tab_component_names = True
 
-    tab_whitelist = ['bykik_status', 'bykik_disable', 'bykik_enable',
-                     'bykik_get_period', 'bykik_set_period']
+    tab_whitelist = ["bykik_status", "bykik_disable", "bykik_enable", "bykik_get_period", "bykik_set_period"]
 
-    bunch_charge = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO470', kind='normal',
-                       doc='Bunch charge [nC]')
-    beam_event_rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE',
-                          kind='normal', doc='LCLSBEAM Event Rate [Hz]')
-    ebeam_energy = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO500', kind='normal',
-                       doc='Final electron energy [ GeV]')
-    ebeam_energy_user_req = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML01:CALC036',
-                                kind='normal',
-                                doc='Beam energy request from Users [GeV]')
-    bunch_length = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO820', kind='normal',
-                       doc='estimated FEL Pulse Duration (FWHM) [fs]')
-    bc2_peak_current = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO195',
-                           kind='normal', doc='Peak current after BC2 [A]')
-    eloss_energy = Cpt(EpicsSignalRO, 'PHYS:SYS0:1:ELOSSENERGY', kind='normal',
-                       doc='Last Eloss sxray energy [mJ]')
-    vernier_energy = Cpt(EpicsSignalRO, 'FBCK:FB04:LG01:DL2VERNIER',
-                         kind='normal', doc='Fast Feedback 6x6 Vernier [MeV]')
-    photon_ev_hxr = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO627', kind='normal',
-                        doc='Photon eV HXR [eV]')
+    bunch_charge = Cpt(EpicsSignalRO, "SIOC:SYS0:ML00:AO470", kind="normal", doc="Bunch charge [nC]")
+    beam_event_rate = Cpt(EpicsSignalRO, "EVNT:SYS0:1:LCLSBEAMRATE", kind="normal", doc="LCLSBEAM Event Rate [Hz]")
+    ebeam_energy = Cpt(EpicsSignalRO, "SIOC:SYS0:ML00:AO500", kind="normal", doc="Final electron energy [ GeV]")
+    ebeam_energy_user_req = Cpt(
+        EpicsSignalRO, "SIOC:SYS0:ML01:CALC036", kind="normal", doc="Beam energy request from Users [GeV]"
+    )
+    bunch_length = Cpt(
+        EpicsSignalRO, "SIOC:SYS0:ML00:AO820", kind="normal", doc="estimated FEL Pulse Duration (FWHM) [fs]"
+    )
+    bc2_peak_current = Cpt(EpicsSignalRO, "SIOC:SYS0:ML00:AO195", kind="normal", doc="Peak current after BC2 [A]")
+    eloss_energy = Cpt(EpicsSignalRO, "PHYS:SYS0:1:ELOSSENERGY", kind="normal", doc="Last Eloss sxray energy [mJ]")
+    vernier_energy = Cpt(
+        EpicsSignalRO, "FBCK:FB04:LG01:DL2VERNIER", kind="normal", doc="Fast Feedback 6x6 Vernier [MeV]"
+    )
+    photon_ev_hxr = Cpt(EpicsSignalRO, "SIOC:SYS0:ML00:AO627", kind="normal", doc="Photon eV HXR [eV]")
     # [ 0] Disable [ 1] Enable
-    bykik_abort = Cpt(EpicsSignal, 'IOC:IN20:EV01:BYKIK_ABTACT', kind='normal',
-                      string=True, doc='BYKIK: Abort Active')
-    bykik_period = Cpt(EpicsSignal, 'IOC:IN20:EV01:BYKIK_ABTPRD',
-                       kind='normal', doc='BYKIK: Abort Period [beam shots]')
-    undulator_k_line = Cpt(EpicsSignalRO, 'USEG:UNDS:2650:KAct', kind='normal',
-                           doc='Most upstream undulator K value (K-line)')
-    undulator_l_line = Cpt(EpicsSignalRO, 'USEG:UNDH:1850:KAct', kind='normal',
-                           doc='Most upstream undulator K value (L-line)')
-    fbck_vernier = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:CALC209', kind='normal',
-                       doc='FBCK Vernier [MeV]')
-    dl2_energy = Cpt(EpicsSignalRO, 'FBCK:FB04:LG01:DL2VERNIER', kind='normal',
-                     doc='DL2 Energy [MeV]')
-    vernier_percent_of_bend_energy = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML01:AO151',
-                                         kind='normal',
-                                         doc='Vernier Scan Range [%]')
-    vernier_limit = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML01:CALC034', kind='normal',
-                        doc='Vernier Limit [MeV]')
-    vernier_ctrl_with_limits = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML01:CALC033',
-                                   kind='normal',
-                                   doc='Vernier Ctrl w/ limits [MeV]')
-    hard_e_energy = Cpt(EpicsSignalRO, 'BEND:DMPH:400:BDES', kind='normal',
-                        doc='Desired B-Field, Hard e-Energy [GeV/c]')
-    soft_e_energy = Cpt(EpicsSignalRO, 'BEND:DMPS:400:BDES', kind='normal',
-                        doc='Desired B-Field, Soft e-Energy [GeV/c]')
+    bykik_abort = Cpt(EpicsSignal, "IOC:IN20:EV01:BYKIK_ABTACT", kind="normal", string=True, doc="BYKIK: Abort Active")
+    bykik_period = Cpt(EpicsSignal, "IOC:IN20:EV01:BYKIK_ABTPRD", kind="normal", doc="BYKIK: Abort Period [beam shots]")
+    undulator_k_line = Cpt(
+        EpicsSignalRO, "USEG:UNDS:2650:KAct", kind="normal", doc="Most upstream undulator K value (K-line)"
+    )
+    undulator_l_line = Cpt(
+        EpicsSignalRO, "USEG:UNDH:1850:KAct", kind="normal", doc="Most upstream undulator K value (L-line)"
+    )
+    fbck_vernier = Cpt(EpicsSignalRO, "SIOC:SYS0:ML00:CALC209", kind="normal", doc="FBCK Vernier [MeV]")
+    dl2_energy = Cpt(EpicsSignalRO, "FBCK:FB04:LG01:DL2VERNIER", kind="normal", doc="DL2 Energy [MeV]")
+    vernier_percent_of_bend_energy = Cpt(
+        EpicsSignalRO, "SIOC:SYS0:ML01:AO151", kind="normal", doc="Vernier Scan Range [%]"
+    )
+    vernier_limit = Cpt(EpicsSignalRO, "SIOC:SYS0:ML01:CALC034", kind="normal", doc="Vernier Limit [MeV]")
+    vernier_ctrl_with_limits = Cpt(
+        EpicsSignalRO, "SIOC:SYS0:ML01:CALC033", kind="normal", doc="Vernier Ctrl w/ limits [MeV]"
+    )
+    hard_e_energy = Cpt(
+        EpicsSignalRO, "BEND:DMPH:400:BDES", kind="normal", doc="Desired B-Field, Hard e-Energy [GeV/c]"
+    )
+    soft_e_energy = Cpt(
+        EpicsSignalRO, "BEND:DMPS:400:BDES", kind="normal", doc="Desired B-Field, Soft e-Energy [GeV/c]"
+    )
 
     def bykik_status(self):
         """
@@ -303,11 +279,11 @@ class LCLS(BaseInterface, Device):
 
     def bykik_disable(self):
         """Disable bykik abort."""
-        return self.bykik_abort.put(value='Disable')
+        return self.bykik_abort.put(value="Disable")
 
     def bykik_enable(self):
         """Enable bykik abort."""
-        return self.bykik_abort.put(value='Enable')
+        return self.bykik_abort.put(value="Enable")
 
     def bykik_get_period(self):
         """Get the number of events between bykik aborts."""
@@ -323,5 +299,5 @@ class LCLS(BaseInterface, Device):
         """
         return self.bykik_period.put(period)
 
-    def __init__(self, prefix='', name='lcls', **kwargs):
+    def __init__(self, prefix="", name="lcls", **kwargs):
         super().__init__(prefix=prefix, name=name, **kwargs)

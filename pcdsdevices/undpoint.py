@@ -49,9 +49,7 @@ def _put_2d_delta(mds: MultiDerivedSignal, value: tuple[float, float]) -> Signal
     return {mds.signals[0]: -value[0], mds.signals[1]: -value[1]}
 
 
-def coerce_input_to_tuple(
-    position: Union[tuple[float, float], float], ypos: Optional[float]
-) -> tuple[float, float]:
+def coerce_input_to_tuple(position: Union[tuple[float, float], float], ypos: Optional[float]) -> tuple[float, float]:
     """
     Utility to coerce user input like move(3, 4) to move((3, 4))
     """
@@ -303,33 +301,19 @@ class SafeUndPointAbs2D(UndPointAbs2D):
         dx_total, dy_total = self.get_delta_from_abs(target_abs)
 
         # no segmentation requested or unnecessary: do a single absolute move
-        if max_step is None or (
-            abs(dx_total) <= max_step and abs(dy_total) <= max_step
-        ):
-            return super().move(
-                position=target_abs, wait=wait, timeout=timeout, moved_cb=moved_cb
-            )
+        if max_step is None or (abs(dx_total) <= max_step and abs(dy_total) <= max_step):
+            return super().move(position=target_abs, wait=wait, timeout=timeout, moved_cb=moved_cb)
 
         # for segmented moves, we require synchronous execution
         if not wait:
             raise ValueError("Safe chunked move requires wait=True.")
 
         # determine number of equal segments so each per-axis step magnitude <= max_step
-        n_x = (
-            int(math.ceil(abs(dx_total) / max_step))
-            if max_step and abs(dx_total) > 0
-            else 1
-        )
-        n_y = (
-            int(math.ceil(abs(dy_total) / max_step))
-            if max_step and abs(dy_total) > 0
-            else 1
-        )
+        n_x = int(math.ceil(abs(dx_total) / max_step)) if max_step and abs(dx_total) > 0 else 1
+        n_y = int(math.ceil(abs(dy_total) / max_step)) if max_step and abs(dy_total) > 0 else 1
         n_steps = max(n_x, n_y, 1)
         if n_steps == 1:
-            return super().move(
-                position=target_abs, wait=wait, timeout=timeout, moved_cb=moved_cb
-            )
+            return super().move(position=target_abs, wait=wait, timeout=timeout, moved_cb=moved_cb)
 
         # compute equal-sized steps for each axis
         step_x = dx_total / n_steps
@@ -344,9 +328,7 @@ class SafeUndPointAbs2D(UndPointAbs2D):
                 move_dx, move_dy = float(corr_x), float(corr_y)
             else:
                 move_dx, move_dy = float(step_x), float(step_y)
-            last_status = self.delta_xy.move(
-                (move_dx, move_dy), wait=True, timeout=timeout
-            )
+            last_status = self.delta_xy.move((move_dx, move_dy), wait=True, timeout=timeout)
             # sleep between moves to allow motors to settle
             if sleep_between > 0:
                 time.sleep(sleep_between)
@@ -438,4 +420,5 @@ class SafeUndPointAbs2DSim(UndPointAbs2DSim, SafeUndPointAbs2D):
     """
     Test version of the segmented moving logic using no PVs
     """
+
     ...

@@ -4,6 +4,7 @@ PCDS detectors and overrides for ophyd detectors.
 All components at the detector level such as plugins or image processing
 functions needed by all instances of a detector are added here.
 """
+
 import logging
 import shutil
 import subprocess
@@ -21,22 +22,32 @@ from pcdsutils.ext_scripts import get_hutch_name
 
 from pcdsdevices.variety import set_metadata
 
-from .plugins import (ColorConvPlugin, HDF5FileStore, HDF5Plugin, ImagePlugin,
-                      JPEGPlugin, NetCDFPlugin, NexusPlugin, OverlayPlugin,
-                      ProcessPlugin, ROIPlugin, StatsPlugin, TIFFPlugin,
-                      TransformPlugin)
+from .plugins import (
+    ColorConvPlugin,
+    HDF5FileStore,
+    HDF5Plugin,
+    ImagePlugin,
+    JPEGPlugin,
+    NetCDFPlugin,
+    NexusPlugin,
+    OverlayPlugin,
+    ProcessPlugin,
+    ROIPlugin,
+    StatsPlugin,
+    TIFFPlugin,
+    TransformPlugin,
+)
 
 logger = logging.getLogger(__name__)
 
 
-__all__ = ['PCDSAreaDetectorBase',
-           'PCDSAreaDetectorEmbedded',
-           'PCDSAreaDetector']
+__all__ = ["PCDSAreaDetectorBase", "PCDSAreaDetectorEmbedded", "PCDSAreaDetector"]
 
 
 class PCDSAreaDetectorBase(DetectorBase):
     """Standard area detector with no plugins."""
-    cam = ADComponent(cam.CamBase, '')
+
+    cam = ADComponent(cam.CamBase, "")
 
     def get_plugin_graph_edges(self, *, use_names=True, include_cam=False):
         """
@@ -55,11 +66,9 @@ class PCDSAreaDetectorBase(DetectorBase):
 
         cam_port = self.cam.port_name.get()
         graph, port_map = self.get_asyn_digraph()
-        port_edges = [(src, dest) for src, dest in graph.edges
-                      if src != cam_port or include_cam]
+        port_edges = [(src, dest) for src, dest in graph.edges if src != cam_port or include_cam]
         if use_names:
-            port_edges = [(port_map[src].name, port_map[dest].name)
-                          for src, dest in port_edges]
+            port_edges = [(port_map[src].name, port_map[dest].name) for src, dest in port_edges]
         return port_edges
 
     def screen(self, main: bool = False) -> None:
@@ -72,21 +81,21 @@ class PCDSAreaDetectorBase(DetectorBase):
             Set to True to bring up 'main' edm config screen.
             Defaults to False, which opens python viewer.
         """
-        if not shutil.which('camViewer'):
-            logger.error('no camViewer available')
+        if not shutil.which("camViewer"):
+            logger.error("no camViewer available")
             return
 
         arglist = [
-            'camViewer',
-            '-H',
+            "camViewer",
+            "-H",
             str(get_hutch_name()).lower(),
-            '-c',
+            "-c",
             self.name,
         ]
         if main:
-            arglist.append('-m')
+            arglist.append("-m")
 
-        logger.info('starting camviewer')
+        logger.info("starting camviewer")
         subprocess.run(arglist, check=False)
 
 
@@ -151,12 +160,9 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
     name : ``str``, keyword-only
         A name to associate with the camera for bluesky.
     """
+
     hdf51 = ADComponent(
-        HDF5FileStore,
-        'HDF51:',
-        write_path_template='/dev/null',
-        kind='normal',
-        doc='Save output as an HDF5 file'
+        HDF5FileStore, "HDF51:", write_path_template="/dev/null", kind="normal", doc="Save output as an HDF5 file"
     )
 
     def __init__(
@@ -171,22 +177,22 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         self.always_acquire = always_acquire
         self.num_images_per_point = 1
         self.hdf51.write_path_template = write_path
-        self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
-        self.hdf51.stage_sigs['file_write_mode'] = 'Stream'
+        self.hdf51.stage_sigs["file_template"] = "%s%s_%03d.h5"
+        self.hdf51.stage_sigs["file_write_mode"] = "Stream"
         del self.hdf51.stage_sigs["capture"]
         if always_acquire:
             # This mode is "acquire always, capture on trigger"
             # Override the default to Continuous, always go
-            self.stage_sigs['cam.acquire'] = 1
-            self.stage_sigs['cam.image_mode'] = 2
+            self.stage_sigs["cam.acquire"] = 1
+            self.stage_sigs["cam.image_mode"] = 2
             # Make sure we toggle capture for trigger
             self._acquisition_signal = self.hdf51.capture
         else:
             # This mode is "acquire on trigger, capture always"
             # Confirm default of Multiple, start off
             # Redundantly set these here for code clarity
-            self.stage_sigs['cam.acquire'] = 0
-            self.stage_sigs['cam.image_mode'] = 1
+            self.stage_sigs["cam.acquire"] = 0
+            self.stage_sigs["cam.image_mode"] = 1
             # If we include capture in stage, it must be last
             self.hdf51.stage_sigs["capture"] = 1
             # Ensure we use the cam acquire as the trigger
@@ -210,17 +216,17 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         The number of images to save at each point in the scan.
         """
         if self.always_acquire:
-            return self.cam.stage_sigs['num_images']
-        return self.hdf51.stage_sigs['num_capture']
+            return self.cam.stage_sigs["num_images"]
+        return self.hdf51.stage_sigs["num_capture"]
 
     @num_images_per_point.setter
     def num_images_per_point(self, num_images: int):
         if self.always_acquire:
-            self.hdf51.stage_sigs['num_capture'] = num_images
-            self.cam.stage_sigs['num_images'] = 1
+            self.hdf51.stage_sigs["num_capture"] = num_images
+            self.cam.stage_sigs["num_images"] = 1
         else:
-            self.hdf51.stage_sigs['num_capture'] = 0
-            self.cam.stage_sigs['num_images'] = num_images
+            self.hdf51.stage_sigs["num_capture"] = 0
+            self.cam.stage_sigs["num_images"] = num_images
 
     def save_images(self) -> None:
         """
@@ -241,17 +247,14 @@ class PCDSAreaDetectorEmbedded(PCDSAreaDetectorBase):
         HDF51: hdf5 files.
     """
 
-    image2 = Cpt(ImagePlugin, 'IMAGE2:', kind='normal',
-                 doc='Image plugin used for the camera viewer')
-    stats2 = Cpt(StatsPlugin, 'Stats2:', kind='normal',
-                 doc='Stats plugin used for alignments')
-    hdf51 = Cpt(HDF5Plugin, 'HDF51:', kind='normal',
-                doc='HDF5 plugin used to create HDF5 files')
+    image2 = Cpt(ImagePlugin, "IMAGE2:", kind="normal", doc="Image plugin used for the camera viewer")
+    stats2 = Cpt(StatsPlugin, "Stats2:", kind="normal", doc="Stats plugin used for alignments")
+    hdf51 = Cpt(HDF5Plugin, "HDF51:", kind="normal", doc="HDF5 plugin used to create HDF5 files")
 
     def get_full_area_detector(self):
         if isinstance(self, PCDSAreaDetector):
             return self
-        return PCDSAreaDetector(self.prefix, name=self.name + '_full')
+        return PCDSAreaDetector(self.prefix, name=self.name + "_full")
 
 
 class PCDSAreaDetector(PCDSAreaDetectorEmbedded):
@@ -308,40 +311,40 @@ class PCDSAreaDetector(PCDSAreaDetectorEmbedded):
     detector.
     """
 
-    image1 = Cpt(ImagePlugin, 'IMAGE1:')
-    image1_roi = Cpt(ROIPlugin, 'IMAGE1:ROI:')
-    image1_cc = Cpt(ColorConvPlugin, 'IMAGE1:CC:')
-    image1_proc = Cpt(ProcessPlugin, 'IMAGE1:Proc:')
-    image1_over = Cpt(OverlayPlugin, 'IMAGE1:Over:')
+    image1 = Cpt(ImagePlugin, "IMAGE1:")
+    image1_roi = Cpt(ROIPlugin, "IMAGE1:ROI:")
+    image1_cc = Cpt(ColorConvPlugin, "IMAGE1:CC:")
+    image1_proc = Cpt(ProcessPlugin, "IMAGE1:Proc:")
+    image1_over = Cpt(OverlayPlugin, "IMAGE1:Over:")
     # image2 in parent
-    image2_roi = Cpt(ROIPlugin, 'IMAGE2:ROI:')
-    image2_cc = Cpt(ColorConvPlugin, 'IMAGE2:CC:')
-    image2_proc = Cpt(ProcessPlugin, 'IMAGE2:Proc:')
-    image2_over = Cpt(OverlayPlugin, 'IMAGE2:Over:')
-    thumbnail = Cpt(ImagePlugin, 'THUMBNAIL:')
-    thumbnail_roi = Cpt(ROIPlugin, 'THUMBNAIL:ROI:')
-    thumbnail_cc = Cpt(ColorConvPlugin, 'THUMBNAIL:CC:')
-    thumbnail_proc = Cpt(ProcessPlugin, 'THUMBNAIL:Proc:')
-    thumbnail_over = Cpt(OverlayPlugin, 'THUMBNAIL:Over:')
-    cc1 = Cpt(ColorConvPlugin, 'CC1:')
-    cc2 = Cpt(ColorConvPlugin, 'CC2:')
-    hdf51 = Cpt(HDF5Plugin, 'HDF51:')
-    jpeg1 = Cpt(JPEGPlugin, 'JPEG1:')
-    netcdf1 = Cpt(NetCDFPlugin, 'NetCDF1:')
-    nexus1 = Cpt(NexusPlugin, 'Nexus1:')
-    over1 = Cpt(OverlayPlugin, 'Over1:')
-    proc1 = Cpt(ProcessPlugin, 'Proc1:')
-    roi1 = Cpt(ROIPlugin, 'ROI1:')
-    roi2 = Cpt(ROIPlugin, 'ROI2:')
-    roi3 = Cpt(ROIPlugin, 'ROI3:')
-    roi4 = Cpt(ROIPlugin, 'ROI4:')
-    stats1 = Cpt(StatsPlugin, 'Stats1:')
+    image2_roi = Cpt(ROIPlugin, "IMAGE2:ROI:")
+    image2_cc = Cpt(ColorConvPlugin, "IMAGE2:CC:")
+    image2_proc = Cpt(ProcessPlugin, "IMAGE2:Proc:")
+    image2_over = Cpt(OverlayPlugin, "IMAGE2:Over:")
+    thumbnail = Cpt(ImagePlugin, "THUMBNAIL:")
+    thumbnail_roi = Cpt(ROIPlugin, "THUMBNAIL:ROI:")
+    thumbnail_cc = Cpt(ColorConvPlugin, "THUMBNAIL:CC:")
+    thumbnail_proc = Cpt(ProcessPlugin, "THUMBNAIL:Proc:")
+    thumbnail_over = Cpt(OverlayPlugin, "THUMBNAIL:Over:")
+    cc1 = Cpt(ColorConvPlugin, "CC1:")
+    cc2 = Cpt(ColorConvPlugin, "CC2:")
+    hdf51 = Cpt(HDF5Plugin, "HDF51:")
+    jpeg1 = Cpt(JPEGPlugin, "JPEG1:")
+    netcdf1 = Cpt(NetCDFPlugin, "NetCDF1:")
+    nexus1 = Cpt(NexusPlugin, "Nexus1:")
+    over1 = Cpt(OverlayPlugin, "Over1:")
+    proc1 = Cpt(ProcessPlugin, "Proc1:")
+    roi1 = Cpt(ROIPlugin, "ROI1:")
+    roi2 = Cpt(ROIPlugin, "ROI2:")
+    roi3 = Cpt(ROIPlugin, "ROI3:")
+    roi4 = Cpt(ROIPlugin, "ROI4:")
+    stats1 = Cpt(StatsPlugin, "Stats1:")
     # stats2 in parent
-    stats3 = Cpt(StatsPlugin, 'Stats3:')
-    stats4 = Cpt(StatsPlugin, 'Stats4:')
-    stats5 = Cpt(StatsPlugin, 'Stats5:')
-    tiff1 = Cpt(TIFFPlugin, 'TIFF1:')
-    trans1 = Cpt(TransformPlugin, 'Trans1:')
+    stats3 = Cpt(StatsPlugin, "Stats3:")
+    stats4 = Cpt(StatsPlugin, "Stats4:")
+    stats5 = Cpt(StatsPlugin, "Stats5:")
+    tiff1 = Cpt(TIFFPlugin, "TIFF1:")
+    trans1 = Cpt(TransformPlugin, "Trans1:")
 
 
 class PCDSAreaDetectorTyphos(Device):
@@ -352,62 +355,63 @@ class PCDSAreaDetectorTyphos(Device):
     """
 
     # Status and specifications
-    manufacturer = Cpt(EpicsSignalRO, 'Manufacturer_RBV', kind='config')
-    camera_model = Cpt(EpicsSignalRO, 'Model_RBV', kind='normal')
-    sensor_size_x = Cpt(EpicsSignalRO, 'MaxSizeX_RBV', kind='config')
-    sensor_size_y = Cpt(EpicsSignalRO, 'MaxSizeY_RBV', kind='config')
-    data_type = Cpt(EpicsSignalWithRBV, 'DataType', kind='config')
+    manufacturer = Cpt(EpicsSignalRO, "Manufacturer_RBV", kind="config")
+    camera_model = Cpt(EpicsSignalRO, "Model_RBV", kind="normal")
+    sensor_size_x = Cpt(EpicsSignalRO, "MaxSizeX_RBV", kind="config")
+    sensor_size_y = Cpt(EpicsSignalRO, "MaxSizeY_RBV", kind="config")
+    data_type = Cpt(EpicsSignalWithRBV, "DataType", kind="config")
 
     # Acquisition settings
-    exposure = Cpt(EpicsSignalWithRBV, 'AcquireTime', kind='config')
-    gain = Cpt(EpicsSignalWithRBV, 'Gain', kind='config')
-    num_images = Cpt(EpicsSignalWithRBV, 'NumImages', kind='config')
-    image_mode = Cpt(EpicsSignalWithRBV, 'ImageMode', kind='config')
-    trigger_mode = Cpt(EpicsSignalWithRBV, 'TriggerMode', kind='config')
-    acquisition_period = Cpt(EpicsSignalWithRBV, 'AcquirePeriod', kind='config')
-    bin_x = Cpt(EpicsSignalWithRBV, 'BinX', kind='config')
-    bin_y = Cpt(EpicsSignalWithRBV, 'BinY', kind='config')
-    region_start_x = Cpt(EpicsSignalWithRBV, 'MinX', kind='config')
-    region_size_x = Cpt(EpicsSignalWithRBV, 'SizeX', kind='config')
-    region_start_y = Cpt(EpicsSignalWithRBV, 'MinY', kind='config')
-    region_size_y = Cpt(EpicsSignalWithRBV, 'SizeY', kind='config')
+    exposure = Cpt(EpicsSignalWithRBV, "AcquireTime", kind="config")
+    gain = Cpt(EpicsSignalWithRBV, "Gain", kind="config")
+    num_images = Cpt(EpicsSignalWithRBV, "NumImages", kind="config")
+    image_mode = Cpt(EpicsSignalWithRBV, "ImageMode", kind="config")
+    trigger_mode = Cpt(EpicsSignalWithRBV, "TriggerMode", kind="config")
+    acquisition_period = Cpt(EpicsSignalWithRBV, "AcquirePeriod", kind="config")
+    bin_x = Cpt(EpicsSignalWithRBV, "BinX", kind="config")
+    bin_y = Cpt(EpicsSignalWithRBV, "BinY", kind="config")
+    region_start_x = Cpt(EpicsSignalWithRBV, "MinX", kind="config")
+    region_size_x = Cpt(EpicsSignalWithRBV, "SizeX", kind="config")
+    region_start_y = Cpt(EpicsSignalWithRBV, "MinY", kind="config")
+    region_size_y = Cpt(EpicsSignalWithRBV, "SizeY", kind="config")
 
     # Image collection settings
-    acquire = Cpt(EpicsSignal, 'Acquire', kind='normal')
-    acquire_rbv = Cpt(EpicsSignalRO, 'DetectorState_RBV', kind='normal')
-    image_counter = Cpt(EpicsSignalRO, 'NumImagesCounter_RBV', kind='normal')
+    acquire = Cpt(EpicsSignal, "Acquire", kind="normal")
+    acquire_rbv = Cpt(EpicsSignalRO, "DetectorState_RBV", kind="normal")
+    image_counter = Cpt(EpicsSignalRO, "NumImagesCounter_RBV", kind="normal")
 
     # TJ: removing from the class for now. May be useful later.
     # Image data
-#    ndimensions = Cpt(EpicsSignalRO, 'IMAGE2:NDimensions_RBV', kind='omitted')
-#    width = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize0_RBV', kind='omitted')
-#    height = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize1_RBV', kind='omitted')
-#    depth = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize2_RBV', kind='omitted')
-#    array_data = Cpt(EpicsSignal, 'IMAGE2:ArrayData', kind='omitted')
-#    cam_image = Cpt(NDDerivedSignal, derived_from='array_data',
-#                    shape=('height',
-#                           'width',
-#                           'depth'),
-#                    num_dimensions='ndimensions',
-#                    kind='normal')
+    #    ndimensions = Cpt(EpicsSignalRO, 'IMAGE2:NDimensions_RBV', kind='omitted')
+    #    width = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize0_RBV', kind='omitted')
+    #    height = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize1_RBV', kind='omitted')
+    #    depth = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize2_RBV', kind='omitted')
+    #    array_data = Cpt(EpicsSignal, 'IMAGE2:ArrayData', kind='omitted')
+    #    cam_image = Cpt(NDDerivedSignal, derived_from='array_data',
+    #                    shape=('height',
+    #                           'width',
+    #                           'depth'),
+    #                    num_dimensions='ndimensions',
+    #                    kind='normal')
 
     def open_viewer(self):
         """
         Launch the python camera viewer for this camera.
         """
-        arglist = ['/reg/g/pcds/pyps/apps/camviewer/latest/run_viewer.sh',
-                   '--instrument',
-                   '{}.format(get_hutch_name())',
-                   '--oneline',
-                   'GE:16,{0}:IMAGE1;{0},,{0}'.format(self.prefix[0:-1])]
+        arglist = [
+            "/reg/g/pcds/pyps/apps/camviewer/latest/run_viewer.sh",
+            "--instrument",
+            "{}.format(get_hutch_name())",
+            "--oneline",
+            "GE:16,{0}:IMAGE1;{0},,{0}".format(self.prefix[0:-1]),
+        ]
 
-        self.log.info('Opening python viewer for camera...')
-        subprocess.run(arglist, stdout=subprocess.DEVNULL,
-                       stderr=subprocess.DEVNULL, check=True)
+        self.log.info("Opening python viewer for camera...")
+        subprocess.run(arglist, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
     # Make viewer available in Typhos screen
-    cam_viewer = Cpt(AttributeSignal, attr='_open_screen', kind='normal')
-    set_metadata(cam_viewer, dict(variety='command-proc', value=1))
+    cam_viewer = Cpt(AttributeSignal, attr="_open_screen", kind="normal")
+    set_metadata(cam_viewer, dict(variety="command-proc", value=1))
 
     @property
     def _open_screen(self):
@@ -418,7 +422,7 @@ class PCDSAreaDetectorTyphos(Device):
         self.open_viewer()
 
     def screen(self):
-        """ Lean on open_viewer method """
+        """Lean on open_viewer method"""
         self.open_viewer()
 
 
@@ -427,12 +431,15 @@ class PCDSAreaDetectorTyphosTrigger(PCDSAreaDetectorTyphos):
     Expanded typhos-optimized areadetector class for cameras with triggers.
     """
 
-    event_code = Cpt(EpicsSignalWithRBV, 'CamEventCode', kind='config',
-                     doc='Code to determine beam synchronization rate.')
-    event_rate = Cpt(EpicsSignalRO, 'CamRepRate_RBV', kind='config',
-                     doc='Current rate of the incoming triggers. '
-                         'Determined by event_code and the '
-                         'accelerator state.')
+    event_code = Cpt(
+        EpicsSignalWithRBV, "CamEventCode", kind="config", doc="Code to determine beam synchronization rate."
+    )
+    event_rate = Cpt(
+        EpicsSignalRO,
+        "CamRepRate_RBV",
+        kind="config",
+        doc="Current rate of the incoming triggers. Determined by event_code and the accelerator state.",
+    )
 
 
 class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphosTrigger):
@@ -442,19 +449,17 @@ class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphosTrigger):
     """
 
     # Stats2 PVs
-    stats_enable = Cpt(EpicsSignalWithRBV, 'Stats2:EnableCallbacks',
-                       kind='config')
-    centroid_x = Cpt(EpicsSignalRO, 'Stats2:CentroidX_RBV', kind='normal')
-    centroid_y = Cpt(EpicsSignalRO, 'Stats2:CentroidY_RBV', kind='normal')
-    sigma_x = Cpt(EpicsSignalRO, 'Stats2:SigmaX_RBV', kind='normal')
-    sigma_y = Cpt(EpicsSignalRO, 'Stats2:SigmaY_RBV', kind='normal')
-    centroid_threshold = Cpt(EpicsSignalWithRBV, 'Stats2:CentroidThreshold',
-                             kind='config')
-    centroid_enable = Cpt(EpicsSignal, 'Stats2:ComputeCentroid', kind='config')
+    stats_enable = Cpt(EpicsSignalWithRBV, "Stats2:EnableCallbacks", kind="config")
+    centroid_x = Cpt(EpicsSignalRO, "Stats2:CentroidX_RBV", kind="normal")
+    centroid_y = Cpt(EpicsSignalRO, "Stats2:CentroidY_RBV", kind="normal")
+    sigma_x = Cpt(EpicsSignalRO, "Stats2:SigmaX_RBV", kind="normal")
+    sigma_y = Cpt(EpicsSignalRO, "Stats2:SigmaY_RBV", kind="normal")
+    centroid_threshold = Cpt(EpicsSignalWithRBV, "Stats2:CentroidThreshold", kind="config")
+    centroid_enable = Cpt(EpicsSignal, "Stats2:ComputeCentroid", kind="config")
 
     # Cross PVs
-    target_x = Cpt(EpicsSignalWithRBV, 'Cross4:MinX', kind='normal')
-    target_y = Cpt(EpicsSignalWithRBV, 'Cross4:MinY', kind='normal')
+    target_x = Cpt(EpicsSignalWithRBV, "Cross4:MinX", kind="normal")
+    target_y = Cpt(EpicsSignalWithRBV, "Cross4:MinY", kind="normal")
 
 
 class BaslerBase(Device):
@@ -462,13 +467,17 @@ class BaslerBase(Device):
     Base class with Basler specific PVs. Intended to be sub-classed, not used
     stand-alone.
     """
-    reset = Cpt(EpicsSignal, 'RESET.PROC', kind='config', doc='Reset the camera')
-    set_metadata(reset, dict(variety='command-proc', value=1))
-    packet_size = Cpt(EpicsSignal, 'GevSCPSPacketSiz_RBV',
-                      write_pv='GevSCPSPacketSiz', kind='config',
-                      doc='Set Ethernet Packet Size (typ. 9000)')
-    enet_bw = Cpt(EpicsSignalRO, 'GevSCDCT_RBV', kind='config',
-                  doc='Current Ethernet bandwidth')
+
+    reset = Cpt(EpicsSignal, "RESET.PROC", kind="config", doc="Reset the camera")
+    set_metadata(reset, dict(variety="command-proc", value=1))
+    packet_size = Cpt(
+        EpicsSignal,
+        "GevSCPSPacketSiz_RBV",
+        write_pv="GevSCPSPacketSiz",
+        kind="config",
+        doc="Set Ethernet Packet Size (typ. 9000)",
+    )
+    enet_bw = Cpt(EpicsSignalRO, "GevSCDCT_RBV", kind="config", doc="Current Ethernet bandwidth")
 
 
 # Typical "hutch" Basler class
@@ -480,6 +489,7 @@ class Basler(PCDSAreaDetectorTyphosTrigger, BaslerBase):
     :class:`LasBasler`
         Basler camera with additional laser-specific entries.
     """
+
     pass
 
 
@@ -487,12 +497,13 @@ class LasBasler(PCDSAreaDetectorTyphosBeamStats, BaslerBase):
     """
     Class for the Basler cameras used in the laser control system.
     """
+
     # Configuration dictionary for camera
     _conf_d = {}
 
     # Make button available in Typhos screen
-    auto_configure = Cpt(AttributeSignal, attr='_auto_configure', kind='normal')
-    set_metadata(auto_configure, dict(variety='command-proc', value=1))
+    auto_configure = Cpt(AttributeSignal, attr="_auto_configure", kind="normal")
+    set_metadata(auto_configure, dict(variety="command-proc", value=1))
 
     @property
     def _auto_configure(self):
@@ -503,77 +514,104 @@ class LasBasler(PCDSAreaDetectorTyphosBeamStats, BaslerBase):
         self.configure(self._conf_d)
 
     # Handle UserPresets configuration
-    default_setting = Cpt(EpicsSignal, 'UserSetDefaultSe_RBV', write_pv='UserSetDefaultSe',
-                          kind='config',
-                          doc='Default User Set to use on startup. See UserSetSelector'
-                          ' for more options')
-    user_setting = Cpt(EpicsSignal, 'UserSetSelector_RBV', write_pv='UserSetSelector',
-                       kind='config',
-                       doc='Current User Set to save/load')
-    save_setting = Cpt(EpicsSignal, 'UserSetSave.PROC', kind='config',
-                       doc='Save current settings into selected User Set')
-    set_metadata(save_setting, dict(variety='command-proc', value=1))
-    load_setting = Cpt(EpicsSignal, 'UserSetLoad.PROC', kind='config',
-                       doc='Load current settings into selected User Set')
-    set_metadata(load_setting, dict(variety='command-proc', value=1))
+    default_setting = Cpt(
+        EpicsSignal,
+        "UserSetDefaultSe_RBV",
+        write_pv="UserSetDefaultSe",
+        kind="config",
+        doc="Default User Set to use on startup. See UserSetSelector for more options",
+    )
+    user_setting = Cpt(
+        EpicsSignal,
+        "UserSetSelector_RBV",
+        write_pv="UserSetSelector",
+        kind="config",
+        doc="Current User Set to save/load",
+    )
+    save_setting = Cpt(
+        EpicsSignal, "UserSetSave.PROC", kind="config", doc="Save current settings into selected User Set"
+    )
+    set_metadata(save_setting, dict(variety="command-proc", value=1))
+    load_setting = Cpt(
+        EpicsSignal, "UserSetLoad.PROC", kind="config", doc="Load current settings into selected User Set"
+    )
+    set_metadata(load_setting, dict(variety="command-proc", value=1))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Add some long_names
-        self.reset.long_name = 'Reset'
-        self.packet_size.long_name = 'Packet Size'
-        self.enet_bw.long_name = 'eNet Bandwidth'
-        self.manufacturer.long_name = 'Manufacturer'
-        self.camera_model.long_name = 'Camera Model'
-        self.sensor_size_x.long_name = 'Sensor Size (X)'
-        self.sensor_size_y.long_name = 'Sensor Size (Y)'
-        self.data_type.long_name = 'Data Type'
-        self.exposure.long_name = 'Exposure (s)'
-        self.gain.long_name = 'Gain'
-        self.num_images.long_name = 'Number of Images'
-        self.image_mode.long_name = 'Image Mode'
-        self.trigger_mode.long_name = 'Trigger Mode'
-        self.acquisition_period.long_name = 'Acquisition Period'
-        self.bin_x.long_name = 'Software Bin X'
-        self.bin_y.long_name = 'Software Bin Y'
-        self.region_start_x.long_name = 'Region Start (X)'
-        self.region_size_x.long_name = 'Region Size (X)'
-        self.region_start_y.long_name = 'Region Start (Y)'
-        self.region_size_y.long_name = 'Region Size (Y)'
-        self.acquire.long_name = 'Set Acquire'
-        self.acquire_rbv.long_name = 'Acquire State'
-        self.image_counter.long_name = 'Image Counter'
-        self.event_code.long_name = 'Event Code'
-        self.event_rate.long_name = 'Event Rate'
-        self.stats_enable.long_name = 'Enable Stats'
-        self.centroid_x.long_name = 'Centroid (X)'
-        self.centroid_y.long_name = 'Centroid (Y)'
-        self.sigma_x.long_name = 'Sigma (X)'
-        self.sigma_y.long_name = 'Sigma (Y)'
-        self.centroid_threshold.long_name = 'Centroid Threshold'
-        self.centroid_enable.long_name = 'Enable Centroid'
-        self.target_x.long_name = 'Target X'
-        self.target_y.long_name = 'Target Y'
-        self.auto_configure.long_name = 'Auto-configure'
-        self.default_setting.long_name = 'Default Preset'
-        self.user_setting.long_name = 'Current User Set'
-        self.save_setting.long_name = 'Save User Set'
-        self.load_setting.long_name = 'Load User Set'
+        self.reset.long_name = "Reset"
+        self.packet_size.long_name = "Packet Size"
+        self.enet_bw.long_name = "eNet Bandwidth"
+        self.manufacturer.long_name = "Manufacturer"
+        self.camera_model.long_name = "Camera Model"
+        self.sensor_size_x.long_name = "Sensor Size (X)"
+        self.sensor_size_y.long_name = "Sensor Size (Y)"
+        self.data_type.long_name = "Data Type"
+        self.exposure.long_name = "Exposure (s)"
+        self.gain.long_name = "Gain"
+        self.num_images.long_name = "Number of Images"
+        self.image_mode.long_name = "Image Mode"
+        self.trigger_mode.long_name = "Trigger Mode"
+        self.acquisition_period.long_name = "Acquisition Period"
+        self.bin_x.long_name = "Software Bin X"
+        self.bin_y.long_name = "Software Bin Y"
+        self.region_start_x.long_name = "Region Start (X)"
+        self.region_size_x.long_name = "Region Size (X)"
+        self.region_start_y.long_name = "Region Start (Y)"
+        self.region_size_y.long_name = "Region Size (Y)"
+        self.acquire.long_name = "Set Acquire"
+        self.acquire_rbv.long_name = "Acquire State"
+        self.image_counter.long_name = "Image Counter"
+        self.event_code.long_name = "Event Code"
+        self.event_rate.long_name = "Event Rate"
+        self.stats_enable.long_name = "Enable Stats"
+        self.centroid_x.long_name = "Centroid (X)"
+        self.centroid_y.long_name = "Centroid (Y)"
+        self.sigma_x.long_name = "Sigma (X)"
+        self.sigma_y.long_name = "Sigma (Y)"
+        self.centroid_threshold.long_name = "Centroid Threshold"
+        self.centroid_enable.long_name = "Enable Centroid"
+        self.target_x.long_name = "Target X"
+        self.target_y.long_name = "Target Y"
+        self.auto_configure.long_name = "Auto-configure"
+        self.default_setting.long_name = "Default Preset"
+        self.user_setting.long_name = "Current User Set"
+        self.save_setting.long_name = "Save User Set"
+        self.load_setting.long_name = "Load User Set"
 
 
 class LasBaslerNF(LasBasler):
     """
     Class for the near-field Basler cameras used in the laser control system.
     """
-    _conf_d = {'data_type': 1, 'exposure': 0.005, 'trigger_mode': 0,
-               'acquisition_period': 0.5, 'centroid_enable': 1, 'bin_x': 2,
-               'bin_y': 2, 'stats_enable': 1, 'centroid_threshold': 1000}
+
+    _conf_d = {
+        "data_type": 1,
+        "exposure": 0.005,
+        "trigger_mode": 0,
+        "acquisition_period": 0.5,
+        "centroid_enable": 1,
+        "bin_x": 2,
+        "bin_y": 2,
+        "stats_enable": 1,
+        "centroid_threshold": 1000,
+    }
 
 
 class LasBaslerFF(LasBasler):
     """
     Class for the far-field Basler cameras used in the laser control system.
     """
-    _conf_d = {'data_type': 1, 'exposure': 0.010, 'trigger_mode': 0,
-               'acquisition_period': 0.5, 'centroid_enable': 1, 'bin_x': 1,
-               'bin_y': 1, 'stats_enable': 1, 'centroid_threshold': 50}
+
+    _conf_d = {
+        "data_type": 1,
+        "exposure": 0.010,
+        "trigger_mode": 0,
+        "acquisition_period": 0.5,
+        "centroid_enable": 1,
+        "bin_x": 1,
+        "bin_y": 1,
+        "stats_enable": 1,
+        "centroid_threshold": 50,
+    }

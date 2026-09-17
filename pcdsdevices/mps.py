@@ -5,6 +5,7 @@ These communicate with ACR via a single bit summary.
 The results of these are published over EPICS and
 interpreted by :class:`.MPS`.
 """
+
 import logging
 
 from ophyd import Component as Cpt
@@ -32,9 +33,9 @@ class MPSBase(BaseInterface):
     """
 
     # Subscription information
-    SUB_FAULT_CH = 'sub_mps_faulted'
+    SUB_FAULT_CH = "sub_mps_faulted"
     _default_sub = SUB_FAULT_CH
-    tab_whitelist = ['tripped']
+    tab_whitelist = ["tripped"]
 
     def __init__(self, *args, veto=False, **kwargs):
         self.veto_capable = veto
@@ -71,7 +72,7 @@ class MPSBase(BaseInterface):
 
     def _fault_change(self, *args, **kwargs):
         """Callback when the state of the MPS bit has changed."""
-        kwargs.pop('sub_type', None)
+        kwargs.pop("sub_type", None)
         self._run_subs(sub_type=self.SUB_FAULT_CH, **kwargs)
 
 
@@ -104,10 +105,10 @@ class MPS(MPSBase, Device):
     """
 
     # Signals
-    fault = Cpt(EpicsSignalRO, '_MPSC', kind='hinted')
-    bypass = Cpt(EpicsSignal, '_BYPS', kind='config')
+    fault = Cpt(EpicsSignalRO, "_MPSC", kind="hinted")
+    bypass = Cpt(EpicsSignal, "_BYPS", kind="config")
 
-    tab_whitelist = ['faulted', 'bypassed']
+    tab_whitelist = ["faulted", "bypassed"]
 
     @property
     def faulted(self):
@@ -156,7 +157,7 @@ def mps_factory(clsname, cls, *args, mps_prefix, veto=False, **kwargs):
         Passed to device constructor.
     """
     comp = FCpt(MPS, mps_prefix, veto=veto)
-    cls = type(clsname, (cls,), {'mps': comp})
+    cls = type(clsname, (cls,), {"mps": comp})
     return cls(*args, **kwargs)
 
 
@@ -235,8 +236,8 @@ class MPSLimits(MPSBase, Device):
     """
 
     # Individual limits
-    in_limit = Cpt(MPS, '_IN', kind='normal')
-    out_limit = Cpt(MPS, '_OUT', kind='normal')
+    in_limit = Cpt(MPS, "_IN", kind="normal")
+    out_limit = Cpt(MPS, "_OUT", kind="normal")
 
     def __init__(self, prefix, logic, **kwargs):
         self.logic = logic
@@ -256,7 +257,5 @@ class MPSLimits(MPSBase, Device):
         return self.in_limit.bypassed or self.out_limit.bypassed
 
     def _sub_to_children(self):
-        self.in_limit.subscribe(self._fault_change,
-                                event_type=self.in_limit.SUB_FAULT_CH)
-        self.out_limit.subscribe(self._fault_change,
-                                 event_type=self.out_limit.SUB_FAULT_CH)
+        self.in_limit.subscribe(self._fault_change, event_type=self.in_limit.SUB_FAULT_CH)
+        self.out_limit.subscribe(self._fault_change, event_type=self.out_limit.SUB_FAULT_CH)

@@ -2,7 +2,6 @@
 Classes for ThorLabs Elliptec motors.
 """
 
-
 from ophyd import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
@@ -17,47 +16,34 @@ class EllBase(PVPositionerIsClose):
     NOTE: For ioc_release >= R1.0.0, 'port' should default to 15,
     else it should default to 'port' = 0.
     """
-    set_position = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
-                        write_pv='{prefix}:M{self._channel}:MOVE',
-                        kind='normal')
 
-    jog_fwd = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE_FWD',
-                   kind='normal')
-    set_metadata(jog_fwd, dict(variety='command-proc', value=1))
+    set_position = FCpt(
+        EpicsSignal, "{prefix}:M{self._channel}:CURPOS", write_pv="{prefix}:M{self._channel}:MOVE", kind="normal"
+    )
 
-    jog_bwd = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE_BWD',
-                   kind='normal')
-    set_metadata(jog_bwd, dict(variety='command-proc', value=1))
+    jog_fwd = FCpt(EpicsSignal, "{prefix}:M{self._channel}:MOVE_FWD", kind="normal")
+    set_metadata(jog_fwd, dict(variety="command-proc", value=1))
 
-    status = FCpt(EpicsSignalRO, '{prefix}:M{self._channel}:STATUS',
-                  kind='normal')
+    jog_bwd = FCpt(EpicsSignal, "{prefix}:M{self._channel}:MOVE_BWD", kind="normal")
+    set_metadata(jog_bwd, dict(variety="command-proc", value=1))
 
-    optimize = FCpt(EpicsSignal, '{prefix}:M{self._channel}:OPTIMIZE',
-                    kind='omitted')
-    set_metadata(optimize, dict(variety='command-proc', value=1))
+    status = FCpt(EpicsSignalRO, "{prefix}:M{self._channel}:STATUS", kind="normal")
 
-    _from_addr = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:FROM_ADDR',
-                      kind='omitted')
-    _to_addr = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:TO_ADDR',
-                    kind='omitted')
-    _save = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:SAVE',
-                 kind='omitted')
-    _command = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:CMD',
-                    kind='omitted')
-    _response = FCpt(EpicsSignalRO, '{prefix}:PORT{self._port}:RESPONSE',
-                     kind='omitted')
+    optimize = FCpt(EpicsSignal, "{prefix}:M{self._channel}:OPTIMIZE", kind="omitted")
+    set_metadata(optimize, dict(variety="command-proc", value=1))
+
+    _from_addr = FCpt(EpicsSignal, "{prefix}:PORT{self._port}:FROM_ADDR", kind="omitted")
+    _to_addr = FCpt(EpicsSignal, "{prefix}:PORT{self._port}:TO_ADDR", kind="omitted")
+    _save = FCpt(EpicsSignal, "{prefix}:PORT{self._port}:SAVE", kind="omitted")
+    _command = FCpt(EpicsSignal, "{prefix}:PORT{self._port}:CMD", kind="omitted")
+    _response = FCpt(EpicsSignalRO, "{prefix}:PORT{self._port}:RESPONSE", kind="omitted")
 
     # Scanning Interface
-    setpoint = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE',
-                    kind='omitted')
-    readback = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
-                    kind='omitted')
-    user_setpoint = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE',
-                         kind='omitted')
-    user_readback = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
-                         kind='omitted')
-    error_message = FCpt(EpicsSignal, '{prefix}:M{self._channel}:STATUS',
-                         kind='omitted')
+    setpoint = FCpt(EpicsSignal, "{prefix}:M{self._channel}:MOVE", kind="omitted")
+    readback = FCpt(EpicsSignal, "{prefix}:M{self._channel}:CURPOS", kind="omitted")
+    user_setpoint = FCpt(EpicsSignal, "{prefix}:M{self._channel}:MOVE", kind="omitted")
+    user_readback = FCpt(EpicsSignal, "{prefix}:M{self._channel}:CURPOS", kind="omitted")
+    error_message = FCpt(EpicsSignal, "{prefix}:M{self._channel}:STATUS", kind="omitted")
 
     def __init__(self, prefix, *, channel, port, **kwargs):
         self._port = port
@@ -82,16 +68,15 @@ class Ell6(EllBase):
     --------
     ell6 = Ell6('LM1K4:COM_DP1_TF1_SL1:ELL', port=0, channel=1, name='ell6')
     """
+
     # Since the record for 2 and 4-position sliders are stored as an enum,
     # we need a "str comparator" overload.
     def done_comparator(self, readback, setpoint):
         return readback == setpoint
 
     # Names for slider positions
-    name_0 = FCpt(EpicsSignal, '{prefix}:M{self._channel}:NAME0',
-                  kind='config')
-    name_1 = FCpt(EpicsSignal, '{prefix}:M{self._channel}:NAME1',
-                  kind='config')
+    name_0 = FCpt(EpicsSignal, "{prefix}:M{self._channel}:NAME0", kind="config")
+    name_1 = FCpt(EpicsSignal, "{prefix}:M{self._channel}:NAME1", kind="config")
 
 
 class Ell9(Ell6):
@@ -111,15 +96,13 @@ class Ell9(Ell6):
     --------
     ell9 = Ell9('LM1K4:COM_DP1_TF1_SL1:ELL', port=0, channel=1, name='ell9')
     """
-    home = FCpt(EpicsSignal, '{prefix}:M{self._channel}:HOME',
-                kind='config')
-    set_metadata(home, dict(variety='command-proc', value=1))
+
+    home = FCpt(EpicsSignal, "{prefix}:M{self._channel}:HOME", kind="config")
+    set_metadata(home, dict(variety="command-proc", value=1))
 
     # Names for slider positions
-    name_2 = FCpt(EpicsSignal, '{prefix}:M{self._channel}:NAME2',
-                  kind='config')
-    name_3 = FCpt(EpicsSignal, '{prefix}:M{self._channel}:NAME3',
-                  kind='config')
+    name_2 = FCpt(EpicsSignal, "{prefix}:M{self._channel}:NAME2", kind="config")
+    name_3 = FCpt(EpicsSignal, "{prefix}:M{self._channel}:NAME3", kind="config")
 
 
 class EllLinear(EllBase):
@@ -140,26 +123,22 @@ class EllLinear(EllBase):
     ell17 = EllLinear('LM1K4:COM_DP1_TF1_LIN1:ELL', port=0, channel=1,
                        name='ell17')
     """
-    home = FCpt(EpicsSignal, '{prefix}:M{self._channel}:HOME',
-                kind='config')
-    set_metadata(home, dict(variety='command-proc', value=1))
 
-    jog_step = FCpt(EpicsSignal, '{prefix}:M{self._channel}:GET_JOG',
-                    write_pv='{prefix}:M{self._channel}:SET_JOG',
-                    kind='config')
+    home = FCpt(EpicsSignal, "{prefix}:M{self._channel}:HOME", kind="config")
+    set_metadata(home, dict(variety="command-proc", value=1))
 
-    clean = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CLEAN_MECH',
-                 kind='omitted')
-    set_metadata(clean, dict(variety='command-proc', value=1))
+    jog_step = FCpt(
+        EpicsSignal, "{prefix}:M{self._channel}:GET_JOG", write_pv="{prefix}:M{self._channel}:SET_JOG", kind="config"
+    )
 
-    stop_optimize = FCpt(EpicsSignal, '{prefix}:M{self._channel}:STOP',
-                         kind='omitted')
-    set_metadata(stop_optimize, dict(variety='command-proc', value=1))
+    clean = FCpt(EpicsSignal, "{prefix}:M{self._channel}:CLEAN_MECH", kind="omitted")
+    set_metadata(clean, dict(variety="command-proc", value=1))
 
-    current_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS.EGU',
-                       kind='omitted')
-    target_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE.EGU',
-                      kind='omitted')
+    stop_optimize = FCpt(EpicsSignal, "{prefix}:M{self._channel}:STOP", kind="omitted")
+    set_metadata(stop_optimize, dict(variety="command-proc", value=1))
+
+    current_egu = FCpt(EpicsSignal, "{prefix}:M{self._channel}:CURPOS.EGU", kind="omitted")
+    target_egu = FCpt(EpicsSignal, "{prefix}:M{self._channel}:MOVE.EGU", kind="omitted")
 
 
 class EllRotation(EllLinear):
@@ -180,6 +159,7 @@ class EllRotation(EllLinear):
     ell14 = EllRotation('LM1K4:COM_DP1_TF1_ROT1:ELL', port=0, channel=1,
                          name='ell14')
     """
+
     # Currently no difference between rotation implementation and linear
     # implementation, but there may be eventually, and I couldn't come up with
     # a good name to encapsulate them both.

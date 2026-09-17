@@ -6,8 +6,7 @@ import re
 from typing import Optional
 
 from pydm import Display
-from pydm.widgets import (PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel,
-                          PyDMLineEdit, PyDMPushButton)
+from pydm.widgets import PyDMByteIndicator, PyDMEnumComboBox, PyDMLabel, PyDMLineEdit, PyDMPushButton
 from qtpy import uic
 from qtpy.QtCore import Qt, QTimer
 from qtpy.QtWidgets import QPushButton, QWidget
@@ -33,9 +32,10 @@ class QminiSpectrometerEmbeddedUI(QminiBase, Display, utils.TyphosBase):
 
     NOTE: inherit QminiBase FIRST so that the mro resolves it LAST
     """
+
     ui: _QminiSpectrometerEmbeddedUI
 
-    def __init__(self, parent=None, ui_filename='QminiSpectrometer.embedded.ui', **kwargs):
+    def __init__(self, parent=None, ui_filename="QminiSpectrometer.embedded.ui", **kwargs):
         super().__init__(parent=parent, ui_filename=ui_filename)
 
         self.ui.fit_settings_button.clicked.connect(self._open_fit_settings_panel)
@@ -43,8 +43,8 @@ class QminiSpectrometerEmbeddedUI(QminiBase, Display, utils.TyphosBase):
 
     def _open_fit_settings_panel(self) -> None:
         """Toggle the expansion of the signal panel."""
-        if not hasattr(self.ui, 'settings_panel'):
-            self.ui.settings_panel = self._create_signal_panel('fit')
+        if not hasattr(self.ui, "settings_panel"):
+            self.ui.settings_panel = self._create_signal_panel("fit")
             if self.ui.settings_panel is None:
                 return
             to_show = True
@@ -55,8 +55,8 @@ class QminiSpectrometerEmbeddedUI(QminiBase, Display, utils.TyphosBase):
 
     def _open_fit_params_panel(self) -> None:
         """Toggle the expansion of the signal panel."""
-        if not hasattr(self.ui, 'parameters_panel'):
-            self.ui.parameters_panel = self._create_signal_panel('parameters')
+        if not hasattr(self.ui, "parameters_panel"):
+            self.ui.parameters_panel = self._create_signal_panel("parameters")
             if self.ui.parameters_panel is None:
                 return
             to_show = True
@@ -72,19 +72,25 @@ class QminiSpectrometerEmbeddedUI(QminiBase, Display, utils.TyphosBase):
 
         subwindow_dir = pathlib.Path(__file__).parent / "qmini_subwindows"
 
-        if panel == 'fit':
-            ui_filename = pathlib.Path(subwindow_dir) / 'qmini_fit_settings.ui'
-            return SettingsPanel(spectrometer=self,
-                                 ui_filename=ui_filename,
-                                 toggle_button=self.ui.fit_settings_button,
-                                 parent=self, flags=Qt.Window)
+        if panel == "fit":
+            ui_filename = pathlib.Path(subwindow_dir) / "qmini_fit_settings.ui"
+            return SettingsPanel(
+                spectrometer=self,
+                ui_filename=ui_filename,
+                toggle_button=self.ui.fit_settings_button,
+                parent=self,
+                flags=Qt.Window,
+            )
 
-        elif panel == 'parameters':
-            ui_filename = pathlib.Path(subwindow_dir) / 'qmini_parameters.ui'
-            return SettingsPanel(spectrometer=self,
-                                 ui_filename=ui_filename,
-                                 toggle_button=self.ui.qmini_settings_button,
-                                 parent=self, flags=Qt.Window)
+        elif panel == "parameters":
+            ui_filename = pathlib.Path(subwindow_dir) / "qmini_parameters.ui"
+            return SettingsPanel(
+                spectrometer=self,
+                ui_filename=ui_filename,
+                toggle_button=self.ui.qmini_settings_button,
+                parent=self,
+                flags=Qt.Window,
+            )
         else:
             return
 
@@ -93,14 +99,19 @@ class SettingsPanel(QWidget):
     """
     Container class for spawning and organizing signals in a floating window.
     """
+
     spectrometer: QminiSpectrometerEmbeddedUI
     panel: QWidget
     resize_timer: QTimer
 
-    def __init__(self, spectrometer: QminiSpectrometerEmbeddedUI,
-                 ui_filename: str,
-                 toggle_button: QPushButton,
-                 parent: QWidget | None = None, **kwargs):
+    def __init__(
+        self,
+        spectrometer: QminiSpectrometerEmbeddedUI,
+        ui_filename: str,
+        toggle_button: QPushButton,
+        parent: QWidget | None = None,
+        **kwargs,
+    ):
         super().__init__(parent=parent, **kwargs)
         uic.loadUi(ui_filename, self)
         self.spectrometer = spectrometer
@@ -116,20 +127,19 @@ class SettingsPanel(QWidget):
         indicators.
         """
         if not self.spectrometer.device:
-            print('No device set!')
+            print("No device set!")
             return
 
         def expand_prefix(chan_address: str) -> str:
             """
             Factory function for macro expansion on `${prefix}`
             """
-            result = ''
+            result = ""
 
             prefix = self.spectrometer.device.prefix
 
-            if re.search(r'\{prefix\}', chan_address):
-                result = chan_address.replace('${prefix}',
-                                              prefix)
+            if re.search(r"\{prefix\}", chan_address):
+                result = chan_address.replace("${prefix}", prefix)
             return result
 
         object_names = self.find_pydm_names()
@@ -137,10 +147,10 @@ class SettingsPanel(QWidget):
         for obj in object_names:
             widget = getattr(self, obj)
 
-            channel = getattr(widget, 'channel')
+            channel = widget.channel
 
             if not channel:
-                channel = ''
+                channel = ""
 
             widget.set_channel(expand_prefix(channel))
 
@@ -153,14 +163,13 @@ class SettingsPanel(QWidget):
         result : list[str]
             1D list of object names
         """
-        pydm_widgets = [PyDMPushButton, PyDMByteIndicator, PyDMLabel,
-                        PyDMLineEdit, PyDMEnumComboBox]
+        pydm_widgets = [PyDMPushButton, PyDMByteIndicator, PyDMLabel, PyDMLineEdit, PyDMEnumComboBox]
 
         result = []
 
         for obj_type in pydm_widgets:
             result += [obj.objectName() for obj in self.findChildren(obj_type)]
 
-        _omit = ['save_spectra']
+        _omit = ["save_spectra"]
 
         return [obj for obj in result if obj not in _omit]
