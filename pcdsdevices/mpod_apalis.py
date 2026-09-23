@@ -157,6 +157,13 @@ class MPODApalisChannel(BaseInterface, Device):
         )
 
     def get_limit_pct(self) -> tuple[float, float]:
+        """
+        Return the low and high limits as a percentage of the nominal maximum.
+
+        The module uses two percentage PVs to show how high and low we can go
+        in both the positive and negative polariries. Here this information
+        lives in the parent class.
+        """
         return getattr(self, "biological_parent.limit_percents", (0, 100))
 
     @max_current.sub_value
@@ -170,6 +177,8 @@ class MPODApalisChannel(BaseInterface, Device):
 
 
 class MPODApalisSoloChannel(MPODApalisChannel):
+    """Variant of MPODApalisChannel designed for use without a parent module class."""
+    # Define necessary module resources locally- we won't have a parent
     limit_pos = FCpt(
         EpicsSignalRO,
         "{module_prefix}:VoltageLimit",
@@ -189,6 +198,7 @@ class MPODApalisSoloChannel(MPODApalisChannel):
         super().__init__(prefix, *args, **kwargs)
 
     def get_limit_pct(self) -> tuple[float, float]:
+        """Use local pcts instead of missing parent percents."""
         return (-self.limit_neg.get(), self.limit_pos.get())
 
 
