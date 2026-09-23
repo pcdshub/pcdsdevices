@@ -178,6 +178,7 @@ class MPODApalisChannel(BaseInterface, Device):
 
 class MPODApalisSoloChannel(MPODApalisChannel):
     """Variant of MPODApalisChannel designed for use without a parent module class."""
+
     # Define necessary module resources locally- we won't have a parent
     limit_pos = FCpt(
         EpicsSignalRO,
