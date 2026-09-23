@@ -199,7 +199,7 @@ class MPODApalisSoloChannel(MPODApalisChannel):
         super().__init__(prefix, *args, **kwargs)
 
     def get_limit_pct(self) -> tuple[float, float]:
-        """Use local pcts instead of missing parent percents."""
+        """Use local percents instead of missing parent percents."""
         return (-self.limit_neg.get(), self.limit_pos.get())
 
 
