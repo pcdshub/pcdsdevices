@@ -1,6 +1,7 @@
+from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal
-from ophyd.device import Component as Cpt
+
 
 class BeckhoffECAT(Device):
     state = Cpt(EpicsSignal, ":eDevState_RBV")
@@ -9,4 +10,3 @@ class BeckhoffECAT(Device):
     ecat_error = Cpt(EpicsSignal, ":bError")
     ecat_error_message = Cpt(EpicsSignal, ":sErrorMessage", string=True)
     device_description = Cpt(EpicsSignal, ":sDESC", string=True)
-
