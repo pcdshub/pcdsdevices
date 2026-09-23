@@ -189,7 +189,7 @@ class MPODApalisSoloChannel(MPODApalisChannel):
         super().__init__(prefix, *args, **kwargs)
 
     def get_limit_pct(self) -> tuple[float, float]:
-        return (self.limit_pos.get(), self.limit_neg.get())
+        return (-self.limit_neg.get(), self.limit_pos.get())
 
 
 def _put_clamped(signal: EpicsSignal, value: float) -> None:
