@@ -11,7 +11,8 @@ import sys
 import threading
 import time
 from collections.abc import Iterable
-from functools import reduce
+from decimal import Decimal, getcontext
+from functools import reduce, wraps
 from types import MethodType
 from typing import Callable, Iterator, Union
 
@@ -976,3 +977,112 @@ def set_standard_ordering(cls: type[Device]) -> type[Device]:
     sort_components_by_kind(cls)
     move_subdevices_to_start(cls)
     return cls
+
+
+def measure_time(func):
+    """
+    Decorate a function to log its execution time at the DEBUG level.
+
+    Measure elapsed time using ``time.perf_counter()`` and log the function
+    name and duration in seconds, even if the function raises an exception.
+
+    Parameters
+    ----------
+    func : callable
+        Function whose execution time is to be measured.
+
+    Returns
+    -------
+    callable
+        Wrapped function that accepts the original arguments, returns the
+        original result, and preserves the original function's metadata.
+    """
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            elapsed = time.perf_counter() - start
+            logger.debug(f"{func.__name__} took {elapsed:.6f} seconds")
+
+    return wrapper
+
+
+def generate_scan_points(
+    start: Union[int, float, Decimal],
+    end: Union[int, float, Decimal],
+    step: Union[int, float, Decimal],
+    prec: int,
+    bidirectional: bool,
+):
+    """
+    Generate scan positions in the forward and optionally reverse directions.
+
+    Parameters
+    ----------
+    start : int, float, or Decimal
+        Starting scan position. Must be nonnegative and less than `end`.
+    end : int, float, or Decimal
+        Upper scan boundary.
+    step : int, float, or Decimal
+        Positive spacing between consecutive positions. Must be less than
+        both `start` and `end`.
+    prec: int
+        Generated scan points precision.
+    bidirectional : bool
+        If True, generate a reverse pass after the forward pass.
+
+    Yields
+    ------
+    Decimal
+        Scan positions, beginning at `start` and increasing by `step` while
+        less than or equal to `end`. If `bidirectional` is True, additional
+        positions begin at ``end - step`` and decrease by `step` while
+        greater than or equal to `start`.
+
+    Raises
+    ------
+    ValueError
+        If `start` is negative, `start` is greater than or equal to `end`,
+        `prec` is smaller than 1 or `step` is greater than or equal to
+        either boundary.
+
+    Notes
+    -----
+    Sets the active decimal context precision to nine significant digits.
+    Inputs are converted directly to `Decimal`; float inputs may retain
+    binary floating-point representation artifacts.
+
+    The forward pass includes `end` only if stepping reaches it exactly.
+    The reverse pass is anchored to `end`, so its positions may differ
+    from the forward positions if the interval is not divisible by `step`.
+    """
+    if start < 0 or end < 0 < step < 0:
+        raise ValueError("start, end and step size must be positive numbers")
+    if start >= end:
+        raise ValueError("invalid start and/or end points")
+    if step >= start or step >= end:
+        raise ValueError("invalid step size")
+    if prec < 1:
+        raise ValueError("invalid prec")
+
+    getcontext().prec = prec
+
+    start = Decimal(start)
+    end = Decimal(end)
+    step = Decimal(step)
+
+    # Generate positions in the forward direction
+    pos = start
+    while pos <= end:
+        yield pos
+        pos += step
+
+    if bidirectional:
+        # Generate positions in the backward direction
+        pos = end - step
+        while pos >= start:
+            yield pos
+            pos -= step

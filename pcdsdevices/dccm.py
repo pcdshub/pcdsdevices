@@ -1,23 +1,24 @@
-from decimal import Decimal, getcontext
-from typing import Optional, Union
+from typing import Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.signal import EpicsSignal, EpicsSignalRO, InternalSignal
 from ophyd.status import SubscriptionStatus
 
 from pcdsdevices.beam_stats import BeamEnergyRequest
-from pcdsdevices.device import Device
+from pcdsdevices.device import GroupDevice
 from pcdsdevices.device import UpdateComponent as UpCpt
 from pcdsdevices.epics_motor import BeckhoffAxis
-from pcdsdevices.interface import FltMvInterface
+from pcdsdevices.interface import BaseInterface, FltMvInterface, LightpathInOutCptMixin
 from pcdsdevices.pmps import TwinCATStatePMPS
+from pcdsdevices.signal import PytmcSignal
+from pcdsdevices.utils import measure_time
 
 
 class DCCMCrystal(FltMvInterface, PVPositioner):
     """
-    Energy positioner interface for a Single crystal.
+    Energy positioner interface for a single crystal.
 
     Controls and monitors the energy, state, coefficients, and tracking metrics
     associated with an individual crystal in the DCCM system.
@@ -64,71 +65,163 @@ class DCCMCrystal(FltMvInterface, PVPositioner):
         Diagnostic string explaining the current warning state.
     """
 
-    setpoint = Cpt(EpicsSignal, ":CmdkeV_RBV", write_pv=":CmdkeV")
-    readback = Cpt(EpicsSignalRO, ":EstEnergy_RBV")
-    actuate = Cpt(EpicsSignal, ":CmdMoveEnergy_RBV", write_pv=":CmdMoveEnergy")
-    done = Cpt(EpicsSignalRO, ":Done_RBV")
-    stop_signal = Cpt(EpicsSignal, ":CmdStop", kind="normal")
+    _extra_sig_md = {
+        "precision": 9,
+        "units": "kev",
+    }
 
-    reset = Cpt(EpicsSignal, ":CmdReset_RBV", write_pv=":CmdReset")
+    high_limit_travel = Cpt(
+        InternalSignal,
+        metadata=_extra_sig_md,
+        kind="omitted",
+    )
 
-    angle_offset = Cpt(EpicsSignal, ":AngleOffset_RBV", write_pv=":AngleOffset")
+    low_limit_travel = Cpt(
+        InternalSignal,
+        metadata=_extra_sig_md,
+        kind="omitted",
+    )
+
+    high_limit_travel = Cpt(
+        InternalSignal,
+        metadata=_extra_sig_md,
+        kind="omitted",
+        doc="The upper energy travel limit in keV.",
+    )
+
+    low_limit_travel = Cpt(
+        InternalSignal,
+        metadata=_extra_sig_md,
+        kind="omitted",
+        doc="The lower energy travel limit in keV.",
+    )
+
+    setpoint = Cpt(
+        PytmcSignal,
+        ":CmdkeV",
+        io="io",
+        doc="The target energy setpoint signal in keV.",
+    )
+
+    readback = Cpt(
+        EpicsSignalRO,
+        ":EstEnergy_RBV",
+        doc="The current estimated energy readback signal in keV.",
+    )
+
+    actuate = Cpt(
+        PytmcSignal,
+        ":CmdMoveEnergy",
+        io="io",
+        doc="Command signal to initiate the energy move sequence.",
+    )
+
+    done = Cpt(
+        EpicsSignalRO,
+        ":Done_RBV",
+        doc="Status signal indicating whether the motion sequence is complete.",
+    )
+    stop_signal = Cpt(
+        EpicsSignal,
+        ":CmdStop",
+        kind="normal",
+        doc="Signal used to abort current energy adjustments.",
+    )
+
+    reset = Cpt(
+        PytmcSignal,
+        ":CmdReset",
+        io="io",
+        doc="Command signal to reset faults or clear movement cycles.",
+    )
+
+    angle_offset = Cpt(
+        PytmcSignal,
+        ":AngleOffset",
+        io="io",
+        doc="Angular offset adjustment value for tuning crystal geometry.",
+    )
+
     ctrl_velo_bias_gain = Cpt(
-        EpicsSignal, ":CtrlVeloBiasGain_RBV", write_pv=":CtrlVeloBiasGain"
+        PytmcSignal,
+        ":CtrlVeloBiasGain",
+        io="io",
+        doc="Velocity bias gain modifier for the underlying controller.",
     )
+
     lat_const_scaler = Cpt(
-        EpicsSignal, ":LatConstScaler_RBV", write_pv=":LatConstScaler"
+        PytmcSignal,
+        ":LatConstScaler",
+        io="io",
+        doc="Lattice constant scaling modifier.",
     )
 
-    crystal_type = Cpt(EpicsSignal, ":Type_RBV", write_pv=":Type")
+    crystal_type = Cpt(
+        PytmcSignal,
+        ":Type",
+        io="io",
+        doc="The identifier string or type index for the crystal material/cut.",
+    )
 
-    coeff = Cpt(EpicsSignalRO, ":Coeff_RBV")
-    est_pos_delta = Cpt(EpicsSignalRO, ":EstPosDelta_RBV")
-    est_energy_delta = Cpt(EpicsSignalRO, ":EstEnergyDelta_RBV")
-    est_energy = Cpt(EpicsSignalRO, ":EstEnergy_RBV")
+    coeff = Cpt(
+        EpicsSignalRO,
+        ":Coeff_RBV",
+        doc="Calculated tracking coefficient.",
+    )
 
-    state = Cpt(EpicsSignalRO, ":State_RBV")
+    est_pos_delta = Cpt(
+        EpicsSignalRO,
+        ":EstPosDelta_RBV",
+        kind="hinted",
+        doc="Calculated difference between estimated position and goal.",
+    )
 
-    error = Cpt(EpicsSignalRO, ":Error_RBV")
-    warning = Cpt(EpicsSignalRO, ":Warning_RBV")
+    est_energy_delta = Cpt(
+        EpicsSignalRO,
+        ":EstEnergyDelta_RBV",
+        kind="hinted",
+        doc="Calculated difference between estimated energy and goal.",
+    )
 
-    error_msg = Cpt(EpicsSignalRO, ":ErrorMsg_RBV", string=True)
-    warning_msg = Cpt(EpicsSignalRO, ":WarningMsg_RBV", string=True)
+    est_energy = Cpt(
+        EpicsSignalRO,
+        ":EstEnergy_RBV",
+        doc="Calculated energy based on theta angle.",
+    )
 
-    def __init__(self, prefix="", *, limits=None, name=None, read_attrs=None,
-                 configuration_attrs=None, parent=None,
-                 egu="", axis_prefix: str = '', **kwargs):
-        """
-        Initialize the DCCMCrystal device instance.
+    state = Cpt(
+        EpicsSignalRO,
+        ":State_RBV",
+        doc="Current operational state enum from EPICS.",
+    )
 
-        Parameters
-        ----------
-        prefix : str, optional
-            The EPICS base PV prefix for this crystal instance.
-        limits : tuple, optional
-            Soft position limits (low, high) for the positioner.
-        name : str, optional
-            The name used for the device in data collection.
-        read_attrs : list of str, optional
-            Attributes to include in the `read()` sequence.
-        configuration_attrs : list of str, optional
-            Attributes to include in configuration logging.
-        parent : Device, optional
-            The parent Device instance if nested.
-        egu : str, optional
-            Engineering units identifier (e.g., 'keV').
-        axis_prefix : str, optional
-            Optional identifier prefix mapping back to physical motors.
-        **kwargs : dict
-            Additional arguments passed up to `PVPositioner` and `OphydObj`.
-        """
-        self.axis_prefix = axis_prefix
-        super().__init__(prefix, limits=limits, name=name,
-                         read_attrs=read_attrs,
-                         configuration_attrs=configuration_attrs,
-                         parent=parent, egu=egu, **kwargs)
+    error = Cpt(
+        EpicsSignalRO,
+        ":Error_RBV",
+        doc="Boolean indicating an error status.",
+    )
 
-    def move(self, position, wait=True, timeout=None, moved_cb=None):
+    warning = Cpt(
+        EpicsSignalRO,
+        ":Warning_RBV",
+        doc="Boolean indicating a warning status.",
+    )
+
+    error_msg = Cpt(
+        EpicsSignalRO,
+        ":ErrorMsg_RBV",
+        string=True,
+        doc="Diagnostic string explaining the current error state.",
+    )
+
+    warning_msg = Cpt(
+        EpicsSignalRO,
+        ":WarningMsg_RBV",
+        string=True,
+        doc="Diagnostic string explaining the current warning state.",
+    )
+
+    def move(self, position, wait=True, timeout=10.0, moved_cb=None):
         """
         Execute an energy move sequence to the designated target coordinate.
 
@@ -158,6 +251,8 @@ class DCCMCrystal(FltMvInterface, PVPositioner):
             lambda value, old_value, **kwargs: value == 1,
             run=False,
         )
+
+        self.reset.put(1, wait=True)
         self.setpoint.put(position, wait=True)
         self.actuate.put(1, wait=True)
 
@@ -175,25 +270,48 @@ class DCCMCrystal(FltMvInterface, PVPositioner):
             status_done_low.wait(timeout=timeout)
 
         if moved_cb is not None:
-            status_done_low.add_callback(lambda *args,
-                                         **kwargs: moved_cb(obj=self))
+            status_done_low.add_callback(lambda *args, **kwargs: moved_cb(obj=self))
 
         return status_done_low
 
 
 class DCCMEnergy(DCCMCrystal):
-    axis_coupling_enable = Cpt(EpicsSignal, ":CTC:Coupled_RBV",
-                               write_pv=":CTC:Coupled", kind="normal")
+    axis_coupling_enable = FCpt(
+        PytmcSignal,
+        "{self._base_prefix}:CTC:Coupled",
+        io="io",
+        kind="hinted",
+    )
 
+    def __init__(self, prefix, *, crystal="01", **kwargs):
+        self._base_prefix = prefix.rstrip(":")
+        self.crystal = int(crystal)
+
+        super().__init__(
+            f"{self._base_prefix}:CTC:CRYS:{self.crystal:02d}",
+            **kwargs,
+        )
+
+    @measure_time
     def move(self, position, wait=True, timeout=None, moved_cb=None):
-        self.axis_coupling_enable.put(1)
-        return super().move(position, wait, timeout, moved_cb)
+        self.couple_axis()
+        return super().move(
+            position,
+            wait=wait,
+            timeout=timeout,
+            moved_cb=moved_cb,
+        )
 
-    def couple_axis(self):
-        self.axis_coupling_enable.put(1)
+    def _proxy_method(method_name, *fixed_args):  # noqa
+        """Proxy a signal method with predefined positional arguments."""
 
-    def decouple_axis(self):
-        self.axis_coupling_enable.put(0)
+        def method_selector(self, *args, **kwargs):
+            return getattr(self.axis_coupling_enable, method_name)(*fixed_args, *args, **kwargs)
+
+        return method_selector
+
+    couple_axis = _proxy_method("put", 1)
+    decouple_axis = _proxy_method("put", 0)
 
 
 class DCCMEnergyWithVernier(DCCMEnergy):
@@ -218,7 +336,7 @@ class DCCMEnergyWithVernier(DCCMEnergy):
         prefix.
     """
 
-    acr_energy = FCpt(BeamEnergyRequest, "{hutch}", kind="normal", doc="Requests ACR to move the Vernier.")
+    acr_energy = FCpt(BeamEnergyRequest, "{hutch}", kind="hinted", doc="Requests ACR to move the Vernier.")
 
     # These are duplicate warnings with main energy motor
     _enable_warn_constants: bool = False
@@ -273,18 +391,11 @@ class DCCMEnergyWithACRStatus(DCCMEnergyWithVernier):
         pv_index="{pv_index}",
         acr_status_suffix="{acr_status_suffix}",
         add_prefix=("suffix", "write_pv", "pv_index", "acr_status_suffix"),
-        kind="normal",
+        kind="hinted",
         doc="Requests ACR to move the energy.",
     )
 
-    def __init__(
-        self,
-        prefix: str,
-        hutch: Optional[str] = None,
-        acr_status_suffix='AO805',
-        pv_index=2,
-        **kwargs
-    ):
+    def __init__(self, prefix: str, hutch: Optional[str] = None, acr_status_suffix="AO805", pv_index=2, **kwargs):
         self.acr_status_suffix = acr_status_suffix
         self.pv_index = pv_index
         super().__init__(prefix, hutch=hutch, **kwargs)
@@ -295,7 +406,7 @@ class DCCMTarget(TwinCATStatePMPS):
     _in_if_not_out = True
 
 
-class DCCM(Device):
+class DCCM(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """
     The full DCCM assembly.
 
@@ -310,20 +421,19 @@ class DCCM(Device):
 
     tx_state = Cpt(DCCMTarget, ":MMS:STATE", kind="hinted", doc="Control of TX axis via saved positions.")
 
-    energy = FCpt(
-        DCCMEnergy, '{self.prefix}', kind='hinted',
-        crystal="01",
-        doc=(
-            'PseudoPositioner that moves the theta motors in '
-            'terms of the calculated DCCM energy.'
-        ),
+    energy = Cpt(
+        DCCMEnergy,
+        "",
+        kind="hinted",
+        doc=("PseudoPositioner that moves the theta motors in terms of the calculated DCCM energy."),
     )
 
     energy_with_vernier = FCpt(
-        DCCMEnergyWithVernier, '{self.prefix}', kind='normal',
-        crystal="01",
-        hutch='{hutch}',
-        add_prefix=('suffix', 'write_pv', 'hutch'),
+        DCCMEnergyWithVernier,
+        "{self.prefix}",
+        kind="normal",
+        hutch="{hutch}",
+        add_prefix=("suffix", "write_pv", "hutch"),
         doc=(
             "PseudoPositioner that moves the theta motor in "
             "terms of the calculated DCCM energy while "
@@ -331,12 +441,13 @@ class DCCM(Device):
         ),
     )
     energy_with_acr_status = FCpt(
-        DCCMEnergyWithACRStatus, '{self.prefix}', kind='normal',
-        crystal="01",
-        hutch='{hutch}',
-        pv_index='{acr_status_pv_index}',
-        acr_status_suffix='{acr_status_suffix}',
-        add_prefix=('suffix', 'write_pv', 'acr_status_suffix', 'pv_index', 'hutch'),
+        DCCMEnergyWithACRStatus,
+        "{self.prefix}",
+        kind="normal",
+        hutch="{hutch}",
+        pv_index="{acr_status_pv_index}",
+        acr_status_suffix="{acr_status_suffix}",
+        add_prefix=("suffix", "write_pv", "acr_status_suffix", "pv_index", "hutch"),
         doc=(
             "PseudoPositioner that moves the alio in "
             "terms of the calculated CCM energy while "
@@ -351,18 +462,13 @@ class DCCM(Device):
     txd = Cpt(BeckhoffAxis, ":MMS:TXD", doc="YAG Diagnostic X Axis", kind="normal")
     tyd = Cpt(BeckhoffAxis, ":MMS:TYD", doc="YAG Diagnostic Y Axis", kind="normal")
 
-    crys_01 = Cpt(DCCMCrystal, '', crystal="01", kind="normal")
-    crys_02 = Cpt(DCCMCrystal, '', crystal="02", kind="normal")
+    crys_01 = Cpt(DCCMCrystal, ":CTC:CRYS:01", kind="normal")
+    crys_02 = Cpt(DCCMCrystal, ":CTC:CRYS:02", kind="normal")
 
-    lightpath_cpts = ['tx_state']
+    lightpath_cpts = ["tx_state"]
 
     def __init__(
-            self,
-            prefix: str,
-            hutch: str = '',
-            acr_status_suffix: str = 'AO805',
-            acr_status_pv_index: int = 2,
-            **kwargs
+        self, prefix: str, hutch: str = "", acr_status_suffix: str = "AO805", acr_status_pv_index: int = 2, **kwargs
     ):
         self.hutch = hutch
         self.acr_status_suffix = acr_status_suffix
@@ -388,40 +494,9 @@ class DCCM(Device):
         # Only support read-only properties for now.
         return property(getter)
 
-    inserted = _proxy_property('inserted')
-    check_inserted = _proxy_method('check_inserted')
-    removed = _proxy_property('removed')
-    check_removed = _proxy_method('check_removed')
-    insert = _proxy_method('insert')
-    remove = _proxy_method('remove')
-
-    def generate_scan_points(self,
-                             start: Union[int, float, Decimal],
-                             end: Union[int, float, Decimal],
-                             step: Union[int, float, Decimal],
-                             bidirectional: bool):
-        if start < 0 or end < 0 < step < 0:
-            raise ValueError("start, end and step size must be positive numbers")
-        if start >= end:
-            raise ValueError("invalid start and/or end points")
-        if step >= start or step >= end:
-            raise ValueError("invalid step size")
-
-        getcontext().prec = 9
-
-        start = Decimal(start)
-        end = Decimal(end)
-        step = Decimal(step)
-
-        # Generate positions in the forward direction
-        pos = start
-        while pos <= end:
-            yield pos
-            pos += step
-
-        if bidirectional:
-            # Generate positions in the backward direction
-            pos = end - step
-            while pos >= start:
-                yield pos
-                pos -= step
+    inserted = _proxy_property("inserted")
+    check_inserted = _proxy_method("check_inserted")
+    removed = _proxy_property("removed")
+    check_removed = _proxy_method("check_removed")
+    insert = _proxy_method("insert")
+    remove = _proxy_method("remove")
