@@ -4,6 +4,10 @@ from ophyd.signal import EpicsSignal
 
 
 class BeckhoffECAT(Device):
+    """
+    Bekhoff Terminal with PVs to control ethercat state. 
+    """
+
     state = Cpt(EpicsSignal, ":eDevState_RBV")
     request_state = Cpt(EpicsSignal, ":eReqState")
     cmd_request_state = Cpt(EpicsSignal, ":bCmdReqState")
