@@ -87,7 +87,7 @@
        <string/>
       </property>
       <property name="channel" stdset="0">
-       <string>ca://${prefix}:MMT:Y1.RBV</string>
+       <string>ca://${prefix}:MMT:TOP.RBV</string>
       </property>
       <property name="showValue" stdset="0">
        <bool>false</bool>
@@ -253,7 +253,7 @@
        <string/>
       </property>
       <property name="channel" stdset="0">
-       <string>ca://${prefix}:MMT:X1.RBV</string>
+       <string>ca://${prefix}:MMT:NORTH.RBV</string>
       </property>
       <property name="showValue" stdset="0">
        <bool>false</bool>
@@ -356,7 +356,7 @@
        <string/>
       </property>
       <property name="channel" stdset="0">
-       <string>ca://${prefix}:MMT:X2.RBV</string>
+       <string>ca://${prefix}:MMT:SOUTH.RBV</string>
       </property>
       <property name="showValue" stdset="0">
        <bool>false</bool>
@@ -452,7 +452,7 @@
        <string/>
       </property>
       <property name="channel" stdset="0">
-       <string>ca://${prefix}:MMT:Y2.RBV</string>
+       <string>ca://${prefix}:MMT:BOT.RBV</string>
       </property>
       <property name="showValue" stdset="0">
        <bool>false</bool>
@@ -589,6 +589,37 @@
       </widget>
      </item>
      <item>
+      <widget class="PyDMLabel" name="PyDMLabel_10">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:STATE:GET_RBV</string>
+       </property>
+       <property name="enableRichText" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="PyDMPushButton" name="PyDMPushButton_5">
        <property name="toolTip">
         <string/>
@@ -699,6 +730,224 @@
      <property name="topMargin">
       <number>0</number>
      </property>
+     <item row="0" column="10">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Drift Tolerance</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="5">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_7">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:NORTH.HLS</string>
+       </property>
+       <property name="onColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="10">
+      <widget class="PyDMShellCommand" name="PyDMShellCommand_3">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Expert</string>
+       </property>
+       <property name="commands" stdset="0">
+        <stringlist>
+         <string>typhos &quot;pcdsdevices.epics_motor.SmarActEtherCAT[{'prefix':'${prefix}:MMT:NORTH','name':'${name}_north'}]&quot; --display-type detailed</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="7">
+      <widget class="PyDMPushButton" name="PyDMPushButton">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: red;</string>
+       </property>
+       <property name="text">
+        <string>Stop</string>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:TOP.STOP</string>
+       </property>
+       <property name="PyDMIcon" stdset="0">
+        <string/>
+       </property>
+       <property name="passwordProtected" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="password" stdset="0">
+        <string/>
+       </property>
+       <property name="protectedPassword" stdset="0">
+        <string/>
+       </property>
+       <property name="showConfirmDialog" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="confirmMessage" stdset="0">
+        <string>Are you sure you want to proceed?</string>
+       </property>
+       <property name="pressValue" stdset="0">
+        <string>1</string>
+       </property>
+       <property name="releaseValue" stdset="0">
+        <string>None</string>
+       </property>
+       <property name="relativeChange" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="writeWhenRelease" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="5">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:TOP.HLS</string>
+       </property>
+       <property name="onColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:TOP.LLS</string>
+       </property>
+       <property name="onColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="6">
       <widget class="PyDMLineEdit" name="PyDMLineEdit_3">
        <property name="sizePolicy">
@@ -738,360 +987,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:X1.VAL</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>NORTH</string>
-       </property>
-       <property name="indent">
-        <number>5</number>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:Y1.LLS</string>
-       </property>
-       <property name="onColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>255</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="3">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_5">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:X2.LLS</string>
-       </property>
-       <property name="onColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>255</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_4">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:X1.LLS</string>
-       </property>
-       <property name="onColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>255</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="5">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:Y1.HLS</string>
-       </property>
-       <property name="onColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>255</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="10">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_9">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:bDrift_RBV</string>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="4">
-      <widget class="PyDMLabel" name="PyDMLabel_2">
-       <property name="maximumSize">
-        <size>
-         <width>80</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="precision" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="showUnits" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="precisionFromPV" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:Y2.RBV</string>
-       </property>
-       <property name="enableRichText" stdset="0">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="6">
-      <widget class="PyDMLineEdit" name="PyDMLineEdit_4">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>80</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="precision" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="showUnits" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="precisionFromPV" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="monitorDisp" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:X2.VAL</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="9">
-      <widget class="PyDMLabel" name="PyDMLabel_9">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="rules" stdset="0">
-        <string>[{&quot;name&quot;: &quot;New Rule&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;0&quot;, &quot;expression&quot;: &quot;ch[0][1]&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:aBladesfDrift_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}], &quot;notes&quot;: &quot;&quot;}]</string>
-       </property>
-       <property name="precision" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="showUnits" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="precisionFromPV" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:aBladesfDrift_RBV.[1]</string>
-       </property>
-       <property name="enableRichText" stdset="0">
-        <bool>false</bool>
+        <string>ca://${prefix}:MMT:NORTH.VAL</string>
        </property>
       </widget>
      </item>
@@ -1125,229 +1021,24 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:X2.RBV</string>
+        <string>ca://${prefix}:MMT:SOUTH.RBV</string>
        </property>
        <property name="enableRichText" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="1" column="7">
-      <widget class="PyDMPushButton" name="PyDMPushButton">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: red;</string>
-       </property>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Stop</string>
+        <string>BOTTOM</string>
        </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="monitorDisp" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:Y1.STOP</string>
-       </property>
-       <property name="PyDMIcon" stdset="0">
-        <string/>
-       </property>
-       <property name="passwordProtected" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="password" stdset="0">
-        <string/>
-       </property>
-       <property name="protectedPassword" stdset="0">
-        <string/>
-       </property>
-       <property name="showConfirmDialog" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="confirmMessage" stdset="0">
-        <string>Are you sure you want to proceed?</string>
-       </property>
-       <property name="pressValue" stdset="0">
-        <string>1</string>
-       </property>
-       <property name="releaseValue" stdset="0">
-        <string>None</string>
-       </property>
-       <property name="relativeChange" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="writeWhenRelease" stdset="0">
-        <bool>false</bool>
+       <property name="indent">
+        <number>5</number>
        </property>
       </widget>
      </item>
-     <item row="1" column="4">
-      <widget class="PyDMLabel" name="PyDMLabel">
-       <property name="maximumSize">
-        <size>
-         <width>80</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="precision" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="showUnits" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="precisionFromPV" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:Y1.RBV</string>
-       </property>
-       <property name="enableRichText" stdset="0">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="9">
-      <widget class="PyDMLabel" name="PyDMLabel_6">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="rules" stdset="0">
-        <string>[{&quot;name&quot;: &quot;New Rule&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;0&quot;, &quot;expression&quot;: &quot;ch[0][2]&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:aBladesfDrift_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}], &quot;notes&quot;: &quot;&quot;}]</string>
-       </property>
-       <property name="precision" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="showUnits" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="precisionFromPV" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:aBladesfDrift_RBV.[2]</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="5">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_6">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:Y2.HLS</string>
-       </property>
-       <property name="onColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>255</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="9">
-      <widget class="PyDMLineEdit" name="PyDMLineEdit_5">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="precision" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="showUnits" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="precisionFromPV" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="monitorDisp" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:fDriftTol</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="9">
+     <item row="3" column="11">
       <widget class="PyDMLabel" name="PyDMLabel_8">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -1387,147 +1078,40 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="7">
-      <widget class="PyDMPushButton" name="PyDMPushButton_2">
+     <item row="2" column="4">
+      <widget class="PyDMLabel" name="PyDMLabel_2">
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: red;</string>
-       </property>
-       <property name="text">
-        <string>Stop</string>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="monitorDisp" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:Y2.STOP</string>
-       </property>
-       <property name="PyDMIcon" stdset="0">
-        <string/>
-       </property>
-       <property name="passwordProtected" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="password" stdset="0">
-        <string/>
-       </property>
-       <property name="protectedPassword" stdset="0">
-        <string/>
-       </property>
-       <property name="showConfirmDialog" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="confirmMessage" stdset="0">
-        <string>Are you sure you want to proceed?</string>
-       </property>
-       <property name="pressValue" stdset="0">
-        <string>1</string>
-       </property>
-       <property name="releaseValue" stdset="0">
-        <string>None</string>
-       </property>
-       <property name="relativeChange" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="writeWhenRelease" stdset="0">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>SOUTH</string>
-       </property>
-       <property name="indent">
-        <number>5</number>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="8">
-      <widget class="PyDMShellCommand" name="PyDMShellCommand_3">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string>Expert</string>
-       </property>
-       <property name="commands" stdset="0">
-        <stringlist>
-         <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMT:X1','name':'${name}_north'}]&quot;</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="8">
-      <widget class="PyDMShellCommand" name="PyDMShellCommand_4">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string>Expert</string>
-       </property>
-       <property name="commands" stdset="0">
-        <stringlist>
-         <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMT:X2','name':'${name}_south'}]&quot;</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_3">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:Y2.LLS</string>
-       </property>
-       <property name="onColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>255</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
+       <property name="precision" stdset="0">
         <number>0</number>
        </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
+       <property name="showUnits" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:BOT.RBV</string>
+       </property>
+       <property name="enableRichText" stdset="0">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -1561,17 +1145,114 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:X1.RBV</string>
+        <string>ca://${prefix}:MMT:NORTH.RBV</string>
        </property>
        <property name="enableRichText" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="0" column="8">
-      <widget class="QLabel" name="label_7">
+     <item row="2" column="7">
+      <widget class="PyDMPushButton" name="PyDMPushButton_2">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: red;</string>
+       </property>
        <property name="text">
-        <string>Drift Tolerance</string>
+        <string>Stop</string>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:BOT.STOP</string>
+       </property>
+       <property name="PyDMIcon" stdset="0">
+        <string/>
+       </property>
+       <property name="passwordProtected" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="password" stdset="0">
+        <string/>
+       </property>
+       <property name="protectedPassword" stdset="0">
+        <string/>
+       </property>
+       <property name="showConfirmDialog" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="confirmMessage" stdset="0">
+        <string>Are you sure you want to proceed?</string>
+       </property>
+       <property name="pressValue" stdset="0">
+        <string>1</string>
+       </property>
+       <property name="releaseValue" stdset="0">
+        <string>None</string>
+       </property>
+       <property name="relativeChange" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="writeWhenRelease" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="5">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_6">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:BOT.HLS</string>
+       </property>
+       <property name="onColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
        </property>
       </widget>
      </item>
@@ -1614,7 +1295,513 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:Y1.VAL</string>
+        <string>ca://${prefix}:MMT:TOP.VAL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="10">
+      <widget class="PyDMShellCommand" name="PyDMShellCommand_2">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Expert</string>
+       </property>
+       <property name="commands" stdset="0">
+        <stringlist>
+         <string>typhos &quot;pcdsdevices.epics_motor.SmarActEtherCAT[{'prefix':'${prefix}:MMT:BOT','name':'${name}_bottom'}]&quot; --display-type detailed</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="PyDMLabel" name="PyDMLabel">
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:TOP.RBV</string>
+       </property>
+       <property name="enableRichText" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="10">
+      <widget class="PyDMShellCommand" name="PyDMShellCommand_4">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Expert</string>
+       </property>
+       <property name="commands" stdset="0">
+        <stringlist>
+         <string>typhos &quot;pcdsdevices.epics_motor.SmarActEtherCAT[{'prefix':'${prefix}:MMT:SOUTH','name':'${name}_south'}]&quot; --display-type detailed</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="12">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_9">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:bDrift_RBV</string>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="11">
+      <widget class="PyDMLabel" name="PyDMLabel_9">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="rules" stdset="0">
+        <string>[{&quot;name&quot;: &quot;New Rule&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;0&quot;, &quot;expression&quot;: &quot;ch[0][1]&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:aBladesfDrift_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}], &quot;notes&quot;: &quot;&quot;}]</string>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:aBladesfDrift_RBV.[1]</string>
+       </property>
+       <property name="enableRichText" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="12" rowspan="4">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_10">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:aBladesfDrifted_RBV</string>
+       </property>
+       <property name="orientation" stdset="0">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>4</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+         <string>Bit 1</string>
+         <string>Bit 2</string>
+         <string>Bit 3</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="8">
+      <widget class="PyDMEnumComboBox" name="PyDMEnumComboBox_3">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:bEpsBotBypass</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="5">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_8">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:SOUTH.HLS</string>
+       </property>
+       <property name="onColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="11">
+      <widget class="PyDMLabel" name="PyDMLabel_7">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="rules" stdset="0">
+        <string>[{&quot;name&quot;: &quot;New Rule&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;0&quot;, &quot;expression&quot;: &quot;ch[0][3]&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:aBladesfDrift_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}], &quot;notes&quot;: &quot;&quot;}]</string>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:aBladesfDrift_RBV.[3]</string>
+       </property>
+       <property name="enableRichText" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>NORTH</string>
+       </property>
+       <property name="indent">
+        <number>5</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="10">
+      <widget class="PyDMShellCommand" name="PyDMShellCommand">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Expert</string>
+       </property>
+       <property name="commands" stdset="0">
+        <stringlist>
+         <string>typhos &quot;pcdsdevices.epics_motor.SmarActEtherCAT[{'prefix':'${prefix}:MMT:TOP','name':'${name}_top'}]&quot; --display-type detailed</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_5">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:SOUTH.LLS</string>
+       </property>
+       <property name="onColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="7">
+      <widget class="PyDMPushButton" name="PyDMPushButton_4">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: red;</string>
+       </property>
+       <property name="text">
+        <string>Stop</string>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:SOUTH.STOP</string>
+       </property>
+       <property name="PyDMIcon" stdset="0">
+        <string/>
+       </property>
+       <property name="passwordProtected" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="password" stdset="0">
+        <string/>
+       </property>
+       <property name="protectedPassword" stdset="0">
+        <string/>
+       </property>
+       <property name="showConfirmDialog" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="confirmMessage" stdset="0">
+        <string>Are you sure you want to proceed?</string>
+       </property>
+       <property name="pressValue" stdset="0">
+        <string>1</string>
+       </property>
+       <property name="releaseValue" stdset="0">
+        <string>None</string>
+       </property>
+       <property name="relativeChange" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="writeWhenRelease" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="8">
+      <widget class="PyDMEnumComboBox" name="PyDMEnumComboBox_5">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:bEpsSouthBypass</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_3">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:BOT.LLS</string>
+       </property>
+       <property name="onColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>SOUTH</string>
+       </property>
+       <property name="indent">
+        <number>5</number>
        </property>
       </widget>
      </item>
@@ -1657,12 +1844,49 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:Y2.VAL</string>
+        <string>ca://${prefix}:MMT:BOT.VAL</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="5">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_8">
+     <item row="0" column="11">
+      <widget class="PyDMLineEdit" name="PyDMLineEdit_5">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:fDriftTol</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="8">
+      <widget class="PyDMEnumComboBox" name="PyDMEnumComboBox_4">
        <property name="toolTip">
         <string/>
        </property>
@@ -1675,55 +1899,75 @@
        <property name="PyDMToolTip" stdset="0">
         <string/>
        </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:X2.HLS</string>
-       </property>
-       <property name="onColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>255</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
+        <string>ca://${prefix}:bEpsNorthBypass</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="8">
-      <widget class="PyDMShellCommand" name="PyDMShellCommand_2">
+     <item row="1" column="11">
+      <widget class="PyDMLabel" name="PyDMLabel_6">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
-       <property name="text">
-        <string>Expert</string>
+       <property name="rules" stdset="0">
+        <string>[{&quot;name&quot;: &quot;New Rule&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;0&quot;, &quot;expression&quot;: &quot;ch[0][2]&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:aBladesfDrift_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}], &quot;notes&quot;: &quot;&quot;}]</string>
        </property>
-       <property name="commands" stdset="0">
-        <stringlist>
-         <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMT:Y2','name':'${name}_bottom'}]&quot;</string>
-        </stringlist>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:aBladesfDrift_RBV.[2]</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="7">
-      <widget class="PyDMPushButton" name="PyDMPushButton_4">
+     <item row="1" column="8">
+      <widget class="PyDMEnumComboBox" name="PyDMEnumComboBox_2">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:bEpsTopBypass</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="7">
+      <widget class="PyDMPushButton" name="PyDMPushButton_3">
        <property name="toolTip">
         <string/>
        </property>
@@ -1746,7 +1990,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:X2.STOP</string>
+        <string>ca://${prefix}:MMT:NORTH.STOP</string>
        </property>
        <property name="PyDMIcon" stdset="0">
         <string/>
@@ -1790,134 +2034,8 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>BOTTOM</string>
-       </property>
-       <property name="indent">
-        <number>5</number>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="9">
-      <widget class="PyDMLabel" name="PyDMLabel_7">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="rules" stdset="0">
-        <string>[{&quot;name&quot;: &quot;New Rule&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;0&quot;, &quot;expression&quot;: &quot;ch[0][3]&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:aBladesfDrift_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}], &quot;notes&quot;: &quot;&quot;}]</string>
-       </property>
-       <property name="precision" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="showUnits" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="precisionFromPV" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:aBladesfDrift_RBV.[3]</string>
-       </property>
-       <property name="enableRichText" stdset="0">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="7">
-      <widget class="PyDMPushButton" name="PyDMPushButton_3">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: red;</string>
-       </property>
-       <property name="text">
-        <string>Stop</string>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="PyDMToolTip" stdset="0">
-        <string/>
-       </property>
-       <property name="monitorDisp" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:X1.STOP</string>
-       </property>
-       <property name="PyDMIcon" stdset="0">
-        <string/>
-       </property>
-       <property name="passwordProtected" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="password" stdset="0">
-        <string/>
-       </property>
-       <property name="protectedPassword" stdset="0">
-        <string/>
-       </property>
-       <property name="showConfirmDialog" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="confirmMessage" stdset="0">
-        <string>Are you sure you want to proceed?</string>
-       </property>
-       <property name="pressValue" stdset="0">
-        <string>1</string>
-       </property>
-       <property name="releaseValue" stdset="0">
-        <string>None</string>
-       </property>
-       <property name="relativeChange" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="writeWhenRelease" stdset="0">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="8">
-      <widget class="PyDMShellCommand" name="PyDMShellCommand">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string>Expert</string>
-       </property>
-       <property name="showIcon" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="commands" stdset="0">
-        <stringlist>
-         <string>typhos &quot;pcdsdevices.epics_motor.SmarActBeckhoff[{'prefix':'${prefix}:MMT:Y1','name':'${name}_Y1'}]&quot;</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="5">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_7">
+     <item row="3" column="3">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_4">
        <property name="toolTip">
         <string/>
        </property>
@@ -1931,7 +2049,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMT:X1.HLS</string>
+        <string>ca://${prefix}:MMT:NORTH.LLS</string>
        </property>
        <property name="onColor" stdset="0">
         <color>
@@ -1962,10 +2080,62 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="10" rowspan="4">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_10">
+     <item row="4" column="6">
+      <widget class="PyDMLineEdit" name="PyDMLineEdit_4">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:MMT:SOUTH.VAL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="9">
+      <widget class="PyDMLabel" name="PyDMLabel_11">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
         <bool>false</bool>
@@ -1977,33 +2147,113 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:aBladesfDrifted_RBV</string>
+        <string>ca://${prefix}:bEpsTopBypass_RBV</string>
        </property>
-       <property name="orientation" stdset="0">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="showLabels" stdset="0">
+       <property name="enableRichText" stdset="0">
         <bool>false</bool>
        </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
+      </widget>
+     </item>
+     <item row="2" column="9">
+      <widget class="PyDMLabel" name="PyDMLabel_12">
+       <property name="toolTip">
+        <string/>
        </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>4</number>
-       </property>
-       <property name="shift" stdset="0">
+       <property name="precision" stdset="0">
         <number>0</number>
        </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-         <string>Bit 1</string>
-         <string>Bit 2</string>
-         <string>Bit 3</string>
-        </stringlist>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:bEpsBotBypass_RBV</string>
+       </property>
+       <property name="enableRichText" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="9">
+      <widget class="PyDMLabel" name="PyDMLabel_13">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:bEpsNorthBypass_RBV</string>
+       </property>
+       <property name="enableRichText" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="9">
+      <widget class="PyDMLabel" name="PyDMLabel_14">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:bEpsSouthBypass_RBV</string>
+       </property>
+       <property name="enableRichText" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="8" colspan="2">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>EPS Bypass</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -2080,6 +2330,7 @@
    <class>TyphosDisplayTitle</class>
    <extends>QFrame</extends>
    <header>typhos.display</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>ClippedScale</class>
