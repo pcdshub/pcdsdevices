@@ -11,6 +11,7 @@ from .digital_signals import J120K
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutPositioner, InOutPVStatePositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, LightpathInOutCptMixin, LightpathInOutMixin, LightpathMixin
+from .signal import PytmcSignal
 
 
 class Commands(IntEnum):
@@ -248,8 +249,12 @@ class ST1K0(BaseInterface, LightpathInOutCptMixin):
     state = Cpt(TwinCATInOutPositioner, ":STATE", kind="hinted")
     absorber_vert = Cpt(BeckhoffAxisNoOffset, "", kind="normal")
     flow_switch = Cpt(J120K, "", kind="normal", doc="Device that indicates nominal PCW Flow Rate.")
+    cam_led = FCpt(PytmcSignal, "{cam_prefix}:LED", io="io", kind="normal", doc="Camera LED On/Off control")
 
     lightpath_cpts = ["state"]
 
-    def __init__(self, prefix: str = "ST1K0:MMS:01", *args, name: str = "st1k0", **kwargs):
+    def __init__(
+        self, prefix: str = "ST1K0:MMS:01", cam_prefix: str = "ST1K0:CAM:01", *args, name: str = "st1k0", **kwargs
+    ):
+        self.cam_prefix = cam_prefix
         super().__init__(prefix, *args, name=name, **kwargs)
