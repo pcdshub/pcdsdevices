@@ -1213,8 +1213,6 @@ class FFMirrorZ(FFMirror):
         Alias for the device.
     """
 
-    # Coating States not implemented yet.
-    coating = None
     # Motor components: can read/write positions
     z = Cpt(BeckhoffAxisNoOffset, ":MMS:Z", kind="hinted")
 
