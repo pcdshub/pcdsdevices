@@ -1212,6 +1212,7 @@ class FFMirrorZ(FFMirror):
     name : str
         Alias for the device.
     """
+
     # Motor components: can read/write positions
     z = Cpt(BeckhoffAxisNoOffset, ":MMS:Z", kind="hinted")
 
