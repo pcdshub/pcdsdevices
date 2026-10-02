@@ -18,35 +18,33 @@ SAMPLE_WAVELENGTH = 1.5  # hard xray
 
 # Make sure the calcs are properly inverted
 def test_theta_alio_inversion():
-    logger.debug('test_theta_alio_inversion')
-    theta = ccm.alio_to_theta(SAMPLE_ALIO, ccm.default_theta0, ccm.default_gr,
-                              ccm.default_gd)
-    alio_calc = ccm.theta_to_alio(theta, ccm.default_theta0, ccm.default_gr,
-                                  ccm.default_gd)
+    logger.debug("test_theta_alio_inversion")
+    theta = ccm.alio_to_theta(SAMPLE_ALIO, ccm.default_theta0, ccm.default_gr, ccm.default_gd)
+    alio_calc = ccm.theta_to_alio(theta, ccm.default_theta0, ccm.default_gr, ccm.default_gd)
     # Unlike the other inversions, this is just an approximation
     assert np.isclose(alio_calc, SAMPLE_ALIO)
 
 
 def test_wavelength_theta_inversion():
-    logger.debug('test_wavelength_theta_inversion')
+    logger.debug("test_wavelength_theta_inversion")
     wavelength = ccm.theta_to_wavelength(SAMPLE_THETA, ccm.default_dspacing)
     theta = ccm.wavelength_to_theta(wavelength, ccm.default_dspacing)
-    logger.debug('%s, %s', wavelength, theta)
+    logger.debug("%s, %s", wavelength, theta)
     assert np.isclose(theta, SAMPLE_THETA)
     theta = ccm.wavelength_to_theta(SAMPLE_WAVELENGTH, ccm.default_dspacing)
     wavelength = ccm.theta_to_wavelength(theta, ccm.default_dspacing)
-    logger.debug('%s, %s', wavelength, theta)
+    logger.debug("%s, %s", wavelength, theta)
     assert np.isclose(wavelength, SAMPLE_WAVELENGTH)
 
 
 def test_energy_wavelength_inversion():
-    logger.debug('test_energy_wavelength_inversion')
+    logger.debug("test_energy_wavelength_inversion")
     energy = ccm.wavelength_to_energy(SAMPLE_WAVELENGTH)
     wavelength_calc = ccm.energy_to_wavelength(energy)
     assert wavelength_calc == SAMPLE_WAVELENGTH
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def fake_ccm():
     return make_fake_ccm()
 
@@ -55,27 +53,36 @@ class FakeAlio(FastMotor):
     home = None
 
     def kill(self):
-        print('Killing alio PID')
+        print("Killing alio PID")
 
 
 def make_fake_ccm():
     fake_device_cache[ccm.CCMMotor] = FastMotor
     fake_device_cache[ccm.CCMAlio] = FakeAlio
     FakeCCM = make_fake_device(ccm.CCM)
-    fake_ccm = FakeCCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
-                       theta2coarse_prefix='THTA', chi2_prefix='CHI',
-                       x_down_prefix='X:DOWN', x_up_prefix='X:UP',
-                       y_down_prefix='Y:DOWN', y_up_north_prefix='Y:UP:NORTH',
-                       y_up_south_prefix='Y:UP:SOUTH', in_pos=8, out_pos=0,
-                       name='fake_ccm',
-                       input_branches=['X0'], output_branches=['X0'])
+    fake_ccm = FakeCCM(
+        alio_prefix="ALIO",
+        theta2fine_prefix="THETA",
+        theta2coarse_prefix="THTA",
+        chi2_prefix="CHI",
+        x_down_prefix="X:DOWN",
+        x_up_prefix="X:UP",
+        y_down_prefix="Y:DOWN",
+        y_up_north_prefix="Y:UP:NORTH",
+        y_up_south_prefix="Y:UP:SOUTH",
+        in_pos=8,
+        out_pos=0,
+        name="fake_ccm",
+        input_branches=["X0"],
+        output_branches=["X0"],
+    )
 
     def init_pos(mot, pos=0):
         mot.user_readback.sim_put(0)
         mot.user_setpoint.sim_put(0)
         mot.user_setpoint.sim_set_limits((0, 0))
         mot.motor_spg.sim_put(2)
-        mot.part_number.sim_put('tasdf')
+        mot.part_number.sim_put("tasdf")
 
     init_pos(fake_ccm.x.down)
     init_pos(fake_ccm.x.up)
@@ -92,18 +99,18 @@ def make_fake_ccm():
 
 
 def test_fake_ccm(fake_ccm):
-    logger.debug('test_fake_ccm')
+    logger.debug("test_fake_ccm")
     fake_ccm.get()
 
 
 # Make sure we set up the forward/inverse to use the right methods
 def test_ccm_calc(fake_ccm):
-    logger.debug('test_ccm_calc')
+    logger.debug("test_ccm_calc")
     calc = fake_ccm.energy
 
-    logger.debug('physics pos is %s', calc.position)
-    logger.debug('real pos is %s', calc.real_position)
-    logger.debug('sample alio is %s', SAMPLE_ALIO)
+    logger.debug("physics pos is %s", calc.position)
+    logger.debug("real pos is %s", calc.real_position)
+    logger.debug("sample alio is %s", SAMPLE_ALIO)
 
     theta_func = ccm.alio_to_theta(
         SAMPLE_ALIO,
@@ -128,7 +135,7 @@ def test_ccm_calc(fake_ccm):
 # Make sure sync'd axes work and that unk/in/out states work
 @pytest.mark.timeout(5)
 def test_ccm_main(fake_ccm):
-    logger.debug('test_ccm_main')
+    logger.debug("test_ccm_main")
     fake_ccm.y.move(5, wait=False)
     assert fake_ccm.y.down.user_setpoint.get() == 5
     assert fake_ccm.y.up_north.user_setpoint.get() == 5
@@ -158,7 +165,7 @@ def test_ccm_main(fake_ccm):
 
 @pytest.mark.timeout(5)
 def test_vernier(fake_ccm):
-    logger.debug('test_vernier')
+    logger.debug("test_vernier")
 
     pseudopos = fake_ccm.energy_with_vernier
 
@@ -189,7 +196,7 @@ def test_vernier(fake_ccm):
 
 @pytest.mark.timeout(5)
 def test_set_current_position(fake_ccm):
-    logger.debug('test_set_current_position')
+    logger.debug("test_set_current_position")
     mot = fake_ccm.energy.energy
     for energy in range(6, 14):
         mot.set_current_position(energy)
@@ -198,7 +205,7 @@ def test_set_current_position(fake_ccm):
 
 @pytest.mark.timeout(5)
 def test_check_valid_constant(fake_ccm):
-    logger.debug('test_check_valid_constant')
+    logger.debug("test_check_valid_constant")
 
     # First call to make_valid sends the first monitor update
     def make_valid(sig, valid):
@@ -208,7 +215,7 @@ def test_check_valid_constant(fake_ccm):
             sig.put(0)
 
     def make_conn(sig, conn):
-        sig._metadata['connected'] = conn
+        sig._metadata["connected"] = conn
 
     def output(sig):
         return fake_ccm._check_valid_constant(sig, sig.get())
@@ -238,7 +245,7 @@ def test_check_valid_constant(fake_ccm):
 
 @pytest.mark.timeout(5)
 def test_show_constant_warning(fake_ccm, caplog):
-    logger.debug('test_show_constant_warning')
+    logger.debug("test_show_constant_warning")
     for warning in (
         ccm.CCMConstantWarning.NO_WARNING,
         ccm.CCMConstantWarning.ALWAYS_DISCONNECT,
@@ -262,7 +269,7 @@ def test_show_constant_warning(fake_ccm, caplog):
 
 @pytest.mark.timeout(5)
 def test_warn_invalid_constants(fake_ccm, caplog):
-    logger.debug('test_warn_invalid_constants')
+    logger.debug("test_warn_invalid_constants")
     # Trick the warning into thinking we've be initialized for a while
     fake_ccm._init_time = time.monotonic() - 1000
     fake_ccm.theta0_deg.put(0)
@@ -291,9 +298,17 @@ def test_warn_invalid_constants(fake_ccm, caplog):
 
 @pytest.mark.timeout(5)
 def test_disconnected_ccm():
-    ccm.CCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
-            theta2coarse_prefix='THTA', chi2_prefix='CHI',
-            x_down_prefix='X:DOWN', x_up_prefix='X:UP',
-            y_down_prefix='Y:DOWN', y_up_north_prefix='Y:UP:NORTH',
-            y_up_south_prefix='Y:UP:SOUTH', in_pos=8, out_pos=0,
-            name='ccm')
+    ccm.CCM(
+        alio_prefix="ALIO",
+        theta2fine_prefix="THETA",
+        theta2coarse_prefix="THTA",
+        chi2_prefix="CHI",
+        x_down_prefix="X:DOWN",
+        x_up_prefix="X:UP",
+        y_down_prefix="Y:DOWN",
+        y_up_north_prefix="Y:UP:NORTH",
+        y_up_south_prefix="Y:UP:SOUTH",
+        in_pos=8,
+        out_pos=0,
+        name="ccm",
+    )

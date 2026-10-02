@@ -1,6 +1,7 @@
 """
 Module for the Sample Delivery System and related devices.
 """
+
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal
@@ -19,7 +20,7 @@ class M3BasePLCDevice(BaseInterface, Device):
     Currently only holds the sync unit, to tell if the cluster is alive.
     """
 
-    status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
+    status = Cpt(PytmcSignal, ":IO:SyncUnitOK", io="i", kind="normal")
 
 
 class Bronkhorst(BaseInterface, Device):
@@ -35,9 +36,9 @@ class Bronkhorst(BaseInterface, Device):
         A name for the device.
     """
 
-    unit = Cpt(PytmcSignal, ':Unit', io='i', kind='normal')
-    flow = Cpt(PytmcSignal, ':Flow', io='i', kind='normal')
-    setpoint = Cpt(PytmcSignal, ':Setpoint', io='o', kind='normal')
+    unit = Cpt(PytmcSignal, ":Unit", io="i", kind="normal")
+    flow = Cpt(PytmcSignal, ":Flow", io="i", kind="normal")
+    setpoint = Cpt(PytmcSignal, ":Setpoint", io="o", kind="normal")
 
 
 class ViciValve(BaseInterface, Device):
@@ -53,8 +54,8 @@ class ViciValve(BaseInterface, Device):
         A name for the device.
     """
 
-    req_pos = Cpt(PytmcSignal, ':ReqPos', io='io', kind='normal')
-    curr_pos = Cpt(PytmcSignal, ':CurrentPos', io='i', kind='normal')
+    req_pos = Cpt(PytmcSignal, ":ReqPos", io="io", kind="normal")
+    curr_pos = Cpt(PytmcSignal, ":CurrentPos", io="i", kind="normal")
 
 
 class Sensirion(BaseInterface, Device):
@@ -70,11 +71,11 @@ class Sensirion(BaseInterface, Device):
         A name for the device.
     """
 
-    flow = Cpt(PytmcSignal, ':Flow', io='i', kind='normal')
-    state = Cpt(PytmcSignal, ':State', io='i', kind='normal')
-    reset = Cpt(PytmcSignal, ':Reset', io='o', kind='normal')
-    mode = Cpt(PytmcSignal, ':Mode', io='o', kind='normal')
-    mode_rb = Cpt(PytmcSignal, ':ModeRb', io='i', kind='normal')
+    flow = Cpt(PytmcSignal, ":Flow", io="i", kind="normal")
+    state = Cpt(PytmcSignal, ":State", io="i", kind="normal")
+    reset = Cpt(PytmcSignal, ":Reset", io="o", kind="normal")
+    mode = Cpt(PytmcSignal, ":Mode", io="o", kind="normal")
+    mode_rb = Cpt(PytmcSignal, ":ModeRb", io="i", kind="normal")
 
 
 class Selector(M3BasePLCDevice, GroupDevice):
@@ -93,27 +94,26 @@ class Selector(M3BasePLCDevice, GroupDevice):
         A name for the device.
     """
 
-    sampleFM = Cpt(Sensirion, ':SampleFM', kind='normal')
-    sheathFM = Cpt(Sensirion, ':SheathFM', kind='normal')
+    sampleFM = Cpt(Sensirion, ":SampleFM", kind="normal")
+    sheathFM = Cpt(Sensirion, ":SheathFM", kind="normal")
 
     # TODO: Add CXI:SDS:SEL1:SYNC_RES_REQ and other aux records
 
-    shaker1 = Cpt(PytmcSignal, ':Shaker:01:Ctrl', io='o', kind='normal')
-    shaker2 = Cpt(PytmcSignal, ':Shaker:02:Ctrl', io='o', kind='normal')
-    shaker3 = Cpt(PytmcSignal, ':Shaker:03:Ctrl', io='o', kind='normal')
-    shaker4 = Cpt(PytmcSignal, ':Shaker:04:Ctrl', io='o', kind='normal')
+    shaker1 = Cpt(PytmcSignal, ":Shaker:01:Ctrl", io="o", kind="normal")
+    shaker2 = Cpt(PytmcSignal, ":Shaker:02:Ctrl", io="o", kind="normal")
+    shaker3 = Cpt(PytmcSignal, ":Shaker:03:Ctrl", io="o", kind="normal")
+    shaker4 = Cpt(PytmcSignal, ":Shaker:04:Ctrl", io="o", kind="normal")
 
-    valve1 = Cpt(ViciValve, ':Valve:01', name='ViciValve1')
-    valve2 = Cpt(ViciValve, ':Valve:02', name='ViciValve2')
+    valve1 = Cpt(ViciValve, ":Valve:01", name="ViciValve1")
+    valve2 = Cpt(ViciValve, ":Valve:02", name="ViciValve2")
 
-    lock = Cpt(PytmcSignal, ':ValvesLockRequest', io='o', kind='normal')
-    unlock = Cpt(PytmcSignal, ':ValvesUnlockRequest', io='o', kind='normal')
-    locked = Cpt(PytmcSignal, ':ValvesLocked', io='i', kind='normal')
-    synced = Cpt(PytmcSignal, ':ValvesSynced', io='i', kind='normal')
+    lock = Cpt(PytmcSignal, ":ValvesLockRequest", io="o", kind="normal")
+    unlock = Cpt(PytmcSignal, ":ValvesUnlockRequest", io="o", kind="normal")
+    locked = Cpt(PytmcSignal, ":ValvesLocked", io="i", kind="normal")
+    synced = Cpt(PytmcSignal, ":ValvesSynced", io="i", kind="normal")
 
-    sync_req_pos = Cpt(PytmcSignal, ':ValveSyncReqPos', io='o', kind='normal')
-    sync_curr_pos = Cpt(PytmcSignal, ':ValveSyncCurrentPos', io='i',
-                        kind='normal')
+    sync_req_pos = Cpt(PytmcSignal, ":ValveSyncReqPos", io="o", kind="normal")
+    sync_curr_pos = Cpt(PytmcSignal, ":ValveSyncCurrentPos", io="i", kind="normal")
 
 
 class CoolerShaker(BaseInterface, Device):
@@ -248,11 +248,11 @@ class PropAir(BaseInterface, Device):
         A name for the device.
     """
 
-    pressure = Cpt(PytmcSignal, ':Pressure', io='i', kind='normal')
-    enabled = Cpt(PytmcSignal, ':Enable', io='io', kind='normal')
-    setpoint = Cpt(PytmcSignal, ':Setpoint', io='io', kind='normal')
-    low_limit = Cpt(PytmcSignal, ':LowLimit', io='io', kind='normal')
-    high_limit = Cpt(PytmcSignal, ':HighLimit', io='io', kind='normal')
+    pressure = Cpt(PytmcSignal, ":Pressure", io="i", kind="normal")
+    enabled = Cpt(PytmcSignal, ":Enable", io="io", kind="normal")
+    setpoint = Cpt(PytmcSignal, ":Setpoint", io="io", kind="normal")
+    low_limit = Cpt(PytmcSignal, ":LowLimit", io="io", kind="normal")
+    high_limit = Cpt(PytmcSignal, ":HighLimit", io="io", kind="normal")
 
 
 class PCM(M3BasePLCDevice, GroupDevice):
@@ -268,8 +268,8 @@ class PCM(M3BasePLCDevice, GroupDevice):
         A name for the device.
     """
 
-    propair1 = Cpt(PropAir, ':PropAir:01', name='PropAir1')
-    propair2 = Cpt(PropAir, ':PropAir:02', name='PropAir2')
+    propair1 = Cpt(PropAir, ":PropAir:01", name="PropAir1")
+    propair2 = Cpt(PropAir, ":PropAir:02", name="PropAir2")
 
 
 class IntegratedFlow(BaseInterface, Device):
@@ -420,7 +420,7 @@ class FlowIntegrator(BaseInterface, GroupDevice):
 
     def __init__(self, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
-        super().__init__('', name=name, **kwargs)
+        super().__init__("", name=name, **kwargs)
 
 
 class ManifoldValve(BaseInterface, Device):
@@ -436,10 +436,10 @@ class ManifoldValve(BaseInterface, Device):
         A name for the device.
     """
 
-    open = Cpt(PytmcSignal, ':Open', io='o', kind='normal')
-    open_do = Cpt(PytmcSignal, ':OpenDO', io='i', kind='normal')
-    open_sw = Cpt(PytmcSignal, ':OpenSW', io='i', kind='normal')
-    interlocked = Cpt(PytmcSignal, ':Ilk', io='i', kind='normal')
+    open = Cpt(PytmcSignal, ":Open", io="o", kind="normal")
+    open_do = Cpt(PytmcSignal, ":OpenDO", io="i", kind="normal")
+    open_sw = Cpt(PytmcSignal, ":OpenSW", io="i", kind="normal")
+    interlocked = Cpt(PytmcSignal, ":Ilk", io="i", kind="normal")
 
 
 class GasManifold(M3BasePLCDevice, GroupDevice):
@@ -455,11 +455,11 @@ class GasManifold(M3BasePLCDevice, GroupDevice):
         A name for the device.
     """
 
-    valve1 = Cpt(ManifoldValve, ':Valve:01', name='ManifoldValve1')
-    valve2 = Cpt(ManifoldValve, ':Valve:02', name='ManifoldValve1')
-    valve3 = Cpt(ManifoldValve, ':Valve:03', name='ManifoldValve1')
-    valve4 = Cpt(ManifoldValve, ':Valve:04', name='ManifoldValve1')
-    valve5 = Cpt(ManifoldValve, ':Valve:05', name='ManifoldValve1')
-    valve6 = Cpt(ManifoldValve, ':Valve:06', name='ManifoldValve1')
-    valve7 = Cpt(ManifoldValve, ':Valve:07', name='ManifoldValve1')
-    valve8 = Cpt(ManifoldValve, ':Valve:08', name='ManifoldValve1')
+    valve1 = Cpt(ManifoldValve, ":Valve:01", name="ManifoldValve1")
+    valve2 = Cpt(ManifoldValve, ":Valve:02", name="ManifoldValve1")
+    valve3 = Cpt(ManifoldValve, ":Valve:03", name="ManifoldValve1")
+    valve4 = Cpt(ManifoldValve, ":Valve:04", name="ManifoldValve1")
+    valve5 = Cpt(ManifoldValve, ":Valve:05", name="ManifoldValve1")
+    valve6 = Cpt(ManifoldValve, ":Valve:06", name="ManifoldValve1")
+    valve7 = Cpt(ManifoldValve, ":Valve:07", name="ManifoldValve1")
+    valve8 = Cpt(ManifoldValve, ":Valve:08", name="ManifoldValve1")

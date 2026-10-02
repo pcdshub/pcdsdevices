@@ -14,9 +14,9 @@ def recurse_record(d, record):
             d[k] = dict()
         recurse_record(d[k], record)
     else:
-        if 'components' not in d.keys():
-            d['components'] = []
-        d['components'].append(k)
+        if "components" not in d.keys():
+            d["components"] = []
+        d["components"].append(k)
 
 
 def make_signal(suffix, lines):
@@ -24,7 +24,7 @@ def make_signal(suffix, lines):
     Create a Cpt line with specified suffix. This line is added to a supplied
     list, used for storing components within a particular class.
     """
-    s = "    {0} = Cpt(EpicsSignal, \':{1}\', kind=\'normal\')"
+    s = "    {0} = Cpt(EpicsSignal, ':{1}', kind='normal')"
     lines.append(s.format(suffix.lower(), suffix))
 
 
@@ -33,8 +33,7 @@ def make_signal_wrbv(suffix, lines):
     Create a Cpt line with RBV pv and separate write_PV. This line is added to
     a supplied list, used for storing components within a particular class.
     """
-    s = ("    {0} = Cpt(EpicsSignal, \':{1}_RBV\', write_pv=\':{1}\', "
-         "kind=\'normal\')")
+    s = "    {0} = Cpt(EpicsSignal, ':{1}_RBV', write_pv=':{1}', kind='normal')"
     lines.append(s.format(suffix.lower(), suffix))
 
 
@@ -42,7 +41,7 @@ def make_class_name(pv):
     """
     Make a class name based on a given PV.
     """
-    return f'{pv.title()}'
+    return f"{pv.title()}"
 
 
 def make_class_line(name, lines):
@@ -50,7 +49,7 @@ def make_class_line(name, lines):
     Make the first line of a class definition, based on a given PV or name.
     Appends the generated line to a list of lines.
     """
-    s = f'class {make_class_name(name)}(BaseInterface, Device):'
+    s = f"class {make_class_name(name)}(BaseInterface, Device):"
     lines.append(s)
 
 
@@ -59,7 +58,7 @@ def make_cpt(name, lines):
     Make a component line for a sub-class, based on the supplied name.
     Appends the generated line to a list of lines.
     """
-    s = "    {0} = Cpt({1}, \':{2}\', kind=\'normal\')"
+    s = "    {0} = Cpt({1}, ':{2}', kind='normal')"
     lines.append(s.format(name.lower(), make_class_name(name), name))
 
 
@@ -74,19 +73,19 @@ def get_components(pv_list):
     cpts_w_rbv = []
     cpts_wo_rbv = []
     for pv in pv_list:
-        if pv+'_RBV' in pv_list:
+        if pv + "_RBV" in pv_list:
             cpts_w_rbv.append(pv)
         # in case we found the RBV pv first:
-        elif '_RBV' in pv:
-            if pv.removesuffix('_RBV') in pv_list:
-                cpts_w_rbv.append(pv.removesuffix('_RBV'))
+        elif "_RBV" in pv:
+            if pv.removesuffix("_RBV") in pv_list:
+                cpts_w_rbv.append(pv.removesuffix("_RBV"))
         else:
             cpts_wo_rbv.append(pv)
     pv_dict = {}
     # The above algorithm is simple, can result in duplicates. Use set() to
     # clean things up.
-    pv_dict['w_rbv'] = sorted(set(cpts_w_rbv))
-    pv_dict['wo_rbv'] = sorted(set(cpts_wo_rbv))
+    pv_dict["w_rbv"] = sorted(set(cpts_w_rbv))
+    pv_dict["wo_rbv"] = sorted(set(cpts_wo_rbv))
     return pv_dict
 
 
@@ -102,17 +101,17 @@ def make_class(name, d):
     make_class_line(name, class_lines)
     lines = sorted(d.keys())
     for key in lines:
-        if key != 'components':
+        if key != "components":
             make_cpt(key, class_lines)
             sub_class_lines.append(make_class(key, d[key]))
-            sub_class_lines.append('\n\n')
+            sub_class_lines.append("\n\n")
         else:
             dcpt = get_components(d[key])
-            for cpt in dcpt['w_rbv']:
+            for cpt in dcpt["w_rbv"]:
                 make_signal_wrbv(cpt, class_lines)
-            for cpt in dcpt['wo_rbv']:
+            for cpt in dcpt["wo_rbv"]:
                 make_signal(cpt, class_lines)
-            class_lines + ['\n\n']
+            class_lines + ["\n\n"]
 
     return flatten_list(sub_class_lines + class_lines)
 
@@ -137,14 +136,15 @@ def print_class(class_lines):
 
 
 def write_file(lines, name):
-    with open(name, 'a') as f:
-        f.write('\n'.join(lines))
+    with open(name, "a") as f:
+        f.write("\n".join(lines))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
 
     from whatrecord import db
+
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -180,16 +180,16 @@ if __name__ == '__main__':
     d = {}
     for record in record_list:
         # Sanitize the record of macros
-        record = re.sub(r'\:?\$?\(.*\)\:?', '', record)
-        recurse_record(d, record.split(':'))
+        record = re.sub(r"\:?\$?\(.*\)\:?", "", record)
+        recurse_record(d, record.split(":"))
 
     class_lines = make_class(args.name, d)
     file_lines = []
-    docstring = '\"\"\"\n{0} class generated from {1}.\n\"\"\"\n'
+    docstring = '"""\n{0} class generated from {1}.\n"""\n'
     file_lines.append(docstring.format(args.name, args.db))
-    file_lines.append('from ophyd import Component as Cpt')
-    file_lines.append('from ophyd import Device, EpicsSignal')
-    file_lines.append('\nfrom .interface import BaseInterface\n\n')
+    file_lines.append("from ophyd import Component as Cpt")
+    file_lines.append("from ophyd import Device, EpicsSignal")
+    file_lines.append("\nfrom .interface import BaseInterface\n\n")
     file_lines = file_lines + class_lines
 
     if args.echo:

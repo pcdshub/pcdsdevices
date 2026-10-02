@@ -81,6 +81,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         other elements in the control system to see what this positioner is
         doing.
     """
+
     def __init__(
         self,
         *,
@@ -99,33 +100,34 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         notepad_pv=None,
         parent=None,
         kind=None,
-        **kwargs
+        **kwargs,
     ):
-        self._check_signature('move', move, 1)
+        self._check_signature("move", move, 1)
         self._move = move
-        self._check_signature('get_pos', get_pos, 0)
+        self._check_signature("get_pos", get_pos, 0)
         self._get_pos = get_pos
-        self._check_signature('set_pos', set_pos, 1)
+        self._check_signature("set_pos", set_pos, 1)
         self._set_pos = set_pos
-        self._check_signature('stop', stop, 0)
+        self._check_signature("stop", stop, 0)
         self._stop = stop
-        self._check_signature('done', done, 0)
+        self._check_signature("done", done, 0)
         self._done = done
-        self._check_signature('check_value', check_value, 1)
+        self._check_signature("check_value", check_value, 1)
         self._check = check_value
         self._info = info
         self._last_update = 0
         self._goal = None
         self.update_rate = 1
-        notepad_name = name + '_notepad'
+        notepad_name = name + "_notepad"
         if notepad_pv is None:
             self.notepad_signal = Signal(name=notepad_name)
         else:
             self.notepad_signal = EpicsSignal(notepad_pv, name=notepad_name)
         if parent is None and kind is None:
-            kind = 'hinted'
-        super().__init__(name=name, egu=egu, limits=limits, source='func',
-                         timeout=timeout, parent=parent, kind=kind, **kwargs)
+            kind = "hinted"
+        super().__init__(
+            name=name, egu=egu, limits=limits, source="func", timeout=timeout, parent=parent, kind=kind, **kwargs
+        )
 
     def _check_signature(self, name, func, nargs):
         if func is None:
@@ -135,8 +137,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
             sig.bind(*(0,) * nargs)
         except TypeError:
             raise ValueError(
-                f'FuncPositioner recieved {name} with an incorrect. '
-                f'signature. Must be able to take {nargs} args.'
+                f"FuncPositioner recieved {name} with an incorrect. signature. Must be able to take {nargs} args."
             ) from None
 
     def _setup_move(self, position, status):
@@ -149,9 +150,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         self._new_update(status)
 
     def _new_update(self, status):
-        schedule_task(
-            self._update_task, args=(status,), delay=self.update_rate
-        )
+        schedule_task(self._update_task, args=(status,), delay=self.update_rate)
 
     def _update_task(self, status):
         self._update_position()
@@ -189,18 +188,14 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
 
     def set_position(self, position):
         if self._set_pos is None:
-            raise NotImplementedError(
-                f'FuncPositioner {self.name} was not given a set_pos argument.'
-            )
+            raise NotImplementedError(f"FuncPositioner {self.name} was not given a set_pos argument.")
         else:
             self._set_pos(position)
 
     def stop(self, *args, **kwargs):
         if self._stop is None:
             # Often called by bluesky, don't throw an exception
-            self.log.warning(
-                f'Called stop on FuncPositioner {self.name}, but was not given a stop argument.'
-            )
+            self.log.warning(f"Called stop on FuncPositioner {self.name}, but was not given a stop argument.")
         else:
             self._stop()
         super().stop(*args, **kwargs)

@@ -25,46 +25,45 @@ class Acromag(BaseInterface, GroupDevice):
 
     # Components for each channel
     # Output channels
-    ao1_0 = Cpt(EpicsSignal, ":ao1:0", kind='normal')
-    ao1_1 = Cpt(EpicsSignal, ":ao1:1", kind='normal')
-    ao1_2 = Cpt(EpicsSignal, ":ao1:2", kind='normal')
-    ao1_3 = Cpt(EpicsSignal, ":ao1:3", kind='normal')
-    ao1_4 = Cpt(EpicsSignal, ":ao1:4", kind='normal')
-    ao1_5 = Cpt(EpicsSignal, ":ao1:5", kind='normal')
-    ao1_6 = Cpt(EpicsSignal, ":ao1:6", kind='normal')
-    ao1_7 = Cpt(EpicsSignal, ":ao1:7", kind='normal')
-    ao1_8 = Cpt(EpicsSignal, ":ao1:8", kind='normal')
-    ao1_9 = Cpt(EpicsSignal, ":ao1:9", kind='normal')
-    ao1_10 = Cpt(EpicsSignal, ":ao1:10", kind='normal')
-    ao1_11 = Cpt(EpicsSignal, ":ao1:11", kind='normal')
-    ao1_12 = Cpt(EpicsSignal, ":ao1:12", kind='normal')
-    ao1_13 = Cpt(EpicsSignal, ":ao1:13", kind='normal')
-    ao1_14 = Cpt(EpicsSignal, ":ao1:14", kind='normal')
-    ao1_15 = Cpt(EpicsSignal, ":ao1:15", kind='normal')
+    ao1_0 = Cpt(EpicsSignal, ":ao1:0", kind="normal")
+    ao1_1 = Cpt(EpicsSignal, ":ao1:1", kind="normal")
+    ao1_2 = Cpt(EpicsSignal, ":ao1:2", kind="normal")
+    ao1_3 = Cpt(EpicsSignal, ":ao1:3", kind="normal")
+    ao1_4 = Cpt(EpicsSignal, ":ao1:4", kind="normal")
+    ao1_5 = Cpt(EpicsSignal, ":ao1:5", kind="normal")
+    ao1_6 = Cpt(EpicsSignal, ":ao1:6", kind="normal")
+    ao1_7 = Cpt(EpicsSignal, ":ao1:7", kind="normal")
+    ao1_8 = Cpt(EpicsSignal, ":ao1:8", kind="normal")
+    ao1_9 = Cpt(EpicsSignal, ":ao1:9", kind="normal")
+    ao1_10 = Cpt(EpicsSignal, ":ao1:10", kind="normal")
+    ao1_11 = Cpt(EpicsSignal, ":ao1:11", kind="normal")
+    ao1_12 = Cpt(EpicsSignal, ":ao1:12", kind="normal")
+    ao1_13 = Cpt(EpicsSignal, ":ao1:13", kind="normal")
+    ao1_14 = Cpt(EpicsSignal, ":ao1:14", kind="normal")
+    ao1_15 = Cpt(EpicsSignal, ":ao1:15", kind="normal")
 
     # Input channels
-    ai1_0 = Cpt(EpicsSignalRO, ":ai1:0", kind='normal')
-    ai1_1 = Cpt(EpicsSignalRO, ":ai1:1", kind='normal')
-    ai1_2 = Cpt(EpicsSignalRO, ":ai1:2", kind='normal')
-    ai1_3 = Cpt(EpicsSignalRO, ":ai1:3", kind='normal')
-    ai1_4 = Cpt(EpicsSignalRO, ":ai1:4", kind='normal')
-    ai1_5 = Cpt(EpicsSignalRO, ":ai1:5", kind='normal')
-    ai1_6 = Cpt(EpicsSignalRO, ":ai1:6", kind='normal')
-    ai1_7 = Cpt(EpicsSignalRO, ":ai1:7", kind='normal')
-    ai1_8 = Cpt(EpicsSignalRO, ":ai1:8", kind='normal')
-    ai1_9 = Cpt(EpicsSignalRO, ":ai1:9", kind='normal')
-    ai1_10 = Cpt(EpicsSignalRO, ":ai1:10", kind='normal')
-    ai1_11 = Cpt(EpicsSignalRO, ":ai1:11", kind='normal')
-    ai1_12 = Cpt(EpicsSignalRO, ":ai1:12", kind='normal')
-    ai1_13 = Cpt(EpicsSignalRO, ":ai1:13", kind='normal')
-    ai1_14 = Cpt(EpicsSignalRO, ":ai1:14", kind='normal')
-    ai1_15 = Cpt(EpicsSignalRO, ":ai1:15", kind='normal')
+    ai1_0 = Cpt(EpicsSignalRO, ":ai1:0", kind="normal")
+    ai1_1 = Cpt(EpicsSignalRO, ":ai1:1", kind="normal")
+    ai1_2 = Cpt(EpicsSignalRO, ":ai1:2", kind="normal")
+    ai1_3 = Cpt(EpicsSignalRO, ":ai1:3", kind="normal")
+    ai1_4 = Cpt(EpicsSignalRO, ":ai1:4", kind="normal")
+    ai1_5 = Cpt(EpicsSignalRO, ":ai1:5", kind="normal")
+    ai1_6 = Cpt(EpicsSignalRO, ":ai1:6", kind="normal")
+    ai1_7 = Cpt(EpicsSignalRO, ":ai1:7", kind="normal")
+    ai1_8 = Cpt(EpicsSignalRO, ":ai1:8", kind="normal")
+    ai1_9 = Cpt(EpicsSignalRO, ":ai1:9", kind="normal")
+    ai1_10 = Cpt(EpicsSignalRO, ":ai1:10", kind="normal")
+    ai1_11 = Cpt(EpicsSignalRO, ":ai1:11", kind="normal")
+    ai1_12 = Cpt(EpicsSignalRO, ":ai1:12", kind="normal")
+    ai1_13 = Cpt(EpicsSignalRO, ":ai1:13", kind="normal")
+    ai1_14 = Cpt(EpicsSignalRO, ":ai1:14", kind="normal")
+    ai1_15 = Cpt(EpicsSignalRO, ":ai1:15", kind="normal")
 
     tab_component_names = True
 
 
-def acromag_ch_factory_func(prefix, channel, *, signal_class=None, name=None,
-                            **kwargs):
+def acromag_ch_factory_func(prefix, channel, *, signal_class=None, name=None, **kwargs):
     """
     This is a factory function for creating an Acromag output or input signal.
 
@@ -83,11 +82,11 @@ def acromag_ch_factory_func(prefix, channel, *, signal_class=None, name=None,
         prefix and channel to generate a name. E.g.: `ai_1` or `ao_1`.
     """
     if signal_class is None:
-        signal_class = EpicsSignalRO if ':ai' in prefix else EpicsSignal
-    name_prefix = 'ai_' if ':ai' in prefix else 'ao_'
-    name = name or f'{name_prefix}{channel}'
-    prefix = f'{prefix}:{channel}'
-    return signal_class(prefix, name=name, kind='normal')
+        signal_class = EpicsSignalRO if ":ai" in prefix else EpicsSignal
+    name_prefix = "ai_" if ":ai" in prefix else "ao_"
+    name = name or f"{name_prefix}{channel}"
+    prefix = f"{prefix}:{channel}"
+    return signal_class(prefix, name=name, kind="normal")
 
 
 AcromagChannel = acromag_ch_factory_func
@@ -117,18 +116,17 @@ class Mesh(BaseInterface, Device):
         Gain for high voltage supply to be controlled by the Acromag.
     """
 
-    tab_whitelist = ['get_mesh_voltage', 'set_mesh_voltage',
-                     'tweak_mesh_voltage']
+    tab_whitelist = ["get_mesh_voltage", "set_mesh_voltage", "tweak_mesh_voltage"]
 
-    write_sig = FCpt(EpicsSignal, '{self.prefix}' + ':ao1:' + '{self.sp_ch}')
-    read_sig = FCpt(EpicsSignalRO, '{self.prefix}' + ':ai1:' + '{self.rb_ch}')
+    write_sig = FCpt(EpicsSignal, "{self.prefix}" + ":ao1:" + "{self.sp_ch}")
+    read_sig = FCpt(EpicsSignalRO, "{self.prefix}" + ":ai1:" + "{self.rb_ch}")
 
     def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0, name=None):
         self.scale = scale
         self.prefix = prefix
         self.sp_ch = sp_ch
         self.rb_ch = rb_ch
-        super().__init__(prefix, name='mesh_raw')
+        super().__init__(prefix, name="mesh_raw")
 
     def get_raw_mesh_voltage(self):
         """
@@ -164,15 +162,15 @@ class Mesh(BaseInterface, Device):
             setpoint and readback values.
         """
 
-        self.log.info('Setting mesh voltage...')
+        self.log.info("Setting mesh voltage...")
         hv_sp_raw = hv_sp / self.scale
         self.write_sig.put(hv_sp_raw)
         if wait:
             time.sleep(1.0)
         hv_rb_raw = self.read_sig.get()
         hv_rb = hv_rb_raw * self.scale
-        self.log.info('Power supply setpoint: %s V' % hv_sp)
-        self.log.info('Power supply readback: %s V' % hv_rb)
+        self.log.info("Power supply setpoint: %s V" % hv_sp)
+        self.log.info("Power supply readback: %s V" % hv_rb)
 
     def set_rel_mesh_voltage(self, delta_hv_sp, wait=True):
         """
@@ -188,7 +186,7 @@ class Mesh(BaseInterface, Device):
 
         curr_hv_sp_raw = self.write_sig.get()
         curr_hv_sp = curr_hv_sp_raw * self.scale
-        self.log.info('Previous power supply setpoint: %s V' % curr_hv_sp)
+        self.log.info("Previous power supply setpoint: %s V" % curr_hv_sp)
         new_hv_sp = curr_hv_sp + delta_hv_sp
         self.set_mesh_voltage(new_hv_sp, wait=wait)
 
@@ -210,10 +208,10 @@ class Mesh(BaseInterface, Device):
             once - i.e. single tweak mode.
         """
 
-        print('Use arrow keys (left, right) to step voltage (-, +)')
+        print("Use arrow keys (left, right) to step voltage (-, +)")
         while True:
             key = key_press.get_input()
-            if key in ('q', None):
+            if key in ("q", None):
                 return
             elif key == key_press.arrow_right:
                 self.set_rel_mesh_voltage(delta_hv_sp, wait=False)
@@ -227,14 +225,11 @@ class FDQ(BaseInterface, Device):
     """
     A collection of PVs to inteface python with a Keyence FDQ Flow Meter.
     """
-    tab_whitelist = ['get_flow_rate', 'get_flow_offset',
-                     'set_flow_offset']
-    flow_res = Cpt(PytmcSignal, ':FWM:RES', io='i', kind='config',
-                   doc='Flow meter resolution')
-    flow_off = Cpt(PytmcSignal, ':FWM:OFF', io='io', kind='config',
-                   doc='Flow meter offset')
-    flow_val = Cpt(PytmcSignal, ':FWM:VAL', io='i', kind='normal',
-                   doc='Flow meter value')
+
+    tab_whitelist = ["get_flow_rate", "get_flow_offset", "set_flow_offset"]
+    flow_res = Cpt(PytmcSignal, ":FWM:RES", io="i", kind="config", doc="Flow meter resolution")
+    flow_off = Cpt(PytmcSignal, ":FWM:OFF", io="io", kind="config", doc="Flow meter offset")
+    flow_val = Cpt(PytmcSignal, ":FWM:VAL", io="i", kind="normal", doc="Flow meter value")
 
     @property
     def get_flow_rate(self):

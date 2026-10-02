@@ -13,9 +13,9 @@ logger = logging.getLogger(__name__)
 FakeSequencer = make_fake_device(EventSequencer)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def sequence():
-    seq = FakeSequencer('ECS:TST:100', name='seq')
+    seq = FakeSequencer("ECS:TST:100", name="seq")
     # Running forever
     seq.play_mode.put(2)
     seq.play_control.put(0)
@@ -25,6 +25,7 @@ def sequence():
 # Simulated Sequencer for use in scans
 class SimSequencer(FakeSequencer):
     """Simulated Sequencer usable in bluesky plans"""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Forces an immediate stop on complete
@@ -46,10 +47,7 @@ class SimSequencer(FakeSequencer):
         self.sequence.bc_array.sim_put([0] * 2048)
 
         # Initialize sequence
-        initial_sequence = [[0] * 20,
-                            [0] * 20,
-                            [0] * 20,
-                            [0] * 20]
+        initial_sequence = [[0] * 20, [0] * 20, [0] * 20, [0] * 20]
         self.sequence.put_seq(initial_sequence)
 
     def kickoff(self):
@@ -58,7 +56,7 @@ class SimSequencer(FakeSequencer):
 
 
 def test_kickoff(sequence):
-    logger.debug('test_kickoff')
+    logger.debug("test_kickoff")
     seq = sequence
     st = seq.kickoff()
     # Not currently playing
@@ -66,8 +64,8 @@ def test_kickoff(sequence):
     # Check we gave the command to start the sequencer
     assert seq.play_control.get() == 1
     # Check that our monitors have started
-    assert len(seq.current_step._callbacks['value']) == 1
-    assert len(seq.play_count._callbacks['value']) == 1
+    assert len(seq.current_step._callbacks["value"]) == 1
+    assert len(seq.play_count._callbacks["value"]) == 1
     # Our status should not be done until the sequencer starts
     assert not st.done
     seq.play_status.sim_put(2)
@@ -108,7 +106,7 @@ def test_trigger(sequence):
 
 
 def test_complete_run_forever(sequence):
-    logger.debug('test_complete_run_forever')
+    logger.debug("test_complete_run_forever")
     seq = sequence
     seq._acquiring = True
     # Run Forever mode should tell this to stop
@@ -120,7 +118,7 @@ def test_complete_run_forever(sequence):
 
 
 def test_complete_run_once(sequence):
-    logger.debug('test_complete_run_once')
+    logger.debug("test_complete_run_once")
     seq = sequence
     seq._acquiring = True
     # Start the sequencer in run once mode
@@ -150,7 +148,7 @@ def test_pause_and_resume(sequence):
 
 @pytest.mark.xfail()
 def test_fly_scan_smoke():
-    seq = SimSequencer('ECS:TST:100', name='seq')
+    seq = SimSequencer("ECS:TST:100", name="seq")
     RE = RunEngine()
 
     # Create a plan where we fly for a second
@@ -162,14 +160,9 @@ def test_fly_scan_smoke():
 
 
 def test_sequence_get_put():
-    seq = SimSequencer('ECS:TST:100', name='seq')
+    seq = SimSequencer("ECS:TST:100", name="seq")
 
-    dummy_sequence = [
-        [1, 2, 3, 4],
-        [5, 6, 7, 8],
-        [9, 10, 11, 12],
-        [13, 14, 15, 16]
-    ]
+    dummy_sequence = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]
 
     # Write the dummy sequence
     seq.sequence.put_seq(dummy_sequence)
@@ -182,4 +175,4 @@ def test_sequence_get_put():
 
 @pytest.mark.timeout(5)
 def test_seq_disconnected():
-    EventSequencer('ECS:TST:100', name='seq')
+    EventSequencer("ECS:TST:100", name="seq")

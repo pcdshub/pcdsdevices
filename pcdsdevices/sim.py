@@ -24,7 +24,7 @@ class SynMotor(FltMvInterface, SynAxis):
         return super().set(position)
 
 
-ignore_kwargs = ('atol', 'n_bounces', 'invert')
+ignore_kwargs = ("atol", "n_bounces", "invert")
 
 
 class FastMotor(FltMvInterface, SoftPositioner, Device):
@@ -35,8 +35,8 @@ class FastMotor(FltMvInterface, SoftPositioner, Device):
     subclasses. It does not have all of the `SynAxis` functionality.
     """
 
-    user_readback = Cpt(AttributeSignal, 'position')
-    user_setpoint = Cpt(AttributeSignal, 'position')
+    user_readback = Cpt(AttributeSignal, "position")
+    user_setpoint = Cpt(AttributeSignal, "position")
 
     def __init__(self, *args, init_pos=0, kind=Kind.hinted, **kwargs):
         for kw in ignore_kwargs:
@@ -81,11 +81,11 @@ class SlowMotor(FastMotor):
                     return
                 time.sleep(0.1)
             positioner._done_moving(success=False)
+
         self.stop()
         self._started_moving = True
         self._stop = False
-        t = threading.Thread(target=update_thread,
-                             args=(self, position))
+        t = threading.Thread(target=update_thread, args=(self, position))
         t.start()
 
     def stop(self, *, success: bool = False):
@@ -94,6 +94,7 @@ class SlowMotor(FastMotor):
 
 class SimTwoAxis(Device):
     """Test assembly with two slow motors. Used to test 2D tweak."""
+
     x = Cpt(SlowMotor)
     y = Cpt(SlowMotor)
 

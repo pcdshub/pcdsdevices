@@ -9,12 +9,10 @@ from ophyd.signal import DerivedSignal, EpicsSignal, EpicsSignalRO
 from ophyd.sim import FakeEpicsSignalRO, fake_device_cache
 from ophyd.status import MoveStatus
 from ophyd.status import wait as status_wait
-from ophyd.utils.epics_pvs import (AlarmSeverity, fmt_time,
-                                   raise_if_disconnected)
+from ophyd.utils.epics_pvs import AlarmSeverity, fmt_time, raise_if_disconnected
 
 from .doc_stubs import basic_positioner_init
-from .epics_motor import (BeckhoffAxisPLC, EpicsMotorInterfaceAlarmFilter,
-                          MotorDisabledError)
+from .epics_motor import BeckhoffAxisPLC, EpicsMotorInterfaceAlarmFilter, MotorDisabledError
 from .eps import EPS
 from .interface import FltMvInterface
 from .signal import PytmcSignal
@@ -41,13 +39,14 @@ class EnabledDisabledSignal(EpicsSignal):
     Used where the soft-limit enable PVs (e.g. NC:SoftPosMinOn) are plain
     longin records without ONAM/ZNAM string fields.
     """
-    _enum_strs = ('DISABLE', 'ENABLE')
+
+    _enum_strs = ("DISABLE", "ENABLE")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Advertise the synthetic enum strings via metadata so consumers
         # (Typhos widget selector, ophyd describe()) treat this as an enum.
-        self._metadata['enum_strs'] = tuple(self._enum_strs)
+        self._metadata["enum_strs"] = tuple(self._enum_strs)
 
     def _int_to_str(self, value):
         try:
@@ -75,7 +74,7 @@ class EnabledDisabledSignal(EpicsSignal):
     def describe(self):
         desc = super().describe()
         for key in desc:
-            desc[key]['enum_strs'] = list(self._enum_strs)
+            desc[key]["enum_strs"] = list(self._enum_strs)
         return desc
 
 
@@ -114,6 +113,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     6. All IOCs differences are handled elsewhere; this interface is IOC-agnostic and can
        be used with any compliant TwinCAT axis IOC.
     """
+
     # Position
     setpoint = Cpt(PytmcSignal, ":fPosition", io="io", kind="hinted", auto_monitor=True)
     readback = Cpt(PytmcSignal, ":fActPosition", io="i", kind="hinted", auto_monitor=True)
@@ -145,18 +145,36 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
     motor_egu = Cpt(PytmcSignal, ":NC:Eu:Val", io="i", kind="normal", string=True, auto_monitor=True)
 
     # Limits (configuration)
-    low_limit_travel = Cpt(EpicsSignal, ':NC:MinPos:Val_RBV', write_pv=':NC:MinPos:Goal', kind='config', auto_monitor=True)
-    high_limit_travel = Cpt(EpicsSignal, ':NC:MaxPos:Val_RBV', write_pv=':NC:MaxPos:Goal', kind='config', auto_monitor=True)
-    low_limit_enable = Cpt(EnabledDisabledSignal, ':NC:SoftPosMinOn:Val_RBV', write_pv=':NC:SoftPosMinOn:Goal', kind='config', auto_monitor=True)
-    high_limit_enable = Cpt(EnabledDisabledSignal, ':NC:SoftPosMaxOn:Val_RBV', write_pv=':NC:SoftPosMaxOn:Goal', kind='config', auto_monitor=True)
+    low_limit_travel = Cpt(
+        EpicsSignal, ":NC:MinPos:Val_RBV", write_pv=":NC:MinPos:Goal", kind="config", auto_monitor=True
+    )
+    high_limit_travel = Cpt(
+        EpicsSignal, ":NC:MaxPos:Val_RBV", write_pv=":NC:MaxPos:Goal", kind="config", auto_monitor=True
+    )
+    low_limit_enable = Cpt(
+        EnabledDisabledSignal,
+        ":NC:SoftPosMinOn:Val_RBV",
+        write_pv=":NC:SoftPosMinOn:Goal",
+        kind="config",
+        auto_monitor=True,
+    )
+    high_limit_enable = Cpt(
+        EnabledDisabledSignal,
+        ":NC:SoftPosMaxOn:Val_RBV",
+        write_pv=":NC:SoftPosMaxOn:Goal",
+        kind="config",
+        auto_monitor=True,
+    )
 
     # Position correction / backlash
-    pos_correction = Cpt(EnabledDisabledSignal, ':NC:PosCorr:Val_RBV', write_pv=':NC:PosCorr:Goal', kind='config', auto_monitor=True)
-    backlash = Cpt(EpicsSignal, ':NC:Backlash:Val_RBV', write_pv=':NC:Backlash:Goal', kind='config', auto_monitor=True)
+    pos_correction = Cpt(
+        EnabledDisabledSignal, ":NC:PosCorr:Val_RBV", write_pv=":NC:PosCorr:Goal", kind="config", auto_monitor=True
+    )
+    backlash = Cpt(EpicsSignal, ":NC:Backlash:Val_RBV", write_pv=":NC:Backlash:Goal", kind="config", auto_monitor=True)
     pos_cor_status = Cpt(PytmcSignal, ":bBacklashStatus", io="i", kind="normal", auto_monitor=True)
 
     # Homing status/config
-    homed = Cpt(PytmcSignal, ":bHomed", io="i", kind='normal', auto_monitor=True)
+    homed = Cpt(PytmcSignal, ":bHomed", io="i", kind="normal", auto_monitor=True)
     home_mode = Cpt(PytmcSignal, ":eHomeMode", io="io", kind="config")
 
     tab_whitelist = [
@@ -167,39 +185,29 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         "check_limit_switches",
         "enabled",
         "homed",
-        "Position"
+        "Position",
     ]
 
-    set_metadata(actuate, dict(variety='command', value=1))
-    set_metadata(stop_signal, dict(variety='command-proc', value=1))
-    set_metadata(done, dict(variety='bitmask', bits=1))
-    set_metadata(motor_is_moving, dict(variety='bitmask', bits=1))
-    set_metadata(motor_is_moving_negative, dict(variety='bitmask', bits=1))
-    set_metadata(motor_is_moving_positive, dict(variety='bitmask', bits=1))
-    set_metadata(negative_dir_enabled, dict(variety='bitmask', bits=1))
-    set_metadata(positive_dir_enabled, dict(variety='bitmask', bits=1))
-    set_metadata(power_is_enabled, dict(variety='bitmask', bits=1))
-    set_metadata(high_limit_switch, dict(variety='bitmask', bits=1))
-    set_metadata(low_limit_switch, dict(variety='bitmask', bits=1))
-    set_metadata(homed, dict(variety='bitmask', bits=1))
+    set_metadata(actuate, dict(variety="command", value=1))
+    set_metadata(stop_signal, dict(variety="command-proc", value=1))
+    set_metadata(done, dict(variety="bitmask", bits=1))
+    set_metadata(motor_is_moving, dict(variety="bitmask", bits=1))
+    set_metadata(motor_is_moving_negative, dict(variety="bitmask", bits=1))
+    set_metadata(motor_is_moving_positive, dict(variety="bitmask", bits=1))
+    set_metadata(negative_dir_enabled, dict(variety="bitmask", bits=1))
+    set_metadata(positive_dir_enabled, dict(variety="bitmask", bits=1))
+    set_metadata(power_is_enabled, dict(variety="bitmask", bits=1))
+    set_metadata(high_limit_switch, dict(variety="bitmask", bits=1))
+    set_metadata(low_limit_switch, dict(variety="bitmask", bits=1))
+    set_metadata(homed, dict(variety="bitmask", bits=1))
 
     tolerated_alarm = AlarmSeverity.NO_ALARM
 
     _alarm_filter_installed: ClassVar[bool] = False
     _moved_in_session: bool
-    _egu = ''
+    _egu = ""
 
-    def __init__(
-        self,
-        prefix="",
-        *,
-        name,
-        kind=None,
-        read_attrs=None,
-        configuration_attrs=None,
-        parent=None,
-        **kwargs
-    ):
+    def __init__(self, prefix="", *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, **kwargs):
         """
         Initialization adapted from EpicsMotorInterface.
 
@@ -214,7 +222,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
             read_attrs=read_attrs,
             configuration_attrs=configuration_attrs,
             parent=parent,
-            **kwargs
+            **kwargs,
         )
         self._install_motion_error_filter()
         self.motor_egu.subscribe(self._cache_egu)
@@ -282,7 +290,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         Logic directly reused from EpicsMotorInterface.
         Filters alarm log messages unless a move is requested in this session.
         """
-        return self._moved_in_session or ' alarm ' not in record.msg
+        return self._moved_in_session or " alarm " not in record.msg
 
     def _install_motion_error_filter(self) -> None:
         """
@@ -365,17 +373,21 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
             When in motion or position outside of limit.
         """
         if self.moving:
-            raise ValueError('Motor is in motion, cannot set the low limit!')
+            raise ValueError("Motor is in motion, cannot set the low limit!")
         if value > self.position:
-            raise ValueError(f'Could not set motor low limit to {value} at'
-                             f' position {self.position}. Low limit must '
-                             'be lower than the current position.')
+            raise ValueError(
+                f"Could not set motor low limit to {value} at"
+                f" position {self.position}. Low limit must "
+                "be lower than the current position."
+            )
 
         _current_high_limit = self.limits[1]
         if value > _current_high_limit:
-            raise ValueError(f'Could not set motor low limit to {value}.'
-                             'Low limit must be lower than the current'
-                             f' high limit: {_current_high_limit}')
+            raise ValueError(
+                f"Could not set motor low limit to {value}."
+                "Low limit must be lower than the current"
+                f" high limit: {_current_high_limit}"
+            )
 
         # update EPICS limits
         self.low_limit_travel.put(value)
@@ -395,18 +407,22 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
             When in motion or position outside of limit.
         """
         if self.moving:
-            raise ValueError('Motor is in motion, cannot set the high limit!')
+            raise ValueError("Motor is in motion, cannot set the high limit!")
 
         if value < self.position:
-            raise ValueError(f'Could not set motor high limit to {value} '
-                             f'at position {self.position}. High limit '
-                             'must be higher than the current position.')
+            raise ValueError(
+                f"Could not set motor high limit to {value} "
+                f"at position {self.position}. High limit "
+                "must be higher than the current position."
+            )
 
         _current_low_limit = self.limits[0]
         if value < _current_low_limit:
-            raise ValueError(f'Could not set motor high limit to {value}. '
-                             'High limit must be higher than the current low '
-                             f'limit: {_current_low_limit}')
+            raise ValueError(
+                f"Could not set motor high limit to {value}. "
+                "High limit must be higher than the current low "
+                f"limit: {_current_low_limit}"
+            )
         # update EPICS limits
         self.high_limit_travel.put(value)
 
@@ -461,12 +477,8 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
             - Power is on (`power_is_enabled`)
             - At least one direction (`negative_dir_enabled` OR `positive_dir_enabled`) is enabled
         """
-        return (
-            bool(self.power_is_enabled.get())
-            and (
-                bool(self.negative_dir_enabled.get())
-                or bool(self.positive_dir_enabled.get())
-            )
+        return bool(self.power_is_enabled.get()) and (
+            bool(self.negative_dir_enabled.get()) or bool(self.positive_dir_enabled.get())
         )
 
     def check_value(self, value):
@@ -480,14 +492,9 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         try:
             super().check_value(value)
         except Exception as e:
-            limits_enabled = (
-                bool(self.low_limit_enable.get()) and
-                bool(self.high_limit_enable.get())
-            )
+            limits_enabled = bool(self.low_limit_enable.get()) and bool(self.high_limit_enable.get())
             if not limits_enabled and any(self.limits):
-                raise RuntimeError(
-                    f"Soft limits set but not PLC-enabled (limits={self.limits}). {e}"
-                ) from e
+                raise RuntimeError(f"Soft limits set but not PLC-enabled (limits={self.limits}). {e}") from e
             raise
 
         # Only check enabled if enable_mode is ALWAYS
@@ -530,9 +537,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
         )
 
         if started:
-            self._run_subs(
-                sub_type=self.SUB_START, timestamp=timestamp, value=value, **kwargs
-            )
+            self._run_subs(sub_type=self.SUB_START, timestamp=timestamp, value=value, **kwargs)
 
         if was_moving and not self._moving:
             success = True
@@ -554,8 +559,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
                 status = self.readback.alarm_status
                 if severity > self.tolerated_alarm:
                     self.log.error(
-                        "Motion failed: %s is in an alarm state "
-                        "status=%s severity=%s",
+                        "Motion failed: %s is in an alarm state status=%s severity=%s",
                         self.name,
                         status,
                         severity,
@@ -563,8 +567,7 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
                     success = False
                 else:
                     self.log.warning(
-                        "Motor %s raised an alarm during motion "
-                        "status=%s severity %s",
+                        "Motor %s raised an alarm during motion status=%s severity %s",
                         self.name,
                         status,
                         severity,
@@ -596,39 +599,39 @@ class TwinCATMotorInterface(FltMvInterface, PVPositioner):
 
 class TwinCATAxis(TwinCATMotorInterface):
     """
-    TwinCAT NC AXIS_REF motor device with error handling and homing.
+     TwinCAT NC AXIS_REF motor device with error handling and homing.
 
-    This class extends the TwinCATMotorInterface with:
-        - Additional components (PLC diagnostics, homing command and mode).
-        - end-of-move and error handling: move completion status is
-          checked against PLC error and status codes, so that motion failures
-          are accurately detected and reported.
-        - A `clear_error` method to reset PLC motion errors from Python or GUI.
-        - A `home()` method exposing all PLC-configured homing routines with
-          proper mode setting, actuation, status, and timing.
-        - Robust session-tracking and logging logic for post-move diagnostics.
-   Note
-    ----
-    Some methods in this class are identical or adapted from BeckhoffAxis,
-    to ensure the error-handling, staging, homing, and value checking logic
-    behaves identically.
+     This class extends the TwinCATMotorInterface with:
+         - Additional components (PLC diagnostics, homing command and mode).
+         - end-of-move and error handling: move completion status is
+           checked against PLC error and status codes, so that motion failures
+           are accurately detected and reported.
+         - A `clear_error` method to reset PLC motion errors from Python or GUI.
+         - A `home()` method exposing all PLC-configured homing routines with
+           proper mode setting, actuation, status, and timing.
+         - Robust session-tracking and logging logic for post-move diagnostics.
+    Note
+     ----
+     Some methods in this class are identical or adapted from BeckhoffAxis,
+     to ensure the error-handling, staging, homing, and value checking logic
+     behaves identically.
 
-    Attributes
-    -------
-    actuate_home : PytmcSignal
-        PV to trigger a homing command.
-    home_mode : PytmcSignal
-        PV to select the homing mode (see HomeEnum).
-    plc : BeckhoffAxisPLC
-        Sub-device interface for further PLC status and diagnostics.
+     Attributes
+     -------
+     actuate_home : PytmcSignal
+         PV to trigger a homing command.
+     home_mode : PytmcSignal
+         PV to select the homing mode (see HomeEnum).
+     plc : BeckhoffAxisPLC
+         Sub-device interface for further PLC status and diagnostics.
 
     """
+
     # homed and home_mode are defined on TwinCATMotorInterface (PLC signals).
     __doc__ += basic_positioner_init
-    tab_whitelist = ['clear_error', 'home', 'stage']
+    tab_whitelist = ["clear_error", "home", "stage"]
 
-    plc = Cpt(BeckhoffAxisPLC, ':', kind='normal',
-              doc='PLC error handling and aux functions.')
+    plc = Cpt(BeckhoffAxisPLC, ":", kind="normal", doc="PLC error handling and aux functions.")
 
     def subscribe(
         self,
@@ -644,14 +647,17 @@ class TwinCATAxis(TwinCATMotorInterface):
 
         See documentation in BeckhoffAxis.subscribe for complete details.
         """
-        if all((
-            event_type == self._SUB_REQ_DONE,
-            callback.__qualname__ in (
-                'StatusBase._finished',
-                'StatusBase.set_finished',
-            ),
-            not run,
-        )):
+        if all(
+            (
+                event_type == self._SUB_REQ_DONE,
+                callback.__qualname__
+                in (
+                    "StatusBase._finished",
+                    "StatusBase.set_finished",
+                ),
+                not run,
+            )
+        ):
             # Find the actual status object
             status = callback.__self__
             # Slip in the more specific end move handler
@@ -679,7 +685,7 @@ class TwinCATAxis(TwinCATMotorInterface):
         if has_error:
             error_message = self.plc.status.get()
             if not error_message:
-                error_message = 'Unspecified error'
+                error_message = "Unspecified error"
             error_code = self.plc.err_code.get()
             if error_code > 0:
                 error_message = f"{hex(error_code)}: {error_message}"
@@ -715,13 +721,11 @@ class TwinCATAxis(TwinCATMotorInterface):
         self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
         self._reset_sub(self._SUB_REQ_DONE)
 
-        status = MoveStatus(self, self.plc.home_pos.get(),
-                            timeout=None, settle_time=self._settle_time)
+        status = MoveStatus(self, self.plc.home_pos.get(), timeout=None, settle_time=self._settle_time)
 
         self.plc.cmd_home.put(1)
 
-        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE,
-                       run=False)
+        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE, run=False)
 
         try:
             if wait:
@@ -751,8 +755,7 @@ class TwinCATAxis(TwinCATMotorInterface):
         status = super().move(position, wait=False)
 
         # Create status object for move monitoring
-        status = MoveStatus(self, self.readback.get(),
-                            timeout=None, settle_time=self._settle_time)
+        status = MoveStatus(self, self.readback.get(), timeout=None, settle_time=self._settle_time)
 
         # Subscribe status object to end-of-move event
         self.subscribe(status._finished, event_type=self._SUB_REQ_DONE, run=False)
@@ -776,8 +779,7 @@ class TwinCATAxis(TwinCATMotorInterface):
         velo = self.velocity.get()
         if velo <= 0:
             raise RuntimeError(
-                f'{self.name} velocity is {velo}, which is not valid. '
-                'Please configure a nonzero, positive velocity.'
+                f"{self.name} velocity is {velo}, which is not valid. Please configure a nonzero, positive velocity."
             )
 
 
@@ -806,35 +808,29 @@ class TwinCATMREAxis(TwinCATAxis):
     direction-status tags have no ``tcmotor`` record equivalent, so they
     continue to use :class:`PytmcSignal` against the PLC PVs.
     """
+
     # Position: tcmotor record dot-notation fields
-    setpoint = Cpt(EpicsSignal, ".VAL", kind="hinted",
-                   auto_monitor=True, doc="Desired position (tcmotor.VAL)")
-    readback = Cpt(EpicsSignal, ".RBV", kind="hinted",
-                   auto_monitor=True, doc="Actual position readback (tcmotor.RBV)")
-    done = Cpt(EpicsSignalRO, ".DMOV", kind="normal",
-               auto_monitor=True, doc="Done moving (tcmotor.DMOV)")
-    stop_signal = Cpt(EpicsSignal, ".STOP", kind="normal",
-                      doc="Stop command (tcmotor.STOP)")
+    setpoint = Cpt(EpicsSignal, ".VAL", kind="hinted", auto_monitor=True, doc="Desired position (tcmotor.VAL)")
+    readback = Cpt(EpicsSignal, ".RBV", kind="hinted", auto_monitor=True, doc="Actual position readback (tcmotor.RBV)")
+    done = Cpt(EpicsSignalRO, ".DMOV", kind="normal", auto_monitor=True, doc="Done moving (tcmotor.DMOV)")
+    stop_signal = Cpt(EpicsSignal, ".STOP", kind="normal", doc="Stop command (tcmotor.STOP)")
     # actuate overrides , MRE owns the actuation now
     actuate = None
 
     # Motion configuration: tcmotor record fields
-    velocity = Cpt(EpicsSignal, ".VELO", kind="config",
-                   auto_monitor=True, doc="Velocity (tcmotor.VELO)")
-    velocity_base = Cpt(EpicsSignal, ".VBAS", kind="config",
-                        auto_monitor=True,
-                        doc="Base velocity (tcmotor.VBAS -> fVelocityBase)")
-    velocity_max = Cpt(EpicsSignal, ".VMAX", kind="config",
-                       auto_monitor=True,
-                       doc="Max velocity (tcmotor.VMAX -> fVelocityMax)")
-    acceleration = Cpt(EpicsSignal, ".ACCS", kind="config",
-                       auto_monitor=True, doc="Acceleration (tcmotor.ACCS)")
+    velocity = Cpt(EpicsSignal, ".VELO", kind="config", auto_monitor=True, doc="Velocity (tcmotor.VELO)")
+    velocity_base = Cpt(
+        EpicsSignal, ".VBAS", kind="config", auto_monitor=True, doc="Base velocity (tcmotor.VBAS -> fVelocityBase)"
+    )
+    velocity_max = Cpt(
+        EpicsSignal, ".VMAX", kind="config", auto_monitor=True, doc="Max velocity (tcmotor.VMAX -> fVelocityMax)"
+    )
+    acceleration = Cpt(EpicsSignal, ".ACCS", kind="config", auto_monitor=True, doc="Acceleration (tcmotor.ACCS)")
     # deceleration, jerk, enable_mode, brake_mode: inherited unchanged from
     # TwinCATMotorInterface (PLC tags, no tcmotor record equivalent).
 
     # Status bits: tcmotor fields where available
-    motor_is_moving = Cpt(EpicsSignal, ".MOVN", kind="normal",
-                          auto_monitor=True, doc="Motor is moving (tcmotor.MOVN)")
+    motor_is_moving = Cpt(EpicsSignal, ".MOVN", kind="normal", auto_monitor=True, doc="Motor is moving (tcmotor.MOVN)")
     # motor_is_moving_negative/positive and power_is_enabled: inherited unchanged.
     # tcmotor already presents limit switch state directly via HLS/LLS, so no
     # InvertedBoolEpicsSignal indirection is needed here. The fwd_enabled /
@@ -842,58 +838,54 @@ class TwinCATMREAxis(TwinCATAxis):
     # are removed (set to None) so they do not populate the Typhos screen.
     fwd_enabled = None
     bwd_enabled = None
-    high_limit_switch = Cpt(EpicsSignalRO, ".HLS", kind="normal",
-                            auto_monitor=True,
-                            doc="Forward (high) limit switch (tcmotor.HLS)")
-    low_limit_switch = Cpt(EpicsSignalRO, ".LLS", kind="normal",
-                           auto_monitor=True,
-                           doc="Backward (low) limit switch (tcmotor.LLS)")
+    high_limit_switch = Cpt(
+        EpicsSignalRO, ".HLS", kind="normal", auto_monitor=True, doc="Forward (high) limit switch (tcmotor.HLS)"
+    )
+    low_limit_switch = Cpt(
+        EpicsSignalRO, ".LLS", kind="normal", auto_monitor=True, doc="Backward (low) limit switch (tcmotor.LLS)"
+    )
     # negative_dir_enabled, positive_dir_enabled, command: inherited unchanged.
-    motor_egu = Cpt(EpicsSignal, ".EGU", kind="normal", string=True,
-                    auto_monitor=True, doc="Engineering units (tcmotor.EGU)")
+    motor_egu = Cpt(
+        EpicsSignal, ".EGU", kind="normal", string=True, auto_monitor=True, doc="Engineering units (tcmotor.EGU)"
+    )
 
     # SPMG state machine and MSTA status word (tcmotor)
-    spmg = Cpt(EpicsSignal, ".SPMG", kind="normal",
-               auto_monitor=True, string=True,
-               doc="Stop/Pause/Move/Go (tcmotor.SPMG)")
-    msta = Cpt(EpicsSignal, ".MSTA", kind="normal",
-               auto_monitor=True, doc="Motor status word (tcmotor.MSTA)")
+    spmg = Cpt(
+        EpicsSignal, ".SPMG", kind="normal", auto_monitor=True, string=True, doc="Stop/Pause/Move/Go (tcmotor.SPMG)"
+    )
+    msta = Cpt(EpicsSignal, ".MSTA", kind="normal", auto_monitor=True, doc="Motor status word (tcmotor.MSTA)")
 
     # Soft limits: tcmotor record fields
     # HLM/LLM write to NC:MaxPos:Goal / NC:MinPos:Goal via tcmotor OUT_HLM/OUT_LLM
-    low_limit_travel = Cpt(EpicsSignal, ".LLM", kind="config",
-                           auto_monitor=True,
-                           doc="Low soft limit (tcmotor.LLM -> NC:MinPos:Goal)")
-    high_limit_travel = Cpt(EpicsSignal, ".HLM", kind="config",
-                            auto_monitor=True,
-                            doc="High soft limit (tcmotor.HLM -> NC:MaxPos:Goal)")
+    low_limit_travel = Cpt(
+        EpicsSignal, ".LLM", kind="config", auto_monitor=True, doc="Low soft limit (tcmotor.LLM -> NC:MinPos:Goal)"
+    )
+    high_limit_travel = Cpt(
+        EpicsSignal, ".HLM", kind="config", auto_monitor=True, doc="High soft limit (tcmotor.HLM -> NC:MaxPos:Goal)"
+    )
     # low/high_limit_enable inherited from TwinCATMotorInterface
     # (EnabledDisabledSignal on the shared NC:SoftPos*On records).
 
     # Backlash via tcmotor .BDST (writes to NC:Backlash:Goal via OUT_BDST).
     # pos_correction and pos_cor_status have no tcmotor record equivalent and
     # are inherited from TwinCATMotorInterface.
-    backlash = Cpt(EpicsSignal, '.BDST', kind='config',
-                   auto_monitor=True,
-                   doc='Backlash correction (tcmotor.BDST)')
+    backlash = Cpt(EpicsSignal, ".BDST", kind="config", auto_monitor=True, doc="Backlash correction (tcmotor.BDST)")
 
     # Homing: tcmotor HOMF/HOMR command fields
     # homed and home_mode are inherited from TwinCATAxis (PLC :bHomed / :eHomeMode).
     # HOMF sets eHomeMode=LOW_LIMIT + pulses bHomeCmd; HOMR sets HIGH_LIMIT.
     # Only use HOMF/HOMR when home_mode matches, otherwise use bHomeCmd directly.
-    home_cmd_fwd = Cpt(EpicsSignal, '.HOMF', kind='normal',
-                       doc='Home via low limit switch (tcmotor.HOMF)')
-    home_cmd_rev = Cpt(EpicsSignal, '.HOMR', kind='normal',
-                       doc='Home via high limit switch (tcmotor.HOMR)')
+    home_cmd_fwd = Cpt(EpicsSignal, ".HOMF", kind="normal", doc="Home via low limit switch (tcmotor.HOMF)")
+    home_cmd_rev = Cpt(EpicsSignal, ".HOMR", kind="normal", doc="Home via high limit switch (tcmotor.HOMR)")
 
-    set_metadata(stop_signal, dict(variety='command-proc', value=1))
-    set_metadata(done, dict(variety='bitmask', bits=1))
-    set_metadata(motor_is_moving, dict(variety='bitmask', bits=1))
-    set_metadata(high_limit_switch, dict(variety='bitmask', bits=1))
-    set_metadata(low_limit_switch, dict(variety='bitmask', bits=1))
-    set_metadata(msta, dict(variety='bitmask', bits=16))
-    set_metadata(home_cmd_fwd, dict(variety='command-proc', value=1))
-    set_metadata(home_cmd_rev, dict(variety='command-proc', value=1))
+    set_metadata(stop_signal, dict(variety="command-proc", value=1))
+    set_metadata(done, dict(variety="bitmask", bits=1))
+    set_metadata(motor_is_moving, dict(variety="bitmask", bits=1))
+    set_metadata(high_limit_switch, dict(variety="bitmask", bits=1))
+    set_metadata(low_limit_switch, dict(variety="bitmask", bits=1))
+    set_metadata(msta, dict(variety="bitmask", bits=16))
+    set_metadata(home_cmd_fwd, dict(variety="command-proc", value=1))
+    set_metadata(home_cmd_rev, dict(variety="command-proc", value=1))
 
     @property
     @raise_if_disconnected
@@ -929,20 +921,18 @@ class TwinCATMREAxis(TwinCATAxis):
         self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
         self._reset_sub(self._SUB_REQ_DONE)
 
-        status = MoveStatus(self, self.plc.home_pos.get(),
-                            timeout=None, settle_time=self._settle_time)
+        status = MoveStatus(self, self.plc.home_pos.get(), timeout=None, settle_time=self._settle_time)
 
         mode = self.home_mode.get(as_string=True)
-        if mode == 'LOW_LIMIT':
+        if mode == "LOW_LIMIT":
             self.home_cmd_fwd.put(1)
-        elif mode == 'HIGH_LIMIT':
+        elif mode == "HIGH_LIMIT":
             self.home_cmd_rev.put(1)
         else:
             # Other modes: pulse bHomeCmd directly
             self.plc.cmd_home.put(1)
 
-        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE,
-                       run=False)
+        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE, run=False)
 
         try:
             if wait:
@@ -962,6 +952,7 @@ class TwinCATAxisEPS(TwinCATAxis):
     has EPS considerations. Otherwise, these fields are not active
     in PLC logic and are distracting or confusing.
     """
+
     eps_forward = Cpt(EPS, "stEPSF:", doc="EPS forward enables.")
     eps_backward = Cpt(EPS, "stEPSB:", doc="EPS backward enables.")
     eps_power = Cpt(EPS, "stEPSP:", doc="EPS power enables.")

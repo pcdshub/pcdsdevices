@@ -38,24 +38,24 @@ class ZoomTelescope(Device):
     # Not sure about putting these calibration parameters in here, since they
     # should never really be required during normal operation, but will leave
     # them in for debugging during commissioning.
-    _l2_p0 = Cpt(EpicsSignalRO, ':CAL:L2:P0', kind='omitted')
-    _l2_p1 = Cpt(EpicsSignalRO, ':CAL:L2:P1', kind='omitted')
+    _l2_p0 = Cpt(EpicsSignalRO, ":CAL:L2:P0", kind="omitted")
+    _l2_p1 = Cpt(EpicsSignalRO, ":CAL:L2:P1", kind="omitted")
 
-    _l3_p0 = Cpt(EpicsSignalRO, ':CAL:L3:P0', kind='omitted')
-    _l3_p1 = Cpt(EpicsSignalRO, ':CAL:L3:P1', kind='omitted')
-    _l3_p2 = Cpt(EpicsSignalRO, ':CAL:L3:P2', kind='omitted')
-    _l3_p3 = Cpt(EpicsSignalRO, ':CAL:L3:P3', kind='omitted')
-    _l3_p4 = Cpt(EpicsSignalRO, ':CAL:L3:P4', kind='omitted')
-    _l3_p5 = Cpt(EpicsSignalRO, ':CAL:L3:P5', kind='omitted')
+    _l3_p0 = Cpt(EpicsSignalRO, ":CAL:L3:P0", kind="omitted")
+    _l3_p1 = Cpt(EpicsSignalRO, ":CAL:L3:P1", kind="omitted")
+    _l3_p2 = Cpt(EpicsSignalRO, ":CAL:L3:P2", kind="omitted")
+    _l3_p3 = Cpt(EpicsSignalRO, ":CAL:L3:P3", kind="omitted")
+    _l3_p4 = Cpt(EpicsSignalRO, ":CAL:L3:P4", kind="omitted")
+    _l3_p5 = Cpt(EpicsSignalRO, ":CAL:L3:P5", kind="omitted")
 
-    min_zoom = Cpt(EpicsSignalRO, ':CAL:MIN_ZOOM', kind='config')
-    max_zoom = Cpt(EpicsSignalRO, ':CAL:MAX_ZOOM', kind='config')
+    min_zoom = Cpt(EpicsSignalRO, ":CAL:MIN_ZOOM", kind="config")
+    max_zoom = Cpt(EpicsSignalRO, ":CAL:MAX_ZOOM", kind="config")
 
     # Control parameters
-    req_zoom = Cpt(EpicsSignal, ':REQ_ZOOM', kind='normal')
+    req_zoom = Cpt(EpicsSignal, ":REQ_ZOOM", kind="normal")
 
-    tweak_plus = Cpt(EpicsSignal, ':TWEAK_ZOOM_PLUS.PROC', kind='normal')
-    tweak_minus = Cpt(EpicsSignal, ':TWEAK_ZOOM_MINUS.PROC', kind='normal')
-    tweak_val = Cpt(EpicsSignal, ':TWEAK', kind='normal')
+    tweak_plus = Cpt(EpicsSignal, ":TWEAK_ZOOM_PLUS.PROC", kind="normal")
+    tweak_minus = Cpt(EpicsSignal, ":TWEAK_ZOOM_MINUS.PROC", kind="normal")
+    tweak_val = Cpt(EpicsSignal, ":TWEAK", kind="normal")
 
-    permission = Cpt(EpicsSignalRO, ':PERMISSION_STATUS', kind='normal')
+    permission = Cpt(EpicsSignalRO, ":PERMISSION_STATUS", kind="normal")

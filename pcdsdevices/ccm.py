@@ -17,8 +17,7 @@ from .device import GroupDevice
 from .device import UnrelatedComponent as UCpt
 from .epics_motor import IMS, EpicsMotorInterface
 from .interface import BaseInterface, FltMvInterface, LightpathMixin
-from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
-                        SyncAxisOffsetMode)
+from .pseudopos import PseudoPositioner, PseudoSingleInterface, SyncAxis, SyncAxisOffsetMode
 from .pv_positioner import PVPositionerIsClose
 from .signal import InternalSignal
 from .utils import doc_format_decorator, get_status_float
@@ -31,7 +30,7 @@ si_511_dspacing = 1.0452003833195924
 
 # Defaults
 default_theta0_deg = 15.1027
-default_theta0 = default_theta0_deg * np.pi/180
+default_theta0 = default_theta0_deg * np.pi / 180
 default_dspacing = si_111_dspacing
 default_gr = 3.175
 default_gd = 231.303
@@ -41,14 +40,12 @@ class CCMMotor(PVPositionerIsClose):
     """
     Goofy records used in the CCM.
     """
+
     # Tolerance from old xcs python code
     atol = 3e-4
 
-    setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True,
-                   doc='The motor setpoint. Writing begins a move.')
-    readback = Cpt(EpicsSignalRO, ":POSITIONGET", auto_monitor=True,
-                   kind='hinted',
-                   doc='The current motor position.')
+    setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True, doc="The motor setpoint. Writing begins a move.")
+    readback = Cpt(EpicsSignalRO, ":POSITIONGET", auto_monitor=True, kind="hinted", doc="The current motor position.")
 
 
 class CCMAlio(CCMMotor):
@@ -57,10 +54,9 @@ class CCMAlio(CCMMotor):
 
     Adds some controller-specific items.
     """
-    cmd_home = Cpt(EpicsSignal, ':ENABLEPLC11', kind='omitted',
-                   doc='Tells the controller to home the motor.')
-    cmd_kill = Cpt(EpicsSignal, ':KILL', kind='omitted',
-                   doc='Tells the controller to kill the PID.')
+
+    cmd_home = Cpt(EpicsSignal, ":ENABLEPLC11", kind="omitted", doc="Tells the controller to home the motor.")
+    cmd_kill = Cpt(EpicsSignal, ":KILL", kind="omitted", doc="Tells the controller to kill the PID.")
 
     def home(self) -> None:
         """
@@ -87,15 +83,15 @@ class CCMPico(EpicsMotorInterface):
     This is a bit hacky for now, something should be done in the epics_motor
     file to accomodate these.
     """
-    direction_of_travel = Cpt(Signal, kind='omitted',
-                              doc='The direction the motor is moving.')
+
+    direction_of_travel = Cpt(Signal, kind="omitted", doc="The direction the motor is moving.")
 
     def _pos_changed(
         self,
         timestamp: typing.Optional[float] = None,
         old_value: typing.Optional[float] = None,
         value: typing.Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         """
         Callback for when the readback position changes.
@@ -110,11 +106,9 @@ class CCMPico(EpicsMotorInterface):
             self.direction_of_travel.put(comparison)
         except TypeError:
             # We have some sort of null/None/default value
-            logger.debug('Could not compare value=%s > old_value=%s',
-                         value, old_value)
+            logger.debug("Could not compare value=%s > old_value=%s", value, old_value)
         # Pass information to PositionerBase
-        super()._pos_changed(timestamp=timestamp, old_value=old_value,
-                             value=value, **kwargs)
+        super()._pos_changed(timestamp=timestamp, old_value=old_value, value=value, **kwargs)
 
 
 class CCMConstantWarning(enum.IntEnum):
@@ -143,35 +137,31 @@ class CCMConstantsMixin(Device):
 
     Prefix can be any of the prefixes from any of the CCM motors.
     """
+
     theta0_deg = FCpt(
         EpicsSignal,
-        '{_constants_prefix}:THETA0',
-        kind='config',
-        doc='Reference angle for the first crystal in deg.',
+        "{_constants_prefix}:THETA0",
+        kind="config",
+        doc="Reference angle for the first crystal in deg.",
     )
     dspacing = FCpt(
         EpicsSignal,
-        '{_constants_prefix}:DSPACING',
-        kind='config',
-        doc='Crystal lattice spacing.',
+        "{_constants_prefix}:DSPACING",
+        kind="config",
+        doc="Crystal lattice spacing.",
     )
     gr = FCpt(
         EpicsSignal,
-        '{_constants_prefix}:GR',
-        kind='config',
-        doc=(
-            'The radius of the sapphire ball '
-            'connected to the Alio stage in mm.'
-        ),
+        "{_constants_prefix}:GR",
+        kind="config",
+        doc=("The radius of the sapphire ball connected to the Alio stage in mm."),
     )
     gd = FCpt(
         EpicsSignal,
-        '{_constants_prefix}:GD',
-        kind='config',
+        "{_constants_prefix}:GD",
+        kind="config",
         doc=(
-            'Distance between the rotation axis and the '
-            'center of the sapphire sphere located on the '
-            'Alio stage in mm.'
+            "Distance between the rotation axis and the center of the sapphire sphere located on the Alio stage in mm."
         ),
     )
 
@@ -185,12 +175,12 @@ class CCMConstantsMixin(Device):
     _init_time: float
 
     def __init__(self, prefix: str, *args, **kwargs):
-        if 'XPP' in prefix:
-            self._constants_prefix = 'XPP:CCM'
-        elif 'XCS' in prefix:
-            self._constants_prefix = 'XCS:CCM'
+        if "XPP" in prefix:
+            self._constants_prefix = "XPP:CCM"
+        elif "XCS" in prefix:
+            self._constants_prefix = "XCS:CCM"
         else:
-            self._constants_prefix = 'TST:CCM'
+            self._constants_prefix = "TST:CCM"
         self._theta0_deg = default_theta0_deg
         self._dspacing = default_dspacing
         self._gd = default_gd
@@ -204,12 +194,7 @@ class CCMConstantsMixin(Device):
     @dspacing.sub_value
     @gr.sub_value
     @gd.sub_value
-    def _update_constant(
-        self,
-        value: float,
-        obj: EpicsSignal,
-        **kwargs
-    ) -> None:
+    def _update_constant(self, value: float, obj: EpicsSignal, **kwargs) -> None:
         """
         Put PV updates to an attribute for the calculation.
 
@@ -265,10 +250,7 @@ class CCMConstantsMixin(Device):
         This is necessary because a value of 0 is nonphysical and in the case
         of a disconnected value the show must go on.
         """
-        if (
-            self._dspacing
-            and self.dspacing.name in self._initialized_signal_names
-        ):
+        if self._dspacing and self.dspacing.name in self._initialized_signal_names:
             return self._dspacing
         return default_dspacing
 
@@ -338,16 +320,16 @@ class CCMConstantsMixin(Device):
         """
         if confirm:
             response = input(
-                'Are you sure you want to reset the CCM constants? (y/n)\n'
-                f'theta0_deg = {default_theta0_deg}\n'
-                f'dspacing = {default_dspacing}\n'
-                f'gr = {default_gr}\n'
-                f'gd = {default_gd}\n'
+                "Are you sure you want to reset the CCM constants? (y/n)\n"
+                f"theta0_deg = {default_theta0_deg}\n"
+                f"dspacing = {default_dspacing}\n"
+                f"gr = {default_gr}\n"
+                f"gd = {default_gd}\n"
             )
-            if response.lower() != 'y':
-                self.log.info('Aborting CCM reset_defaults')
+            if response.lower() != "y":
+                self.log.info("Aborting CCM reset_defaults")
                 return
-        self.log.info('Resetting to default CCM constants')
+        self.log.info("Resetting to default CCM constants")
         self.theta0_deg.put(default_theta0_deg)
         self.dspacing.put(default_dspacing)
         self.gr.put(default_gr)
@@ -395,11 +377,15 @@ class CCMConstantsMixin(Device):
             return
         sigs = (self.theta0_deg, self.dspacing, self.gr, self.gd)
         vals = (self._theta0_deg, self._dspacing, self._gr, self._gd)
-        default_vals = (default_theta0_deg, default_dspacing,
-                        default_gr, default_gd)
-        for num, (sig, val, default, old_warning) in enumerate(zip(
-            sigs, vals, default_vals, self._prev_warnings,
-        )):
+        default_vals = (default_theta0_deg, default_dspacing, default_gr, default_gd)
+        for num, (sig, val, default, old_warning) in enumerate(
+            zip(
+                sigs,
+                vals,
+                default_vals,
+                self._prev_warnings,
+            )
+        ):
             new_warning = self._check_valid_constant(sig, val)
             if new_warning != old_warning or not only_new:
                 self._show_constant_warning(new_warning, sig, val, default)
@@ -442,13 +428,7 @@ class CCMConstantsMixin(Device):
                 return CCMConstantWarning.INVALID_DISCONNECT
         return CCMConstantWarning.ALWAYS_DISCONNECT
 
-    def _show_constant_warning(
-        self,
-        warning: CCMConstantWarning,
-        sig: EpicsSignal,
-        val: float,
-        default: float
-    ) -> None:
+    def _show_constant_warning(self, warning: CCMConstantWarning, sig: EpicsSignal, val: float, default: float) -> None:
         """
         Log an appropriate warning to the object logger.
 
@@ -467,33 +447,33 @@ class CCMConstantsMixin(Device):
         """
         if warning == CCMConstantWarning.ALWAYS_DISCONNECT:
             self.log.warning(
-                f'Calculation constant {sig.name} never connected. '
-                'The IOC is probably offline or misconfigured. '
-                f'Using the default value {default} for '
-                'calculations.'
+                f"Calculation constant {sig.name} never connected. "
+                "The IOC is probably offline or misconfigured. "
+                f"Using the default value {default} for "
+                "calculations."
             )
         elif warning == CCMConstantWarning.VALID_DISCONNECT:
             self.log.warning(
-                f'Calculation constant {sig.name} previously '
-                'connected, but is now disconnected. '
-                'The IOC must have gone down. '
-                f'Using the last known good value {val}.'
+                f"Calculation constant {sig.name} previously "
+                "connected, but is now disconnected. "
+                "The IOC must have gone down. "
+                f"Using the last known good value {val}."
             )
         elif warning == CCMConstantWarning.INVALID_DISCONNECT:
             self.log.warning(
-                f'Calculation constant {sig.name} previously '
-                'connected, but is now disconnected. '
-                'The IOC must have gone down. '
-                'Never had a good value, using the default value '
-                f'{default} for calculations.'
+                f"Calculation constant {sig.name} previously "
+                "connected, but is now disconnected. "
+                "The IOC must have gone down. "
+                "Never had a good value, using the default value "
+                f"{default} for calculations."
             )
         elif warning == CCMConstantWarning.INVALID_CONNECT:
             self.log.warning(
-                f'Calculation constant {sig.name} has an '
-                f'invalid value of {val}. Using the default value '
-                f'{default} for calculations. '
-                'Consider calling reset_calc_constant_defaults to '
-                'restore the default values to the constant PVs.'
+                f"Calculation constant {sig.name} has an "
+                f"invalid value of {val}. Using the default value "
+                f"{default} for calculations. "
+                "Consider calling reset_calc_constant_defaults to "
+                "restore the default values to the constant PVs."
             )
 
 
@@ -511,33 +491,25 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
     prefix : str
         The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
     """
+
     # Pseudo motor and real motor
     energy = Cpt(
         PseudoSingleInterface,
-        egu='keV',
-        kind='hinted',
+        egu="keV",
+        kind="hinted",
         limits=(4, 25),
-        verbose_name='CCM Photon Energy',
-        doc=(
-            'PseudoSingle that moves the calculated CCM '
-            'selected energy in keV.'
-        ),
+        verbose_name="CCM Photon Energy",
+        doc=("PseudoSingle that moves the calculated CCM selected energy in keV."),
     )
-    alio = Cpt(CCMAlio, '', kind='normal',
-               doc='The motor that rotates the CCM crystal.')
+    alio = Cpt(CCMAlio, "", kind="normal", doc="The motor that rotates the CCM crystal.")
 
     # Calculation intermediates
-    theta_deg = Cpt(InternalSignal, kind='normal',
-                    doc='The crystal angle in degrees.')
-    wavelength = Cpt(InternalSignal, kind='normal',
-                     doc='The wavelength picked by the CCM in Angstroms.')
+    theta_deg = Cpt(InternalSignal, kind="normal", doc="The crystal angle in degrees.")
+    wavelength = Cpt(InternalSignal, kind="normal", doc="The wavelength picked by the CCM in Angstroms.")
     resolution = Cpt(
         InternalSignal,
-        kind='normal',
-        doc=(
-            'A measure of how finely we can control the ccm '
-            'output at this position in eV/um.'
-        ),
+        kind="normal",
+        doc=("A measure of how finely we can control the ccm output at this position in eV/um."),
     )
 
     tab_component_names = True
@@ -553,11 +525,7 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         self.energy.set_current_position = self.set_current_position
 
     @alio.sub_default
-    def _update_intermediates(
-        self,
-        value: typing.Optional[float] = None,
-        **kwargs
-    ) -> None:
+    def _update_intermediates(self, value: typing.Optional[float] = None, **kwargs) -> None:
         """
         Updates the calculation intermediates when the alio position updates.
 
@@ -581,12 +549,12 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
             self.gd_val,
         )
         wavelength = theta_to_wavelength(theta, self.dspacing_val)
-        self.theta_deg.put(theta * 180/np.pi, force=True)
+        self.theta_deg.put(theta * 180 / np.pi, force=True)
         self.wavelength.put(wavelength, force=True)
 
         res_delta = 1e-4
-        ref1 = self.alio_to_energy(value - res_delta/2)
-        ref2 = self.alio_to_energy(value + res_delta/2)
+        ref1 = self.alio_to_energy(value - res_delta / 2)
+        ref2 = self.alio_to_energy(value + res_delta / 2)
         self.resolution.put(abs((ref1 - ref2) / res_delta), force=True)
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
@@ -722,29 +690,24 @@ class CCMEnergyWithVernier(CCMEnergy):
         PVs to write to. If omitted, we can guess this from the
         prefix.
     """
-    acr_energy = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
-                      doc='Requests ACR to move the Vernier.')
+
+    acr_energy = FCpt(BeamEnergyRequest, "{hutch}", kind="normal", doc="Requests ACR to move the Vernier.")
 
     # These are duplicate warnings with main energy motor
     _enable_warn_constants: bool = False
     hutch: str
 
-    def __init__(
-        self,
-        prefix: str,
-        hutch: typing.Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, prefix: str, hutch: typing.Optional[str] = None, **kwargs):
         # Put some effort into filling this automatically
         # CCM exists only in two hutches
         if hutch is not None:
             self.hutch = hutch
-        elif 'XPP' in prefix:
-            self.hutch = 'XPP'
-        elif 'XCS' in prefix:
-            self.hutch = 'XCS'
+        elif "XPP" in prefix:
+            self.hutch = "XPP"
+        elif "XCS" in prefix:
+            self.hutch = "XCS"
         else:
-            self.hutch = 'TST'
+            self.hutch = "TST"
         super().__init__(prefix, **kwargs)
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
@@ -792,21 +755,19 @@ class CCMEnergyWithACRStatus(CCMEnergyWithVernier):
         Prefix to the SIOC PV that ACR uses to report the move status.
         For HXR this usually is 'AO805'.
     """
-    acr_energy = FCpt(BeamEnergyRequest, '{hutch}',
-                      pv_index='{pv_index}',
-                      acr_status_suffix='{acr_status_suffix}',
-                      add_prefix=('suffix', 'write_pv', 'pv_index',
-                                  'acr_status_suffix'),
-                      kind='normal',
-                      doc='Requests ACR to move the energy.')
+
+    acr_energy = FCpt(
+        BeamEnergyRequest,
+        "{hutch}",
+        pv_index="{pv_index}",
+        acr_status_suffix="{acr_status_suffix}",
+        add_prefix=("suffix", "write_pv", "pv_index", "acr_status_suffix"),
+        kind="normal",
+        doc="Requests ACR to move the energy.",
+    )
 
     def __init__(
-        self,
-        prefix: str,
-        hutch: typing.Optional[str] = None,
-        acr_status_suffix='AO805',
-        pv_index=2,
-        **kwargs
+        self, prefix: str, hutch: typing.Optional[str] = None, acr_status_suffix="AO805", pv_index=2, **kwargs
     ):
         self.acr_status_suffix = acr_status_suffix
         self.pv_index = pv_index
@@ -833,21 +794,16 @@ class CCMX(SyncAxis):
     up_prefix : str, required keyword
         The prefix for the upstream ccm x translation motor (x2).
     """
-    down = UCpt(IMS, kind='normal',
-                doc='Downstream ccm x translation motor (x1).')
-    up = UCpt(IMS, kind='normal',
-              doc='Upstream ccm x translation motor(x2).')
+
+    down = UCpt(IMS, kind="normal", doc="Downstream ccm x translation motor (x1).")
+    up = UCpt(IMS, kind="normal", doc="Upstream ccm x translation motor(x2).")
 
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
-    def __init__(
-        self,
-        prefix: typing.Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, prefix: typing.Optional[str] = None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
-        prefix = prefix or self.unrelated_prefixes['down_prefix']
+        prefix = prefix or self.unrelated_prefixes["down_prefix"]
         super().__init__(prefix, **kwargs)
 
 
@@ -873,23 +829,17 @@ class CCMY(SyncAxis):
     up_south_prefix : str, required keyword
         The prefix for the south upstream ccm y translation motor (y3).
     """
-    down = UCpt(IMS, kind='normal',
-                doc='Downstream ccm y translation motor (y1).')
-    up_north = UCpt(IMS, kind='normal',
-                    doc='North upstream ccm y translation motor (y2).')
-    up_south = UCpt(IMS, kind='normal',
-                    doc='South upstream ccm y translation motor (y3).')
+
+    down = UCpt(IMS, kind="normal", doc="Downstream ccm y translation motor (y1).")
+    up_north = UCpt(IMS, kind="normal", doc="North upstream ccm y translation motor (y2).")
+    up_south = UCpt(IMS, kind="normal", doc="South upstream ccm y translation motor (y3).")
 
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
-    def __init__(
-        self,
-        prefix: typing.Optional[str] = None,
-        **kwargs
-    ):
+    def __init__(self, prefix: typing.Optional[str] = None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
-        prefix = prefix or self.unrelated_prefixes['down_prefix']
+        prefix = prefix or self.unrelated_prefixes["down_prefix"]
         super().__init__(prefix, **kwargs)
 
 
@@ -938,84 +888,89 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
     acr_status_suffix : str
         The suffix for the ACR status energy change move. Default to 'AO805'
     """
+
     energy = Cpt(
-        CCMEnergy, '', kind='hinted',
-        doc=(
-            'PseudoPositioner that moves the alio in '
-            'terms of the calculated CCM energy.'
-        ),
+        CCMEnergy,
+        "",
+        kind="hinted",
+        doc=("PseudoPositioner that moves the alio in terms of the calculated CCM energy."),
     )
     energy_with_vernier = Cpt(
-        CCMEnergyWithVernier, '', kind='normal',
+        CCMEnergyWithVernier,
+        "",
+        kind="normal",
         doc=(
-            'PseudoPositioner that moves the alio in '
-            'terms of the calculated CCM energy while '
-            'also requesting a vernier move.'
+            "PseudoPositioner that moves the alio in "
+            "terms of the calculated CCM energy while "
+            "also requesting a vernier move."
         ),
     )
     energy_with_acr_status = FCpt(
-        CCMEnergyWithACRStatus, '{prefix}', kind='normal',
-        acr_status_suffix='{acr_status_suffix}',
-        add_prefix=('suffix', 'write_pv', 'acr_status_suffix'),
+        CCMEnergyWithACRStatus,
+        "{prefix}",
+        kind="normal",
+        acr_status_suffix="{acr_status_suffix}",
+        add_prefix=("suffix", "write_pv", "acr_status_suffix"),
         doc=(
-            'PseudoPositioner that moves the alio in '
-            'terms of the calculated CCM energy while '
-            'also requesting an energy change to ACR. '
-            'This will wait on ACR to complete the move.'
+            "PseudoPositioner that moves the alio in "
+            "terms of the calculated CCM energy while "
+            "also requesting an energy change to ACR. "
+            "This will wait on ACR to complete the move."
         ),
     )
 
-    alio = UCpt(CCMAlio, kind='normal',
-                doc='The motor that rotates the CCM crystal.')
+    alio = UCpt(CCMAlio, kind="normal", doc="The motor that rotates the CCM crystal.")
     theta2fine = UCpt(
-        CCMMotor, atol=0.01, kind='normal',
-        doc=(
-            'The motor that controls the fine adjustment '
-            'of the of the second crystal theta angle.'
-        ),
+        CCMMotor,
+        atol=0.01,
+        kind="normal",
+        doc=("The motor that controls the fine adjustment of the of the second crystal theta angle."),
     )
     theta2coarse = UCpt(
-        CCMPico, kind='normal',
-        doc=(
-            'The motor that controls the coarse adjustment '
-            'of the of the second crystal theta angle.'
-        ),
+        CCMPico,
+        kind="normal",
+        doc=("The motor that controls the coarse adjustment of the of the second crystal theta angle."),
     )
     chi2 = UCpt(
-        CCMPico, kind='normal',
-        doc=(
-            'The motor that controls the adjustment of the'
-            'second crystal chi angle.'
-        ),
+        CCMPico,
+        kind="normal",
+        doc=("The motor that controls the adjustment of thesecond crystal chi angle."),
     )
-    x = UCpt(CCMX, add_prefix=[], kind='normal',
-             doc='Combined motion of the CCM X motors.')
-    y = UCpt(CCMY, add_prefix=[], kind='normal',
-             doc='Combined motion of the CCM Y motors.')
+    x = UCpt(CCMX, add_prefix=[], kind="normal", doc="Combined motion of the CCM X motors.")
+    y = UCpt(CCMY, add_prefix=[], kind="normal", doc="Combined motion of the CCM Y motors.")
 
-    lightpath_cpts = ['x.up.user_readback']
-    tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_Vernier',
-                     'energy_with_acr_status', 'th2fine', 'alio2E', 'E2alio',
-                     'alio', 'home', 'kill', 'insert', 'remove', 'inserted',
-                     'removed']
+    lightpath_cpts = ["x.up.user_readback"]
+    tab_whitelist = [
+        "x1",
+        "x2",
+        "y1",
+        "y2",
+        "y3",
+        "E",
+        "E_Vernier",
+        "energy_with_acr_status",
+        "th2fine",
+        "alio2E",
+        "E2alio",
+        "alio",
+        "home",
+        "kill",
+        "insert",
+        "remove",
+        "inserted",
+        "removed",
+    ]
 
     _in_pos: float
     _out_pos: float
 
-    def __init__(
-        self,
-        *,
-        prefix: typing.Optional[str] = None,
-        in_pos: float,
-        out_pos: float,
-        **kwargs
-    ):
+    def __init__(self, *, prefix: typing.Optional[str] = None, in_pos: float, out_pos: float, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         self._in_pos = in_pos
         self._out_pos = out_pos
-        prefix = prefix or self.unrelated_prefixes['alio_prefix']
-        self.acr_status_suffix = kwargs.get('acr_status_suffix', 'AO805')
-        self.acr_status_pv_index = kwargs.get('acr_status_suffix', 2)
+        prefix = prefix or self.unrelated_prefixes["alio_prefix"]
+        self.acr_status_suffix = kwargs.get("acr_status_suffix", "AO805")
+        self.acr_status_pv_index = kwargs.get("acr_status_suffix", 2)
         super().__init__(prefix, **kwargs)
 
         # Aliases: defined by the scientists
@@ -1025,9 +980,9 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         self.y2 = self.y.up_north
         self.y3 = self.y.up_south
         self.E = self.energy.energy
-        self.E.readback.name = f'{self.name}E'
+        self.E.readback.name = f"{self.name}E"
         self.E_Vernier = self.energy_with_vernier.energy
-        self.E_Vernier.readback.name = f'{self.name}E_Vernier'
+        self.E_Vernier.readback.name = f"{self.name}E_Vernier"
         self.th2coarse = self.theta2coarse
         self.th2fine = self.theta2fine
         self.alio2E = self.energy.alio_to_energy
@@ -1043,35 +998,28 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         Define how we're going to format the state of the CCM for the user.
         """
         # Pull out the numbers we want and format them, or show N/A if failed
-        alio = get_status_float(status_info, 'alio', 'position', precision=4)
-        theta = get_status_float(status_info, 'energy', 'theta_deg', 'value',
-                                 precision=3)
-        wavelength = get_status_float(status_info, 'energy', 'wavelength',
-                                      'value', precision=4)
-        energy = get_status_float(status_info, 'energy', 'energy', 'position',
-                                  precision=4)
-        res_mm = get_status_float(status_info, 'energy', 'resolution', 'value',
-                                  scale=1e3, precision=1)
-        res_um = get_status_float(status_info, 'energy', 'resolution', 'value',
-                                  precision=2)
-        x_down = get_status_float(status_info, 'x', 'down', 'position',
-                                  precision=3)
-        x_up = get_status_float(status_info, 'x', 'up', 'position',
-                                precision=3)
+        alio = get_status_float(status_info, "alio", "position", precision=4)
+        theta = get_status_float(status_info, "energy", "theta_deg", "value", precision=3)
+        wavelength = get_status_float(status_info, "energy", "wavelength", "value", precision=4)
+        energy = get_status_float(status_info, "energy", "energy", "position", precision=4)
+        res_mm = get_status_float(status_info, "energy", "resolution", "value", scale=1e3, precision=1)
+        res_um = get_status_float(status_info, "energy", "resolution", "value", precision=2)
+        x_down = get_status_float(status_info, "x", "down", "position", precision=3)
+        x_up = get_status_float(status_info, "x", "up", "position", precision=3)
         try:
             xavg = np.average([float(x_down), float(x_up)])
-            xavg = f'{xavg:.3f}'
+            xavg = f"{xavg:.3f}"
         except Exception:
-            xavg = 'N/A'
+            xavg = "N/A"
 
         # Fill out the text
-        text = f'alio   (mm): {alio}\n'
-        text += f'angle (deg): {theta}\n'
-        text += f'lambda  (A): {wavelength}\n'
-        text += f'Energy (keV): {energy}\n'
-        text += f'res (eV/mm): {res_mm}\n'
-        text += f'res (eV/um): {res_um}\n'
-        text += f'x @ (mm): {xavg} [x1,x2={x_down},{x_up}]\n'
+        text = f"alio   (mm): {alio}\n"
+        text += f"angle (deg): {theta}\n"
+        text += f"lambda  (A): {wavelength}\n"
+        text += f"Energy (keV): {energy}\n"
+        text += f"res (eV/mm): {res_mm}\n"
+        text += f"res (eV/um): {res_um}\n"
+        text += f"x @ (mm): {xavg} [x1,x2={x_down},{x_up}]\n"
         return text
 
     def calc_lightpath_state(self, x_up: float) -> LightpathState:
@@ -1089,9 +1037,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
             self._transmission = 0.9
 
         return LightpathState(
-            inserted=self._inserted,
-            removed=self._removed,
-            output={self.output_branches[0]: self._transmission}
+            inserted=self._inserted, removed=self._removed, output={self.output_branches[0]: self._transmission}
         )
 
     @property
@@ -1171,26 +1117,24 @@ def alio_to_theta(alio: float, theta0: float, gr: float, gd: float) -> float:
     theta_angle = f(x) = 2arctan * [(sqrt(x^2 + D^2 + 2Rx) - D)/(2R + x)]
     Note that for x = −R, θ = 2 arctan(−R/D)
     """
-    return theta0 + 2 * np.arctan(
-        (np.sqrt(alio ** 2 + gd ** 2 + 2 * gr * alio) - gd) / (2 * gr + alio)
-    )
+    return theta0 + 2 * np.arctan((np.sqrt(alio**2 + gd**2 + 2 * gr * alio) - gd) / (2 * gr + alio))
 
 
 def wavelength_to_theta(wavelength: float, dspacing: float) -> float:
     """Converts wavelength (A) to theta angle (rad)."""
-    return np.arcsin(wavelength/2/dspacing)
+    return np.arcsin(wavelength / 2 / dspacing)
 
 
 def theta_to_wavelength(theta: float, dspacing: float) -> float:
     """Converts theta angle (rad) to wavelength (A)."""
-    return 2*dspacing*np.sin(theta)
+    return 2 * dspacing * np.sin(theta)
 
 
 def energy_to_wavelength(energy: float) -> float:
     """Converts photon energy (keV) to wavelength (A)."""
-    return 12.39842/energy
+    return 12.39842 / energy
 
 
 def wavelength_to_energy(wavelength: float) -> float:
     """Converts wavelength (A) to photon energy (keV)."""
-    return 12.39842/wavelength
+    return 12.39842 / wavelength

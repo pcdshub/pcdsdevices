@@ -1,10 +1,11 @@
 *.swp
 __pycache__
 build
+_version.py
 *.pyc
 *~
 
-#Coverage Reports
+# Coverage Reports
 htmlcov
 .coverage
 .cache
@@ -15,6 +16,10 @@ logs
 # Sphinx
 docs/source/generated/*
 
-#pytest
+# pytest
 .pytest_cache
 .vscode
+
+# pixi environments
+.pixi/*
+!.pixi/config.toml

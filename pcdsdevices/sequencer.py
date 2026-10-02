@@ -13,13 +13,14 @@ logger = logging.getLogger(__name__)
 
 class EventSequence(BaseInterface, Device):
     """Class for the event sequence of the event sequencer."""
-    ec_array = Cpt(EpicsSignal, ':SEQ.A')
-    bd_array = Cpt(EpicsSignal, ':SEQ.B')
-    fd_array = Cpt(EpicsSignal, ':SEQ.C')
-    bc_array = Cpt(EpicsSignal, ':SEQ.D')
-    seq_proc = Cpt(EpicsSignal, ':SEQ.PROC')
 
-    tab_whitelist = ['get_seq', 'put_seq', 'show']
+    ec_array = Cpt(EpicsSignal, ":SEQ.A")
+    bd_array = Cpt(EpicsSignal, ":SEQ.B")
+    fd_array = Cpt(EpicsSignal, ":SEQ.C")
+    bc_array = Cpt(EpicsSignal, ":SEQ.D")
+    seq_proc = Cpt(EpicsSignal, ":SEQ.PROC")
+
+    tab_whitelist = ["get_seq", "put_seq", "show"]
 
     def get_seq(self, current_length=True):
         """
@@ -182,31 +183,29 @@ class EventSequencer(BaseInterface, Device, MonitorFlyerMixin, FlyerInterface):
     out the scan.
     """
 
-    play_control = Cpt(EpicsSignal, ':PLYCTL', kind='omitted')
-    sequence_length = Cpt(EpicsSignal, ':LEN', kind='config')
-    current_step = Cpt(EpicsSignal, ':CURSTP', kind='normal')
-    play_count = Cpt(EpicsSignal, ':PLYCNT', kind='normal')
-    total_play_count = Cpt(EpicsSignalRO, ':TPLCNT', kind='normal')
-    play_status = Cpt(EpicsSignalRO, ':PLSTAT', auto_monitor=True,
-                      kind='normal')
-    play_mode = Cpt(EpicsSignal, ':PLYMOD', kind='config')
-    sync_marker = Cpt(EpicsSignal, ':SYNCMARKER', kind='config')
-    next_sync = Cpt(EpicsSignal, ':SYNCNEXTTICK', kind='config')
-    pulse_req = Cpt(EpicsSignal, ':BEAMPULSEREQ', kind='config')
-    rep_count = Cpt(EpicsSignal, ":REPCNT", kind='config')
-    sequence_owner = Cpt(EpicsSignalRO, ':HUTCH_NAME', kind='omitted')
+    play_control = Cpt(EpicsSignal, ":PLYCTL", kind="omitted")
+    sequence_length = Cpt(EpicsSignal, ":LEN", kind="config")
+    current_step = Cpt(EpicsSignal, ":CURSTP", kind="normal")
+    play_count = Cpt(EpicsSignal, ":PLYCNT", kind="normal")
+    total_play_count = Cpt(EpicsSignalRO, ":TPLCNT", kind="normal")
+    play_status = Cpt(EpicsSignalRO, ":PLSTAT", auto_monitor=True, kind="normal")
+    play_mode = Cpt(EpicsSignal, ":PLYMOD", kind="config")
+    sync_marker = Cpt(EpicsSignal, ":SYNCMARKER", kind="config")
+    next_sync = Cpt(EpicsSignal, ":SYNCNEXTTICK", kind="config")
+    pulse_req = Cpt(EpicsSignal, ":BEAMPULSEREQ", kind="config")
+    rep_count = Cpt(EpicsSignal, ":REPCNT", kind="config")
+    sequence_owner = Cpt(EpicsSignalRO, ":HUTCH_NAME", kind="omitted")
 
-    sequence = Cpt(EventSequence, '', kind='config')
+    sequence = Cpt(EventSequence, "", kind="config")
 
     tab_whitelist = ["start"]
     tab_component_names = True
 
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
-        monitor_attrs = monitor_attrs or ['current_step', 'play_count']
+        monitor_attrs = monitor_attrs or ["current_step", "play_count"]
 
         # Device initialization
-        super().__init__(prefix, name=name,
-                         monitor_attrs=monitor_attrs, **kwargs)
+        super().__init__(prefix, name=name, monitor_attrs=monitor_attrs, **kwargs)
 
     @raise_if_disconnected
     def kickoff(self):
@@ -225,8 +224,7 @@ class EventSequencer(BaseInterface, Device, MonitorFlyerMixin, FlyerInterface):
 
         # Create our status
         def done(*args, value=None, old_value=None, timestamp=0, **kwargs):
-            return all((value == 2, old_value == 0,
-                        timestamp > self.play_control.timestamp))
+            return all((value == 2, old_value == 0, timestamp > self.play_control.timestamp))
 
         # Create our status object
         return SubscriptionStatus(self.play_status, done, run=True)
@@ -261,14 +259,12 @@ class EventSequencer(BaseInterface, Device, MonitorFlyerMixin, FlyerInterface):
         self.start()
         # If we are running forever, count this is as triggered
         if self.play_mode.get() == 2:
-            logger.debug("EventSequencer is set to run forever, "
-                         "trigger is complete")
+            logger.debug("EventSequencer is set to run forever, trigger is complete")
             return DeviceStatus(self, done=True, success=True)
 
         # Create our status
         def done(*args, value=None, old_value=None, timestamp=0, **kwargs):
-            return all((value == 0, old_value == 2,
-                        timestamp > self.play_control.timestamp))
+            return all((value == 0, old_value == 2, timestamp > self.play_control.timestamp))
 
         # Create our status object
         return SubscriptionStatus(self.play_status, done, run=True)
@@ -312,19 +308,16 @@ class EventSequencer(BaseInterface, Device, MonitorFlyerMixin, FlyerInterface):
         super().complete()
         # If we are running forever we can stop whenever
         if self.play_mode.get() == 2:
-            logger.debug("EventSequencer is set to run forever, "
-                         "stopping immediately")
+            logger.debug("EventSequencer is set to run forever, stopping immediately")
             self.stop()
             return DeviceStatus(self, done=True, success=True)
 
         # Otherwise we should wait for the sequencer to end
         def done(*args, value=None, old_value=None, timestamp=0, **kwargs):
-            return all((value == 0, old_value == 2,
-                        timestamp > self.play_control.timestamp))
+            return all((value == 0, old_value == 2, timestamp > self.play_control.timestamp))
 
         # Create a SubscriptionStatus
-        logger.debug("EventSequencer has a determined stopping point, "
-                     " waiting for sequence to complete")
+        logger.debug("EventSequencer has a determined stopping point,  waiting for sequence to complete")
         st = SubscriptionStatus(self.play_status, done, run=True)
         return st
 

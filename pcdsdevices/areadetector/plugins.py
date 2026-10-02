@@ -1,6 +1,7 @@
 """
 PCDS plugins and Overrides for AreaDetector Plugins.
 """
+
 import datetime
 import logging
 import time
@@ -25,14 +26,14 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
     Overridden PluginBase to make it work when the root device is not a CamBase
     class.
     """
-    enable = C(EpicsSignal, 'EnableCallbacks_RBV.RVAL', write_pv="EnableCallbacks", string=False)
+
+    enable = C(EpicsSignal, "EnableCallbacks_RBV.RVAL", write_pv="EnableCallbacks", string=False)
 
     @property
     def source_plugin(self):
         # The PluginBase object that is the asyn source for this plugin.
         source_port = self.nd_array_port.get()
-        if source_port == 'CAM' or not hasattr(
-                self.root, 'get_plugin_by_asyn_port'):
+        if source_port == "CAM" or not hasattr(self.root, "get_plugin_by_asyn_port"):
             return None
         source_plugin = self.root.get_plugin_by_asyn_port(source_port)
         return source_plugin
@@ -41,17 +42,16 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
     def _asyn_pipeline_configuration_names(self):
         # This broke any instantiated plugin b/c _asyn_pipeline is a list that
         # can have None.
-        return [_.configuration_names.name for _ in self._asyn_pipeline if
-                hasattr(_, 'configuration_names')]
+        return [_.configuration_names.name for _ in self._asyn_pipeline if hasattr(_, "configuration_names")]
 
     @property
     def _asyn_pipeline(self):
         parent = None
         # Add a check to make sure root has this attr, otherwise return None
-        if hasattr(self.root, 'get_plugin_by_asyn_port') and self.root != self:
+        if hasattr(self.root, "get_plugin_by_asyn_port") and self.root != self:
             parent = self.root.get_plugin_by_asyn_port(self.nd_array_port.get())
-            if hasattr(parent, '_asyn_pipeline'):
-                return parent._asyn_pipeline + (self, )
+            if hasattr(parent, "_asyn_pipeline"):
+                return parent._asyn_pipeline + (self,)
         return (parent, self)
 
     def describe_configuration(self):
@@ -70,7 +70,7 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
 
     def stage(self):
         # Ensure the plugin is enabled. We do not disable it on unstage
-        if self.enable not in self.stage_sigs and 'enable' not in self.stage_sigs:
+        if self.enable not in self.stage_sigs and "enable" not in self.stage_sigs:
             if not self.enable.connected:
                 self.enable.get()
             set_and_wait(self.enable, 1, atol=0)
@@ -99,7 +99,7 @@ class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
         """Overriden image method to add in some corrections."""
         array_size = [int(val) for val in self.array_size.get()]
         if array_size == [0, 0, 0]:
-            raise RuntimeError('Invalid image; ensure array_callbacks are on')
+            raise RuntimeError("Invalid image; ensure array_callbacks are on")
 
         if array_size[-1] == 0:
             array_size = array_size[:-1]
@@ -112,8 +112,8 @@ class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
 class StatsPlugin(ophyd.plugins.StatsPlugin, PluginBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.stage_sigs['compute_statistics'] = 'Yes'
-        self.stage_sigs['compute_centroid'] = 'Yes'
+        self.stage_sigs["compute_statistics"] = "Yes"
+        self.stage_sigs["compute_centroid"] = "Yes"
 
 
 class ColorConvPlugin(ophyd.plugins.ColorConvPlugin, PluginBase):
@@ -178,6 +178,7 @@ class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
     the names human-readable because we don't actually use
     filestore/databroker at LCLS.
     """
+
     def make_filename(self) -> str:
         """Select a filename that makes SLAC scientists happy"""
         try:
@@ -191,9 +192,9 @@ class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
                 live=False,
                 timeout=5,
             )
-            filename = f'{experiment}_run{run_number}_{time.time():.0f}'
+            filename = f"{experiment}_run{run_number}_{time.time():.0f}"
         except Exception:
-            filename = f'{self.name}_{time.time():.0f}'
+            filename = f"{self.name}_{time.time():.0f}"
         formatter = datetime.datetime.now().strftime
         return (
             filename,
@@ -206,4 +207,4 @@ class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
         At cleanup, let the user know which file has been created last.
         """
         super().unstage()
-        print(f'Created file {self.full_file_name.get()}')
+        print(f"Created file {self.full_file_name.get()}")

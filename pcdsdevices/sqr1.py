@@ -8,6 +8,7 @@ The axes include X, Y, Z, rX, rY, and rZ.
 
 Reference: https://www.sqr-1.com/tsp.html
 """
+
 from __future__ import annotations
 
 import enum
@@ -39,12 +40,12 @@ class Axis(str, enum.Enum):
     - 'rZ': Z-axis rotation
     """
 
-    X = 'X'
-    Y = 'Y'
-    Z = 'Z'
-    rX = 'rX'
-    rY = 'rY'
-    rZ = 'rZ'
+    X = "X"
+    Y = "Y"
+    Z = "Z"
+    rX = "rX"
+    rY = "rY"
+    rZ = "rZ"
 
 
 class SQR1Axis(FltMvInterface, PVPositionerIsClose):
@@ -179,11 +180,7 @@ class SQR1Axis(FltMvInterface, PVPositionerIsClose):
         scans without one axis blocking other axes.
 
         """
-        return self.move(new_position,
-                         wait=False,
-                         moved_cb=moved_cb,
-                         timeout=timeout,
-                         sync_enable=False)
+        return self.move(new_position, wait=False, moved_cb=moved_cb, timeout=timeout, sync_enable=False)
 
 
 class SQR1(Device):
@@ -359,8 +356,7 @@ class SQR1(Device):
                 ry_sp = (getattr(self.ry.presets.positions, preset_pos)).pos
                 rz_sp = (getattr(self.rz.presets.positions, preset_pos)).pos
             else:
-                raise ValueError('One of the axes is missing the desired'
-                                 'state.')
+                raise ValueError("One of the axes is missing the desiredstate.")
 
         x_sp = self.x.readback.get() if x_sp is None else x_sp
         y_sp = self.y.readback.get() if y_sp is None else y_sp
@@ -369,21 +365,14 @@ class SQR1(Device):
         ry_sp = self.ry.readback.get() if ry_sp is None else ry_sp
         rz_sp = self.rz.readback.get() if rz_sp is None else rz_sp
 
-        x_status = self.x.move(x_sp, wait=False, timeout=timeout,
-                               sync_enable=False)
-        y_status = self.y.move(y_sp, wait=False, timeout=timeout,
-                               sync_enable=False)
-        z_status = self.z.move(z_sp, wait=False, timeout=timeout,
-                               sync_enable=False)
-        rx_status = self.rx.move(rx_sp, wait=False, timeout=timeout,
-                                 sync_enable=False)
-        ry_status = self.ry.move(ry_sp, wait=False, timeout=timeout,
-                                 sync_enable=False)
-        rz_status = self.rz.move(rz_sp, wait=False, timeout=timeout,
-                                 sync_enable=False)
+        x_status = self.x.move(x_sp, wait=False, timeout=timeout, sync_enable=False)
+        y_status = self.y.move(y_sp, wait=False, timeout=timeout, sync_enable=False)
+        z_status = self.z.move(z_sp, wait=False, timeout=timeout, sync_enable=False)
+        rx_status = self.rx.move(rx_sp, wait=False, timeout=timeout, sync_enable=False)
+        ry_status = self.ry.move(ry_sp, wait=False, timeout=timeout, sync_enable=False)
+        rz_status = self.rz.move(rz_sp, wait=False, timeout=timeout, sync_enable=False)
 
-        status = x_status & y_status & z_status & rx_status & \
-            ry_status & rz_status
+        status = x_status & y_status & z_status & rx_status & ry_status & rz_status
         if wait:
             status_wait(status)
 

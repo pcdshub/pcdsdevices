@@ -12,19 +12,26 @@ from ophyd.sim import FakeEpicsSignal
 from ophyd.status import Status
 
 from .. import signal as signal_module
-from ..signal import (AggregateSignal, AvgSignal, MultiDerivedSignal,
-                      MultiDerivedSignalRO, PytmcSignal, ReadOnlyError,
-                      SignalEditMD, UnitConversionDerivedSignal)
+from ..signal import (
+    AggregateSignal,
+    AvgSignal,
+    MultiDerivedSignal,
+    MultiDerivedSignalRO,
+    PytmcSignal,
+    ReadOnlyError,
+    SignalEditMD,
+    UnitConversionDerivedSignal,
+)
 from ..type_hints import OphydDataType, SignalToValue
 
 logger = logging.getLogger(__name__)
 
 
 def test_pytmc_signal():
-    logger.debug('test_pytmc_signal')
+    logger.debug("test_pytmc_signal")
     # Just make sure the normal use cases aren't super broken
-    rwsig = PytmcSignal('PREFIX', io='io')
-    rosig = PytmcSignal('PREFIX', io='i')
+    rwsig = PytmcSignal("PREFIX", io="io")
+    rosig = PytmcSignal("PREFIX", io="i")
     assert isinstance(rwsig, EpicsSignal)
     assert isinstance(rwsig, PytmcSignal)
     assert isinstance(rosig, EpicsSignalRO)
@@ -32,9 +39,9 @@ def test_pytmc_signal():
 
 
 def test_avg_signal():
-    logger.debug('test_avg_signal')
-    sig = Signal(name='raw')
-    avg = AvgSignal(sig, 2, name='avg')
+    logger.debug("test_avg_signal")
+    sig = Signal(name="raw")
+    avg = AvgSignal(sig, 2, name="avg")
 
     assert avg.averages == 2
 
@@ -62,8 +69,8 @@ def test_avg_signal():
 
 def test_avg_signal_with_duration():
     logger.debug("test_avg_signal_with_duration")
-    sig = Signal(name='raw')
-    avg = AvgSignal(sig, 2, name='avg', duration=2)
+    sig = Signal(name="raw")
+    avg = AvgSignal(sig, 2, name="avg", duration=2)
 
     assert avg.averages == 2
 
@@ -114,28 +121,28 @@ class MockCallbackHelper:
         return kwargs
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def unit_conv_signal():
-    orig = FakeEpicsSignal('sig', name='orig')
-    if 'units' not in orig.metadata_keys:
+    orig = FakeEpicsSignal("sig", name="orig")
+    if "units" not in orig.metadata_keys:
         # HACK: This will need to be fixed upstream in ophyd as part of
         # upstreaming UnitConversionDerivedSignal
-        orig._metadata_keys = orig.metadata_keys + ('units', )
+        orig._metadata_keys = orig.metadata_keys + ("units",)
 
     orig.sim_put(5)
 
     return UnitConversionDerivedSignal(
         derived_from=orig,
-        original_units='m',
-        derived_units='mm',
-        name='converted',
+        original_units="m",
+        derived_units="mm",
+        name="converted",
     )
 
 
 def test_unit_conversion_signal_units(unit_conv_signal):
-    assert unit_conv_signal.original_units == 'm'
-    assert unit_conv_signal.derived_units == 'mm'
-    assert unit_conv_signal.describe()[unit_conv_signal.name]['units'] == 'mm'
+    assert unit_conv_signal.original_units == "m"
+    assert unit_conv_signal.derived_units == "mm"
+    assert unit_conv_signal.describe()[unit_conv_signal.name]["units"] == "mm"
 
 
 def test_unit_conversion_signal_get_put(unit_conv_signal):
@@ -151,21 +158,21 @@ def test_unit_conversion_signal_value_sub(unit_conv_signal):
     helper.wait(1)
     helper.mock.assert_called_once()
 
-    assert helper.call_kwargs['value'] == 20_000
+    assert helper.call_kwargs["value"] == 20_000
     assert unit_conv_signal.get() == 20_000
 
 
 def test_unit_conversion_signal_metadata_sub(unit_conv_signal):
     helper = MockCallbackHelper()
-    unit_conv_signal.subscribe(helper, run=True, event_type='meta')
+    unit_conv_signal.subscribe(helper, run=True, event_type="meta")
     helper.wait(1)
     helper.mock.assert_called_once()
-    assert helper.call_kwargs['units'] == 'mm'
+    assert helper.call_kwargs["units"] == "mm"
 
 
 def test_optional_epics_signal(monkeypatch):
-    monkeypatch.setattr(signal_module, 'EpicsSignal', FakeEpicsSignal)
-    opt = signal_module._OptionalEpicsSignal('test', name='opt')
+    monkeypatch.setattr(signal_module, "EpicsSignal", FakeEpicsSignal)
+    opt = signal_module._OptionalEpicsSignal("test", name="opt")
 
     opt._epics_signal.put(123)
 
@@ -176,7 +183,7 @@ def test_optional_epics_signal(monkeypatch):
     opt.wait_for_connection()
 
     # 2. Simulate a connection callback:
-    opt._epics_signal._run_subs(sub_type='meta', connected=True)
+    opt._epics_signal._run_subs(sub_type="meta", connected=True)
     # After connection: use the fake epics signal
     assert opt.should_use_epics_signal()
     assert opt.get() == 123
@@ -189,8 +196,8 @@ def test_optional_epics_signal(monkeypatch):
     opt._epics_signal.precision = 10
     assert opt.precision == 10
 
-    opt._epics_signal._metadata['connected'] = False
-    opt._epics_signal._run_subs(sub_type='meta', connected=False)
+    opt._epics_signal._metadata["connected"] = False
+    opt._epics_signal._run_subs(sub_type="meta", connected=False)
 
     # If disconnected, we still should use the EPICS signal
     assert opt.should_use_epics_signal()
@@ -199,23 +206,23 @@ def test_optional_epics_signal(monkeypatch):
 
 
 def test_pvnotepad_signal(monkeypatch):
-    monkeypatch.setattr(signal_module, 'EpicsSignal', FakeEpicsSignal)
+    monkeypatch.setattr(signal_module, "EpicsSignal", FakeEpicsSignal)
     sig = signal_module.NotepadLinkedSignal(
-        read_pv='__abc123',
-        attr_name='sig',  # pretend this was created with a component
-        name='sig',
-        notepad_metadata={'my': 'metadata'},
+        read_pv="__abc123",
+        attr_name="sig",  # pretend this was created with a component
+        name="sig",
+        notepad_metadata={"my": "metadata"},
     )
-    assert sig.notepad_metadata['dotted_name'] == 'sig'
-    assert sig.notepad_metadata['read_pv'] == '__abc123'
-    assert sig.notepad_metadata['my'] == 'metadata'
+    assert sig.notepad_metadata["dotted_name"] == "sig"
+    assert sig.notepad_metadata["read_pv"] == "__abc123"
+    assert sig.notepad_metadata["my"] == "metadata"
     # PV obviously will not connect:
     assert not sig.should_use_epics_signal()
     sig.destroy()
 
 
 def test_editmd_signal():
-    sig = SignalEditMD(name='sig')
+    sig = SignalEditMD(name="sig")
     cache = {}
     ev = threading.Event()
 
@@ -225,23 +232,25 @@ def test_editmd_signal():
 
     sig.subscribe(add_call, event_type=sig.SUB_META)
 
-    assert sig.metadata['precision'] is None
+    assert sig.metadata["precision"] is None
     assert not cache
     ev.clear()
     sig._override_metadata(precision=4)
-    assert sig.metadata['precision'] == 4
+    assert sig.metadata["precision"] == 4
     # Metadata updates are threaded! Need to wait a moment!
     ev.wait(timeout=1)
-    assert cache['precision'] == 4
+    assert cache["precision"] == 4
 
 
 @pytest.fixture(params=["method", "func"])
 def multi_derived_ro(request) -> Device:
     class MultiDerivedRO(Device):
         if request.param == "method":
+
             def _do_sum(self, mds, items: SignalToValue) -> int:
                 return sum(value for value in items.values())
         else:
+
             def _do_sum(mds: MultiDerivedSignal, items: SignalToValue) -> int:
                 return sum(value for value in items.values())
 
@@ -294,10 +303,7 @@ def test_multi_derived_ro_no_put(multi_derived_ro: Device):
 
 def test_multi_derived_ro_no_put_func():
     with pytest.raises(ValueError):
-        MultiDerivedSignalRO(
-            calculate_on_put=test_multi_derived_bad_instantiation,
-            name="", attrs=[]
-        )
+        MultiDerivedSignalRO(calculate_on_put=test_multi_derived_bad_instantiation, name="", attrs=[])
 
 
 def test_multi_derived_bad_get_func():
@@ -305,10 +311,7 @@ def test_multi_derived_bad_get_func():
         ...
 
     with pytest.raises(ValueError):
-        MultiDerivedSignalRO(
-            calculate_on_get=bad_sig,
-            name="", attrs=[]
-        )
+        MultiDerivedSignalRO(calculate_on_get=bad_sig, name="", attrs=[])
 
 
 def test_multi_derived_bad_put_func():
@@ -316,10 +319,7 @@ def test_multi_derived_bad_put_func():
         ...
 
     with pytest.raises(ValueError):
-        MultiDerivedSignal(
-            calculate_on_put=bad_sig,
-            name="", attrs=[]
-        )
+        MultiDerivedSignal(calculate_on_put=bad_sig, name="", attrs=[])
 
 
 def test_multi_derived_ro_not_callable():
@@ -368,20 +368,14 @@ def test_multi_derived_connectivity(multi_derived_ro: Device):
     assert connected is True
 
 
-@pytest.fixture(
-    params=["subclassed", "arguments"]
-)
+@pytest.fixture(params=["subclassed", "arguments"])
 def multi_derived_rw(request) -> Device:
     class ReusableSignal(MultiDerivedSignal):
-        def calculate_on_get(
-            self, mds: MultiDerivedSignal, items: SignalToValue
-        ) -> int:
+        def calculate_on_get(self, mds: MultiDerivedSignal, items: SignalToValue) -> int:
             return sum(value for value in items.values())
 
-        def calculate_on_put(
-            self, mds: MultiDerivedSignal, value: OphydDataType
-        ) -> SignalToValue:
-            to_write = float(value / 3.)
+        def calculate_on_put(self, mds: MultiDerivedSignal, value: OphydDataType) -> SignalToValue:
+            to_write = float(value / 3.0)
             # `self` here is the Signal, so components are accessed through
             # the parent device:
             return {
@@ -397,15 +391,11 @@ def multi_derived_rw(request) -> Device:
         c = Cpt(FakeEpicsSignal, "c")
 
     class MultiDerivedRW(Device):
-        def _on_get(
-            self, mds: MultiDerivedSignal, items: SignalToValue
-        ) -> int:
+        def _on_get(self, mds: MultiDerivedSignal, items: SignalToValue) -> int:
             return sum(value for value in items.values())
 
-        def _on_put(
-            self, mds: MultiDerivedSignal, value: OphydDataType
-        ) -> SignalToValue:
-            to_write = float(value / 3.)
+        def _on_put(self, mds: MultiDerivedSignal, value: OphydDataType) -> SignalToValue:
+            to_write = float(value / 3.0)
             # `self` here is the Device, so components are accessed directly:
             return {
                 self.a: to_write,
@@ -450,10 +440,20 @@ def test_multi_derived_rw_basic(multi_derived_rw: Device):
     assert multi_derived_rw.cpt.get() == (1 + 2 + 3)
 
     multi_derived_rw.cpt.set(12).wait(timeout=1)
-    assert multi_derived_rw.get() == (12, 4., 4., 4.,)
+    assert multi_derived_rw.get() == (
+        12,
+        4.0,
+        4.0,
+        4.0,
+    )
 
     multi_derived_rw.cpt.set(24).wait(timeout=1)
-    assert multi_derived_rw.get() == (24, 8., 8., 8.,)
+    assert multi_derived_rw.get() == (
+        24,
+        8.0,
+        8.0,
+        8.0,
+    )
 
 
 def test_multi_derived_rw_timeout_settle_time(multi_derived_rw: Device, monkeypatch):
@@ -464,19 +464,17 @@ def test_multi_derived_rw_timeout_settle_time(multi_derived_rw: Device, monkeypa
     monkeypatch.setattr(multi_derived_rw.b, "set", MagicMock(return_value=Status(done=True, success=True)))
     monkeypatch.setattr(multi_derived_rw.c, "set", MagicMock(return_value=Status(done=True, success=True)))
     # Set the derived signal
-    multi_derived_rw.cpt.set(12, timeout=1.1, settle_time=0.1).wait(timeout=2.)
+    multi_derived_rw.cpt.set(12, timeout=1.1, settle_time=0.1).wait(timeout=2.0)
     # Check that the settle_time filtered down to the sub signals
-    multi_derived_rw.a.set.assert_called_with(4., timeout=1.1, settle_time=0.1)
+    multi_derived_rw.a.set.assert_called_with(4.0, timeout=1.1, settle_time=0.1)
 
 
-def wait_until_value(
-    ev: threading.Event, values: list, waiting_value: Any, timeout: float = 1.0
-) -> None:
+def wait_until_value(ev: threading.Event, values: list, waiting_value: Any, timeout: float = 1.0) -> None:
     """Wait until a value is added to the provided list."""
     t0 = time.monotonic()
     while not values or values[-1] != waiting_value:
         try:
-            ev.wait(timeout / 10.)
+            ev.wait(timeout / 10.0)
         except TimeoutError:
             elapsed = time.monotonic() - t0
             if elapsed > timeout:
@@ -496,22 +494,20 @@ def test_multi_derived_rw_sub(multi_derived_rw: Device):
     # The initial subscription request will make sure the underlying signals
     # are subscribed to as well and run a callback in the background once
     # everything connects.
-    multi_derived_rw.cpt.subscribe(
-        value_callback, event_type="value", run=False
-    )
+    multi_derived_rw.cpt.subscribe(value_callback, event_type="value", run=False)
     wait_until_value(ev, values, waiting_value=6)
 
     multi_derived_rw.cpt.put(12)
     wait_until_value(ev, values, waiting_value=12)
-    assert multi_derived_rw.a.get() == 4.
-    assert multi_derived_rw.b.get() == 4.
-    assert multi_derived_rw.c.get() == 4.
+    assert multi_derived_rw.a.get() == 4.0
+    assert multi_derived_rw.b.get() == 4.0
+    assert multi_derived_rw.c.get() == 4.0
 
     multi_derived_rw.cpt.put(24)
     wait_until_value(ev, values, waiting_value=24)
-    assert multi_derived_rw.a.get() == 8.
-    assert multi_derived_rw.b.get() == 8.
-    assert multi_derived_rw.c.get() == 8.
+    assert multi_derived_rw.a.get() == 8.0
+    assert multi_derived_rw.b.get() == 8.0
+    assert multi_derived_rw.c.get() == 8.0
 
 
 def test_multi_derived_bad_instantiation():
@@ -532,11 +528,7 @@ def test_multi_derived_bad_instantiation():
     # Bad attribute name
 
     class BadDevice1(Device):
-        cpt = Cpt(
-            MultiDerivedSignal,
-            calculate_on_get=do_sum,
-            attrs=["a", "bad_attr"]
-        )
+        cpt = Cpt(MultiDerivedSignal, calculate_on_get=do_sum, attrs=["a", "bad_attr"])
         a = Cpt(FakeEpicsSignal, "a")
 
     with pytest.raises(RuntimeError):
@@ -564,9 +556,7 @@ def test_aggregate_signal_bad_instantiation_attrs():
         sig.add_signal_by_attr_name("attr")
 
 
-@pytest.fixture(
-    params=["rw", "ro"]
-)
+@pytest.fixture(params=["rw", "ro"])
 def any_multi_derived(request, multi_derived_ro, multi_derived_rw):
     if request.param == "rw":
         return multi_derived_rw

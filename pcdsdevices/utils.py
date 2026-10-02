@@ -11,7 +11,8 @@ import sys
 import threading
 import time
 from collections.abc import Iterable
-from functools import reduce
+from decimal import Decimal, getcontext
+from functools import reduce, wraps
 from types import MethodType
 from typing import Callable, Iterator, Union
 
@@ -130,7 +131,7 @@ def get_input():
     finally:
         # Restore the terminal to normal input mode
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-        return inp
+        return inp  # noqa: B012
 
 
 ureg = None
@@ -372,10 +373,7 @@ def format_status_table(status_info, row_to_key, column_to_key, row_identifier="
     table = prettytable.PrettyTable()
     table.field_names = [row_identifier] + list(column_to_key)
     for row_name, row_key in row_to_key.items():
-        row = [
-            get_status_value(status_info, row_key, key, "value")
-            for key in column_to_key.values()
-        ]
+        row = [get_status_value(status_info, row_key, key, "value") for key in column_to_key.values()]
         table.add_row([str(row_name)] + row)
 
     return table
@@ -609,10 +607,7 @@ def maybe_make_method(func: Callable | None, owner: object) -> Callable | None:
         return None
 
     if not callable(func):
-        raise ValueError(
-            f"The provided ``func`` is not callable: {func!r} is of "
-            f"type {type(func).__name__}"
-        )
+        raise ValueError(f"The provided ``func`` is not callable: {func!r} is of type {type(func).__name__}")
 
     sig = inspect.signature(func)
     if "self" in sig.parameters and list(sig.parameters)[0] == "self":
@@ -655,9 +650,7 @@ def format_ophyds_to_html(obj, allow_child=False):
             return content
 
         # HelpfulNamespaces tend to lack names, maybe they won't some day
-        parent_default = "Ophyd status: " + ", ".join(
-            "[...]" if isinstance(o, Iterable) else o.name for o in obj
-        )
+        parent_default = "Ophyd status: " + ", ".join("[...]" if isinstance(o, Iterable) else o.name for o in obj)
         parent_name = getattr(obj, "__name__", parent_default[:60] + " ...")
 
         # Wrap in a parent div
@@ -672,11 +665,7 @@ def format_ophyds_to_html(obj, allow_child=False):
 
     # check if parent level ophyd object
     elif callable(getattr(obj, "status", None)) and (
-        (
-            getattr(obj, "parent", None) is None
-            and getattr(obj, "biological_parent", None) is None
-        )
-        or allow_child
+        (getattr(obj, "parent", None) is None and getattr(obj, "biological_parent", None) is None) or allow_child
     ):
         content = ""
         try:
@@ -815,7 +804,7 @@ def _normalize_reorder_list(
                 raise ValueError(
                     f"Received component {obj}, which is not from the device "
                     f"class {cls}. We have components with the following "
-                    f'names: {", ".join(cls._sig_attrs)}'
+                    f"names: {', '.join(cls._sig_attrs)}"
                 ) from exc
         elif isinstance(obj, str):
             output.append(obj)
@@ -897,7 +886,7 @@ def sort_components_by_name(
 
     # Special decorator handling
     def inner(cls: type[Device]) -> type[Device]:
-        alphabetical = list(sorted(cls._sig_attrs, reverse=reverse))
+        alphabetical = sorted(cls._sig_attrs, reverse=reverse)
         reorder_components(cls, start_with=alphabetical)
         return cls
 
@@ -988,3 +977,119 @@ def set_standard_ordering(cls: type[Device]) -> type[Device]:
     sort_components_by_kind(cls)
     move_subdevices_to_start(cls)
     return cls
+
+
+def measure_time(func):
+    """
+    Decorate a function to log its execution time at the DEBUG level.
+
+    Measure elapsed time using ``time.perf_counter()`` and log the function
+    name and duration in seconds, even if the function raises an exception.
+
+    Parameters
+    ----------
+    func : callable
+        Function whose execution time is to be measured.
+
+    Returns
+    -------
+    callable
+        Wrapped function that accepts the original arguments, returns the
+        original result, and preserves the original function's metadata.
+    """
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            elapsed = time.perf_counter() - start
+            logger.debug(f"{func.__name__} took {elapsed:.6f} seconds")
+
+    return wrapper
+
+
+def generate_scan_points(
+    start: Union[int, float, Decimal],
+    end: Union[int, float, Decimal],
+    step: Union[int, float, Decimal],
+    prec: int,
+    bidirectional: bool,
+):
+    """
+    Generate scan positions in the forward and optionally reverse directions.
+
+    Example
+    -------
+    .. code-block:: python
+
+        positions = list(generate_scan_points(1, 10, 0.1, 9, True))
+        RE(list_scan(dets, motor, positions))
+
+    Parameters
+    ----------
+    start : int, float, or Decimal
+        Starting scan position. Must be nonnegative and less than `end`.
+    end : int, float, or Decimal
+        Upper scan boundary.
+    step : int, float, or Decimal
+        Positive spacing between consecutive positions. Must be less than
+        both `start` and `end`.
+    prec: int
+        Generated scan points precision.
+    bidirectional : bool
+        If True, generate a reverse pass after the forward pass.
+
+    Yields
+    ------
+    Decimal
+        Scan positions, beginning at `start` and increasing by `step` while
+        less than or equal to `end`. If `bidirectional` is True, additional
+        positions begin at ``end - step`` and decrease by `step` while
+        greater than or equal to `start`.
+
+    Raises
+    ------
+    ValueError
+        If `start` is negative, `start` is greater than or equal to `end`,
+        `prec` is smaller than 1 or `step` is greater than or equal to
+        either boundary.
+
+    Notes
+    -----
+    Sets the active decimal context precision to nine significant digits.
+    Inputs are converted directly to `Decimal`; float inputs may retain
+    binary floating-point representation artifacts.
+
+    The forward pass includes `end` only if stepping reaches it exactly.
+    The reverse pass is anchored to `end`, so its positions may differ
+    from the forward positions if the interval is not divisible by `step`.
+    """
+    if start < 0 or end < 0 < step < 0:
+        raise ValueError("start, end and step size must be positive numbers")
+    if start >= end:
+        raise ValueError("invalid start and/or end points")
+    if step >= start or step >= end:
+        raise ValueError("invalid step size")
+    if prec < 1:
+        raise ValueError("invalid prec")
+
+    getcontext().prec = prec
+
+    start = Decimal(start)
+    end = Decimal(end)
+    step = Decimal(step)
+
+    # Generate positions in the forward direction
+    pos = start
+    while pos <= end:
+        yield pos
+        pos += step
+
+    if bidirectional:
+        # Generate positions in the backward direction
+        pos = end - step
+        while pos >= start:
+            yield pos
+            pos -= step

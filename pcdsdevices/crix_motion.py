@@ -44,33 +44,34 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         The limits to enforce on moves of the calculated axis.
         This should be a tuple of size 2.
     """
-    calc = Cpt(PseudoSingleInterface, egu='mrad', kind='hinted')
-    real = Cpt(BeckhoffAxis, '', kind='omitted')
+
+    calc = Cpt(PseudoSingleInterface, egu="mrad", kind="hinted")
+    real = Cpt(BeckhoffAxis, "", kind="omitted")
 
     # Aux signals for the typhos positioner widget
     _extra_sig_md = {
-        'precision': 3,
-        'units': 'mrad',
+        "precision": 3,
+        "units": "mrad",
     }
     user_readback = Cpt(
         InternalSignal,
         metadata=_extra_sig_md,
-        kind='omitted',
+        kind="omitted",
     )
     user_setpoint = Cpt(
         InternalSignal,
         metadata=_extra_sig_md,
-        kind='omitted',
+        kind="omitted",
     )
     high_limit_travel = Cpt(
         InternalSignal,
         metadata=_extra_sig_md,
-        kind='omitted',
+        kind="omitted",
     )
     low_limit_travel = Cpt(
         InternalSignal,
         metadata=_extra_sig_md,
-        kind='omitted',
+        kind="omitted",
     )
 
     def __init__(
@@ -83,7 +84,7 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         cc: float,
         pol: int,
         limits: tuple[float, float],
-        **kwargs
+        **kwargs,
     ):
         self.ca = ca
         self.cb = cb
@@ -121,10 +122,7 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         calculation is valid and non-nan.
         """
         calc = pseudo_pos.calc
-        real = (
-            -self.cb
-            + self.pol * np.sqrt(self.cb**2 - 4*self.ca*(self.cc - calc))
-        ) / (2*self.ca)
+        real = (-self.cb + self.pol * np.sqrt(self.cb**2 - 4 * self.ca * (self.cc - calc))) / (2 * self.ca)
         return self.RealPosition(real=real)
 
     @real_position_argument
@@ -139,12 +137,7 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         calc = self.ca * real**2 + self.cb * real + self.cc
         return self.PseudoPosition(calc=calc)
 
-    def _calc_internal_update(
-        self,
-        internal_sig: InternalSignal,
-        value: float,
-        **kwargs
-    ):
+    def _calc_internal_update(self, internal_sig: InternalSignal, value: float, **kwargs):
         """
         Callback to update InternalSignal elements for the typhos UI.
 
@@ -158,7 +151,8 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
 
 class QuadraticSimMotor(QuadraticBeckhoffMotor):
     """Simulated version of the QuadraticBeckhoffMotor for offline testing."""
-    real = Cpt(FastMotor, kind='omitted')
+
+    real = Cpt(FastMotor, kind="omitted")
 
 
 class VLSOptics(GroupDevice):
@@ -174,6 +168,7 @@ class VLSOptics(GroupDevice):
     name : str, required keyword
         This value is used to name the subcomponents.
     """
+
     mirror = Cpt(
         QuadraticBeckhoffMotor,
         "CRIX:VLS:MMS:MP",
@@ -182,7 +177,7 @@ class VLSOptics(GroupDevice):
         cc=27.667,
         pol=1,
         limits=(5.275, 41.882),
-        kind='hinted',
+        kind="hinted",
     )
     grating = Cpt(
         QuadraticBeckhoffMotor,
@@ -192,12 +187,13 @@ class VLSOptics(GroupDevice):
         cc=22.56,
         pol=-1,
         limits=(3.541, 51.8462),
-        kind='hinted',
+        kind="hinted",
     )
 
 
 class VLSOpticsSim(VLSOptics):
     """Simulated version of VLSOptics for offline testing."""
+
     mirror = copy.copy(VLSOptics.mirror)
     mirror.cls = QuadraticSimMotor
     grating = copy.copy(VLSOptics.grating)

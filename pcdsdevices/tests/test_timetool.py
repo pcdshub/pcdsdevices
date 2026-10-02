@@ -9,17 +9,17 @@ from ..timetool import Timetool, TimetoolWithNav
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope='function', params=[Timetool, TimetoolWithNav])
+@pytest.fixture(scope="function", params=[Timetool, TimetoolWithNav])
 def fake_timetool(request):
     FakeTT = make_fake_device(request.param)
-    tt = FakeTT('TST:TT', name='test_tt', prefix_det='click')
-    tt.state.sim_set_enum_strs(('Unknown', 'OUT', 'LENS1', 'LENS2', 'LENS3'))
+    tt = FakeTT("TST:TT", name="test_tt", prefix_det="click")
+    tt.state.sim_set_enum_strs(("Unknown", "OUT", "LENS1", "LENS2", "LENS3"))
     tt.state.sim_put(1)
     return tt
 
 
 def test_timetool_states(fake_timetool):
-    logger.debug('test_timetool_states')
+    logger.debug("test_timetool_states")
     timetool = fake_timetool
     # Remove
     timetool.state.put(1)
@@ -36,7 +36,7 @@ def test_timetool_states(fake_timetool):
 
 
 def test_timetool_motion(fake_timetool):
-    logger.debug('test_timetool_motion')
+    logger.debug("test_timetool_motion")
     timetool = fake_timetool
     timetool.insert()
     assert timetool.state.get() == 2
@@ -45,7 +45,7 @@ def test_timetool_motion(fake_timetool):
 
 
 def test_timetool_subscriptions(fake_timetool):
-    logger.debug('test_timetool_subscriptions')
+    logger.debug("test_timetool_subscriptions")
     timetool = fake_timetool
     # Subscribe a pseudo callback
     cb = Mock()
@@ -57,6 +57,6 @@ def test_timetool_subscriptions(fake_timetool):
 
 @pytest.mark.timeout(5)
 def test_timetool_disconnected():
-    logger.debug('test_timetool_disconnected')
-    Timetool('TST', name='test', prefix_det='click')
-    TimetoolWithNav('TST2', name='test2', prefix_det='click')
+    logger.debug("test_timetool_disconnected")
+    Timetool("TST", name="test", prefix_det="click")
+    TimetoolWithNav("TST2", name="test2", prefix_det="click")

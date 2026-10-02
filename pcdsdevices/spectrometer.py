@@ -9,8 +9,7 @@ from ophyd.device import FormattedComponent as FCpt
 from .analog_signals import FDQ
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
-from .epics_motor import (IMS, BeckhoffAxis, BeckhoffAxisNoOffset,
-                          EpicsMotorInterface)
+from .epics_motor import IMS, BeckhoffAxis, BeckhoffAxisNoOffset, EpicsMotorInterface
 from .interface import BaseInterface, LightpathMixin
 from .pmps import TwinCATStatePMPS
 from .signal import InternalSignal, PytmcSignal
@@ -301,18 +300,10 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
         doc="mono grating states g_h",
     )
     # Motor components: can read/write positions
-    m_pi = Cpt(
-        BeckhoffAxisNoOffset, ":MMS:M_PI", kind="normal", doc="mirror pitch [urad]"
-    )
-    g_pi = Cpt(
-        BeckhoffAxisNoOffset, ":MMS:G_PI", kind="normal", doc="grating pitch [urad]"
-    )
-    m_h = Cpt(
-        BeckhoffAxisNoOffset, ":MMS:M_H", kind="normal", doc="mirror horizontal [um]"
-    )
-    g_h = Cpt(
-        BeckhoffAxisNoOffset, ":MMS:G_H", kind="normal", doc="grating horizontal [um]"
-    )
+    m_pi = Cpt(BeckhoffAxisNoOffset, ":MMS:M_PI", kind="normal", doc="mirror pitch [urad]")
+    g_pi = Cpt(BeckhoffAxisNoOffset, ":MMS:G_PI", kind="normal", doc="grating pitch [urad]")
+    m_h = Cpt(BeckhoffAxisNoOffset, ":MMS:M_H", kind="normal", doc="mirror horizontal [um]")
+    g_h = Cpt(BeckhoffAxisNoOffset, ":MMS:G_H", kind="normal", doc="grating horizontal [um]")
     sd_v = Cpt(
         BeckhoffAxisNoOffset,
         ":MMS:SD_V",
@@ -384,47 +375,21 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
     # Flow meters
     cool_flow1 = Cpt(PytmcSignal, ":FWM:1", io="i", kind="normal", doc="flow meter 1")
     cool_flow2 = Cpt(PytmcSignal, ":FWM:2", io="i", kind="normal", doc="flow meter 2")
-    cool_press = Cpt(
-        PytmcSignal, ":PRSM:1", io="i", kind="normal", doc="pressure meter 1"
-    )
+    cool_press = Cpt(PytmcSignal, ":PRSM:1", io="i", kind="normal", doc="pressure meter 1")
 
     # RTDs
-    grating_temp_1 = Cpt(
-        PytmcSignal, ":RTD:01:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    grating_temp_2 = Cpt(
-        PytmcSignal, ":RTD:02:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    grating_temp_3 = Cpt(
-        PytmcSignal, ":RTD:03:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    grating_temp_4 = Cpt(
-        PytmcSignal, ":RTD:04:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    grating_mask_temp_1 = Cpt(
-        PytmcSignal, ":RTD:05:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    grating_mask_temp_2 = Cpt(
-        PytmcSignal, ":RTD:06:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    grating_mask_temp_3 = Cpt(
-        PytmcSignal, ":RTD:07:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    grating_mask_temp_4 = Cpt(
-        PytmcSignal, ":RTD:08:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    mirror_mask_temp = Cpt(
-        PytmcSignal, ":RTD:09:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    mirror_cooling_temp = Cpt(
-        PytmcSignal, ":RTD:11:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    exit_mask_right_temp = Cpt(
-        PytmcSignal, ":RTD:10:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
-    exit_mask_left_temp = Cpt(
-        PytmcSignal, ":RTD:12:TEMP", io="i", kind="normal", doc="[deg C]"
-    )
+    grating_temp_1 = Cpt(PytmcSignal, ":RTD:01:TEMP", io="i", kind="normal", doc="[deg C]")
+    grating_temp_2 = Cpt(PytmcSignal, ":RTD:02:TEMP", io="i", kind="normal", doc="[deg C]")
+    grating_temp_3 = Cpt(PytmcSignal, ":RTD:03:TEMP", io="i", kind="normal", doc="[deg C]")
+    grating_temp_4 = Cpt(PytmcSignal, ":RTD:04:TEMP", io="i", kind="normal", doc="[deg C]")
+    grating_mask_temp_1 = Cpt(PytmcSignal, ":RTD:05:TEMP", io="i", kind="normal", doc="[deg C]")
+    grating_mask_temp_2 = Cpt(PytmcSignal, ":RTD:06:TEMP", io="i", kind="normal", doc="[deg C]")
+    grating_mask_temp_3 = Cpt(PytmcSignal, ":RTD:07:TEMP", io="i", kind="normal", doc="[deg C]")
+    grating_mask_temp_4 = Cpt(PytmcSignal, ":RTD:08:TEMP", io="i", kind="normal", doc="[deg C]")
+    mirror_mask_temp = Cpt(PytmcSignal, ":RTD:09:TEMP", io="i", kind="normal", doc="[deg C]")
+    mirror_cooling_temp = Cpt(PytmcSignal, ":RTD:11:TEMP", io="i", kind="normal", doc="[deg C]")
+    exit_mask_right_temp = Cpt(PytmcSignal, ":RTD:10:TEMP", io="i", kind="normal", doc="[deg C]")
+    exit_mask_left_temp = Cpt(PytmcSignal, ":RTD:12:TEMP", io="i", kind="normal", doc="[deg C]")
 
     # Lightpath constants
     inserted = True
@@ -436,9 +401,7 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
     lightpath_cpts = ["m_pi.user_readback"]
 
     def calc_lightpath_state(self, **kwargs) -> LightpathState:
-        return LightpathState(
-            inserted=True, removed=False, output={self.output_branches[0]: 1}
-        )
+        return LightpathState(inserted=True, removed=False, output={self.output_branches[0]: 1})
 
 
 class FZPStates(TwinCATStatePMPS):
@@ -503,9 +466,7 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
         doc="z-axis of FZP to define 15 targets position",
         kind="normal",
     )
-    solid_att = Cpt(
-        TMOSpectrometerSOLIDATTStates, "SP1K4:ATT:STATE", add_prefix=(), kind="normal"
-    )
+    solid_att = Cpt(TMOSpectrometerSOLIDATTStates, "SP1K4:ATT:STATE", add_prefix=(), kind="normal")
     # Solid_att x and Y are FOIL x and y
     solid_att_x = Cpt(
         BeckhoffAxis,
@@ -525,17 +486,11 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
         doc="axis to move spectrometer intensifier",
         kind="normal",
     )
-    fzp_piranha_rot = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
+    fzp_piranha_rot = Cpt(BeckhoffAxis, ":MMS:10", kind="normal")
     # lens_yaw_left_right = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
-    yag_x = Cpt(
-        BeckhoffAxis, ":MMS:06", doc="x-axis of spectrometer detector", kind="normal"
-    )
-    yag_y = Cpt(
-        BeckhoffAxis, ":MMS:07", doc="y-axis of spectrometer detector", kind="normal"
-    )
-    yag_z = Cpt(
-        BeckhoffAxis, ":MMS:08", doc="z-axis of spectrometer detector", kind="normal"
-    )
+    yag_x = Cpt(BeckhoffAxis, ":MMS:06", doc="x-axis of spectrometer detector", kind="normal")
+    yag_y = Cpt(BeckhoffAxis, ":MMS:07", doc="y-axis of spectrometer detector", kind="normal")
+    yag_z = Cpt(BeckhoffAxis, ":MMS:08", doc="z-axis of spectrometer detector", kind="normal")
     yag_theta = Cpt(
         BeckhoffAxis,
         ":MMS:09",
@@ -569,9 +524,7 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
 
     def calc_lightpath_state(self, **kwargs) -> LightpathState:
         # TODO: get real logic here, instead of legacy hard-coding
-        return LightpathState(
-            inserted=True, removed=False, output={self.output_branches[0]: 1}
-        )
+        return LightpathState(inserted=True, removed=False, output={self.output_branches[0]: 1})
 
 
 class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
@@ -607,9 +560,7 @@ class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     lightpath_cpts = ["xtaly.user_readback"]
 
     def calc_lightpath_state(self, **kwargs) -> LightpathState:
-        return LightpathState(
-            inserted=True, removed=False, output={self.output_branches[0]: 1}
-        )
+        return LightpathState(inserted=True, removed=False, output={self.output_branches[0]: 1})
 
 
 class Gen1VonHamosCrystal(BaseInterface, GroupDevice):

@@ -1,6 +1,7 @@
 """
 Module to define positioners that move between discrete named states.
 """
+
 from __future__ import annotations
 
 import copy
@@ -21,8 +22,7 @@ from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
-from .signal import (EpicsSignalEditMD, MultiDerivedSignal, PVStateSignal,
-                     PytmcSignal)
+from .signal import EpicsSignalEditMD, MultiDerivedSignal, PVStateSignal, PytmcSignal
 from .type_hints import SignalToValue
 from .utils import HelpfulIntEnum
 from .variety import set_metadata
@@ -32,40 +32,40 @@ logger = logging.getLogger(__name__)
 
 class StatePositioner(MvInterface, Device, PositionerBase):
     """
-    Base class for state-based positioners.
+        Base class for state-based positioners.
 
-    ``Positioner`` that moves between discrete states rather than along a
-    continuous axis.
-%s
-    Attributes
-    ----------
-    state : Signal
-        This signal is the final authority on what state the object is in.
+        ``Positioner`` that moves between discrete states rather than along a
+        continuous axis.
+    %s
+        Attributes
+        ----------
+        state : Signal
+            This signal is the final authority on what state the object is in.
 
-    states_list : list of str
-        This no longer has to be provided if the state signal contains enum
-        information, like an EPICS mbbi. If it is provided, it must be
-        an exhaustive list of all possible states. This should be overridden in
-        a subclass. 'Unknown' must be omitted in the class definition and will
-        be added dynamically in position 0 when the object is created.
+        states_list : list of str
+            This no longer has to be provided if the state signal contains enum
+            information, like an EPICS mbbi. If it is provided, it must be
+            an exhaustive list of all possible states. This should be overridden in
+            a subclass. 'Unknown' must be omitted in the class definition and will
+            be added dynamically in position 0 when the object is created.
 
-    states_enum : ~enum.Enum
-        An enum that represents all possible states. This will be constructed
-        for the user based on the contents of `states_list` and
-        `_states_alias`, but it can also be overriden in a child class.
+        states_enum : ~enum.Enum
+            An enum that represents all possible states. This will be constructed
+            for the user based on the contents of `states_list` and
+            `_states_alias`, but it can also be overriden in a child class.
 
-    _invalid_states : list of str
-        States that cannot be moved to. This can be optionally overriden to be
-        extended in a subclass. The `_unknown` state will be included
-        automatically.
+        _invalid_states : list of str
+            States that cannot be moved to. This can be optionally overriden to be
+            extended in a subclass. The `_unknown` state will be included
+            automatically.
 
-    _unknown : str
-        The name of the unknown state, defaulting to 'Unknown'. This can be set
-        to :keyword:`False` if there is no unknown state.
+        _unknown : str
+            The name of the unknown state, defaulting to 'Unknown'. This can be set
+            to :keyword:`False` if there is no unknown state.
 
-    _states_alias : dict
-        Mapping of state names to lists of acceptable aliases. This can
-        optionally be overriden in a child class.
+        _states_alias : dict
+            Mapping of state names to lists of acceptable aliases. This can
+            optionally be overriden in a child class.
     """
 
     __doc__ = __doc__ % basic_positioner_init
@@ -75,17 +75,17 @@ class StatePositioner(MvInterface, Device, PositionerBase):
     states_list = []  # Optional: override with an exhaustive list of states
     _invalid_states = []  # Override with states that cannot be set
     _states_alias = {}  # Override with a mapping {'STATE': ['ALIAS', ...]}
-    _unknown = 'Unknown'  # Set False if no Unknown state, can also change str
+    _unknown = "Unknown"  # Set False if no Unknown state, can also change str
 
-    SUB_STATE = 'state'
+    SUB_STATE = "state"
     _default_sub = SUB_STATE
     _state_meta_sub = EpicsSignal.SUB_VALUE
 
-    egu = 'state'
+    egu = "state"
 
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is StatePositioner:
-            raise TypeError('StatePositioner must be subclassed with at least a state signal')
+            raise TypeError("StatePositioner must be subclassed with at least a state signal")
         self._state_initialized = False
         self._has_subscribed_state = False
         super().__init__(prefix, name=name, **kwargs)
@@ -100,22 +100,17 @@ class StatePositioner(MvInterface, Device, PositionerBase):
     @required_for_connection
     def _state_init(self):
         if not self._state_initialized:
-            self._valid_states = [state for state in self.states_list
-                                  if state not in self._invalid_states
-                                  and state is not None]
+            self._valid_states = [
+                state for state in self.states_list if state not in self._invalid_states and state is not None
+            ]
             if self._unknown:
                 self.states_list = [self._unknown] + self.states_list
                 self._invalid_states = [self._unknown] + self._invalid_states
-            if not hasattr(self, 'states_enum'):
+            if not hasattr(self, "states_enum"):
                 self.states_enum = self._create_states_enum()
             self._state_initialized = True
 
-    def _late_state_init(
-        self,
-        *args,
-        enum_strs: list[str] | None = None,
-        **kwargs
-    ):
+    def _late_state_init(self, *args, enum_strs: list[str] | None = None, **kwargs):
         if enum_strs is not None and not self.states_list:
             self.states_list = list(enum_strs)
             # Unknown state reserved for slot zero, automatically added later
@@ -181,14 +176,13 @@ class StatePositioner(MvInterface, Device, PositionerBase):
             `Status` object that represents the move's progress.
         """
 
-        logger.debug('set %s to position %s', self.name, position)
+        logger.debug("set %s to position %s", self.name, position)
         state = self.check_value(position)
 
         if timeout is None:
             timeout = self._timeout
 
-        status = StateStatus(self, position, timeout=timeout,
-                             settle_time=self._settle_time)
+        status = StateStatus(self, position, timeout=timeout, settle_time=self._settle_time)
 
         if moved_cb is not None:
             status.add_callback(functools.partial(moved_cb, obj=self))
@@ -207,8 +201,8 @@ class StatePositioner(MvInterface, Device, PositionerBase):
         return cid
 
     def _run_sub_state(self, *args, **kwargs):
-        kwargs.pop('sub_type')
-        kwargs.pop('obj')
+        kwargs.pop("sub_type")
+        kwargs.pop("obj")
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
     @property
@@ -239,10 +233,10 @@ class StatePositioner(MvInterface, Device, PositionerBase):
         """
 
         if not isinstance(value, (int, str)):
-            raise TypeError('Valid states must be of type str or int')
+            raise TypeError("Valid states must be of type str or int")
         state = self.get_state(value)
         if state.name in self._invalid_states:
-            raise ValueError(f'Cannot set the {state.name} state')
+            raise ValueError(f"Cannot set the {state.name} state")
         return state
 
     def get_state(self, value):
@@ -309,12 +303,13 @@ class StatePositioner(MvInterface, Device, PositionerBase):
             else:
                 for alias in aliases:
                     state_def[alias] = i
-        enum_name = self.__class__.__name__ + 'States'
+        enum_name = self.__class__.__name__ + "States"
         enum = HelpfulIntEnum(enum_name, state_def, start=0, module=__name__)
         if len(enum) != state_count:
             raise ValueError(
-                'Bad states definition! Inconsistency in states_list {} or _states_alias {}'
-                ''.format(self.states_list, self._states_alias)
+                "Bad states definition! Inconsistency in states_list {} or _states_alias {}".format(
+                    self.states_list, self._states_alias
+                )
             )
         return enum
 
@@ -326,76 +321,73 @@ class StatePositioner(MvInterface, Device, PositionerBase):
         This makes it so that other interfaces know that the stop method can't
         be run without needing to run it to find out.
         """
-        raise AttributeError('StatePositioner has no stop method.')
+        raise AttributeError("StatePositioner has no stop method.")
 
 
 class PVStatePositioner(StatePositioner):
     """
-    A `StatePositioner` that combines a set of PVs into a single state.
+        A `StatePositioner` that combines a set of PVs into a single state.
 
-    The user can provide state logic and a move method if desired.
-%s
-    Attributes
-    ----------
-    _state_logic : dict
-        Information dictionaries for each state of the following form:
+        The user can provide state logic and a move method if desired.
+    %s
+        Attributes
+        ----------
+        _state_logic : dict
+            Information dictionaries for each state of the following form:
 
-        .. code::
+            .. code::
 
-            {
-              "signal_name": {
-                               0: "OUT",
-                               1: "IN",
-                               2: "Unknown",
-                               3: "defer"
-                             }
-            }
+                {
+                  "signal_name": {
+                                   0: "OUT",
+                                   1: "IN",
+                                   2: "Unknown",
+                                   3: "defer"
+                                 }
+                }
 
-        The dictionary defines the relevant signal names and how to interpret
-        each of the states. These states will be evaluated in the dict's order,
-        which may matter if ``_state_logic_mode == 'FIRST'``.
+            The dictionary defines the relevant signal names and how to interpret
+            each of the states. These states will be evaluated in the dict's order,
+            which may matter if ``_state_logic_mode == 'FIRST'``.
 
-        This is for cases where the logic is simple. If there are more complex
-        requirements, replace the `state` component.
+            This is for cases where the logic is simple. If there are more complex
+            requirements, replace the `state` component.
 
-    _state_logic_mode : {'ALL', 'FIRST'}
-        This should be 'ALL' (default) if the pvs need to agree for a valid
-        state. You can set this to 'FIRST' instead to use the first state
-        found while traversing the `_state_logic` tree. This means an earlier
-        state definition can mask a later state definition.
+        _state_logic_mode : {'ALL', 'FIRST'}
+            This should be 'ALL' (default) if the pvs need to agree for a valid
+            state. You can set this to 'FIRST' instead to use the first state
+            found while traversing the `_state_logic` tree. This means an earlier
+            state definition can mask a later state definition.
 
-    _state_logic_set_ref : str or None
-        An optional reference to the component that will be used to set some
-        metadata on the state signal if provided.
+        _state_logic_set_ref : str or None
+            An optional reference to the component that will be used to set some
+            metadata on the state signal if provided.
     """
 
     __doc__ = __doc__ % basic_positioner_init
 
-    state = Cpt(PVStateSignal, kind='hinted')
+    state = Cpt(PVStateSignal, kind="hinted")
 
     _state_logic: ClassVar[dict[str, dict[Any, str]]] = {}
-    _state_logic_mode: ClassVar[str] = 'ALL'
+    _state_logic_mode: ClassVar[str] = "ALL"
     _state_logic_set_ref: ClassVar[str | None] = None
 
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is PVStatePositioner:
             raise TypeError(
-                "PVStatePositioner must be subclassed, adding signals and filling in the "
-                "_state_logic dict."
+                "PVStatePositioner must be subclassed, adding signals and filling in the _state_logic dict."
             )
         if self._state_logic and not self.states_list:
             self.states_list = []
             for state_mapping in self._state_logic.values():
                 for state_name in state_mapping.values():
-                    if state_name not in (self._unknown, 'defer'):
+                    if state_name not in (self._unknown, "defer"):
                         if state_name not in self.states_list:
                             self.states_list.append(state_name)
         super().__init__(prefix, name=name, **kwargs)
 
     def _do_move(self, state):
-        raise NotImplementedError(
-            "Class must implement a _do_move method or override the move and set methods"
-        )
+        raise NotImplementedError("Class must implement a _do_move method or override the move and set methods")
 
 
 class StateRecordPositionerBase(StatePositioner, GroupDevice):
@@ -405,7 +397,7 @@ class StateRecordPositionerBase(StatePositioner, GroupDevice):
     `states_list` does not have to be provided.
     """
 
-    state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
+    state = Cpt(EpicsSignal, "", write_pv=":GO", kind="hinted")
 
     # Moving a state positioner puts to state
     stage_group = [state]
@@ -419,8 +411,8 @@ class StateRecordPositionerBase(StatePositioner, GroupDevice):
         super().__init__(prefix, name=name, **kwargs)
 
     def _run_sub_readback(self, *args, **kwargs):
-        kwargs.pop('sub_type')
-        kwargs.pop('obj')
+        kwargs.pop("sub_type")
+        kwargs.pop("obj")
         self._run_subs(sub_type=self.SUB_READBACK, obj=self, **kwargs)
 
     def get_state(self, value):
@@ -446,16 +438,14 @@ class StateRecordPositioner(StateRecordPositionerBase):
     `states_list` does not have to be provided.
     """
 
-    motor = Cpt(IMS, ':MOTOR', kind='normal')
+    motor = Cpt(IMS, ":MOTOR", kind="normal")
 
-    tab_whitelist = ['motor']
+    tab_whitelist = ["motor"]
 
     def subscribe(self, cb, event_type=None, run=True):
         cid = super().subscribe(cb, event_type=event_type, run=run)
-        if (event_type == self.SUB_READBACK and not
-                self._has_subscribed_readback):
-            self.motor.user_readback.subscribe(self._run_sub_readback,
-                                               run=False)
+        if event_type == self.SUB_READBACK and not self._has_subscribed_readback:
+            self.motor.user_readback.subscribe(self._run_sub_readback, run=False)
             self._has_subscribed_readback = True
         return cid
 
@@ -473,19 +463,16 @@ class CombinedStateRecordPositioner(StateRecordPositionerBase):
     `states_list` does not have to be provided.
     """
 
-    x_motor = Cpt(IMS, ':X:MOTOR', kind='normal')
-    y_motor = Cpt(IMS, ':Y:MOTOR', kind='normal')
+    x_motor = Cpt(IMS, ":X:MOTOR", kind="normal")
+    y_motor = Cpt(IMS, ":Y:MOTOR", kind="normal")
 
-    tab_whitelist = ['x_motor', 'y_motor']
+    tab_whitelist = ["x_motor", "y_motor"]
 
     def subscribe(self, cb, event_type=None, run=True):
         cid = super().subscribe(cb, event_type=event_type, run=run)
-        if (event_type == self.SUB_READBACK and not
-                self._has_subscribed_readback):
-            self.x_motor.user_readback.subscribe(self._run_sub_readback,
-                                                 run=False)
-            self.y_motor.user_readback.subscribe(self._run_sub_readback,
-                                                 run=False)
+        if event_type == self.SUB_READBACK and not self._has_subscribed_readback:
+            self.x_motor.user_readback.subscribe(self._run_sub_readback, run=False)
+            self.y_motor.user_readback.subscribe(self._run_sub_readback, run=False)
             self._has_subscribed_readback = True
         return cid
 
@@ -506,14 +493,10 @@ class TwinCATStateConfigOne(Device):
     Corresponds with ``DUT_PositionState``.
     """
 
-    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='config', string=True,
-                     doc='The defined state name.')
-    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='config',
-                   doc='The corresponding motor set position.')
-    velo = Cpt(PytmcSignal, ':VELO', io='io', kind='config',
-               doc='Velocity to move to the state at.')
-    move_ok = Cpt(PytmcSignal, ':MOVE_OK', io='i', kind='omitted',
-                  doc='True if a move to this state is allowed.')
+    state_name = Cpt(PytmcSignal, ":NAME", io="i", kind="config", string=True, doc="The defined state name.")
+    setpoint = Cpt(PytmcSignal, ":SETPOINT", io="io", kind="config", doc="The corresponding motor set position.")
+    velo = Cpt(PytmcSignal, ":VELO", io="io", kind="config", doc="Velocity to move to the state at.")
+    move_ok = Cpt(PytmcSignal, ":MOVE_OK", io="i", kind="omitted", doc="True if a move to this state is allowed.")
 
 
 class TwinCATMalStateConfigOne(TwinCATStateConfigOne):
@@ -533,10 +516,11 @@ class TwinCATMalStateConfigOne(TwinCATStateConfigOne):
 
     ``state_name`` and ``move_ok`` are inherited unchanged.
     """
+
     # Motion parameters are owned by the drive layer, not the state.
     velo = None
     # Setpoint is read-only in the new format (only :SETPOINT_RBV exists).
-    setpoint = UpCpt(io='i')
+    setpoint = UpCpt(io="i")
 
 
 class TwinCATStateConfigDynamic(Device):
@@ -552,40 +536,31 @@ class TwinCATStateConfigDynamic(Device):
     the same number of states and motors will use the same class from the
     registry.
     """
-    _state_config_registry: ClassVar[
-        dict[tuple[int, int], TwinCATStateConfigDynamic]
-    ] = {}
-    _config_cls: ClassVar[type] = TwinCATStateConfigOne
-    _class_prefix: ClassVar[str] = 'StateConfig'
 
-    def __new__(
-        cls,
-        prefix: str,
-        *,
-        state_count: int,
-        motor_count: int,
-        **kwargs
-    ):
+    _state_config_registry: ClassVar[dict[tuple[int, int], TwinCATStateConfigDynamic]] = {}
+    _config_cls: ClassVar[type] = TwinCATStateConfigOne
+    _class_prefix: ClassVar[str] = "StateConfig"
+
+    def __new__(cls, prefix: str, *, state_count: int, motor_count: int, **kwargs):
         try:
             # Check if the dynamic class already exists
             new_cls = cls._state_config_registry[(state_count, motor_count)]
         except KeyError:
             # Commit to making a new class
-            cls_name = f'{cls._class_prefix}m{motor_count}s{state_count}'
+            cls_name = f"{cls._class_prefix}m{motor_count}s{state_count}"
             if motor_count == 1:
                 # Backwards compatibility with existing 1d states: no motor count
                 new_cls = type(
                     cls_name,
                     (cls,),
                     {
-                        get_dynamic_state_attr(state_index=snum):
-                        Cpt(
+                        get_dynamic_state_attr(state_index=snum): Cpt(
                             cls._config_cls,
-                            f':{snum:02}',
-                            kind='config',
+                            f":{snum:02}",
+                            kind="config",
                         )
                         for snum in range(1, state_count + 1)
-                    }
+                    },
                 )
             else:
                 # More than one motor: must include motor count in cpt name
@@ -593,15 +568,14 @@ class TwinCATStateConfigDynamic(Device):
                     cls_name,
                     (cls,),
                     {
-                        get_dynamic_state_attr(state_index=snum, motor_index=mnum):
-                        Cpt(
+                        get_dynamic_state_attr(state_index=snum, motor_index=mnum): Cpt(
                             cls._config_cls,
-                            f':M{mnum}:{snum:02}',
-                            kind='config',
+                            f":M{mnum}:{snum:02}",
+                            kind="config",
                         )
                         for snum in range(1, state_count + 1)
                         for mnum in range(1, motor_count + 1)
-                    }
+                    },
                 )
             cls._state_config_registry[state_count] = new_cls
         return super().__new__(new_cls)
@@ -619,11 +593,10 @@ class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
 
     Useful in test suites.
     """
-    _state_config_registry: ClassVar[
-        dict[int, FakeTwinCATStateConfigDynamic]
-    ] = {}
+
+    _state_config_registry: ClassVar[dict[int, FakeTwinCATStateConfigDynamic]] = {}
     _config_cls: ClassVar[type] = make_fake_device(TwinCATStateConfigOne)
-    _class_prefix: ClassVar[str] = 'FakeStateConfig'
+    _class_prefix: ClassVar[str] = "FakeStateConfig"
 
 
 # Import-time editing of fake_device_cache!
@@ -641,11 +614,10 @@ class TwinCATMalStateConfigDynamic(TwinCATStateConfigDynamic):
     Identical to `TwinCATStateConfigDynamic` except that each state uses
     `TwinCATMalStateConfigOne`, which omits the ``:VELO`` field.
     """
-    _state_config_registry: ClassVar[
-        dict[tuple[int, int], TwinCATMalStateConfigDynamic]
-    ] = {}
+
+    _state_config_registry: ClassVar[dict[tuple[int, int], TwinCATMalStateConfigDynamic]] = {}
     _config_cls: ClassVar[type] = TwinCATMalStateConfigOne
-    _class_prefix: ClassVar[str] = 'MalStateConfig'
+    _class_prefix: ClassVar[str] = "MalStateConfig"
 
 
 class FakeTwinCATMalStateConfigDynamic(TwinCATMalStateConfigDynamic):
@@ -654,16 +626,13 @@ class FakeTwinCATMalStateConfigDynamic(TwinCATMalStateConfigDynamic):
 
     Useful in test suites.
     """
-    _state_config_registry: ClassVar[
-        dict[int, FakeTwinCATMalStateConfigDynamic]
-    ] = {}
+
+    _state_config_registry: ClassVar[dict[int, FakeTwinCATMalStateConfigDynamic]] = {}
     _config_cls: ClassVar[type] = make_fake_device(TwinCATMalStateConfigOne)
-    _class_prefix: ClassVar[str] = 'FakeMalStateConfig'
+    _class_prefix: ClassVar[str] = "FakeMalStateConfig"
 
 
-fake_device_cache[TwinCATMalStateConfigDynamic] = (
-    FakeTwinCATMalStateConfigDynamic
-)
+fake_device_cache[TwinCATMalStateConfigDynamic] = FakeTwinCATMalStateConfigDynamic
 
 
 def get_dynamic_state_attr(
@@ -839,6 +808,7 @@ class TwinCATStatePositioner(StatePositioner):
         The amount of time to wait before automatically marking a long
         in-progress move as failed.
     """
+
     state = Cpt(
         EpicsSignalEditMD,
         ":GET_RBV",
@@ -847,84 +817,68 @@ class TwinCATStatePositioner(StatePositioner):
         kind="hinted",
         doc="Setpoint and readback for TwinCAT state position.",
     )
-    set_metadata(state, dict(variety='command-enum'))
+    set_metadata(state, dict(variety="command-enum"))
 
-    error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal',
-                doc='True if we have an error.')
-    error_id = Cpt(PytmcSignal, ':ERRID', io='i', kind='normal',
-                   doc='Error code.')
-    error_message = Cpt(PytmcSignal, ':ERRMSG', io='i', kind='normal',
-                        string=True, doc='Error message')
-    busy = Cpt(PytmcSignal, ':BUSY', io='i', kind='normal',
-               doc='True if we have an ongoing move.')
-    done = Cpt(PytmcSignal, ':DONE', io='i', kind='normal',
-               doc='True if we completed the last move.')
-    reset_cmd = Cpt(PytmcSignal, ':RESET', io='io', kind='normal',
-                    doc='Command to reset an error.')
+    error = Cpt(PytmcSignal, ":ERR", io="i", kind="normal", doc="True if we have an error.")
+    error_id = Cpt(PytmcSignal, ":ERRID", io="i", kind="normal", doc="Error code.")
+    error_message = Cpt(PytmcSignal, ":ERRMSG", io="i", kind="normal", string=True, doc="Error message")
+    busy = Cpt(PytmcSignal, ":BUSY", io="i", kind="normal", doc="True if we have an ongoing move.")
+    done = Cpt(PytmcSignal, ":DONE", io="i", kind="normal", doc="True if we completed the last move.")
+    reset_cmd = Cpt(PytmcSignal, ":RESET", io="io", kind="normal", doc="Command to reset an error.")
 
     config = Cpt(
         TwinCATStateConfigDynamic,
-        '',
+        "",
         state_count=TWINCAT_MAX_STATES,
         motor_count=1,
-        kind='omitted',
-        doc='Configuration of state positions, deltas, etc.',
+        kind="omitted",
+        doc="Configuration of state positions, deltas, etc.",
     )
 
-    def _get_state_velo(
-        self, mds: MultiDerivedSignal, items: SignalToValue
-    ) -> float:
+    def _get_state_velo(self, mds: MultiDerivedSignal, items: SignalToValue) -> float:
         """For state_velo, calculate the velocity to show."""
         return max(value for value in items.values())
 
-    def _set_state_velo(
-        self, mds: MultiDerivedSignal, value: float
-    ) -> SignalToValue:
+    def _set_state_velo(self, mds: MultiDerivedSignal, value: float) -> SignalToValue:
         """For state_velo, distribute the puts to all fields."""
-        return {sig: value for sig in mds.signals}
+        return dict.fromkeys(mds.signals, value)
 
     state_velo = Cpt(
         MultiDerivedSignal,
-        attrs=[
-            name for name in
-            state_config_dotted_velos(TWINCAT_MAX_STATES)
-        ],
+        attrs=[name for name in state_config_dotted_velos(TWINCAT_MAX_STATES)],
         calculate_on_get=_get_state_velo,
         calculate_on_put=_set_state_velo,
-        kind='config',
+        kind="config",
         # Real PV has no unit info yet, assume mm/s
         # Set precision to 3 so UI shows 3 digits
         metadata={
-            'units': 'mm/s',
-            'precision': 3,
+            "units": "mm/s",
+            "precision": 3,
         },
         doc=(
-            'State mover velocity. Displays the highest velocity of all the '
-            'state move destinations and allows bulk writes to all of these '
-            'velocity settings. Note that this velocity only applies to '
-            'moves done using the state selector box.'
+            "State mover velocity. Displays the highest velocity of all the "
+            "state move destinations and allows bulk writes to all of these "
+            "velocity settings. Note that this velocity only applies to "
+            "moves done using the state selector box."
         ),
     )
 
-    set_metadata(error_id, dict(variety='scalar', display_format='hex'))
-    set_metadata(reset_cmd, dict(variety='command', value=1))
+    set_metadata(error_id, dict(variety="scalar", display_format="hex"))
+    set_metadata(reset_cmd, dict(variety="command", value=1))
 
     def __init_subclass__(cls, **kwargs):
         # We need to adjust the state enum_attrs appropriately if
         # state_count was updated.
-        state_count = cls.config.kwargs['state_count']
-        parent_state_count = cls.mro()[1].config.kwargs['state_count']
-        motor_count = cls.config.kwargs['motor_count']
-        parent_motor_count = cls.mro()[1].config.kwargs['motor_count']
+        state_count = cls.config.kwargs["state_count"]
+        parent_state_count = cls.mro()[1].config.kwargs["state_count"]
+        motor_count = cls.config.kwargs["motor_count"]
+        parent_motor_count = cls.mro()[1].config.kwargs["motor_count"]
         if state_count != parent_state_count or motor_count != parent_motor_count:
             cls.state = copy.deepcopy(cls.state)
-            cls.state.kwargs['enum_attrs'] = (
-                state_config_dotted_names(state_count=state_count, motor_count=motor_count)
-            )
+            cls.state.kwargs["enum_attrs"] = state_config_dotted_names(state_count=state_count, motor_count=motor_count)
             cls.state_velo = copy.deepcopy(cls.state_velo)
-            cls.state_velo.kwargs['attrs'] = [
-                name for name in
-                state_config_dotted_velos(state_count=state_count, motor_count=motor_count)
+            cls.state_velo.kwargs["attrs"] = [
+                name for name in state_config_dotted_velos(state_count=state_count, motor_count=motor_count)
             ]
         # This includes the Device initialization, which assumes our
         # Component instances are finalized.
@@ -959,6 +913,7 @@ class TwinCATMalStatePositioner(TwinCATStatePositioner):
 
     ``states_list`` does not have to be provided in a subclass.
     """
+
     # Motion parameters (velocity, acceleration, deceleration, jerk) are owned
     # by the drive layer, not by the state. Remove the velocity summary signal.
     state_velo = None
@@ -968,25 +923,23 @@ class TwinCATMalStatePositioner(TwinCATStatePositioner):
     # scripting via ``config`` (e.g. ``dev.config.m1_state01.setpoint.get()``).
     config = Cpt(
         TwinCATMalStateConfigDynamic,
-        '',
+        "",
         state_count=TWINCAT_MAX_STATES,
         motor_count=1,
-        kind='omitted',
-        doc='Configuration of state positions (no motion params).',
+        kind="omitted",
+        doc="Configuration of state positions (no motion params).",
     )
 
     def __init_subclass__(cls, **kwargs):
         # Adjust the state enum_attrs if state_count/motor_count was updated.
         # Unlike the parent, there is no state_velo to keep in sync.
-        state_count = cls.config.kwargs['state_count']
-        parent_state_count = cls.mro()[1].config.kwargs['state_count']
-        motor_count = cls.config.kwargs['motor_count']
-        parent_motor_count = cls.mro()[1].config.kwargs['motor_count']
+        state_count = cls.config.kwargs["state_count"]
+        parent_state_count = cls.mro()[1].config.kwargs["state_count"]
+        motor_count = cls.config.kwargs["motor_count"]
+        parent_motor_count = cls.mro()[1].config.kwargs["motor_count"]
         if state_count != parent_state_count or motor_count != parent_motor_count:
             cls.state = copy.deepcopy(cls.state)
-            cls.state.kwargs['enum_attrs'] = (
-                state_config_dotted_names(state_count=state_count, motor_count=motor_count)
-            )
+            cls.state.kwargs["enum_attrs"] = state_config_dotted_names(state_count=state_count, motor_count=motor_count)
         # Skip TwinCATStatePositioner.__init_subclass__ (which manages the now
         # removed state_velo) and defer to StatePositioner's, which wires up the
         # state metadata subscription.
@@ -1019,8 +972,7 @@ class StateStatus(SubscriptionStatus):
         Time to wait after completion until running callbacks.
     """
 
-    def __init__(self, device, desired_state,
-                 timeout=None, settle_time=None):
+    def __init__(self, device, desired_state, timeout=None, settle_time=None):
         # Make a quick check_state callable
         def check_state(*, value, **kwargs):
             value = device.get_state(value)
@@ -1028,8 +980,7 @@ class StateStatus(SubscriptionStatus):
             return value == desired
 
         # Start timeout and subscriptions
-        super().__init__(device, check_state, event_type=device.SUB_STATE,
-                         timeout=timeout, settle_time=settle_time)
+        super().__init__(device, check_state, event_type=device.SUB_STATE, timeout=timeout, settle_time=settle_time)
 
     def set_finished(self, **kwargs):
         self.device._done_moving(success=True)

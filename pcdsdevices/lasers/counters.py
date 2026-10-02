@@ -15,31 +15,25 @@ class Agilent53210A(BaseInterface, Device):
 
     For use with IOC ioc/common/agilent5322.
     """
-    protocol = Cpt(EpicsSignal, ':PROTOCOL_RBV', write_pv=':PROTOCOL',
-                   kind='omitted')
 
-    freq_rbck = Cpt(EpicsSignalRO, ':FREQ_RBCK', kind='normal')
-    freq_rbck_raw = Cpt(EpicsSignalRO, ':FREQ_RBCK_RAW', kind='omitted')
+    protocol = Cpt(EpicsSignal, ":PROTOCOL_RBV", write_pv=":PROTOCOL", kind="omitted")
 
-    auto_level = Cpt(EpicsSignal, ':GET_AUTO_LEVEL',
-                     write_pv=':SET_AUTO_LEVEL', kind='config')
+    freq_rbck = Cpt(EpicsSignalRO, ":FREQ_RBCK", kind="normal")
+    freq_rbck_raw = Cpt(EpicsSignalRO, ":FREQ_RBCK_RAW", kind="omitted")
 
-    coupling = Cpt(EpicsSignal, ':GET_COUPLING', write_pv=':SET_COUPLING',
-                   kind='config')
+    auto_level = Cpt(EpicsSignal, ":GET_AUTO_LEVEL", write_pv=":SET_AUTO_LEVEL", kind="config")
 
-    impedance = Cpt(EpicsSignal, ':GET_IMPEDANCE', write_pv=':SET_IMPEDANCE',
-                    kind='config')
+    coupling = Cpt(EpicsSignal, ":GET_COUPLING", write_pv=":SET_COUPLING", kind="config")
 
-    noise_rej = Cpt(EpicsSignal, ':GET_NOISE_REJ', write_pv=':SET_NOISE_REJ',
-                    kind='config')
+    impedance = Cpt(EpicsSignal, ":GET_IMPEDANCE", write_pv=":SET_IMPEDANCE", kind="config")
 
-    trig_level = Cpt(EpicsSignal, ':GET_TRIG_LEVEL',
-                     write_pv=':SET_TRIG_LEVEL', kind='config')
+    noise_rej = Cpt(EpicsSignal, ":GET_NOISE_REJ", write_pv=":SET_NOISE_REJ", kind="config")
 
-    trig_percent = Cpt(EpicsSignal, ':GET_TRIG_PERCENT',
-                       write_pv=':SET_TRIG_PERCENT', kind='config')
+    trig_level = Cpt(EpicsSignal, ":GET_TRIG_LEVEL", write_pv=":SET_TRIG_LEVEL", kind="config")
 
-    identity = Cpt(EpicsSignalRO, ':IDENTITY', kind='omitted')
+    trig_percent = Cpt(EpicsSignal, ":GET_TRIG_PERCENT", write_pv=":SET_TRIG_PERCENT", kind="config")
 
-    reset = Cpt(EpicsSignal, ':RESET', kind='config')
-    set_metadata(reset, dict(variety='command-proc', value=1))
+    identity = Cpt(EpicsSignalRO, ":IDENTITY", kind="omitted")
+
+    reset = Cpt(EpicsSignal, ":RESET", kind="config")
+    set_metadata(reset, dict(variety="command-proc", value=1))

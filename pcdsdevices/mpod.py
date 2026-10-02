@@ -24,55 +24,64 @@ class MPODChannel(BaseInterface, Device):
     name : str
         A name to refer to the device.
     """
-    voltage = Cpt(EpicsSignal, ':GetVoltageMeasurement',
-                  write_pv=':SetVoltage', kind='normal',
-                  doc='MPOD Channel Voltage Measurement [V]')
-    max_voltage = Cpt(EpicsSignalRO, ':GetMaxVoltage', kind='normal',
-                      doc='MPOD Channel Maximum Voltage [V]')
-    terminal_voltage = Cpt(EpicsSignalRO, ':GetTerminalVoltageMeasurement',
-                           kind='normal', doc='MPOD Terminal Voltage [V]')
-    current = Cpt(EpicsSignal, ':GetCurrentMeasurement',
-                  write_pv=':SetCurrent', kind='normal',
-                  doc='MPOD Channel Current Measurement [A]')
-    max_current = Cpt(EpicsSignalRO, ':GetMaxCurrent', kind='normal',
-                      doc='MPOD Channel Max Current [A]')
-    temperature = Cpt(EpicsSignalRO, ':GetTemperature', kind='normal',
-                      doc='MPOD Temperature [C]')
-    status_string = Cpt(EpicsSignalRO, ':GetStatusString',
-                        kind='normal', doc='MPOD Channel Status String')
-    state = Cpt(EpicsSignal, ':GetSwitch', write_pv=':SetSwitch',
-                kind='normal', string=True,
-                doc='MPOD Channel State [Off/On/Reset/EmerOff/ClrEvnt]')
+
+    voltage = Cpt(
+        EpicsSignal,
+        ":GetVoltageMeasurement",
+        write_pv=":SetVoltage",
+        kind="normal",
+        doc="MPOD Channel Voltage Measurement [V]",
+    )
+    max_voltage = Cpt(EpicsSignalRO, ":GetMaxVoltage", kind="normal", doc="MPOD Channel Maximum Voltage [V]")
+    terminal_voltage = Cpt(
+        EpicsSignalRO, ":GetTerminalVoltageMeasurement", kind="normal", doc="MPOD Terminal Voltage [V]"
+    )
+    current = Cpt(
+        EpicsSignal,
+        ":GetCurrentMeasurement",
+        write_pv=":SetCurrent",
+        kind="normal",
+        doc="MPOD Channel Current Measurement [A]",
+    )
+    max_current = Cpt(EpicsSignalRO, ":GetMaxCurrent", kind="normal", doc="MPOD Channel Max Current [A]")
+    temperature = Cpt(EpicsSignalRO, ":GetTemperature", kind="normal", doc="MPOD Temperature [C]")
+    status_string = Cpt(EpicsSignalRO, ":GetStatusString", kind="normal", doc="MPOD Channel Status String")
+    state = Cpt(
+        EpicsSignal,
+        ":GetSwitch",
+        write_pv=":SetSwitch",
+        kind="normal",
+        string=True,
+        doc="MPOD Channel State [Off/On/Reset/EmerOff/ClrEvnt]",
+    )
     # 0 means no EPICS high limit.
-    voltage_high_limit = Cpt(EpicsSignal, ':SetVoltage.DRVH', kind='normal')
+    voltage_high_limit = Cpt(EpicsSignal, ":SetVoltage.DRVH", kind="normal")
 
     tab_component_names = True
-    tab_whitelist = ['on', 'off', 'reset', 'emer_off', 'clr_evnt',
-                     'set_voltage', 'set_current']
+    tab_whitelist = ["on", "off", "reset", "emer_off", "clr_evnt", "set_voltage", "set_current"]
 
-    def __init__(self, channel_prefix, card_prefix=None, name='MPOD',
-                 **kwargs):
+    def __init__(self, channel_prefix, card_prefix=None, name="MPOD", **kwargs):
         super().__init__(channel_prefix, name=name, **kwargs)
 
     def on(self):
         """Set mpod channel On."""
-        self.state.put('On')
+        self.state.put("On")
 
     def off(self):
         """Set mpod channel Off."""
-        self.state.put('Off')
+        self.state.put("Off")
 
     def reset(self):
         """Reset mpod channel."""
-        self.state.put('Reset')
+        self.state.put("Reset")
 
     def emer_off(self):
         """Set the EmerOff state."""
-        self.state.put('EmerOff')
+        self.state.put("EmerOff")
 
     def clr_evnt(self):
         """Clear Event."""
-        self.state.put('ClrEvnt')
+        self.state.put("ClrEvnt")
 
     def set_voltage(self, voltage):
         """
@@ -143,15 +152,24 @@ class MPODChannelLV(MPODChannel):
     name: str
     A name to refer to the device.
     """
-    voltage_rise_rate = Cpt(EpicsSignal, ':GetVoltageRiseRate',
-                            write_pv=':SetVoltageRiseRate', kind='normal',
-                            doc='MPOD Channel Voltage Rise Rate [V/sec]')
-    voltage_fall_rate = Cpt(EpicsSignal, ':GetVoltageFallRate',
-                            write_pv=':SetVoltageFallRate', kind='normal',
-                            doc='MPOD Channel Set Voltage Fall Rate [V/sec]')
+
+    voltage_rise_rate = Cpt(
+        EpicsSignal,
+        ":GetVoltageRiseRate",
+        write_pv=":SetVoltageRiseRate",
+        kind="normal",
+        doc="MPOD Channel Voltage Rise Rate [V/sec]",
+    )
+    voltage_fall_rate = Cpt(
+        EpicsSignal,
+        ":GetVoltageFallRate",
+        write_pv=":SetVoltageFallRate",
+        kind="normal",
+        doc="MPOD Channel Set Voltage Fall Rate [V/sec]",
+    )
 
     tab_component_names = True
-    tab_whitelist = ['set_voltage_rise_rate', 'set_voltage_fall_rate']
+    tab_whitelist = ["set_voltage_rise_rate", "set_voltage_fall_rate"]
 
 
 class MPODChannelHV(MPODChannel):
@@ -168,20 +186,26 @@ class MPODChannelHV(MPODChannel):
     name: str
     A name to refer to the device.
     """
+
     tab_component_names = True
-    tab_whitelist = ['set_voltage_rise_rate', 'set_voltage_fall_rate']
+    tab_whitelist = ["set_voltage_rise_rate", "set_voltage_fall_rate"]
 
-    voltage_rise_rate = FCpt(EpicsSignal, '{self._card_prefix}' +
-                             ':GetVoltageRiseRate', kind='normal',
-                             write_pv='{self._card_prefix}:SetVoltageRiseRate',
-                             doc='MPOD Channel Voltage Rise Rate [V/sec]')
-    voltage_fall_rate = FCpt(EpicsSignal, '{self._card_prefix}' +
-                             ':GetVoltageFallRate', kind='normal',
-                             write_pv='{self._card_prefix}:SetVoltageFallRate',
-                             doc='MPOD Channel Set Voltage Fall Rate [V/sec]')
+    voltage_rise_rate = FCpt(
+        EpicsSignal,
+        "{self._card_prefix}" + ":GetVoltageRiseRate",
+        kind="normal",
+        write_pv="{self._card_prefix}:SetVoltageRiseRate",
+        doc="MPOD Channel Voltage Rise Rate [V/sec]",
+    )
+    voltage_fall_rate = FCpt(
+        EpicsSignal,
+        "{self._card_prefix}" + ":GetVoltageFallRate",
+        kind="normal",
+        write_pv="{self._card_prefix}:SetVoltageFallRate",
+        doc="MPOD Channel Set Voltage Fall Rate [V/sec]",
+    )
 
-    def __init__(self, channel_prefix, card_prefix, name='mpod_hv_channel',
-                 **kwargs):
+    def __init__(self, channel_prefix, card_prefix, name="mpod_hv_channel", **kwargs):
         self._card_prefix = card_prefix
         super().__init__(channel_prefix, name=name, **kwargs)
 
@@ -205,19 +229,19 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
     try:
         voltage = mpod.get_max_voltage()
     except Exception:
-        logger.error('Could not get the max voltage from from MPOD channel.')
+        logger.error("Could not get the max voltage from from MPOD channel.")
         return None
     else:
         if voltage < 50:
             return MPODChannelLV(channel_prefix, **kwargs)
         try:
-            base, channel = channel_prefix.split('CH:')
+            base, channel = channel_prefix.split("CH:")
         except Exception:
-            logger.error('Could not get the base and channel from PV.')
+            logger.error("Could not get the base and channel from PV.")
             return None
         else:
             card_number = get_card_number(channel)
-            card = f'{base}MOD:{card_number}'
+            card = f"{base}MOD:{card_number}"
             return MPODChannelHV(channel_prefix, card, **kwargs)
 
 
@@ -241,11 +265,11 @@ def get_card_number(channel):
         Number to use for the MPOD card.
     """
     if len(channel) <= 1:
-        return ''
+        return ""
     else:
         channel = int(channel)
         while channel >= 10:
             channel /= 10
         if channel == 0:
             return channel
-        return (int(channel) * 10)
+        return int(channel) * 10

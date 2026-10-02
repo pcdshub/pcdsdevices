@@ -16,11 +16,11 @@ class GratingBeamSplitterStates(TwinCATStatePMPS):
     Defines the state count as 7 (OUT and 6 targets) to limit the number of
     config PVs we connect to.
     """
+
     config = UpCpt(state_count=7)
 
 
-class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
-                                LightpathInOutCptMixin):
+class GratingBeamSplitterTarget(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """
     An array of targets used to determine the beam's wavefront. Similar to
     the WFS with a unique substrate.
@@ -29,18 +29,22 @@ class GratingBeamSplitterTarget(BaseInterface, GroupDevice,
     on a downstream imager (PPM or XTES Imager) that can be used to determine
     information about the wavefront.
     """
+
     tab_component_names = True
 
-    lightpath_cpts = ['target']
-    _icon = 'fa.ellipsis-v'
+    lightpath_cpts = ["target"]
+    _icon = "fa.ellipsis-v"
 
-    target = Cpt(GratingBeamSplitterStates, ':MMS:STATE', kind='hinted',
-                 doc='Control of the diagnostic stack via saved positions.')
-    y_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:Y', kind='normal',
-                  doc='Direct control of the diagnostic stack motor.')
+    target = Cpt(
+        GratingBeamSplitterStates,
+        ":MMS:STATE",
+        kind="hinted",
+        doc="Control of the diagnostic stack via saved positions.",
+    )
+    y_motor = Cpt(BeckhoffAxisNoOffset, ":MMS:Y", kind="normal", doc="Direct control of the diagnostic stack motor.")
 
-    rtd1 = Cpt(TwinCATTempSensor, ':RTD:01', kind='normal', doc='First RTD.')
-    rtd2 = Cpt(TwinCATTempSensor, ':RTD:02', kind='normal', doc='Second RTD.')
+    rtd1 = Cpt(TwinCATTempSensor, ":RTD:01", kind="normal", doc="First RTD.")
+    rtd2 = Cpt(TwinCATTempSensor, ":RTD:02", kind="normal", doc="Second RTD.")
 
     def get_current_grating_period(self) -> float | None:
         """
