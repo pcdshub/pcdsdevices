@@ -4,6 +4,7 @@ import time
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from pcdsdevices.interface import BaseInterface
@@ -147,13 +148,23 @@ class MPODApalisChannel(BaseInterface, Device):
 
         If parent module does not exist, defaults limits to (0, 100)
         """
-        limit_pct = getattr(self, "biological_parent.limit_percents", (0, 100))
+        limit_pct = self.get_limit_pct()
         limits = [lim * self._max_voltage / 100 for lim in limit_pct]
 
         self.voltage._override_metadata(
             lower_ctrl_limit=min(limits),
             upper_ctrl_limit=max(limits),
         )
+
+    def get_limit_pct(self) -> tuple[float, float]:
+        """
+        Return the low and high limits as a percentage of the nominal maximum.
+
+        The module uses two percentage PVs to show how high and low we can go
+        in both the positive and negative polariries. Here this information
+        lives in the parent class.
+        """
+        return getattr(self, "biological_parent.limit_percents", (0, 100))
 
     @max_current.sub_value
     def _new_max_current(self, value: float, **kwargs) -> None:
@@ -163,6 +174,33 @@ class MPODApalisChannel(BaseInterface, Device):
             lower_ctrl_limit=min(bounds),
             upper_ctrl_limit=max(bounds),
         )
+
+
+class MPODApalisSoloChannel(MPODApalisChannel):
+    """Variant of MPODApalisChannel designed for use without a parent module class."""
+
+    # Define necessary module resources locally- we won't have a parent
+    limit_pos = FCpt(
+        EpicsSignalRO,
+        "{module_prefix}:VoltageLimit",
+        kind="omitted",
+        doc="Positive voltage limit as a % of the max voltage",
+    )
+
+    limit_neg = FCpt(
+        EpicsSignalRO,
+        "{module_prefix}:VoltageLimitNegative",
+        kind="omitted",
+        doc="Negative voltage limit as a % of the max voltage",
+    )
+
+    def __init__(self, prefix: str, *args, **kwargs) -> None:
+        self.module_prefix = ":".join(prefix.split(":")[:-1])
+        super().__init__(prefix, *args, **kwargs)
+
+    def get_limit_pct(self) -> tuple[float, float]:
+        """Use local percents instead of missing parent percents."""
+        return (-self.limit_neg.get(), self.limit_pos.get())
 
 
 def _put_clamped(signal: EpicsSignal, value: float) -> None:

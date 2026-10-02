@@ -67,14 +67,14 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
     tab_component_names = True
 
     # Motor components
-    top = Cpt(SmarActEtherCAT, ":MMT:Y1", kind="normal")
-    bottom = Cpt(SmarActEtherCAT, ":MMT:Y2", kind="normal")
-    north = Cpt(SmarActEtherCAT, ":MMT:X1", kind="normal")
-    south = Cpt(SmarActEtherCAT, ":MMT:X2", kind="normal")
-    top_bypass = Cpt(PytmcSignal, ":bEpsY1Bypass", io="io", kind="hinted", doc="EPS Bypass")
-    bottom_bypass = Cpt(PytmcSignal, ":bEpsY2Bypass", io="io", kind="hinted", doc="EPS Bypass")
-    north_bypass = Cpt(PytmcSignal, ":bEpsX1Bypass", io="io", kind="hinted", doc="EPS Bypass")
-    south_bypass = Cpt(PytmcSignal, ":bEpsX2Bypass", io="io", kind="hinted", doc="EPS Bypass")
+    top = Cpt(SmarActEtherCAT, ":MMT:TOP", kind="normal")
+    bottom = Cpt(SmarActEtherCAT, ":MMT:BOT", kind="normal")
+    north = Cpt(SmarActEtherCAT, ":MMT:NORTH", kind="normal")
+    south = Cpt(SmarActEtherCAT, ":MMT:SOUTH", kind="normal")
+    top_bypass = Cpt(PytmcSignal, ":bEpsTopBypass", io="io", kind="hinted", doc="EPS Bypass")
+    bottom_bypass = Cpt(PytmcSignal, ":bEpsBotBypass", io="io", kind="hinted", doc="EPS Bypass")
+    north_bypass = Cpt(PytmcSignal, ":bEpsNorthBypass", io="io", kind="hinted", doc="EPS Bypass")
+    south_bypass = Cpt(PytmcSignal, ":bEpsSouthBypass", io="io", kind="hinted", doc="EPS Bypass")
 
     drift_tol = Cpt(PytmcSignal, ":fDriftTol", io="io", kind="hinted", doc="Blades drifting tolerance")
     blades_drift = Cpt(
