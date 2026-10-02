@@ -292,6 +292,7 @@ class DCCMEnergy(DCCMCrystal):
             **kwargs,
         )
 
+    # Important axis: debug benchmark how long each scan point takes
     @measure_time
     def move(self, position, wait=True, timeout=None, moved_cb=None):
         self.couple_axis()

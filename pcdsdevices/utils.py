@@ -1020,6 +1020,13 @@ def generate_scan_points(
     """
     Generate scan positions in the forward and optionally reverse directions.
 
+    Example
+    -------
+    .. code-block:: python
+
+        positions = list(generate_scan_points(1, 10, 0.1, 9, True))
+        RE(list_scan(dets, motor, positions))
+
     Parameters
     ----------
     start : int, float, or Decimal
