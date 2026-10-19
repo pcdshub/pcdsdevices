@@ -109,6 +109,13 @@ class DCCMCrystal(FltMvInterface, PVPositioner):
         doc="The current estimated energy readback signal in keV.",
     )
 
+    user_readback = Cpt(
+        EpicsSignalRO,
+        ":EstEnergy_RBV",
+        kind="normal",
+        doc="Alias of readback for the typhos positioner row widget.",
+    )
+
     actuate = Cpt(
         PytmcSignal,
         ":CmdMoveEnergy",
