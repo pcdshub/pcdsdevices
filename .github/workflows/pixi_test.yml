@@ -62,7 +62,7 @@ jobs:
       uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
       with:
         # Lock version to what we use in prod
-        version: "0.11.18"
+        version: "0.13.4"
 
     - name: Download distributions artifact
       uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
@@ -77,7 +77,7 @@ jobs:
   docs-build:
     permissions:
       contents: read
-    uses: pcdshub/pcds-ci-helpers/.github/workflows/python-pixi-docs-build.yml@52a413e9d77c09f9e7617c3a75fc19a7d6cf4e11
+    uses: pcdshub/pcds-ci-helpers/.github/workflows/python-pixi-docs-build.yml@9056140f6458a710e7ef4823d9f65fe5d8c32f45
 
   # Uploads the documentation html files from docs-build. Requires the "github-pages" environment to be set up.
   docs-upload:
@@ -86,4 +86,4 @@ jobs:
       id-token: write
     needs: docs-build
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-    uses: pcdshub/pcds-ci-helpers/.github/workflows/docs-upload.yml@52a413e9d77c09f9e7617c3a75fc19a7d6cf4e11
+    uses: pcdshub/pcds-ci-helpers/.github/workflows/docs-upload.yml@9056140f6458a710e7ef4823d9f65fe5d8c32f45

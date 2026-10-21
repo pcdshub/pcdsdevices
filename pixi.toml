@@ -13,3 +13,8 @@ pyqt = "==5.15.9"
 
 [pypi-dependencies]
 pcdsdevices = { path = ".", editable = true, extras = ["doc", "test"] }
+
+# Temporary: pull in certifi update
+[exclude-newer]
+certifi = "0d"
+ca-certificates = "0d"
