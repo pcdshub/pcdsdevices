@@ -127,7 +127,7 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
 class DREAM_Sample_Paddle_SmarAct_State(StatePositioner):
     state = Cpt(
         EpicsSignal,
-        ":GET",
+        ":GET_RBV",
         write_pv=":SET",
         kind="hinted",
         doc="Setpoint and readback for state position.",
