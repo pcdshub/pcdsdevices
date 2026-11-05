@@ -75,6 +75,7 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
     bottom_bypass = Cpt(PytmcSignal, ":bEpsBotBypass", io="io", kind="hinted", doc="EPS Bypass")
     north_bypass = Cpt(PytmcSignal, ":bEpsNorthBypass", io="io", kind="hinted", doc="EPS Bypass")
     south_bypass = Cpt(PytmcSignal, ":bEpsSouthBypass", io="io", kind="hinted", doc="EPS Bypass")
+    bypass_all = Cpt(PytmcSignal, ":bEpsBypassAll", io="io", kind="hinted", doc="Bypass EPS on all SL3K4 blades")
 
     drift_tol = Cpt(PytmcSignal, ":fDriftTol", io="io", kind="hinted", doc="Blades drifting tolerance")
     blades_drift = Cpt(
@@ -126,8 +127,8 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
 class DREAM_Sample_Paddle_SmarAct_State(StatePositioner):
     state = Cpt(
         EpicsSignal,
-        "_RBV",
-        write_pv="",
+        ":GET",
+        write_pv=":SET",
         kind="hinted",
         doc="Setpoint and readback for state position.",
     )
@@ -164,6 +165,7 @@ class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
     x_eps_bypass = Cpt(PytmcSignal, ":bEpsXBypass", io="io", kind="hinted", doc="X EPS Bypass")
     y_eps_bypass = Cpt(PytmcSignal, ":bEpsYBypass", io="io", kind="hinted", doc="Y EPS Bypass")
     z_eps_bypass = Cpt(PytmcSignal, ":bEpsZBypass", io="io", kind="hinted", doc="Z EPS Bypass")
+    eps_bypass_all = Cpt(PytmcSignal, ":bEpsBypassAll", io="io", kind="hinted", doc="Bypass EPS on all DGPD stages")
     safety_loop_status = FCpt(PytmcSignal, "DREAM:SL:STATUS", io="i", kind="hinted", doc="DREAM Safety Loop Status")
     safety_loop_enable = FCpt(PytmcSignal, "DREAM:SL:ENABLE", io="io", kind="hinted", doc="DREAM Safety Loop Enable")
     x = Cpt(SmarActEtherCAT, ":MMT:X", kind="normal")
