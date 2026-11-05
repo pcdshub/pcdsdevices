@@ -2247,13 +2247,35 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="8" colspan="2">
+     <item row="0" column="8">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>EPS Bypass</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="9">
+      <widget class="PyDMEnumComboBox" name="PyDMEnumComboBox_bypass_all">
+       <property name="toolTip">
+        <string>EPS Bypass All</string>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="monitorDisp" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:bEpsBypassAll</string>
        </property>
       </widget>
      </item>
