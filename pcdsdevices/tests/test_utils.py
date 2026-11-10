@@ -2,6 +2,7 @@ import logging
 import sys
 import threading
 import time
+from decimal import Decimal
 
 import pytest
 from ophyd import Component as Cpt
@@ -11,6 +12,7 @@ from .. import utils
 from ..device import GroupDevice
 from ..pv_positioner import PVPositionerDone
 from ..utils import (
+    generate_scan_points,
     move_subdevices_to_start,
     post_ophyds_to_elog,
     reorder_components,
@@ -288,3 +290,119 @@ def test_set_many():
     assert device.done.get() == 1
     assert device.setpoint.get() == 5
     assert device.another_signal.get() == 7
+
+
+@pytest.mark.parametrize(
+    "start,end,step,expected",
+    [
+        (1, 2, 0.25, ["1", "1.25", "1.50", "1.75", "2"]),
+        (1, 2, 0.3, ["1", "1.3", "1.6", "1.9", "2"]),
+        (0, 1, 0.5, ["0", "0.5", "1"]),
+        (1, 2, 1, ["1", "2"]),
+        (1, 2, 3, ["1", "2"]),
+    ],
+    ids=[
+        "exact-steps",
+        "short-final-step",
+        "zero-start",
+        "step-equals-interval",
+        "step-exceeds-interval",
+    ],
+)
+def test_forward_points(start, end, step, expected):
+    points = list(generate_scan_points(start, end, step, 9, False))
+
+    assert points == [Decimal(value) for value in expected]
+    assert all(isinstance(point, Decimal) for point in points)
+
+
+@pytest.mark.parametrize("step", [0.25, 0.3, 1, 3])
+def test_bidirectional_retraces_forward_points_without_repeating_peak(step):
+    forward = list(generate_scan_points(1, 2, step, 9, False))
+    bidirectional = list(generate_scan_points(1, 2, step, 9, True))
+
+    assert bidirectional == forward + forward[-2::-1]
+    assert bidirectional.count(Decimal("2")) == 1
+    assert bidirectional[0] == bidirectional[-1] == Decimal("1")
+    assert all(left != right for left, right in zip(bidirectional, bidirectional[1:]))
+
+
+def test_float_inputs_do_not_introduce_binary_artifacts():
+    points = list(generate_scan_points(0.1, 0.3, 0.1, 9, False))
+
+    assert points == [
+        Decimal("0.1"),
+        Decimal("0.2"),
+        Decimal("0.3"),
+    ]
+
+
+def test_decimal_inputs():
+    points = list(
+        generate_scan_points(
+            Decimal("1.1"),
+            Decimal("1.4"),
+            Decimal("0.1"),
+            9,
+            False,
+        )
+    )
+
+    assert points == [
+        Decimal("1.1"),
+        Decimal("1.2"),
+        Decimal("1.3"),
+        Decimal("1.4"),
+    ]
+
+
+@pytest.mark.parametrize(
+    "start,end,step,prec",
+    [
+        (-1, 2, 0.1, 9),  # Negative start
+        (0, -1, 0.1, 9),  # Negative end
+        (1, 1, 0.1, 9),  # Equal boundaries
+        (2, 1, 0.1, 9),  # Reversed boundaries
+        (1, 2, 0, 9),  # Zero step
+        (1, 2, -0.1, 9),  # Negative step
+        (1, 2, 0.1, 0),  # Zero precision
+        (1, 2, 0.1, -1),  # Negative precision
+        (1, 2, 0.1, 1.5),  # Non-integer precision
+        (1, 2, 0.1, "9"),  # String precision
+    ],
+)
+def test_invalid_arguments_raise_value_error(start, end, step, prec):
+    # Consume the generator to execute its validation.
+    with pytest.raises(ValueError):
+        list(generate_scan_points(start, end, step, prec, False))
+
+
+@pytest.mark.parametrize("argument", ["start", "end", "step"])
+@pytest.mark.parametrize(
+    "value",
+    [
+        float("nan"),
+        float("inf"),
+        float("-inf"),
+        Decimal("NaN"),
+        Decimal("Infinity"),
+        Decimal("-Infinity"),
+    ],
+)
+def test_nonfinite_inputs_raise_value_error(argument, value):
+    kwargs = {
+        "start": 1,
+        "end": 2,
+        "step": 0.1,
+        "prec": 9,
+        "bidirectional": False,
+    }
+    kwargs[argument] = value
+
+    with pytest.raises(ValueError, match="must be finite"):
+        list(generate_scan_points(**kwargs))
+
+
+def test_insufficient_precision_raises_instead_of_looping_forever():
+    with pytest.raises(ValueError, match="prec is too small"):
+        list(generate_scan_points(1, 2, 0.01, 1, False))

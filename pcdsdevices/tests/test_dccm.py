@@ -13,7 +13,7 @@ from ..dccm import (
     resolve_hutch,
 )
 
-HUTCH_NAMES = ("L", "XCS", "CXI", "MEC", "MFX", "XPP")
+HUTCH_NAMES = ("XCS", "CXI", "MEC", "MFX", "XPP")
 ACR_HUTCH_NAMES = ("XCS", "CXI", "MEC", "MFX", "XPP")
 ACR_COMPONENTS = ("energy_with_vernier", "energy_with_acr_status")
 
@@ -53,7 +53,6 @@ def configure_plc_handshake(energy, monkeypatch):
 @pytest.mark.parametrize(
     "prefix, hutch, expected",
     [
-        ("L:DCCM", None, "L"),
         ("XCS:DCCM", None, "XCS"),
         ("CXI:DCCM", None, "CXI"),
         ("MEC:DCCM", None, "MEC"),
@@ -90,7 +89,7 @@ def test_hutch_signal_metadata():
     signal = HutchSelectionSignal(name="hutch")
 
     assert signal.get() == 0
-    assert signal.selected_name == "L"
+    assert signal.selected_name == "XCS"
     assert tuple(signal.enum_strs) == HUTCH_NAMES
     assert tuple(signal.metadata["enum_strs"]) == HUTCH_NAMES
     assert tuple(signal.describe()["hutch"]["enum_strs"]) == HUTCH_NAMES

@@ -11,7 +11,7 @@ import sys
 import threading
 import time
 from collections.abc import Iterable
-from decimal import Decimal, getcontext
+from decimal import Decimal, localcontext
 from functools import reduce, wraps
 from types import MethodType
 from typing import Callable, Iterator, Union
@@ -1018,78 +1018,49 @@ def generate_scan_points(
     bidirectional: bool,
 ):
     """
-    Generate scan positions in the forward and optionally reverse directions.
+    Yield Decimal scan positions, always including start and end.
 
-    Example
-    -------
-    .. code-block:: python
+    If step does not divide the interval exactly, the final forward
+    interval is shorter than step.
 
-        positions = list(generate_scan_points(1, 10, 0.1, 9, True))
-        RE(list_scan(dets, motor, positions))
+    If bidirectional is True, retrace the forward positions without
+    repeating the turning point.
 
-    Parameters
-    ----------
-    start : int, float, or Decimal
-        Starting scan position. Must be nonnegative and less than `end`.
-    end : int, float, or Decimal
-        Upper scan boundary.
-    step : int, float, or Decimal
-        Positive spacing between consecutive positions. Must be less than
-        both `start` and `end`.
-    prec: int
-        Generated scan points precision.
-    bidirectional : bool
-        If True, generate a reverse pass after the forward pass.
-
-    Yields
-    ------
-    Decimal
-        Scan positions, beginning at `start` and increasing by `step` while
-        less than or equal to `end`. If `bidirectional` is True, additional
-        positions begin at ``end - step`` and decrease by `step` while
-        greater than or equal to `start`.
-
-    Raises
-    ------
-    ValueError
-        If `start` is negative, `start` is greater than or equal to `end`,
-        `prec` is smaller than 1 or `step` is greater than or equal to
-        either boundary.
-
-    Notes
-    -----
-    Sets the active decimal context precision to nine significant digits.
-    Inputs are converted directly to `Decimal`; float inputs may retain
-    binary floating-point representation artifacts.
-
-    The forward pass includes `end` only if stepping reaches it exactly.
-    The reverse pass is anchored to `end`, so its positions may differ
-    from the forward positions if the interval is not divisible by `step`.
+    prec specifies the number of significant digits used in arithmetic.
     """
-    if start < 0 or end < 0 < step < 0:
-        raise ValueError("start, end and step size must be positive numbers")
-    if start >= end:
-        raise ValueError("invalid start and/or end points")
-    if step >= start or step >= end:
-        raise ValueError("invalid step size")
-    if prec < 1:
-        raise ValueError("invalid prec")
+    start = Decimal(str(start))
+    end = Decimal(str(end))
+    step = Decimal(str(step))
 
-    getcontext().prec = prec
+    if not all(value.is_finite() for value in (start, end, step)):
+        raise ValueError("start, end, and step must be finite")
+    if start < 0 or start >= end:
+        raise ValueError("require 0 <= start < end")
+    if step <= 0:
+        raise ValueError("step must be positive")
+    if not isinstance(prec, int) or prec < 1:
+        raise ValueError("prec must be a positive integer")
 
-    start = Decimal(start)
-    end = Decimal(end)
-    step = Decimal(step)
+    # Build inside a local context so the caller's precision is unchanged.
+    with localcontext() as ctx:
+        ctx.prec = prec
+        points = []
+        pos = start
 
-    # Generate positions in the forward direction
-    pos = start
-    while pos <= end:
-        yield pos
-        pos += step
+        while pos < end:
+            points.append(pos)
+            next_pos = pos + step
+
+            if next_pos <= pos:
+                raise ValueError("prec is too small to advance by step; increase prec")
+
+            pos = next_pos
+
+        points.append(end)
+
+    yield from points
 
     if bidirectional:
-        # Generate positions in the backward direction
-        pos = end - step
-        while pos >= start:
-            yield pos
-            pos -= step
+        # Retrace the same points, excluding the turning point.
+        for index in range(len(points) - 2, -1, -1):
+            yield points[index]

@@ -29,7 +29,7 @@ from pcdsdevices.utils import measure_time
 MovedCallback = Optional[Callable[..., None]]
 
 
-_HUTCH_NAMES = ("L", "XCS", "CXI", "MEC", "MFX", "XPP")
+_HUTCH_NAMES = ("XCS", "CXI", "MEC", "MFX", "XPP")
 
 
 def resolve_hutch(prefix: str, hutch: Optional[str] = None) -> str:
