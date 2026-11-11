@@ -9,10 +9,8 @@ from ophyd import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 
 from .device import GroupDevice
-from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis, SmarAct, SmarActEtherCAT
 from .interface import BaseInterface
-from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
 from .slits import MetaDataDict
 from .state import StatePositioner
@@ -134,10 +132,6 @@ class DREAM_Sample_Paddle_SmarAct_State(StatePositioner):
     )
 
 
-class DREAM_Sample_Paddle_SmarAct_Axis_State(TwinCATStatePMPS):
-    config = UpCpt(state_count=10)
-
-
 class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
     """
     DREAM Motion Class
@@ -172,10 +166,6 @@ class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
     y = Cpt(SmarActEtherCAT, ":MMT:Y", kind="normal")
     z = Cpt(SmarActEtherCAT, ":MMT:Z", kind="normal")
     ret = Cpt(SmarActEtherCAT, ":MMT:RET", kind="normal")
-    x_state = Cpt(DREAM_Sample_Paddle_SmarAct_Axis_State, ":X:STATE", kind="hinted", doc="X state mover")
-    y_state = Cpt(DREAM_Sample_Paddle_SmarAct_Axis_State, ":Y:STATE", kind="hinted", doc="Y state mover")
-    z_state = Cpt(DREAM_Sample_Paddle_SmarAct_Axis_State, ":Z:STATE", kind="hinted", doc="Z state mover")
-    ret_state = Cpt(DREAM_Sample_Paddle_SmarAct_Axis_State, ":RET:STATE", kind="hinted", doc="Ret state mover")
 
 
 class DREAM_Gas_Jet_Slits(BaseInterface, GroupDevice):
