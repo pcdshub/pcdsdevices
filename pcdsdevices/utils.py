@@ -128,12 +128,12 @@ def get_input():
             # Read even more if we had a shift/alt/ctrl modifier
             if extra_inp == "[1":
                 inp += sys.stdin.read(3)
-    except Exception:
+    except (Exception, KeyboardInterrupt):
         ...
     finally:
         # Restore the terminal to normal input mode
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-    return inp  # noqa: B012
+    return inp
 
 
 ureg = None
