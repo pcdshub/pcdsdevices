@@ -9,10 +9,8 @@ from ophyd import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 
 from .device import GroupDevice
-from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis, SmarAct, SmarActEtherCAT
 from .interface import BaseInterface
-from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
 from .slits import MetaDataDict
 from .state import StatePositioner
@@ -75,6 +73,7 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
     bottom_bypass = Cpt(PytmcSignal, ":bEpsBotBypass", io="io", kind="hinted", doc="EPS Bypass")
     north_bypass = Cpt(PytmcSignal, ":bEpsNorthBypass", io="io", kind="hinted", doc="EPS Bypass")
     south_bypass = Cpt(PytmcSignal, ":bEpsSouthBypass", io="io", kind="hinted", doc="EPS Bypass")
+    bypass_all = Cpt(PytmcSignal, ":bEpsBypassAll", io="io", kind="hinted", doc="Bypass EPS on all SL3K4 blades")
 
     drift_tol = Cpt(PytmcSignal, ":fDriftTol", io="io", kind="hinted", doc="Blades drifting tolerance")
     blades_drift = Cpt(
@@ -126,15 +125,11 @@ class DREAM_SL3K4(BaseInterface, GroupDevice):
 class DREAM_Sample_Paddle_SmarAct_State(StatePositioner):
     state = Cpt(
         EpicsSignal,
-        "_RBV",
-        write_pv="",
+        ":GET_RBV",
+        write_pv=":SET",
         kind="hinted",
         doc="Setpoint and readback for state position.",
     )
-
-
-class DREAM_Sample_Paddle_SmarAct_Axis_State(TwinCATStatePMPS):
-    config = UpCpt(state_count=10)
 
 
 class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
@@ -164,16 +159,13 @@ class DREAM_Sample_Paddle(BaseInterface, GroupDevice):
     x_eps_bypass = Cpt(PytmcSignal, ":bEpsXBypass", io="io", kind="hinted", doc="X EPS Bypass")
     y_eps_bypass = Cpt(PytmcSignal, ":bEpsYBypass", io="io", kind="hinted", doc="Y EPS Bypass")
     z_eps_bypass = Cpt(PytmcSignal, ":bEpsZBypass", io="io", kind="hinted", doc="Z EPS Bypass")
+    eps_bypass_all = Cpt(PytmcSignal, ":bEpsBypassAll", io="io", kind="hinted", doc="Bypass EPS on all DGPD stages")
     safety_loop_status = FCpt(PytmcSignal, "DREAM:SL:STATUS", io="i", kind="hinted", doc="DREAM Safety Loop Status")
     safety_loop_enable = FCpt(PytmcSignal, "DREAM:SL:ENABLE", io="io", kind="hinted", doc="DREAM Safety Loop Enable")
     x = Cpt(SmarActEtherCAT, ":MMT:X", kind="normal")
     y = Cpt(SmarActEtherCAT, ":MMT:Y", kind="normal")
     z = Cpt(SmarActEtherCAT, ":MMT:Z", kind="normal")
     ret = Cpt(SmarActEtherCAT, ":MMT:RET", kind="normal")
-    x_state = Cpt(DREAM_Sample_Paddle_SmarAct_Axis_State, ":X:STATE", kind="hinted", doc="X state mover")
-    y_state = Cpt(DREAM_Sample_Paddle_SmarAct_Axis_State, ":Y:STATE", kind="hinted", doc="Y state mover")
-    z_state = Cpt(DREAM_Sample_Paddle_SmarAct_Axis_State, ":Z:STATE", kind="hinted", doc="Z state mover")
-    ret_state = Cpt(DREAM_Sample_Paddle_SmarAct_Axis_State, ":RET:STATE", kind="hinted", doc="Ret state mover")
 
 
 class DREAM_Gas_Jet_Slits(BaseInterface, GroupDevice):
